@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN"
+       "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
+
+<tiles-definitions>
+
+	<!-- DEFAULT -->
+	<definition name="default" template="/WEB-INF/views/_default.jspx">
+    	<put-attribute name="menu" value="/WEB-INF/views/_menu.jspx" />
+	</definition>
+
+	<!-- DEFAULT -->
+	<definition name="defaultNoMenu" template="/WEB-INF/views/_defaultNoMenu.jspx">
+    	<put-attribute name="menu" value="/WEB-INF/views/_menu.jspx" />
+	</definition>
+
+	<!-- LOGIN -->
+	<definition extends="default" name="login">
+        <put-attribute name="body" value="/WEB-INF/views/login.jspx"/>
+		<put-attribute name="menu_item" type="string" value="menu.login"/>
+    </definition>
+
+	<!-- INDEX -->
+	<definition extends="default" name="index">
+		<put-attribute name="body" value="/WEB-INF/views/index.jspx"/>
+		<put-attribute name="menu_item" type="string" value="menu.home"/>
+	</definition>
+
+	<!-- DOKUMENTATION -->
+	<definition extends="default" name="dokumentation/*">
+		<put-attribute name="body" value="/WEB-INF/views/dokumentation.jspx"/>
+		<put-attribute name="menu_item" type="string" value="menu.dokumentation"/>
+		<put-attribute name="tabmenu_item" type="string" value="dokumentation.{1}"/>
+	</definition>
+	
+	<!-- SERVICE -->
+	<definition extends="default" name="service">
+		<put-attribute name="body" value="/WEB-INF/views/service.jspx"/>
+		<put-attribute name="menu_item" type="string" value="menu.service"/>
+	</definition>
+
+	<!-- IMPRESSUM -->
+	<definition extends="default" name="impressum">
+		<put-attribute name="body" value="/WEB-INF/views/impressum.jspx"/>
+		<put-attribute name="menu_item" type="string" value="menu.impressum"/>
+	</definition>
+
+	<!-- FEHLER -->
+	<definition extends="default" name="dataAccessFailure">
+		<put-attribute name="body" value="/WEB-INF/views/fehler.jspx"/>
+		<put-attribute name="exception_type" type="string" value="dataAccessFailure"/>
+	</definition>
+
+	<definition extends="default" name="resourceNotFound">
+		<put-attribute name="body" value="/WEB-INF/views/fehler.jspx"/>
+		<put-attribute name="exception_type" type="string" value="resourceNotFound"/>
+	</definition>
+
+	<definition extends="default" name="uncaughtException">
+		<put-attribute name="body" value="/WEB-INF/views/fehler.jspx"/>
+		<put-attribute name="exception_type" type="string" value="uncaughtException"/>
+	</definition>
+
+</tiles-definitions>

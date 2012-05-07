@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN"
+       "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
+
+<tiles-definitions>
+	<!-- DEFAULT -->
+	<definition name="backend" template="/WEB-INF/views/backend/_backend.jspx"/>
+
+	<definition extends="backend" name="backend/*">
+		<put-attribute name="body" value="/WEB-INF/views/backend/{1}.jspx"/>
+	</definition>
+</tiles-definitions>

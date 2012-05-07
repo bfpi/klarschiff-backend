@@ -1,0 +1,138 @@
+<jsp:root 
+	xmlns:c="http://java.sun.com/jsp/jstl/core" 
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions" 
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:spring="http://www.springframework.org/tags" 
+	xmlns:jsp="http://java.sun.com/JSP/Page" 
+	xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu"
+	xmlns:tiles="http://tiles.apache.org/tags-tiles" 
+	xmlns:fx="http://igd.fraunhofer.de/tags/elfunctions" 
+	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+	version="2.0"
+	>
+	<jsp:directive.page contentType="text/html;charset=UTF-8"/>
+
+	<!-- CONTENTTITLE -->
+	<div id="root_style_content_title">
+		Status
+	</div>
+	
+	<!-- TABMENU -->
+	<tiles:importAttribute name="tabmenu_item" ignore="true" toName="tabmenu_item"/>
+	<menu:tabmenuadmin currentId="${tabmenu_item}"/>
+	
+	<!-- CONTENT -->
+	<div id="root_style_content">
+
+		<div class="fieldset">
+			<div class="fieldsettitle">aktueller Server</div>
+			<table class="result">
+				<tr>
+					<td class="label">Hostname</td>
+					<td class="value">${serverName}</td>
+				</tr>
+				<tr>
+					<td class="label">IP-Adresse</td>
+					<td class="value">${serverIp}</td>
+				</tr>
+				<tr>
+					<td class="label">Connector</td>
+					<td class="value">${serverConnectorPort}</td>
+				</tr>
+				<tr>
+					<td class="label">JVM-Identifikator</td>
+					<td class="value">${serverJvmRoute}</td>
+				</tr>
+			</table>
+		</div>			
+
+		<div class="fieldset">
+			<div class="fieldsettitle">Server im Cluster</div>
+			<table class="resulttable" width="100%">
+				<thead>
+					<tr>
+						<th>Hostname</th>
+						<th>IP-Adresse</th>
+ 						<th>Connector</th>
+ 						<th>JVM-Identifikator</th>
+ 						<th>Aktualisierungszeit</th>
+					</tr>
+				</thead>
+				<tbody>
+					<c:forEach items="${aliveServerList}" var="aliveServer" varStatus="rowCounter">
+						<tr class="${(rowCounter.count%2==0)? 'odd' : 'even'}">
+							<td>${aliveServer.name}</td>
+							<td>${aliveServer.ip}</td>		
+							<td>${aliveServer.connectorPort}</td>		
+							<td>${aliveServer.jvmRoute}</td>		
+							<td><fmt:formatDate value="${aliveServer.datum}" pattern="dd.MM.yyyy HH:mm:ss"/></td>		
+						</tr>						
+					</c:forEach>
+				</tbody>
+			</table>
+		</div>			
+
+		<div class="fieldset">
+			<div class="fieldsettitle">WFS</div>
+			<table class="result">
+				<tr>
+					<td class="label">WFS-Status</td>
+					<td class="value">
+						<c:choose>
+							<c:when test="${wfs}">aktiv</c:when>
+							<c:otherwise><span style="color: red;">inaktiv</span></c:otherwise>
+						</c:choose>
+					</td>
+				</tr>
+			</table>
+		</div>			
+
+		<div class="fieldset">
+			<div class="fieldsettitle">Jobs</div>
+			<table class="result">
+				<tr>
+					<td class="label">korrekt ausgeführte Jobs</td>
+					<td class="value">${anzahlAbgeschlosseneJobs}</td>
+				</tr>
+				<c:if test="${not empty fehlerhafteJobs}">
+					<tr>
+						<td class="label">fehlerhafte Jobs</td>
+					</tr>
+				</c:if>
+			</table>
+				<c:if test="${not empty fehlerhafteJobs}">
+					<table class="resulttable" width="100%">
+						<thead>
+							<tr>
+								<th>Name</th>
+								<th>Zeit</th>
+		 						<th>Server IP</th>
+		 						<th>Server Name</th>
+								<th>ConnectorPort</th>
+							</tr>
+						</thead>
+						<tbody>
+							<c:forEach items="${fehlerhafteJobs}" var="job" varStatus="rowCounter">
+								<tr class="${(rowCounter.count%2==0)? 'odd' : 'even'}">
+									<td>${job.name}</td>
+									<td><fmt:formatDate value="${job.datum}" pattern="dd.MM.yyyy HH:mm:ss"/></td>		
+									<td>${job.serverIp}</td>		
+									<td>${job.serverName}</td>		
+									<td>${job.serverPort}</td>		
+								</tr>						
+							</c:forEach>
+						</tbody>
+					</table>
+				</c:if>
+		</div>			
+
+	</div>
+	
+	<!-- HELP -->
+	<div id="root_style_help">
+		<p>
+            Auf dieser Seite finden Sie eine Übersicht über den Status des Backends insgesamt sowie die <util:help anchor="Adminseiten">Status</util:help> der einzelnen Server des Clusters. 
+		</p>
+	</div>
+
+</jsp:root>

@@ -1,0 +1,260 @@
+<jsp:root 
+	xmlns:c="http://java.sun.com/jsp/jstl/core" 
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions" 
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:spring="http://www.springframework.org/tags" 
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:jsp="http://java.sun.com/JSP/Page" 
+	xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu"
+	xmlns:vorgang="urn:jsptagdir:/WEB-INF/tags/vorgang"
+	xmlns:role="urn:jsptagdir:/WEB-INF/tags/role"
+	xmlns:map="urn:jsptagdir:/WEB-INF/tags/map"
+	xmlns:foto="urn:jsptagdir:/WEB-INF/tags/foto"
+	xmlns:tiles="http://tiles.apache.org/tags-tiles" 
+	xmlns:fx="http://igd.fraunhofer.de/tags/elfunctions" 
+	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+	version="2.0"
+	>
+	<jsp:directive.page contentType="text/html;charset=UTF-8"/>
+
+	<!-- CONTENTTITLE -->
+	<div id="root_style_content_title">
+		Erstsichtung
+	</div>
+	
+	<c:set value="${cmd.vorgang}" var="vorgang"/>
+	
+	<!-- TABMENU -->
+	<tiles:importAttribute name="tabmenu_item" ignore="true" toName="tabmenu_item"/>
+	<menu:tabmenuvorgang currentId="${tabmenu_item}" vorgangId="${vorgang.id}"/>
+	
+	<!-- ITEMINFO -->
+	<vorgang:iteminfo vorgang="${vorgang}"/>
+	
+	<!-- CONTENT -->
+	<div id="root_style_content">
+		<vorgang:vorgangPrintEmail vorgang="${vorgang}"/>
+		<div class="fieldset">
+			<div class="fieldsettitle">Vorgang</div>
+			
+			<table class="result">
+				<tr>
+					<td class="label">Typ</td>
+					<td class="value">
+						<div class="result">
+							<c:url value="/images/${vorgang.typ}_15.png" var="url"/>
+							<img alt="${vorgang.typ.text}" src="${url}"/>
+							<![CDATA[&nbsp;&nbsp;]]>
+							${vorgang.typ.text}
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td class="label">Hauptkategorie</td>
+					<td class="value">
+						<div class="result">
+							${vorgang.kategorie.parent.name}
+						</div>
+					</td>
+					<td class="label">Unterkategorie</td>
+					<td class="value">
+						<div class="result" style="width:350px;">
+							${vorgang.kategorie.name}
+						</div>
+					</td>
+					<td width="100%"></td>					
+				</tr>
+
+				<c:if test="${not empty vorgang.betreff}"><tr>
+					<td class="label">Betreff</td>
+					<td colspan="10">
+						<div class="result" style="width:663px;">
+						${vorgang.betreff}
+						</div>
+					</td>
+				</tr></c:if>
+			
+				<c:if test="${not empty vorgang.details}"><tr>
+					<td class="label">Details</td>
+					<td colspan="10">
+						<div class="result" style="width:663px;">
+						${vorgang.details}
+						</div>
+					</td>
+				</tr></c:if>
+				
+				<c:if test="${not empty vorgang.adresse}"><tr>
+					<td class="label">Adresse</td>
+					<td colspan="10">
+						<div class="result" style="width:663px;">
+						${vorgang.adresse}
+						</div>
+					</td>
+				</tr></c:if>
+				
+				<tr>
+					<td class="label">Erstellung</td>
+					<td>
+						<div class="result">
+							<fmt:formatDate value="${vorgang.datum}" pattern="dd.MM.yyyy HH:mm"/>
+						</div>
+					</td>
+					<c:if test="${not empty vorgang.autorEmail}">
+						<td class="label">Autor</td>
+						<td>
+							<div class="result" style="width:350px;">
+								${vorgang.autorEmail}
+							</div>
+						</td>
+					</c:if>
+				</tr>
+				<tr>
+					<td class="label">Karte</td>
+					<td colspan="10" width="100%">
+			        	<map:view
+			        		projection="${geoService.mapProjection}"
+			        		tmsUrl="${geoService.mapTmsServer}" 
+			        		tmsLayers="${geoService.mapTmsServerLayers}" 
+			        		maxExtent="${geoService.mapMaxExtent}"
+				       		restrictedExtent="${geoService.mapRestrictedExtent}"
+				       		resolutions="${geoService.mapResolutions}"
+			        		serverResolutions="${geoService.mapServerResolutions}"
+			        		ovi="${vorgang.oviWkt}"
+			        		oviMargin="${geoService.mapOviMargin/2}"
+			        		mapExternUrl="${mapExternUrl}"
+			        		cssStyle="height: 300px; width: 100%;"
+			        		vorgangTyp="${vorgang.typ}"
+			        		vorgangStatus="${vorgang.status}"
+			        	/>
+					</td>
+				</tr>
+				<c:if test="${vorgang.fotoExists}">
+					<tr>
+						<td class="label" style="padding-top:10px;">Foto</td>
+						<td colspan="10" style="padding-top:10px;">
+							<foto:foto vorgang="${vorgang}" typ="thumb"/>
+						</td>
+					</tr>
+				</c:if>
+			</table>
+		</div>
+		
+		<div class="fieldset">
+			<div class="fieldsettitle">Zuständigkeit</div>
+
+			<c:set value="${fx:role(vorgang.zustaendigkeit)}" var="zustaendigkeit"/>
+			<table class="result">
+				<tr>
+					<td class="label">aktuelle Zuständigkeit</td>
+					<td>
+						<div class="result">
+							<vorgang:zustaendigkeit vorgang="${vorgang}"/>
+						</div>
+					</td>
+				</tr>
+			</table>
+
+			<ul class="formlist">
+				<c:set value="${fx:rminuso(fx:rminusc(allZustaendigkeiten, currentZustaendigkeiten), zustaendigkeit)}" var="moeglicheZustaendigkeiten"/>
+
+				<c:choose>
+					<c:when test="${fx:rcontains(currentZustaendigkeiten, fx:role(cmd.vorgang.zustaendigkeit))}">
+		 				<li class="akzeptieren">
+							<form:form method="POST" modelAttribute="cmd.vorgang">
+								Zuständigkeit für den Vorgang<![CDATA[&nbsp;]]>
+								<input type="submit" value="akzeptieren" name="action"/>
+							</form:form>
+						</li>
+						<c:if test="${fx:rsize(currentZustaendigkeiten)>1}">
+			 				<li class="akzeptieren">
+								<form:form method="POST" modelAttribute="cmd.vorgang">
+									Als Zuständigkeit für den Vorgang<![CDATA[&nbsp;]]>
+									<form:select path="zustaendigkeit" cssErrorClass="error">
+						            	<form:option value="" label="Zuständigkeit wählen" cssClass="info"/>
+										<role:options roles="${fx:rminuso(currentZustaendigkeiten, zustaendigkeit)}"/>
+									</form:select> 
+									<![CDATA[&nbsp;]]>
+									<input type="submit" value="&#252;bernehmen und akzeptieren" name="action"/>
+								</form:form>
+							</li>
+						</c:if>
+					</c:when>
+					<c:when test="${fx:rsize(currentZustaendigkeiten)==1}">
+		 				<li class="akzeptieren">
+							<form:form method="POST" modelAttribute="cmd.vorgang">
+								<input name="vorgang.zustaendigkeit" type="hidden" value="${currentZustaendigkeiten[0].id}"/>
+								Zuständigkeit für den Vorgang<![CDATA[&nbsp;]]>
+								<input type="submit" value="&#252;bernehmen und akzeptieren" name="action"/>
+							</form:form>
+						</li>
+					</c:when>
+					<c:otherwise>
+		 				<li class="akzeptieren">
+							<form:form method="POST" modelAttribute="cmd.vorgang">
+								Als Zuständigkeit für den Vorgang<![CDATA[&nbsp;]]>
+								<form:select path="zustaendigkeit" cssErrorClass="error">
+					            	<form:option value="" label="Zuständigkeit wählen" cssClass="info"/>
+									<role:options roles="${currentZustaendigkeiten}"/>
+								</form:select> 
+								<![CDATA[&nbsp;]]>
+								<input type="submit" value="&#252;bernehmen und akzeptieren" name="action"/>
+							</form:form>
+						</li>
+					</c:otherwise>
+				</c:choose>
+
+				<li class="automatisch">
+					<form:form method="POST" modelAttribute="cmd.vorgang">
+						Vorgang automatisch
+						<![CDATA[&nbsp;]]>
+						<input type="submit" value="neu zuweisen" name="action"/>
+					</form:form>
+				</li>
+                
+                <c:choose>
+                    <c:when test="${not empty moeglicheZustaendigkeiten}">
+                        <li class="manuell">
+                            <form:form method="POST" modelAttribute="cmd.vorgang" >
+                                Vorgang
+                                <![CDATA[&nbsp;]]>
+                                <form:select path="zustaendigkeit" cssErrorClass="error">
+                                    <form:option value="" label="Zuständigkeit wählen" cssClass="info"/>
+                                    <role:options roles="${moeglicheZustaendigkeiten}"/>
+                                </form:select> 
+                                <![CDATA[&nbsp;]]>
+                                <input type="submit" value="zuweisen" name="action"/>
+                            </form:form>
+                        </li>
+                    </c:when>
+                    <c:otherwise>
+                        <li class="manuell">
+                            <form:form method="POST" modelAttribute="cmd.vorgang" >
+                                Vorgang
+                                <![CDATA[&nbsp;]]>
+                                <form:select path="zustaendigkeit" cssErrorClass="error">
+                                    <form:option value="" label="Zuständigkeit wählen" cssClass="info"/>
+                                    <role:options roles="${currentZustaendigkeiten}"/>
+                                </form:select> 
+                                <![CDATA[&nbsp;]]>
+                                <input type="submit" value="zuweisen" name="action"/>
+                            </form:form>
+                        </li>
+                    </c:otherwise>
+                </c:choose>
+
+			
+			</ul>
+		</div>
+
+	
+
+	</div>
+	
+	<!-- HELP -->
+	<div id="root_style_help">
+		<p>
+            Bevor Sie einen Vorgang bearbeiten können, muss immer eine <util:help anchor="Erstsichtung">Erstsichtung</util:help>  erfolgen, in deren Rahmen zuerst über die <util:help anchor="Zustndigkeit">Zuständigkeit</util:help> für den Vorgang entschieden wird. Hierfür können Sie auf dieser Seite die aktuelle Zuständigkeit akzeptieren, manuell eine andere Zuständigkeit wählen oder automatisch eine andere Zuständigkeit bestimmen lassen.
+		</p>
+	</div>
+
+</jsp:root>

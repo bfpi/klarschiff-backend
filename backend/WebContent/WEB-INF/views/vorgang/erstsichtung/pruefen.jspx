@@ -1,0 +1,129 @@
+<jsp:root 
+	xmlns:c="http://java.sun.com/jsp/jstl/core" 
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions" 
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:spring="http://www.springframework.org/tags" 
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:jsp="http://java.sun.com/JSP/Page" 
+	xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu"
+	xmlns:vorgang="urn:jsptagdir:/WEB-INF/tags/vorgang"
+	xmlns:foto="urn:jsptagdir:/WEB-INF/tags/foto"
+	xmlns:tiles="http://tiles.apache.org/tags-tiles" 
+	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+	version="2.0"
+	>
+	<jsp:directive.page contentType="text/html;charset=UTF-8"/>
+
+	<!-- CONTENTTITLE -->
+	<div id="root_style_content_title">
+		Erstsichtung
+	</div>
+
+	<c:set value="${cmd.vorgang}" var="vorgang"/>
+	
+	<!-- TABMENU -->
+	<tiles:importAttribute name="tabmenu_item" ignore="true" toName="tabmenu_item"/>
+	<menu:tabmenuvorgang currentId="${tabmenu_item}" vorgangId="${vorgang.id}"/>
+	
+	<!-- ITEMINFO -->
+	<vorgang:iteminfo vorgang="${vorgang}"/>
+	
+	<!-- CONTENT -->
+	<div id="root_style_content">
+		<vorgang:vorgangPrintEmail vorgang="${vorgang}"/>
+		<form:form method="POST" modelAttribute="cmd" >
+			<div class="fieldset">
+				<div class="fieldsettitle">Vorgang</div>
+	
+				<table class="result">
+
+					<tr>
+						<td style="vertical-align:top;" width="465px" colspan="2">
+				        	<form:label path="vorgang.betreff" cssErrorClass="error">Betreff</form:label>
+				        	<util:freigabestatus status="${cmd.vorgang.betreffFreigabeStatus}"/>
+							<c:if test="${cmd.vorgang.betreffFreigabeStatus!='geloescht'}">
+					            <form:input path="vorgang.betreff" cssClass="inputtext" cssStyle="width:333px;"/>
+							</c:if>
+						</td>
+						<td style="vertical-align:top;">
+							<util:freigabestatusbutton name="Betreff" status="${cmd.vorgang.betreffFreigabeStatus}"/>
+						</td>
+					</tr>
+
+				
+					<tr>
+						<td style="vertical-align:top;" width="465px" colspan="2">
+				        	<form:label path="vorgang.details" cssErrorClass="error">Details</form:label>
+							<util:freigabestatus status="${cmd.vorgang.detailsFreigabeStatus}"/>
+							<c:if test="${cmd.vorgang.detailsFreigabeStatus!='geloescht'}">
+				            <form:textarea path="vorgang.details" cols="6" cssStyle="width:333px;"/>
+							</c:if>
+						</td>
+						<td style="vertical-align:top;">
+							<util:freigabestatusbutton name="Details" status="${cmd.vorgang.detailsFreigabeStatus}"/>
+						</td>
+					</tr>
+
+					<c:choose>
+						<c:when test="${vorgang.fotoExists}">
+							<tr>
+								<td colspan="10" class="forminfo">
+									Bitte achten Sie bei der Prüfung des Fotos besonders auf Kfz-Kennzeichen und/oder Gesichter.
+								</td>
+							</tr>
+							<tr>
+								<td style="vertical-align:top;" width="100px">
+									<label>Foto</label>
+								</td>
+								<td style="vertical-align:top;" colspan="2">
+									<util:freigabestatus status="${cmd.vorgang.fotoFreigabeStatus}"/>
+									<![CDATA[&nbsp;&nbsp;]]>
+									<util:freigabestatusbutton name="Foto" status="${cmd.vorgang.fotoFreigabeStatus}" geloeschtEnable="true"/>
+									<c:if test="${cmd.vorgang.fotoFreigabeStatus ne 'geloescht'}">
+										<![CDATA[&nbsp;&nbsp;]]>
+										<foto:bearbeitung />
+									</c:if>
+								</td>
+							</tr>
+							<tr>
+								<td style="vertical-align:top;" width="100px">
+								</td>
+								<td style="vertical-align:top;" width="365px">
+									<foto:foto vorgang="${vorgang}"/>
+								</td>
+							</tr>
+						</c:when>
+						<c:otherwise>
+							<tr>
+								<td style="vertical-align:top;" width="465px">
+									<label>Foto</label>
+									<span class="forminfo">Es ist kein Foto vorhanden.</span>
+								</td>
+							</tr>
+						</c:otherwise>
+					</c:choose>
+
+				</table>
+
+			</div>
+			<c:set value="Pr&#252;fung abschlie&#223;en" var="value"/>
+			<input type="submit" value="${value}" name="action"/>
+		</form:form>
+
+
+	</div>
+	
+	<!-- HELP -->
+	<div id="root_style_help">
+		<p>
+            Bitte prüfen Sie zum Abschluss der Erstsichtung auf dieser Seite – sofern vorhanden – den Betreff, die Details und das Foto des Vorgangs. Nach der Prüfung wird der Vorgang im Frontend und damit für die Bürgerinnen und Bürger zur Anzeige freigegeben. Daher ist es wichtig, dass durch Betreff, Details oder Foto keine Persönlichkeitsrechte verletzt werden.
+		</p>
+		<p>
+            Sie haben die Möglichkeit den Betreff und die Details inhaltlich anzupassen. Über die Buttons neben den Eingabefeldern können Sie den <util:help anchor="Freigabestatus">Freigabestatus</util:help> festlegen und damit bestimmen, für wen die Informationen sichtbar sind: „Intern“ bedeutet, dass die Informationen nur im Backend für die Sachbearbeiterinnen und Sachbearbeiter sichtbar sind. Um die Informationen auch für Bürgerinnen und Bürger sichtbar zu machen, muss der Freigabestatus auf „extern“ gesetzt sein.
+		</p>
+        <p>
+            Auch das Foto können Sie <util:help anchor="Fotobearbeiten">bearbeiten</util:help>: Ein Klick auf den entsprechenden Button über dem Foto führt Sie in den Bearbeitungsmodus. Nun können Sie im Foto mit der Maus schwarze Rechtecke aufziehen, um mit diesen Bereiche im Foto zu überdecken, die nicht mehr erkennbar sein dürfen. Sobald Sie mit Ihren Änderungen einverstanden sind, können Sie diese durch Klick auf den entsprechenden Button speichern.
+        </p>
+	</div>
+
+</jsp:root>

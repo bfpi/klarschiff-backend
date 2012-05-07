@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<jsp:root xmlns:c="http://java.sun.com/jsp/jstl/core" 
+	xmlns:spring="http://www.springframework.org/tags" 
+	xmlns:jsp="http://java.sun.com/JSP/Page" 
+	xmlns:fx="http://igd.fraunhofer.de/tags/elfunctions" 
+	version="2.0"
+	>
+	<jsp:output omit-xml-declaration="yes" />
+
+	<jsp:directive.attribute name="status" type="de.fraunhofer.igd.klarschiff.vo.EnumFreigabeStatus" required="true" rtexprvalue="true" description="Name der Spalte" />
+	<jsp:directive.attribute name="cssStyle" type="java.lang.String" required="false" rtexprvalue="true"/>
+	<jsp:directive.attribute name="cssClass" type="java.lang.String" required="false" rtexprvalue="true"/>
+
+	<c:url value="/images/freigabeStatus_${status}.png" var="url"/>
+	<span class="forminfo ${cssClass}" style="padding-right: 5px;${cssStyle}">
+	<img alt="${status}" src="${url}"  title="Freigabestatus: ${status.text}" align="top" style="padding-top:5px"/>
+	</span>
+			
+</jsp:root>

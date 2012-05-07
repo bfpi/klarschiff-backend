@@ -1,0 +1,59 @@
+<jsp:root 
+	xmlns:c="http://java.sun.com/jsp/jstl/core" 
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions" 
+	xmlns:spring="http://www.springframework.org/tags" 
+	xmlns:jsp="http://java.sun.com/JSP/Page" 
+	xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu"
+	xmlns:vorgang="urn:jsptagdir:/WEB-INF/tags/vorgang"
+	xmlns:foto="urn:jsptagdir:/WEB-INF/tags/foto"
+	xmlns:tiles="http://tiles.apache.org/tags-tiles" 
+	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+	version="2.0"
+	>
+	<jsp:directive.page contentType="text/html;charset=UTF-8"/>
+
+	<!-- CONTENTTITLE -->
+	<div id="root_style_content_title">
+		Foto zu Vorgang
+	</div>
+	
+	<!-- TABMENU -->
+	<tiles:importAttribute name="tabmenu_item" ignore="true" toName="tabmenu_item"/>
+	<menu:tabmenuvorgang currentId="${tabmenu_item}" vorgangId="${vorgang.id}"/>
+	
+	<!-- ITEMINFO -->
+	<vorgang:iteminfo vorgang="${vorgang}"/>
+	
+	<!-- CONTENT -->
+	<div id="root_style_content">
+		<vorgang:vorgangPrintEmail vorgang="${vorgang}"/>
+		
+		<div class="fieldset" style="min-height:200px;">
+			<div class="fieldsettitle">Foto</div>
+			<table>
+				<tr>
+					<td>
+						<foto:foto vorgang="${vorgang}"/>
+					</td>
+					<c:if test="${vorgang.fotoExists and vorgang.fotoFreigabeStatus!='geloescht'}">
+						<td style="vertical-align:top;">
+							<c:url value="/images/freigabeStatus_${vorgang.fotoFreigabeStatus}.png" var="url"/>
+							<img alt="" src="${url}" title="Freigabestatus für Foto: ${vorgang.fotoFreigabeStatus}"/>						
+						</td>
+					</c:if>
+				</tr>
+			</table>
+		</div>
+			
+		
+			
+	</div>
+	
+	<!-- HELP -->
+	<div id="root_style_help">
+		<p>
+            Falls dem aktuell ausgewählten Vorgang ein Foto beigefügt ist, wird Ihnen dieses hier angezeigt.		
+		</p>
+	</div>
+
+</jsp:root>

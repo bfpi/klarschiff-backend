@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<jsp:root 
+	xmlns:c="http://java.sun.com/jsp/jstl/core" 
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions" 
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:jsp="http://java.sun.com/JSP/Page" 
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:spring="http://www.springframework.org/tags" 
+	version="2.0"
+	>
+	<jsp:output omit-xml-declaration="yes" />
+	
+	<jsp:directive.attribute name="roles" type="java.util.List" required="true" rtexprvalue="true"/>
+	<jsp:directive.attribute name="role" type="java.lang.String" required="false" rtexprvalue="true"/>
+
+	<c:forEach items="${roles}" var="_role">
+		<c:choose>
+			<c:when test="${_role.id eq role}">
+		 		<option title="${_role.description}" selected="selected">${_role.id}</option>
+			</c:when>
+			<c:otherwise>
+		 		<option title="${_role.description}">${_role.id}</option>
+			</c:otherwise>
+		</c:choose>
+	</c:forEach>
+</jsp:root>

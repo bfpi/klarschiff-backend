@@ -1,0 +1,73 @@
+<jsp:root 
+	xmlns:c="http://java.sun.com/jsp/jstl/core" 
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions" 
+	xmlns:spring="http://www.springframework.org/tags" 
+	xmlns:jsp="http://java.sun.com/JSP/Page" 
+	xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu"
+	xmlns:fx="http://igd.fraunhofer.de/tags/elfunctions" 
+	xmlns:sec="http://www.springframework.org/security/tags"
+	version="2.0"
+	>
+	<jsp:directive.page contentType="text/html;charset=UTF-8"/>
+
+	<!-- CONTENTTITLE -->
+	<div id="root_style_content_title">
+		Anmeldung
+	</div>
+	
+	<!-- CONTENT -->
+	<div id="root_style_content">
+		<c:url value='/resources/j_spring_security_check' var="form_url"/>
+		<form action="${form_url}" method="post">
+			<div>
+			    <label for="j_username" class="${loginError ? 'error' : ''}" style="color:black;font-size:12px;">Benutzername:</label>
+			    <input id="j_username" type='text' name='j_username' />
+			</div>
+			<div>
+			    <label for="j_password" class="${loginError ? 'error' : ''}" style="color:black;font-size:12px;">Passwort:</label>
+			    <input id="j_password" type='password' name='j_password' />
+			</div>
+			<!--<div>
+			    <label for="j_rememberme" class="${loginError ? 'error' : ''}" style="color:black;font-size:12px;">angemeldet bleiben:</label>
+				<input id='j_rememberme' type='checkbox' name='j_rememberme' value="on"/>
+			</div>-->
+			<input id="proceed" type="submit" value="anmelden"/>
+			<c:if test="${accessDeniedError}">
+				<div class="error">Der Zugriff auf die Seite wurde verweigert. Sie haben nicht die entsprechenden Rechte, um diese Seite aufzurufen.</div>
+			</c:if>
+			<c:if test="${loginError}">
+				<div class="error" style="padding-top:10px">Die Anmeldung schlug fehl. Wahrscheinlich haben Sie den Benutzernamen und/oder das Passwort falsch angegeben.</div>
+			</c:if>
+		</form>
+		
+		<c:if test="${fx:showLogins()}">
+	       	<div class="dev" style="margin-top: 20px;">
+				Dieses ist eine Übersicht der Benutzer im lokalem LDAP, welche zum Testen verwendet werden können:
+	       		<table>
+	       			<thead>
+	       				<tr style="font-weight:bold;"><td>Login</td><td>Password</td><td>Gruppen/Rollen</td></tr>
+	       			</thead>
+	       			<tbody>
+	       				<tr><td>u1</td><td>u1</td><td>i1</td></tr>
+	       				<tr><td>u2</td><td>u2</td><td>i2</td></tr>
+	       				<tr><td>u3</td><td>u3</td><td>e1</td></tr>
+	       				<tr><td>u4</td><td>u4</td><td>e2</td></tr>
+	       				<tr><td>u5</td><td>u5</td><td>admin</td></tr>
+	       				<tr><td>u6</td><td>u6</td><td>i1, dispatcher</td></tr>
+	       			</tbody>
+	       		</table>
+	       	</div>
+		</c:if>
+	</div>
+	
+	<!-- HELP -->
+	<div id="root_style_help">
+		<p>
+			Klarschiff ist ein Bürgerbeteiligungsportal, genauer gesagt eine Onlineplattform zum Melden und Bearbeiten von Problemen und Ideen, die sich auf den öffentlichen Raum einer Kommune beziehen.
+		</p>
+		<p>
+            Sie befinden sich im sogenannten Backend von Klarschiff, in dem von Bürgerinnen und Bürgern gemeldete Probleme und Ideen als Vorgänge bearbeitet oder selbst neue Vorgänge erstellen werden können, von denen zuvor beispielsweise via Brief oder Telefon Kenntnis erlangt wurde. Um mit dem Backend arbeiten zu können, müssen Sie einer Bearbeitungsgruppe zugeordnet sein und sich mit Ihrem Benutzernamen und Ihrem Passwort anmelden. 
+		</p>
+	</div>
+
+</jsp:root>

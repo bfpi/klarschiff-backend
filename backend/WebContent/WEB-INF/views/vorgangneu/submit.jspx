@@ -1,0 +1,55 @@
+<jsp:root 
+	xmlns:c="http://java.sun.com/jsp/jstl/core" 
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions" 
+	xmlns:spring="http://www.springframework.org/tags" 
+	xmlns:jsp="http://java.sun.com/JSP/Page" 
+	xmlns:fx="http://igd.fraunhofer.de/tags/elfunctions" 
+	xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu"
+	xmlns:vorgang="urn:jsptagdir:/WEB-INF/tags/vorgang"
+	xmlns:tiles="http://tiles.apache.org/tags-tiles" 
+	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+	xmlns:sec="http://www.springframework.org/security/tags"
+	version="2.0"
+	>
+	<jsp:directive.page contentType="text/html;charset=UTF-8"/>
+
+	<!-- CONTENTTITLE -->
+	<div id="root_style_content_title">
+		Vorgang angelegt
+	</div>
+		
+	<!-- ITEMINFO -->
+	<vorgang:iteminfo vorgang="${cmd.vorgang}"/>
+	
+	<!-- CONTENT -->
+	<div id="root_style_content">
+		Der Vorgang wurde neu angelegt und <vorgang:zustaendigkeit vorgang="${cmd.vorgang}"/> zugeordnet.
+		<div style="margin-top: 30px;">
+			<c:if test="${fx:isCurrentZustaendigForVorgang(cmd.vorgang)}">
+				<c:url value="/vorgang/${cmd.vorgang.id}/uebersicht" var="url"/>
+				<button style="cursor:pointer; margin-right:30px;" onclick="location.href='${url}'">Vorgang anzeigen</button>
+			</c:if>
+
+			<c:url value="/vorgangneu" var="url"/>
+			<button style="cursor:pointer; margin-right:10px;" onclick="location.href='${url}'">weiteren Vorgang neu anlegen</button>
+		
+			<sec:authorize access="hasRole('ROLE_EXTERN')">		
+				<c:url value="/vorgang/delegiert/suchen?neu=true" var="url"/>
+			</sec:authorize>
+			<sec:authorize access="hasRole('ROLE_INTERN') or hasRole('ROLE_ADMIN')">		
+				<c:url value="/vorgang/suchen?neu=true" var="url"/>
+			</sec:authorize>
+			<button style="cursor:pointer; margin-right:10px;" onclick="location.href='${url}'">Vorgänge suchen</button>
+
+
+		</div>
+	</div>
+	
+	<!-- HELP -->
+	<div id="root_style_help">
+		<p>
+            Ihr Vorgang wurde erfolgreich angelegt. Sie können nun den neu angelegten Vorgang anzeigen oder wie gewohnt über das Hauptmenü weiternavigieren.
+		</p>
+	</div>
+
+</jsp:root>

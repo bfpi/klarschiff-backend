@@ -1,0 +1,99 @@
+<jsp:root 
+	xmlns:c="http://java.sun.com/jsp/jstl/core" 
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions" 
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:spring="http://www.springframework.org/tags" 
+	xmlns:jsp="http://java.sun.com/JSP/Page" 
+	xmlns:vorgang="urn:jsptagdir:/WEB-INF/tags/vorgang"
+	xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu"
+	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:tiles="http://tiles.apache.org/tags-tiles" 
+	xmlns:fx="http://igd.fraunhofer.de/tags/elfunctions" 
+	xmlns:map="urn:jsptagdir:/WEB-INF/tags/map"
+	version="2.0"
+	>
+	<jsp:directive.page contentType="text/html;charset=UTF-8"/>
+
+	<!-- CONTENTTITLE -->
+	<div id="root_style_content_title">
+		Vorgänge
+	</div>
+	
+	<!-- TABMENU -->
+	<tiles:importAttribute name="tabmenu_item" ignore="true" toName="tabmenu_item"/>
+	<menu:tabmenuvorgang currentId="${tabmenu_item}"/>
+	
+	<!-- CONTENT -->
+	<div id="root_style_content">
+		<div style="text-align: right;margin-bottom:15px;">
+			<c:url value="/vorgang/suchen" var="url"/>
+			zurück zur <a href="${url}">Suche</a>
+		</div>
+		
+       	<map:multiview
+       		projection="${geoService.mapProjection}"
+       		tmsUrl="${geoService.mapTmsServer}" 
+       		tmsLayers="${geoService.mapTmsServerLayers}" 
+       		maxExtent="${geoService.mapMaxExtent}"
+       		restrictedExtent="${geoService.mapRestrictedExtent}"
+       		resolutions="${geoService.mapResolutions}"
+       		serverResolutions="${geoService.mapServerResolutions}"
+       		vorgaenge="${fx:extractArrayItemFromList(vorgaenge, 0)}"
+       		oviMargin="${geoService.mapOviMargin}" 
+       		cssStyle="height: 500px; width: 100%;"
+       		/>
+	</div>
+
+	
+	<!-- HELP -->
+	<div id="root_style_help">
+		<p>
+            In der <util:help anchor="Karte">Karte</util:help> finden Sie alle Vorgänge Ihrer <util:help anchor="EinfacheVorgangssuche">aktuellen Suche</util:help> als Kartensymbole verortet. Mit Hilfe der Steuerungssymbole in der rechten oberen Ecke des Kartenfensters haben Sie einerseits die Möglichkeit zwischen dem Stadtplan und dem Luftbild als Kartenhintergrund zu wechseln; andererseits können Sie hier zwischen verschiedenen Funktionen zum Navigieren in der Karte wählen. Durch Klick auf das Kartensymbol eines Vorgangs gelangen Sie direkt zur <util:help anchor="bersichtsseitezueinemVorgang">Übersicht des Vorganges</util:help>.
+		</p>
+        <p>
+            Hier erfahren Sie, wie Sie die Ergebnisse Ihrer Vorgangssuche auf der Karte darstellen: <util:help anchor="ErgebnissederVorgangssucheinKartedarstellen">Ergebnisse der Vorgangssuche auf Karte darstellen</util:help>.
+		</p>
+		<p>
+			Legende:
+   			<c:url value="/images/" var="url"/>
+			<table>
+				<tr>
+					<td><img alt="Problem" src="${url}problem_15.png" height="15" width="15" title="Typ: Problem"/></td>
+					<td style="vertical-align:top;">Problem</td>
+					<td width="20px"></td>
+					<td><img alt="gemeldet" src="${url}status_gemeldet_15.png" height="15" width="15"  title="Status: gemeldet"/></td>
+					<td style="vertical-align:top;">gemeldet</td>
+				</tr>
+				<tr>
+					<td><img alt="Idee" src="${url}idee_15.png" height="15" width="15" title="Typ: Idee"/></td>
+					<td style="vertical-align:top;">Idee</td>
+					<td></td>
+					<td><img alt="offen" src="${url}status_offen_15.png" height="15" width="15" title="Status: offen"/></td>
+					<td style="vertical-align:top;">offen</td>
+				</tr>
+				<tr>
+					<td colspan="3"></td>
+					<td><img alt="in Bearbeitung" src="${url}status_inBearbeitung_15.png" height="15" width="15" title="Status: in Bearbeitung"/></td>
+					<td style="vertical-align:top;">in Bearbeitung</td>
+				</tr>
+				<tr>
+					<td colspan="3"></td>
+					<td><img alt="wird nicht bearbeitet/Duplikat" src="${url}status_wirdNichtBearbeitet_15.png" height="15" width="15"  title="Status: wird nicht bearbeitet/Duplikat"/></td>
+					<td style="vertical-align:top;">wird nicht bearbeitet / Duplikat</td>
+				</tr>
+				<tr>
+					<td colspan="3"></td>
+					<td><img alt="abgeschlossen" src="${url}status_abgeschlossen_15.png" height="15" width="15"  title="Status: abgeschlossen"/></td>
+					<td style="vertical-align:top;">abgeschlossen</td>
+				</tr>
+				<tr>
+					<td colspan="3"></td>
+					<td><img alt="gelöscht" src="${url}status_geloescht_15.png" height="15" width="15"  title="Status: gelöscht"/></td>
+					<td style="vertical-align:top;">gelöscht</td>
+				</tr>
+			</table>
+		</p>
+	</div>
+
+</jsp:root>

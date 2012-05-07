@@ -1,0 +1,152 @@
+<jsp:root 
+	xmlns:c="http://java.sun.com/jsp/jstl/core" 
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions" 
+	xmlns:fx="http://igd.fraunhofer.de/tags/elfunctions" 
+	xmlns:spring="http://www.springframework.org/tags" 
+	xmlns:jsp="http://java.sun.com/JSP/Page" 
+	xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu"
+	xmlns:vorgang="urn:jsptagdir:/WEB-INF/tags/vorgang"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:tiles="http://tiles.apache.org/tags-tiles" 
+	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+	version="2.0"
+	>
+	<jsp:directive.page contentType="text/html;charset=UTF-8"/>
+
+	<!-- CONTENTTITLE -->
+	<div id="root_style_content_title">
+		Verlauf zu Vorgang
+	</div>
+	
+	<!-- TABMENU -->
+	<tiles:importAttribute name="tabmenu_item" ignore="true" toName="tabmenu_item"/>
+	<menu:tabmenuvorgang currentId="${tabmenu_item}" vorgangId="${vorgang.id}"/>
+	
+	<!-- ITEMINFO -->
+	<vorgang:iteminfo vorgang="${vorgang}"/>
+	
+	<!-- CONTENT -->
+	<div id="root_style_content">
+		<vorgang:vorgangPrintEmail vorgang="${vorgang}"/>
+		<div class="fieldset">
+			<div class="fieldsettitle">Verlauf</div>
+	  		<c:forEach items="${verlauf}" var="verlaufItem">
+	  			<div class="verlauf">
+	  				<div class="verlaufHeader">
+		       			<span style="margin-right:10px;padding:0px;">${verlaufItem.nutzer}</span>
+		       			<fmt:formatDate value="${verlaufItem.datum}" pattern="dd.MM.yyyy"/><![CDATA[&nbsp;&nbsp;]]>
+		       			<span style="font-size:0.8em; color:#666;"><fmt:formatDate value="${verlaufItem.datum}" pattern="HH:mm"/></span>
+	  				</div>
+	  				
+					<div class="verlaufText" >
+						<c:choose>
+							<c:when test="${verlaufItem.typ=='status'}">
+								Status geändert: ${verlaufItem.wertAlt} → ${verlaufItem.wertNeu}
+							</c:when>
+							<c:when test="${verlaufItem.typ=='statusKommentar'}">
+								<c:choose>
+									<c:when test="${not empty verlaufItem.wertNeu}">Statuskommentar gesetzt: ${fx:toHtml(verlaufItem.wertNeu)}</c:when>
+									<c:otherwise>Statuskommentar gelöscht.</c:otherwise>
+								</c:choose>
+							</c:when>
+							<c:when test="${verlaufItem.typ=='zustaendigkeitAkzeptiert'}">
+								<c:choose>
+									<c:when test="${verlaufItem.wertNeu eq 'akzeptiert'}">Zuständigkeit akzeptiert.</c:when>
+									<c:otherwise>Zuständigkeit zugewiesen.</c:otherwise>
+								</c:choose>
+							</c:when>
+							<c:when test="${verlaufItem.typ=='zustaendigkeit'}">
+								Zuständigkeit geändert: ${verlaufItem.wertAlt} → ${verlaufItem.wertNeu}
+							</c:when>
+							<c:when test="${verlaufItem.typ=='erzeugt'}">
+								Vorgang erzeugt.
+							</c:when>
+							<c:when test="${verlaufItem.typ=='betreffFreigabeStatus'}">
+								Freigabestatus des Betreffs geändert: ${verlaufItem.wertAlt} → ${verlaufItem.wertNeu}
+							</c:when>
+							<c:when test="${verlaufItem.typ=='detailsFreigabeStatus'}">
+								Freigabestatus der Details geändert: ${verlaufItem.wertAlt} → ${verlaufItem.wertNeu}
+							</c:when>
+							<c:when test="${verlaufItem.typ=='fotoFreigabeStatus'}">
+								Freigabestatus des Fotos geändert: ${verlaufItem.wertAlt} → ${verlaufItem.wertNeu}
+							</c:when>
+							<c:when test="${verlaufItem.typ=='typ'}">
+								Typ geändert: ${verlaufItem.wertAlt} → ${verlaufItem.wertNeu}
+							</c:when>
+							<c:when test="${verlaufItem.typ=='kategorie'}">
+								Kategorie geändert: ${verlaufItem.wertAlt} → ${verlaufItem.wertNeu}
+							</c:when>
+							<c:when test="${verlaufItem.typ=='archiv' and verlaufItem.wertNeu=='true'}">
+								Vorgang archiviert.
+							</c:when>
+							<c:when test="${verlaufItem.typ=='archiv' and verlaufItem.wertNeu=='false'}">
+								Vorgang aus dem Archiv wiederhergestellt.
+							</c:when>
+							<c:when test="${verlaufItem.typ=='betreff'}">
+								<c:choose>
+									<c:when test="${not empty verlaufItem.wertNeu}">Betreff geändert in: ${verlaufItem.wertNeu}</c:when>
+									<c:otherwise>Betreff gelöscht.</c:otherwise>
+								</c:choose>
+							</c:when>
+							<c:when test="${verlaufItem.typ=='adresse'}">
+								<c:choose>
+									<c:when test="${not empty verlaufItem.wertNeu}">Adresse geändert in: ${verlaufItem.wertNeu}</c:when>
+									<c:otherwise>Adresse gelöscht.</c:otherwise>
+								</c:choose>
+							</c:when>
+							<c:when test="${verlaufItem.typ=='detail'}">
+								<c:choose>
+									<c:when test="${not empty verlaufItem.wertNeu}">Details geändert in: ${fx:toHtml(verlaufItem.wertNeu)}</c:when>
+									<c:otherwise>Details gelöscht.</c:otherwise>
+								</c:choose>
+							</c:when>
+							<c:when test="${verlaufItem.typ=='delegiertAn'}">
+								<c:choose>
+									<c:when test="${not empty verlaufItem.wertNeu}">Vorgang delegiert an: ${fx:toHtml(verlaufItem.wertNeu)}</c:when>
+									<c:otherwise>Vorgang zurückgewiesen.</c:otherwise>
+								</c:choose>
+							</c:when>
+							<c:when test="${verlaufItem.typ=='prioritaet'}">
+								Priorität geändert in: ${verlaufItem.wertNeu}
+							</c:when>
+							<c:when test="${verlaufItem.typ=='missbrauchsmeldungErzeugt'}">
+								Missbrauchsmeldung erzeugt.
+							</c:when>
+							<c:when test="${verlaufItem.typ=='missbrauchsmeldungBestaetigung'}">
+								Missbrauchsmeldung erzeugt und bestätigt.
+							</c:when>
+							<c:when test="${verlaufItem.typ=='missbrauchsmeldungBearbeitet'}">
+								Missbrauchsmeldung bearbeitet.
+							</c:when>
+							<c:when test="${verlaufItem.typ=='unterstuetzerBestaetigung'}">
+								Unterstützung erzeugt und bestätigt.
+							</c:when>
+							<c:when test="${verlaufItem.typ=='vorgangBestaetigung'}">
+								Vorgang bestätigt.
+							</c:when>
+							
+							<c:otherwise>
+								<div class="dev">
+									Typ: ${verlaufItem.typ}<br/>
+			        				alt: ${verlaufItem.wertAlt}<br/>
+			        				neu: ${verlaufItem.wertNeu}
+								</div>
+							</c:otherwise>
+						</c:choose>
+					</div>
+	  			</div>
+			</c:forEach>
+            <c:if test="${not empty maxPages and not empty verlauf}">
+	            <util:pagination maxPages="${maxPages}" page="${page}" size="${size}"/>
+            </c:if>
+		</div>
+	</div>
+	
+	<!-- HELP -->
+	<div id="root_style_help">
+		<p>
+            Der <util:help anchor="Verlauf">Verlauf</util:help> gibt Ihnen einen Überblick über die verschiedenen Änderungen, die bisher am aktuell ausgewählten Vorgang vorgenommen wurden. Somit können Sie genau nachvollziehen, wer wann welche Änderungen am Vorgang vorgenommen hat.
+		</p>
+	</div>
+
+</jsp:root>

@@ -1,0 +1,234 @@
+<jsp:root 
+	xmlns:c="http://java.sun.com/jsp/jstl/core" 
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions" 
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:spring="http://www.springframework.org/tags" 
+	xmlns:jsp="http://java.sun.com/JSP/Page" 
+	xmlns:vorgang="urn:jsptagdir:/WEB-INF/tags/vorgang"
+	xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu"
+	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+	xmlns:tiles="http://tiles.apache.org/tags-tiles" 
+	xmlns:fx="http://igd.fraunhofer.de/tags/elfunctions" 
+	version="2.0"
+	>
+	<jsp:directive.page contentType="text/html;charset=UTF-8"/>
+
+	<!-- CONTENTTITLE -->
+	<div id="root_style_content_title">
+		Vorgänge
+	</div>
+	
+	<!-- TABMENU -->
+	<tiles:importAttribute name="tabmenu_item" ignore="true" toName="tabmenu_item"/>
+	<menu:tabmenuvorgang currentId="${tabmenu_item}"/>
+	
+	<!-- CONTENT -->
+	<div id="root_style_content">
+
+			<spring:url value="" var="url">
+				<spring:param name="einfacheSuche" value="offene" />
+			</spring:url>
+			<util:button url="${url}" disabled="${cmdvorgangdelegiertsuchen.einfacheSuche == 'offene'}" cssStyle="margin-right:5px;">
+				<util:img url="/images/status_offen_15.png" cssStyle="padding-right:3px;"/>
+				<util:img url="/images/status_inBearbeitung_15.png"/>
+				offene Vorgänge
+			</util:button>
+			
+			<spring:url value="" var="url">
+				<spring:param name="einfacheSuche" value="abgeschlossene" />
+			</spring:url>
+			<util:button url="${url}" disabled="${cmdvorgangdelegiertsuchen.einfacheSuche == 'abgeschlossene'}">
+ 				<util:img url="/images/status_abgeschlossen_15.png" cssStyle="padding-right:3px;"/>
+				<util:img url="/images/status_wirdNichtBearbeitet_15.png"/>
+				abgeschlossene Vorgänge
+			</util:button>
+
+		<c:choose>
+			<c:when test="${not empty vorgaenge}">
+
+		        <table class="resulttable">
+		            <thead>
+		                <tr>
+		                	<util:sortedtableheadercolumn name="#" id="0" currentOrderId="${cmdvorgangdelegiertsuchen.order}" currentOrderDirection="${cmdvorgangdelegiertsuchen.orderDirection}"/>
+		                	<util:sortedtableheadercolumn name="Typ" id="1" currentOrderId="${cmdvorgangdelegiertsuchen.order}" currentOrderDirection="${cmdvorgangdelegiertsuchen.orderDirection}"/>
+		                	<util:sortedtableheadercolumn name="Erstellung" id="2" currentOrderId="${cmdvorgangdelegiertsuchen.order}" currentOrderDirection="${cmdvorgangdelegiertsuchen.orderDirection}"/>
+		                	<util:sortedtableheadercolumn name="Kategorie" id="3" colspan="2" currentOrderId="${cmdvorgangdelegiertsuchen.order}" currentOrderDirection="${cmdvorgangdelegiertsuchen.orderDirection}"/>
+		                	<util:sortedtableheadercolumn name="Status" id="4" currentOrderId="${cmdvorgangdelegiertsuchen.order}" currentOrderDirection="${cmdvorgangdelegiertsuchen.orderDirection}"/>
+		                	<util:sortedtableheadercolumn name="Adresse" id="5" currentOrderId="${cmdvorgangdelegiertsuchen.order}" currentOrderDirection="${cmdvorgangdelegiertsuchen.orderDirection}"/>
+                            <util:sortedtableheadercolumn name="Priorität" id="6" currentOrderId="${cmdvorgangdelegiertsuchen.order}" currentOrderDirection="${cmdvorgangdelegiertsuchen.orderDirection}"/>
+		                </tr>
+		            </thead>
+			        <tbody>
+				  		<c:forEach items="${vorgaenge}" var="_vorgang" varStatus="rowCounter">
+				  			<c:set value="${_vorgang}" var="vorgang"/>
+		 		  			<c:url value="/vorgang/delegiert/${vorgang.id}/uebersicht" var="url"/>
+				        	<tr class="row ${(rowCounter.count%2==0)? 'odd' : 'even'}" onClick="location.href='${url}'" style="cursor:pointer;">
+				        		<td style="text-align: center;">
+									<span class="show-tooltip" title="Vorgangsnummer: ${vorgang.id}">${vorgang.id}</span>
+								</td>
+				        		<td style="text-align: center;">
+				        			<c:url value="/images/${vorgang.typ}_15.png" var="url"/>
+									<img alt="${vorgang.typ.text}" src="${url}" height="15" width="15"  title="Typ: ${vorgang.typ.text}"/>
+								</td>
+				        		<td style="text-align: center;">
+				        			<fmt:formatDate value="${vorgang.datum}" pattern="dd.MM.yyyy"/><![CDATA[&nbsp;&nbsp;]]>
+				        			<span class="time"><fmt:formatDate value="${vorgang.datum}" pattern="HH:mm"/></span>
+								</td>
+				        		<td>
+									${vorgang.kategorie.parent.name}
+								</td>
+				        		<td>
+									${vorgang.kategorie.name}
+								</td>
+				        		<td style="text-align: center;">
+				        			<c:url value="/images/${vorgang.typ}_${vorgang.status}_15.png" var="url"/>
+									<img alt="${vorgang.status}" src="${url}"  title="Status: ${vorgang.status.text}"/>
+								</td>
+								<td style="text-align: center;">
+									${vorgang.adresse}
+								</td>
+                                <td style="text-align: center;">
+									${vorgang.prioritaet}
+								</td>
+				        	</tr>
+						</c:forEach>
+			        </tbody>
+		
+			        <tfoot>
+		                <tr class="footer">
+		                    <td colspan="10">
+		                        <c:if test="${not empty maxPages}">
+		                            <util:pagination maxPages="${maxPages}" page="${cmdvorgangdelegiertsuchen.page}" size="${cmdvorgangdelegiertsuchen.size}"/>
+		                        </c:if>
+		                    </td>
+		                </tr>
+			        </tfoot>
+		        </table>
+				<script type="text/javascript">
+					var max = 12;
+					var min = 8;
+					var fontSize;
+					var width1;
+					var width2;
+					
+					function width(elem) {
+						if (elem.innerWidth) {
+							return elem.innerWidth();
+						} else if (elem.offsetWidth) {
+							return elem.offsetWidth();
+						} else {
+							return 0;
+						}
+					}
+				
+					function getFontSize(elem) {
+						return parseFloat(elem.css('font-size'), 10); 
+					}
+				
+					function setFontSize(elem) {
+						elem.css('font-size', fontSize);
+					}
+						
+					function resize() {
+						fontSize = getFontSize($('table.resulttable'));
+						width1 = width($('div#root_style_content'));
+						width2 = width($('table.resulttable'));
+								
+						while(width1-20 <![CDATA[>]]> width2 <![CDATA[&&]]> fontSize <![CDATA[<]]> max) {
+							fontSize = fontSize + 0.5;
+							setFontSize($('table.resulttable'));
+							width2 = width($('table.resulttable'));
+						}
+						while(width1 <![CDATA[<]]> width2 <![CDATA[&&]]> fontSize <![CDATA[>]]> min) {
+							fontSize = fontSize - 0.5;
+							setFontSize($('table.resulttable'));
+							width2 = width($('table.resulttable'));
+						}
+					}
+				
+					$(window).bind('load', resize());
+					window.onresize = resize;
+				</script>
+
+		        <div>
+			        Suchergebnis 
+			        <c:url value="/images/csv.png" var="img"/>
+			        <c:url value="/vorgang/delegiert/suchen/vorgaenge.xls" var="url"/>
+			        <util:button cssStyle="margin-right:10px;" url="${url}" img="${img}">als XLS exportieren</util:button>
+			       
+			       	<c:url value="/images/freigabeStatus_extern.png" var="img"/>
+			        <c:url value="/vorgang/delegiert/suchen/karte" var="url"/>
+			        <util:button cssStyle="margin-right:10px;" url="${url}" img="${img}">auf Karte anzeigen</util:button>
+
+					<c:if test="${cmdvorgangdelegiertsuchen.einfacheSuche=='offene'}">
+				        <c:url value="/images/rssfeed.png" var="img"/>
+				        <c:url value="/xmlfeeds/feedDelegiert/${fx:getCurrentUserLoginEncrypt()}" var="url"/>
+				        <util:button cssStyle="margin-right:10px;" url="${url}" img="${img}" openInNewWindow="true">als RSS-Feed abonnieren</util:button>
+					</c:if>
+		        </div>
+
+			</c:when>
+			<c:otherwise>
+				<div style="margin:20px 0px 0px 10px;">Die Suche ergab kein Resultat.</div>
+
+				<c:if test="${cmdvorgangdelegiertsuchen.einfacheSuche=='offene'}">
+					<div style="margin-top:10px;">
+				        <c:url value="/images/rssfeed.png" var="img"/>
+				        <c:url value="/xmlfeeds/feedDelegiert/${fx:getCurrentUserLoginEncrypt()}" var="url"/>
+				        <util:button cssStyle="margin-right:10px;" url="${url}" img="${img}" openInNewWindow="true">als RSS-Feed abonnieren</util:button>
+					</div>
+				</c:if>
+			</c:otherwise>
+		</c:choose>
+        
+	</div>
+
+	
+	<!-- HELP -->
+	<div id="root_style_help">
+		<p>
+			Sie haben auf dieser Seite die Möglichkeit nach Vorgängen zu suchen, wofür eine <util:help anchor="EinfacheVorgangssuche">einfache</util:help> oder eine <util:help anchor="ErweiterteVorgangssuche">erweiterte Suche</util:help> zur Verfügung steht: Die einfache Suche filtert alle Vorgänge automatisch entweder nach offenen oder abgeschlossenen Vorgängen, wohingegen Ihnen die erweiterte Suche diverse einstellbare Suchfilter für ein detailliertes Suchen nach Vorgängen zur Verfügung stellt. In der sortierbaren Tabelle oben finden Sie dann Ihre Suchresultate vor. Durch Klicken auf eine Tabellenzeile mit einem Vorgang wechselt die Ansicht zur <util:help anchor="bersichtsseitezueinemVorgang">Übersicht</util:help> dieses Vorgangs.
+		</p>
+		<p>
+			Legende:
+   			<c:url value="/images/" var="url"/>
+			<table>
+				<tr>
+					<td><img alt="Problem" src="${url}problem_15.png" height="15" width="15" title="Typ: Problem"/></td>
+					<td style="vertical-align:top;">Problem</td>
+					<td width="20px"></td>
+					<td><img alt="gemeldet" src="${url}status_gemeldet_15.png" height="15" width="15"  title="Status: gemeldet"/></td>
+					<td style="vertical-align:top;">gemeldet</td>
+				</tr>
+				<tr>
+					<td><img alt="Idee" src="${url}idee_15.png" height="15" width="15" title="Typ: Idee"/></td>
+					<td style="vertical-align:top;">Idee</td>
+					<td></td>
+					<td><img alt="offen" src="${url}status_offen_15.png" height="15" width="15" title="Status: offen"/></td>
+					<td style="vertical-align:top;">offen</td>
+				</tr>
+				<tr>
+					<td colspan="3"></td>
+					<td><img alt="in Bearbeitung" src="${url}status_inBearbeitung_15.png" height="15" width="15" title="Status: in Bearbeitung"/></td>
+					<td style="vertical-align:top;">in Bearbeitung</td>
+				</tr>
+				<tr>
+					<td colspan="3"></td>
+					<td><img alt="wird nicht bearbeitet/Duplikat" src="${url}status_wirdNichtBearbeitet_15.png" height="15" width="15"  title="Status: wird nicht bearbeitet/Duplikat"/></td>
+					<td style="vertical-align:top;">wird nicht bearbeitet / Duplikat</td>
+				</tr>
+				<tr>
+					<td colspan="3"></td>
+					<td><img alt="abgeschlossen" src="${url}status_abgeschlossen_15.png" height="15" width="15"  title="Status: abgeschlossen"/></td>
+					<td style="vertical-align:top;">abgeschlossen</td>
+				</tr>
+				<tr>
+					<td colspan="3"></td>
+					<td><img alt="gelöscht" src="${url}status_geloescht_15.png" height="15" width="15"  title="Status: gelöscht"/></td>
+					<td style="vertical-align:top;">gelöscht</td>
+				</tr>
+			</table>
+		</p>
+	</div>
+
+</jsp:root>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<jsp:root 
+	xmlns:c="http://java.sun.com/jsp/jstl/core" 
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions" 
+	xmlns:jsp="http://java.sun.com/JSP/Page" 
+	xmlns:spring="http://www.springframework.org/tags" 
+	version="2.0"
+	>
+	<jsp:output omit-xml-declaration="yes" />
+	
+	<jsp:directive.attribute name="id" type="java.lang.String" required="true" rtexprvalue="true" description="die ID des Menüpunktes" />
+	<jsp:directive.attribute name="currentId" type="java.lang.String" required="false" rtexprvalue="true" description="die ID des gerade aktuellen Menüpunktes" />
+	<jsp:directive.attribute name="url" type="java.lang.String" required="false" rtexprvalue="true" description="die URL für den Menüpunkt" />
+	<jsp:directive.attribute name="label" type="java.lang.String" required="true" rtexprvalue="true" description="der Text für den Menüpunkt" />
+	<jsp:directive.attribute name="cssClass" type="java.lang.String" required="false" rtexprvalue="true" description="weitere CSS-Klassen" />
+	<jsp:directive.attribute name="render" type="java.lang.Boolean" required="false" rtexprvalue="true" description="Indicate if the contents of this tag and all enclosed tags should be rendered (default 'true')" />
+
+	<c:if test="${empty render or render}">
+		
+		<c:set value="root_style_menu_item" var="css"/>
+		<c:if test="${id==currentId}"> <c:set value="${css} active" var="css"/> </c:if>
+		<c:if test="${not empty cssClass}"> <c:set value="${css} ${cssClass}" var="css"/> </c:if>
+		<c:if test="${not empty url}"> <c:set value="${css} link" var="css"/> </c:if>
+
+		<li class="${css}">
+			<c:choose>
+				<c:when test="${not empty url}">
+					<c:url value="${url}" var="url"/>
+				 	<a href="${url}" title="${fn:escapeXml(label)}">
+				 		<c:out value="${label}"/>
+				 	</a>
+				</c:when>
+				<c:otherwise>
+					<span><c:out value="${label}"/></span>
+				</c:otherwise>
+			</c:choose>
+		</li>
+	</c:if>
+</jsp:root>

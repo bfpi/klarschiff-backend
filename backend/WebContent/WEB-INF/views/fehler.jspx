@@ -1,0 +1,80 @@
+<jsp:root 
+	xmlns:c="http://java.sun.com/jsp/jstl/core" 
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions" 
+	xmlns:spring="http://www.springframework.org/tags" 
+	xmlns:jsp="http://java.sun.com/JSP/Page" 
+	xmlns:tiles="http://tiles.apache.org/tags-tiles" 
+	xmlns:fx="http://igd.fraunhofer.de/tags/elfunctions" 
+	version="2.0"
+	>
+	<jsp:directive.page contentType="text/html;charset=UTF-8"/>
+
+	<tiles:importAttribute name="exception_type" ignore="true" toName="exception_type"/>
+
+	<!-- CONTENTTITLE -->
+	<div id="root_style_content_title">
+		Fehler
+	</div>
+
+	<c:if test="${empty exceptionId}">
+		<c:set value="${fx:processException(exception)}" var="exeptionMap"/>
+		<c:set value="${exeptionMap['exceptionId']}" var="exceptionId"/>
+		<c:set value="${exeptionMap['exceptionText']}" var="exceptionText"/>
+		<c:set value="${exeptionMap['bugTrackingUrl']}" var="bugTrackingUrl"/>
+		<c:set value="${exeptionMap['showFehlerDetails']}" var="showFehlerDetails"/>
+	</c:if>
+
+
+	<div id="root_style_content">
+		<div class="fieldset">
+			<div class="fieldsettitle">Fehler</div>
+			
+			<div style="float: left; padding-right:20px;">
+				<c:url value="/images/fehler.jpg" var="url"/>
+				<img alt="" src="${url}" style="border: 1px solid #aaaaaa;"/>
+			</div>
+			
+			<div style="height: 180px; padding-top: 10px;">
+				<p>
+					Es ist ein Fehler aufgetreten!
+				</p>
+				<p>
+					Dies sollte eigentlich nicht passieren.
+				</p>
+				<p>
+					Fehlercode: ${exceptionId}
+				</p>
+				<p style="padding-top:20px;">
+					Sie können Fehler unter der nachfolgenden URL melden. Hierfür benötigen Sie gültige Zugangsdaten.
+					<br/>
+					<a href="${bugTrackingUrl}" target="_blank">${bugTrackingUrl}</a>
+				</p>
+			</div>
+		</div>
+
+		<c:if test="${showFehlerDetails}">
+			<div class="fieldset">
+				<div class="fieldsettitle">Details</div>
+
+				<div class="subtitle">Typ</div>
+				<c:out value="${exception_type}" />
+
+			    <c:if test="${not empty exception}">
+					<div class="subtitle">Message</div>
+					<c:out value="${exception.localizedMessage}" />
+					
+					<div class="subtitle">Stacktrace</div>
+					<c:forEach items="${exception.stackTrace}" var="trace">
+						<p><c:out value="${trace}" /></p>
+					</c:forEach>
+				</c:if>
+
+			    <c:if test="${not empty exceptionText}">
+					<div class="subtitle">Fehlermeldung</div>
+					<p>${fx:whitespaceToHtml(fx:toHtml(exceptionText))}</p>
+				</c:if>
+
+			</div>
+		</c:if>
+	</div>
+</jsp:root>

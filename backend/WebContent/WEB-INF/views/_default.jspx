@@ -1,0 +1,77 @@
+<html 
+	xmlns:jsp="http://java.sun.com/JSP/Page" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core" 
+	xmlns:tiles="http://tiles.apache.org/tags-tiles" 
+	xmlns:spring="http://www.springframework.org/tags" 
+	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+	xmlns:fx="http://igd.fraunhofer.de/tags/elfunctions" 
+>
+	<jsp:directive.page contentType="text/html;charset=UTF-8" />  
+	<jsp:output omit-xml-declaration="true" />	
+	<jsp:output doctype-root-element="html" doctype-system="about:legacy-compat"/>
+	
+	<jsp:directive.page pageEncoding="UTF-8" /> 
+
+	<tiles:importAttribute name="menu_item" ignore="true" toName="menu_item"/>
+	<tiles:importAttribute name="tabmenu_item" ignore="true" toName="tabmenu_item"/>
+	<tiles:importAttribute name="exception_type" ignore="true" toName="exception_type"/>
+			
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=8" />	
+
+		<!-- Titel -->
+		<title>Klarschiff – Backend</title>
+		
+		<!-- Style -->
+		<c:url value="/styles/styles.css" var="url"/>
+		<link rel="stylesheet" type="text/css" href="${url}"> <!-- styles.css --> </link>
+
+		<c:url value="/script/jquery/jquery-1.5.js" var="url"/>
+		<script src="${url}" type="text/javascript"><!-- //jQuery --></script>
+
+		<c:url value="/script/jquery/jquery-cookie.js" var="url"/>
+		<script src="${url}" type="text/javascript"><!-- //jQuery Cookie--></script>
+
+		<c:url value="/script/dropDownPanel/dropDownPanel.js" var="url"/>
+		<script src="${url}" type="text/javascript"><!-- //dropDownPanel --></script>
+
+		<c:url value="/script/iframeDialog/iframeDialog.js" var="url"/>
+		<script src="${url}" type="text/javascript"><!-- //iframeDialog --></script>
+
+	</head>
+	
+	<body>
+	<table width="100%"><tr><td align="center">
+	    <div id="root_style_page" style="text-align:left">
+	    
+	    	<!-- HEADER -->
+			<div id="root_style_header">
+                DEMO
+            </div>
+			
+			<div id="root_style_midle">
+				
+				<!-- MENU -->
+				<div id="root_style_menu">
+					<tiles:insertAttribute name="menu" ignore="false">
+						<tiles:putAttribute name="exception_type" value="${exception_type}"/>
+						<tiles:putAttribute name="menu_item" value="${menu_item}"/>
+					</tiles:insertAttribute>    
+				</div>
+				
+				<!-- MIDDLE (CONTENT) -->
+				<div id="root_style_midle_right">
+	    			<tiles:insertAttribute name="body">
+						<tiles:putAttribute name="exception_type" value="${exception_type}"/>
+						<tiles:putAttribute name="tabmenu_item" value="${tabmenu_item}"/>
+					</tiles:insertAttribute>
+				</div>
+			</div>
+			
+			<!-- FOOTER -->
+   			<tiles:insertTemplate template="/WEB-INF/views/_footer.jspx"/>
+		</div>
+	</td></tr></table>
+	</body>
+</html>

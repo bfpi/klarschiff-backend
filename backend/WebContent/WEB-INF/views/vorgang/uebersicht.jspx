@@ -1,0 +1,269 @@
+<jsp:root 
+	xmlns:c="http://java.sun.com/jsp/jstl/core" 
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions" 
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:spring="http://www.springframework.org/tags" 
+	xmlns:jsp="http://java.sun.com/JSP/Page" 
+	xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu"
+	xmlns:vorgang="urn:jsptagdir:/WEB-INF/tags/vorgang"
+	xmlns:map="urn:jsptagdir:/WEB-INF/tags/map"
+	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+	xmlns:foto="urn:jsptagdir:/WEB-INF/tags/foto"
+	xmlns:tiles="http://tiles.apache.org/tags-tiles" 
+	xmlns:fx="http://igd.fraunhofer.de/tags/elfunctions" 
+	version="2.0"
+	>
+	<jsp:directive.page contentType="text/html;charset=UTF-8"/>
+
+	<!-- CONTENTTITLE -->
+	<div id="root_style_content_title">
+		Vorgangsübersicht
+	</div>
+	
+	<!-- TABMENU -->
+	<tiles:importAttribute name="tabmenu_item" ignore="true" toName="tabmenu_item"/>
+	<menu:tabmenuvorgang currentId="${tabmenu_item}" vorgangId="${vorgang.id}"/>
+	
+	<!-- ITEMINFO -->
+	<vorgang:iteminfo vorgang="${vorgang}"/>
+	
+	<!-- CONTENT -->
+	<div id="root_style_content">
+	
+		<vorgang:vorgangPrintEmail vorgang="${vorgang}"/>
+		
+		<!-- Vorganginfos -->
+		<div class="fieldset">
+			<div class="fieldsettitle">Informationen über Vorgang</div>
+			
+			<table class="result">
+				<tr>
+					<td class="label">Typ</td>
+					<td class="value">
+						<div class="result">
+							<c:url value="/images/${vorgang.typ}_15.png" var="url"/>
+							<img alt="${vorgang.typ.text}" src="${url}" height="15" width="15" />
+							<![CDATA[&nbsp;&nbsp;]]>
+							${vorgang.typ.text}
+						</div>
+					</td>
+				</tr>
+									
+				<tr>
+					<td class="label">Hauptkategorie</td>
+					<td class="value">
+						<div class="result">
+							${vorgang.kategorie.parent.name}
+						</div>
+					</td>
+					<td class="label" style="width:60px;">Unterkategorie</td>					
+					<td class="value">		
+						<div class="result" style="width:350px">
+							${vorgang.kategorie.name}
+						</div>
+					</td>					
+				</tr>			
+	
+				<c:if test="${not empty vorgang.betreff}">
+				<tr>
+					<td class="label">Betreff</td>									
+					<td colspan="3">
+						<util:freigabestatus status="${vorgang.betreffFreigabeStatus}" cssStyle="float:left;"/>					
+						<div class="result" style="width:643px;margin-left:20px;">						
+						${vorgang.betreff}
+						</div>						
+					</td>								
+				</tr></c:if>
+				<c:if test="${not empty vorgang.details}">
+				<tr>
+					<td class="label">Details</td>					
+					<td colspan="3">
+						<util:freigabestatus status="${vorgang.detailsFreigabeStatus}" cssStyle="float:left;"/>					
+						<div class="result" style="width:643px;margin-left:20px;">						
+						${fx:toHtml(vorgang.details)}
+						</div>						
+					</td> 						
+				</tr></c:if>
+				<c:if test="${not empty vorgang.adresse}">
+	  			 <tr>
+					<td class="label">Adresse</td>
+						<td>
+						<div class="result"> 
+						${vorgang.adresse}
+						</div>
+					</td>
+				</tr></c:if>
+				<tr>
+					<td class="label">Erstellung</td>
+					<td>
+						<div class="result">
+							<fmt:formatDate value="${vorgang.datum}" pattern="dd.MM.yyyy HH:mm"/>
+						</div>
+					</td>
+					<c:if test="${not empty vorgang.autorEmail}">
+						<td class="label" style="width:60px">Autor</td>
+						<td>
+							<div class="result" style="width:350px">
+								${vorgang.autorEmail}
+							</div>
+						</td>
+					</c:if>
+				</tr>
+			</table>
+		</div>
+
+		<!-- Status -->
+		<div class="fieldset">
+			<div class="fieldsettitle">Status</div>
+			<table style="margin-top: -3px;" class="result">
+				<tr>
+					<td valign="top">
+	        			<c:url value="/images/${vorgang.typ}_${vorgang.status}_15.png" var="url"/>
+						<img alt="${vorgang.status}" src="${url}"  title="Typ: ${vorgang.typ.text}; Status: ${vorgang.status.text}"/>
+					</td>
+					<td valign="top">
+						${fx:toHtml(vorgang.status.text)}
+					</td>
+					<c:if test="${vorgang.archiviert}">
+						<td valign="top">
+							(archiviert)
+						</td>
+					</c:if>
+					<c:if test="${not empty vorgang.statusKommentar}">
+						<td valign="top" style="padding-left: 20px;" class="label">
+							Kommentar
+						</td>
+						<td valign="top">
+							<div class="result" style="width:350px;">${fx:toHtml(vorgang.statusKommentar)}</div>
+						</td>
+					</c:if>
+				</tr>
+			</table>
+		</div>
+		
+		<!-- Zuständigkeit, Priorität, Unterstützer, Missbrauchsmeldungen -->
+		<table width="100%" cellpadding="0" cellspacing="0">
+			<tr>
+				<td width="25%">
+					<div class="fieldset" style="height:30px;">
+						<div class="fieldsettitle">Zuständigkeit</div>
+						<vorgang:zustaendigkeit vorgang="${vorgang}"/>
+					</div>
+				</td>
+				<td width="25%" style="padding-left:10px;">
+					<div class="fieldset" style="height:30px;">
+						<div class="fieldsettitle">Priorität</div>
+							${vorgang.prioritaet.text}
+					</div>
+				</td>
+				<td width="25%" style="padding-left:10px;">
+					<c:if test="${unterstuetzer>0}">
+						<div class="fieldset" style="height:30px;">
+							<div class="fieldsettitle">Unterstützer</div>
+							${unterstuetzer}
+						</div>
+					</c:if>
+				</td>
+				<td width="25%" style="padding-left:10px;">
+					<c:if test="${missbrauch>0}">
+						<div class="fieldset" style="height:30px;">
+							<div class="fieldsettitle">Missbrauchsmeldungen</div>
+							${missbrauch}
+						</div>
+					</c:if>
+				</td>
+			</tr>
+		</table>
+	
+		<!-- Kommentare -->
+		<c:if test="${not empty kommentare}">
+			<div class="fieldset">
+				<div class="fieldsettitle">interne Kommentare</div>
+					
+		  		<c:forEach items="${kommentare}" var="kommentar" varStatus="s">
+		  			<div class="kommentar ${(s.index%2==0) ? 'odd' : 'even'}">
+		  				<div class="kommentarHeader">
+		  					<span style="margin-right:10px;padding:0px;">${kommentar.nutzer}</span>
+			       			<fmt:formatDate value="${kommentar.datum}" pattern="dd.MM.yyyy"/><![CDATA[&nbsp;&nbsp;]]>
+			       			<span style="font-size:0.8em; color:#666;"><fmt:formatDate value="${kommentar.datum}" pattern="HH:mm"/></span>
+		  				</div>
+						<div class="kommentarText" >
+			        		${fx:toHtml(kommentar.text)}
+						</div>	
+		  			</div>
+				</c:forEach>
+	            <c:if test="${not empty maxPages and not empty kommentare}">
+		            <util:pagination maxPages="${maxPages}" page="${page}" size="${size}"/>
+		            <br/>
+	            </c:if>
+			</div>
+		</c:if>
+	
+		<!-- Karte, Foto -->	
+		<table width="100%" border="0" cellpadding="0" cellspacing="0">
+			<tr>
+				<td width="50%" style="vertical-align:top;">
+					<div class="fieldset" style="height:220px;">
+						<div class="fieldsettitle">Karte</div>
+	        			<c:url value="/vorgang/${vorgang.id}/karte" var="url"/>
+ 			        	<map:thumb 
+			        		projection="${geoService.mapProjection}"
+			        		tmsUrl="${geoService.mapTmsServer}" 
+			        		tmsLayers="${geoService.mapTmsServerLayers}" 
+			        		maxExtent="${geoService.mapMaxExtent}"
+				       		restrictedExtent="${geoService.mapRestrictedExtent}"
+				       		resolutions="${geoService.mapResolutions}"
+			        		serverResolutions="${geoService.mapServerResolutions}"
+			        		ovi="${vorgang.oviWkt}"
+			        		oviMargin="${geoService.mapOviMargin/4}"
+			        		cssStyle="height: 200px; width: 100%;"
+			        		onClick="${url}"
+			        		initOpenLayers="false"
+			        		title="Klicken Sie für eine größere Ansicht auf die Karte."
+ 			        		/>  
+					</div>				
+				</td>
+				<td width="50%" style="vertical-align:top;padding-left:10px;">
+					<c:if test="${not empty vorgang.fotoNormalJpg and vorgang.fotoFreigabeStatus!='geloescht'}">
+						<div class="fieldset" style="height:220px;">
+							<div class="fieldsettitle">Foto</div>
+							<table>
+								<tr>
+									<td title="Klicken Sie zum Bearbeiten auf das Foto.">
+										<c:url value="/vorgang/${vorgang.id}/foto" var="url"/>
+										<foto:foto vorgang="${vorgang}" typ="thumb" onclick="location.href='${url}'"/>
+									</td>
+									<td valign="top">
+										<c:url value="/images/freigabeStatus_${vorgang.fotoFreigabeStatus}.png" var="url"/>
+										<img alt="" src="${url}"  title="Freigabestatus für Foto: ${vorgang.fotoFreigabeStatus}"/>						
+									</td>
+								</tr>
+							</table>
+						</div>
+					</c:if>						
+				</td>
+			</tr>
+		</table>
+		<script type="text/javascript">
+			initOpenLayers();
+		</script>
+			
+	</div>
+		
+	<!-- HELP -->
+	<div id="root_style_help">
+		<p>
+            Auf dieser Seite finden Sie eine <util:help anchor="bersichtsseitezueinemVorgang">Übersicht</util:help> des aktuell ausgewählten Vorgangs.
+		</p>
+		<p>
+            Über die Menüreiter oben auf dieser Seite haben Sie die Möglichkeit weitere Informationen über den Vorgang anzuzeigen oder den Vorgang zu <util:help anchor="Vorgangsdatenbearbeiten">bearbeiten</util:help>. Der Menüreiter „Suche“ führt Sie zur <util:help anchor="EinfacheVorgangssuche">letzten ausgeführten Suche</util:help> nach Vorgängen zurück.
+		</p>
+		<p>
+            Die <util:help anchor="Vorgangskurzinformationen">Informationsleiste</util:help> unterhalb der Menüreiter zeigt Ihnen in jeder Ansicht die wichtigsten Informationen zum aktuell ausgewählten Vorgang an. Somit verlieren Sie nie die Übersicht und wissen immer, welchen Vorgang Sie aktuell bearbeiten.
+		</p>
+		<p>
+            Mittels der drei Buttons rechts unterhalb der Informationsleiste haben Sie jederzeit die Möglichkeit den aktuell ausgewählten <util:help anchor="Vorgangweiterleiten">Vorgang per E-Mail</util:help> (über ein Formular oder über Ihr Standard-E-Mail-Programm) zu versenden oder die Vorgangsinformationen mit Hilfe einer speziellen Darstellung zu <util:help anchor="Vorgangdrucken">drucken</util:help>.
+		</p>				 
+	</div>
+
+</jsp:root>

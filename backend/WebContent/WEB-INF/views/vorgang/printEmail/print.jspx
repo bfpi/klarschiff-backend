@@ -1,0 +1,184 @@
+<jsp:root 
+	xmlns:c="http://java.sun.com/jsp/jstl/core" 
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions" 
+	xmlns:spring="http://www.springframework.org/tags" 
+	xmlns:jsp="http://java.sun.com/JSP/Page" 
+	xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu"
+	xmlns:vorgang="urn:jsptagdir:/WEB-INF/tags/vorgang"
+	xmlns:map="urn:jsptagdir:/WEB-INF/tags/map"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:foto="urn:jsptagdir:/WEB-INF/tags/foto"
+	xmlns:tiles="http://tiles.apache.org/tags-tiles" 
+	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:fx="http://igd.fraunhofer.de/tags/elfunctions" 
+	version="2.0"
+	>
+	<jsp:directive.page contentType="text/html;charset=UTF-8"/>
+
+	<!-- CONTENTTITLE -->
+	<div id="root_style_content_title" class="noViewOnPrint">
+		Vorgang drucken
+	</div>
+
+	<!-- ITEMINFO -->
+	<vorgang:iteminfo vorgang="${vorgang}" cssClass="noViewOnPrint"/>
+
+	<!-- CONTENT -->
+	<div id="root_style_content">
+
+		<script language="JavaScript" type="text/javascript">
+			function print_me() {
+			window.print();
+			window.close();
+			}
+		</script>
+	
+
+		<div class="printButtons">
+			<button onclick="javascript:print_me();">Drucken</button><![CDATA[&nbsp;]]>
+			<button onclick="javascript:window.close();">Abbrechen</button>
+		</div>
+
+<!-- Vorgangdaten -->
+		<div class="printTitle">Informationen über Vorgang</div>	
+		<table class="result" border="0">
+			<tr>
+				<td class="label">Typ</td>
+				<td class="value"><div class="result">${vorgang.typ.text}</div></td>
+				<td class="label">Nummer</td>
+				<td class="value"><div class="result">${vorgang.id}</div></td>
+			</tr>				
+			<tr>
+				<td class="label">Hauptkategorie</td>
+				<td class="value"><div class="result">${vorgang.kategorie.parent.name}</div></td>
+				<td class="label">Unterkategorie</td>					
+				<td class="value"><div class="result">${vorgang.kategorie.name}</div></td>
+			</tr>			
+ 
+			<c:if test="${not empty vorgang.betreff}">
+				<tr>
+					<td class="label">Betreff</td>									
+					<td class="value"><div class="result">${vorgang.betreff}</div></td>						
+					<td class="label" colspan="2">Freigabestatus: ${vorgang.betreffFreigabeStatus}</td>	
+				</tr>
+			</c:if>
+			
+			<c:if test="${not empty vorgang.details}">
+				<tr>
+					<td class="label">Details</td>									
+					<td class="value"><div class="result">${fx:toHtml(vorgang.details)}</div></td>		
+					<td class="label" colspan="2">Freigabestatus: ${vorgang.detailsFreigabeStatus}</td>	
+				</tr>
+			</c:if>
+            
+			<c:if test="${not empty vorgang.adresse}">
+            <tr>
+                <td class="label">Adresse</td>
+                <td><div class="result"> ${vorgang.adresse}</div></td>
+			</tr>
+            </c:if>
+ 
+			<tr>
+				<td class="label">Erstellung</td>									
+				<td class="value"><div class="result"><fmt:formatDate value="${vorgang.datum}" pattern="dd.MM.yyyy HH:mm"/></div></td>	
+
+				<c:if test="${not empty vorgang.autorEmail}">
+					<td class="label">Autor</td>									
+					<td class="value"><div class="result">${vorgang.autorEmail}</div></td>	
+				</c:if>
+			</tr>
+
+			<tr>
+				<td class="label">Status</td>
+				<td class="value"><div class="result">${vorgang.status.text}</div></td>	
+				<c:if test="${not empty vorgang.statusKommentar}">
+					<td class="label">Kommentar</td>									
+					<td class="value"><div class="result">${fx:toHtml(vorgang.statusKommentar)}</div></td>	
+				</c:if>
+			</tr>
+			<tr>
+				<td class="label">Zuständigkeit</td>									
+				<td class="value"><div class="result">${vorgang.zustaendigkeit} (${vorgang.zustaendigkeitStatus})</div></td>	
+				<c:if test="${not empty vorgang.delegiertAn}">
+					<td class="label">Delegiert an</td>
+					<td class="value"><div class="result">${vorgang.delegiertAn}</div></td>	
+				</c:if>
+			</tr>
+
+			<c:if test="${not empty vorgang.fotoNormalJpg and vorgang.fotoFreigabeStatus!='geloescht'}">
+				<tr>
+					<td class="label">Foto</td>									
+					<td class="value" colspan="10">
+						<table style="margin-bottom:10px;">
+							<tr>
+								<td class="value">
+						<c:url value="/vorgang/${vorgang.id}/foto" var="url"/>
+						<foto:foto vorgang="${vorgang}" typ="normal"/>
+								</td>
+								<td class="label">										
+									Freigabestatus: ${vorgang.fotoFreigabeStatus}
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</c:if>						
+
+			<tr>
+				<td class="label">Karte</td>									
+				<td class="value" colspan="10">
+		        	<map:thumb
+		        		projection="${geoService.mapProjection}"
+		        		tmsUrl="${geoService.mapTmsServer}" 
+		        		tmsLayers="${geoService.mapTmsServerLayers}" 
+		        		maxExtent="${geoService.mapMaxExtent}"
+			       		restrictedExtent="${geoService.mapRestrictedExtent}"
+			       		resolutions="${geoService.mapResolutions}"
+						serverResolutions="${geoService.mapServerResolutions}"
+		        		ovi="${vorgang.oviWkt}"
+		        		oviMargin="${geoService.mapOviMargin/4}"
+		        		cssStyle="height: 200px; width: 100%;"
+		        		/>
+				</td>	
+			</tr>
+										
+		</table>
+
+
+<!-- Kommentare -->
+		<c:if test="${not empty vorgang.kommentare}">
+			<div class="printTitle">interne Kommentare</div>
+	  		<c:forEach items="${vorgang.kommentare}" var="kommentar">
+	  			<div class="verlauf">
+	  				<div class="verlaufHeader">
+	  					<span style="margin-right:10px;padding:0px;">${kommentar.nutzer}</span>
+		       			<fmt:formatDate value="${kommentar.datum}" pattern="dd.MM.yyyy"/><![CDATA[&nbsp;&nbsp;]]>
+		       			<span style="font-size:0.8em; color:#666;"><fmt:formatDate value="${kommentar.datum}" pattern="HH:mm"/></span>
+	  				</div>
+					<div class="verlaufText" >
+		        		${fx:toHtml(kommentar.text)} 
+					</div>	
+	  			</div>
+			</c:forEach>
+		</c:if>
+
+
+<!-- Missbrauchsmeldungen -->			
+		<c:if test="${not empty missbrauchsmeldungen}">
+			<div class="printTitle"><b>Missbrauchsmeldungen</b></div>
+			<c:forEach items="${missbrauchsmeldungen}" var="missbrauchsmeldung">
+				<div class="verlauf">
+ 					<div class="verlaufHeader">
+       					<fmt:formatDate value="${missbrauchsmeldung.datum}" pattern="dd.MM.yyyy"/>
+       					${(empty missbrauchsmeldung.datumAbarbeitung) ? '(offen)' : ''}
+ 					</div> 				
+					<div class="verlaufText" >
+        				${fx:toHtml(missbrauchsmeldung.text)}
+					</div>
+ 					</div>
+			</c:forEach>				
+		</c:if>
+
+	</div>	
+</jsp:root>

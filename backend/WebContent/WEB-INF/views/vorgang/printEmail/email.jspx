@@ -1,0 +1,77 @@
+<jsp:root 
+	xmlns:c="http://java.sun.com/jsp/jstl/core" 
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions" 
+	xmlns:spring="http://www.springframework.org/tags" 
+	xmlns:jsp="http://java.sun.com/JSP/Page" 
+	xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu"
+	xmlns:vorgang="urn:jsptagdir:/WEB-INF/tags/vorgang"
+	xmlns:foto="urn:jsptagdir:/WEB-INF/tags/foto"
+	xmlns:tiles="http://tiles.apache.org/tags-tiles" 
+	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+	xmlns:form="http://www.springframework.org/tags/form"
+	version="2.0"
+	>
+	<jsp:directive.page contentType="text/html;charset=UTF-8"/>
+
+	<c:set value="${cmd.vorgang}" var="vorgang"/>
+
+	<!-- CONTENTTITLE -->
+	<div id="root_style_content_title">
+		Vorgang als E-Mail versenden
+	</div>
+
+	<!-- ITEMINFO -->
+	<vorgang:iteminfo vorgang="${vorgang}"/>
+
+	<!-- CONTENT -->
+	<div id="root_style_content">
+		<div style="margin-bottom: 20px;">
+			Sie können hier die Daten des aktuellen Vorgangs als E-Mail versenden. Geben Sie hierfür bitte eine gültige E-Mail-Adresse und einen Text an, welcher der E-Mail beigefügt wird.
+		</div>
+
+		<form:form method="POST" modelAttribute="cmd">
+		
+	        <div>
+	        	<form:label path="fromName" cssErrorClass="error">Absender</form:label>
+	            <form:input path="fromName" cssClass="inputtext" cssStyle="width:370px;margin-left:20px" disabled="true"/>
+	        </div>
+
+	        <div>
+	        	<form:label path="fromEmail" cssErrorClass="error">Absenderadresse</form:label>
+	            <form:input path="fromEmail" cssClass="inputtext" cssStyle="width:370px;margin-left:20px" disabled="true"/>
+	        </div>
+	        
+	        <div>
+	        	<form:label path="toEmail" cssErrorClass="error">Empfängeradresse</form:label>
+	            <form:input path="toEmail" cssClass="inputtext" cssStyle="width:370px;margin-left:20px"/>
+	        </div>
+	        <div>
+	        	<form:label path="text" cssErrorClass="error">Text</form:label>
+	            <form:textarea path="text" cssClass="inputtext" cols="6" cssStyle="width:370px;margin-left:20px"/>
+	        </div>
+	        <div>
+	        	Welche Daten sollen mitgesendet werden? 
+	        </div>
+	        <div style="padding-left:20px;padding-bottom:20px;">
+	            <form:checkbox path="sendKarte"/>
+	        	<form:label path="sendKarte" cssErrorClass="error" cssStyle="display:inline;float:none;">Karte</form:label>
+	            <br/>
+	            <form:checkbox path="sendFoto"/>
+	        	<form:label path="sendFoto" cssErrorClass="error" cssStyle="display:inline;float:none;">Foto</form:label>
+	            <br/>
+	            <form:checkbox path="sendKommentare"/>
+	        	<form:label path="sendKommentare" cssErrorClass="error" cssStyle="display:inline;float:none;">interne Kommentare</form:label>
+	        	<c:if test="${empty delegiert or not delegiert}">
+		            <br/>
+		            <form:checkbox path="sendMissbrauchsmeldungen"/>
+		        	<form:label path="sendMissbrauchsmeldungen" cssErrorClass="error" cssStyle="display:inline;float:none;">Missbrauchsmeldungen</form:label>
+	        	</c:if>
+	        </div>
+		
+			<input type="submit" value="Senden" name="action"/><![CDATA[&nbsp;]]>
+			<button onclick="javascript:window.close();">Abbrechen</button>
+
+		</form:form>
+	</div>
+	
+</jsp:root>

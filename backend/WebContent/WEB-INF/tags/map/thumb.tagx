@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<jsp:root 
+	xmlns:c="http://java.sun.com/jsp/jstl/core" 
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions" 
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:jsp="http://java.sun.com/JSP/Page" 
+	xmlns:spring="http://www.springframework.org/tags" 
+	xmlns:fx="http://igd.fraunhofer.de/tags/elfunctions" 
+	version="2.0"
+	>
+	<jsp:output omit-xml-declaration="yes" />
+	
+	<jsp:directive.attribute name="projection" type="java.lang.String" required="false" rtexprvalue="true"/>
+	<jsp:directive.attribute name="tmsUrl" type="java.lang.String" required="true" rtexprvalue="true"/>
+	<jsp:directive.attribute name="tmsLayers" type="java.lang.String" required="true" rtexprvalue="true"/>
+	<jsp:directive.attribute name="maxExtent" type="java.lang.String" required="true" rtexprvalue="true"/>
+	<jsp:directive.attribute name="restrictedExtent" type="java.lang.String" required="true" rtexprvalue="true"/>
+	<jsp:directive.attribute name="resolutions" type="java.lang.String" required="true" rtexprvalue="true"/>
+	<jsp:directive.attribute name="serverResolutions" type="java.lang.String" required="true" rtexprvalue="true"/>
+	<jsp:directive.attribute name="ovi" type="java.lang.String" required="true" rtexprvalue="true"/>
+	<jsp:directive.attribute name="oviMargin" type="java.lang.String" required="false" rtexprvalue="true"/>
+	<jsp:directive.attribute name="onClick" type="java.lang.String" required="false" rtexprvalue="true"/>
+	<jsp:directive.attribute name="title" type="java.lang.String" required="false" rtexprvalue="true"/>
+	<jsp:directive.attribute name="initOpenLayers" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="cssStyle" type="java.lang.String" required="false" rtexprvalue="true"/>
+
+	<c:if test="${empty projection}">
+		<c:set var="projection" value="EPSG:25833"/>
+	</c:if>
+	<c:if test="${empty oviMargin}">
+		<c:set var="oviMargin" value="400"/>
+	</c:if>
+	<c:if test="${empty initOpenLayers}">
+		<c:set var="initOpenLayers" value="true"/>
+	</c:if>
+
+	<c:if test="${empty onClick}">
+		    <div id="map" class="smallmap" style="${cssStyle}" title="${title}"><!-- //OpenLayers --></div>
+	</c:if>
+	<c:if test="${not empty onClick}">
+		    <div id="map" class="smallmap" style="${cssStyle}" onClick="location.href='${onClick}'" title="${title}"><!-- //OpenLayers --></div>
+	</c:if>
+
+	<c:url value="/script/openLayers/theme/default/style.css" var="url"/>
+    <link rel="stylesheet" href="${url}" type="text/css"><!-- //OpenLayers Style --></link>
+	<c:url value="/script/openLayers/OpenLayers.js" var="url"/>
+	<script src="${url}" type="text/javascript"><!-- //OpenLayers --></script>
+	<c:url value="/script/openLayers/theme/dark/" var="url"/>
+    
+    <c:url value="/images/${vorgang.typ}_${vorgang.status}_45.png" var="icon"/>
+	
+	<script type="text/javascript">
+	        var map, vlayer;
+	        var formater;
+	        
+	        var bounds = new OpenLayers.Bounds(${maxExtent});
+	        function initOpenLayers(){
+	        	//Theme definieren
+	        	OpenLayers.ImgPath = "${url}";
+	        	
+	            //Formater definieren
+	    		var formatOptions = {
+	    			'internalProjection': new OpenLayers.Projection('${projection}'),
+	    			'externalProjection': new OpenLayers.Projection('${projection}')
+				};
+				formater = new OpenLayers.Format.WKT(formatOptions);
+
+				//Layer für OVI konfigurieren
+	        	var vlayerstylemap = new OpenLayers.Style({pointRadius: 15, graphicWidth: 24, graphicHeight: 29, graphicXOffset: -3, graphicYOffset: -27, externalGraphic:"${icon}"});
+	        	vlayer = new OpenLayers.Layer.Vector( "aktuelle Position", {styleMap: vlayerstylemap} );
+
+				//Layer für OVI initialisieren
+				var initFeature = formater.read('${ovi}');
+				if(initFeature) {
+					if(initFeature.constructor != Array) initFeature = [initFeature];
+			     	vlayer.addFeatures(initFeature);
+			     	if(initFeature[0]) {
+				   		initBounds = initFeature[0].geometry.getBounds();
+				   		initBounds.left = initBounds.left - ${oviMargin};
+				   		initBounds.right = initBounds.right + ${oviMargin};
+				   		initBounds.top = initBounds.top + ${oviMargin};
+				   		initBounds.bottom = initBounds.bottom - ${oviMargin};
+				   	}
+				}
+
+	        	map = new OpenLayers.Map( 'map', { 
+	        		controls: [],
+	   		    	projection: '${projection}',
+	   		    	resolutions: [${resolutions}],
+	   		    	units: 'm',
+					restrictedExtent: new OpenLayers.Bounds(${restrictedExtent}),
+					maxExtent: bounds
+	        	} );
+				
+                <c:forEach items="${fx:array(tmsLayers)}" var="layer">
+                    <c:set value="${fx:array2(layer,':')}" var="layerOption"/>
+                        layer = new OpenLayers.Layer.TMS( 
+                            "${layerOption[0]}", 
+                            "${tmsUrl}", {
+                                layername: '${layerOption[1]}',
+                                type: 'png',
+                                transitionEffect: 'resize',
+                                serverResolutions: [${serverResolutions}],
+                                tileSize: new OpenLayers.Size(256, 256)
+                            } );
+                        map.addLayer(layer);
+                </c:forEach>
+                
+                map.addLayer(vlayer);
+
+				//initial Zoomen
+				map.zoomToExtent(initBounds);
+	        }
+	
+            <c:if test="${initOpenLayers}">
+                initOpenLayers();
+            </c:if>
+		</script>
+
+</jsp:root>

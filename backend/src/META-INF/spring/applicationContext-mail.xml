@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+	http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.5.xsd
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+
+    <!-- <context:property-placeholder location="classpath*:settings.properties"/>-->
+
+	<bean class="de.fraunhofer.igd.klarschiff.service.mail.JavaMailSenderImpl" id="mailSender"
+		p:host="${mail.host}"
+		p:username="${mail.username}"
+		p:password="${mail.password}"
+		p:smtpStarttlsEnable="${mail.smtp.starttls.enable}"/>
+    
+    <bean class="de.fraunhofer.igd.klarschiff.service.mail.MailService" id="mailService"
+    	p:mailSender-ref="mailSender" 
+		p:serverBaseUrlBackend="${mail.server.baseurl.backend}"
+		p:serverBaseUrlFrontend="${mail.server.baseurl.frontend}"
+		p:sendAllMailsTo="${mail.sendAllMailsTo}"
+		p:mailtoMailclientEncoding="${mail.mailto.encoding}"
+    	p:vorgangBestaetigungMailTemplate-ref="vorgangBestaetigungMailTemplate"
+    	p:unterstuetzungBestaetigungMailTemplate-ref="unterstuetzungBestaetigungMailTemplate"
+    	p:missbrauchsmeldungBestaetigungMailTemplate-ref="missbrauchsmeldungBestaetigungMailTemplate"
+    	p:vorgangWeiterleitenMailTemplate-ref="vorgangWeiterleitenMailTemplate"
+    	p:informDispatcherMailTemplate-ref="informDispatcherMailTemplate"
+    	p:informExternMailTemplate-ref="informExternMailTemplate"
+    	p:informErstellerMailTemplate-ref="informErstellerMailTemplate"
+    />
+
+	<bean class="org.springframework.mail.SimpleMailMessage" id="vorgangBestaetigungMailTemplate"
+	p:from="${mail.from}" p:subject="Klarschiff-Demo: Bestätigung einer Meldung">
+		<property name="text"><value><![CDATA[Sehr geehrte(r) NutzerIn der Klarschiff-Demo,
+
+vielen Dank für Ihre Meldung. Für die weitere Bearbeitung benötigen wir nochmals eine Bestätigung von Ihnen. Bitte rufen Sie daher innerhalb von 24 Stunden nach Eingang dieser E-Mail einmalig folgende URL auf: %baseUrlFrontend%vorgangBestaetigung/?hash=%hash%
+
+Mit Ihrer Bestätigung erklären Sie sich damit einverstanden, dass wir die von Ihnen im Rahmen der Meldung selbständig gemachten Angaben (Betreff, Details) sowie insbesondere das Foto redaktionell bearbeiten dürfen. Bitte beachten Sie außerdem: Falls Sie nicht innerhalb der 24-Stunden-Frist bestätigen, so wird Ihre Meldung automatisch gelöscht.
+
+Wenn Sie Ihre Meldung löschen möchten, so können Sie dies durch das einmalige Aufrufen folgender URL tun: %baseUrlFrontend%vorgangLoeschen/?hash=%hash%
+
+Bitte beachten Sie: Das Löschen funktioniert nur, solange wir Ihre Meldung noch nicht in Bearbeitung genommen haben, also das Symbol in der Karte noch rot ist.
+
+Beachten Sie bitte ferner: Da es sich bei der Demo von Klarschiff lediglich um eine Anwendung zu Anschauungs- und Testzwecken handelt, werden eingehende Meldungen nicht als reale Fälle angesehen und auch nicht als solche bearbeitet.
+ 
+Vielen Dank und mit freundlichen Grüßen
+
+
+Ihr Klarschiff-Demo-Team]]></value></property>
+	</bean>
+
+	<bean class="org.springframework.mail.SimpleMailMessage" id="unterstuetzungBestaetigungMailTemplate"
+	p:from="${mail.from}" p:subject="Klarschiff-Demo: Bestätigung einer Unterstützung">
+		<property name="text"><value><![CDATA[Sehr geehrte(r) NutzerIn der Klarschiff-Demo,
+
+vielen Dank für Ihre Unterstützung einer bestehenden Meldung. Damit die Unterstützung gültig wird, benötigen wir nochmals eine Bestätigung von Ihnen. Bitte rufen Sie daher innerhalb von 24 Stunden nach Eingang dieser E-Mail einmalig folgende URL auf: %baseUrlFrontend%unterstuetzerBestaetigung/?hash=%hash%
+
+Bitte beachten Sie: Falls Sie nicht innerhalb der 24-Stunden-Frist bestätigen, so wird Ihre Unterstützung automatisch hinfällig.
+
+Beachten Sie bitte ferner: Da es sich bei der Demo von Klarschiff lediglich um eine Anwendung zu Anschauungs- und Testzwecken handelt, werden eingehende Meldungen nicht als reale Fälle angesehen und auch nicht als solche bearbeitet.
+  
+Vielen Dank und mit freundlichen Grüßen
+
+
+Ihr Klarschiff-Demo-Team]]></value></property>
+	</bean>
+
+	<bean class="org.springframework.mail.SimpleMailMessage" id="missbrauchsmeldungBestaetigungMailTemplate"
+	p:from="${mail.from}" p:subject="Klarschiff-Demo: Bestätigung einer Missbrauchsmeldung">
+		<property name="text"><value><![CDATA[Sehr geehrte(r) NutzerIn der Klarschiff-Demo,
+
+vielen Dank für Ihre Missbrauchsmeldung zu einer bestehenden Meldung. Damit die Missbrauchsmeldung gültig wird, benötigen wir nochmals eine Bestätigung von Ihnen. Bitte rufen Sie daher innerhalb von 24 Stunden nach Eingang dieser E-Mail einmalig folgende URL auf: %baseUrlFrontend%missbrauchsmeldungBestaetigung/?hash=%hash%
+  
+Bitte beachten Sie: Falls Sie nicht innerhalb der 24-Stunden-Frist bestätigen, so wird Ihre Missbrauchsmeldung automatisch hinfällig.
+
+Beachten Sie bitte ferner: Da es sich bei der Demo von Klarschiff lediglich um eine Anwendung zu Anschauungs- und Testzwecken handelt, werden eingehende Meldungen nicht als reale Fälle angesehen und auch nicht als solche bearbeitet.
+  
+Vielen Dank und mit freundlichen Grüßen
+
+
+Ihr Klarschiff-Demo-Team]]></value></property>
+	</bean>
+
+	<bean class="org.springframework.mail.SimpleMailMessage" id="vorgangWeiterleitenMailTemplate"
+	p:from="${mail.from}" p:subject="Klarschiff-Demo: weitergeleiteter Vorgang">
+		<property name="text"><value><![CDATA[Sehr geehrte Damen und Herren,
+
+der folgende Vorgang wurde durch die/den Klarschiff-Demo-NutzerIn %absender% an Sie weitergeleitet:
+
+Anmerkungen der/des Absenderin/Absenders
+****************************************
+%text%
+
+Daten des weitergeleiteten Vorgangs
+***********************************
+%vorgang%
+
+Vielen Dank und mit freundlichen Grüßen
+
+
+Ihr Klarschiff-Demo-Team]]></value></property>
+	</bean>
+
+	<bean class="org.springframework.mail.SimpleMailMessage" id="informDispatcherMailTemplate"
+	p:from="${mail.from}" p:subject="Klarschiff-Demo: nicht zuordbare Vorgänge">
+		<property name="text"><value><![CDATA[Sehr geehrte(r) NutzerIn der Klarschiff-Demo,
+
+innerhalb der letzten 24 Stunden wurden Ihnen in Ihrer Funktion als Dispatcher automatisch Vorgänge überantwortet, die auch nach mehrfacher automatischer Zuständigkeitsfindung nicht eindeutig zugewiesen werden konnten. Bitte bearbeiten Sie diese Vorgänge oder weisen Sie Ihnen die jeweils passende Zuständigkeit manuell zu: 
+
+Daten der nicht zuordbaren Vorgänge
+***********************************
+%vorgaenge%
+
+Vielen Dank und mit freundlichen Grüßen
+
+
+Ihr Klarschiff-Demo-Team]]></value></property>
+	</bean>
+	
+	<bean class="org.springframework.mail.SimpleMailMessage" id="informExternMailTemplate"
+	p:from="${mail.from}" p:subject="Klarschiff-Demo: neue delegierte Vorgänge">
+		<property name="text"><value><![CDATA[Sehr geehrte(r) NutzerIn der Klarschiff-Demo,
+		
+innerhalb der letzten 24 Stunden wurden Vorgänge an Sie delegiert. Bitte bearbeiten Sie diese Vorgänge: 
+
+Daten der neuen delegierten Vorgänge
+************************************
+%vorgaenge%
+
+Vielen Dank und mit freundlichen Grüßen
+
+
+Ihr Klarschiff-Demo-Team]]></value></property>
+	</bean>
+
+	<bean class="org.springframework.mail.SimpleMailMessage" id="informErstellerMailTemplate"
+	p:from="${mail.from}" p:subject="Klarschiff-Demo: Bearbeitung einer Meldung ist abgeschlossen">
+		<property name="text"><value><![CDATA[Sehr geehrte(r) NutzerIn der Klarschiff-Demo,
+		
+hiermit teilen wir Ihnen mit, dass die Bearbeitung Ihrer Meldung vom %datum% abgeschlossen ist, und zwar mit folgendem Status:
+
+%status%
+
+Nachfolgend können Sie nochmals die wichtigsten Daten Ihrer Meldung in kompakter Form einsehen:
+
+%vorgang%
+
+Vielen Dank und mit freundlichen Grüßen
+
+
+Ihr Klarschiff-Demo-Team]]></value></property>
+	</bean>
+	
+</beans>

@@ -1,0 +1,71 @@
+<jsp:root 
+	xmlns:c="http://java.sun.com/jsp/jstl/core" 
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions" 
+	xmlns:spring="http://www.springframework.org/tags" 
+	xmlns:jsp="http://java.sun.com/JSP/Page" 
+	xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu"
+	xmlns:vorgang="urn:jsptagdir:/WEB-INF/tags/vorgang"
+	xmlns:foto="urn:jsptagdir:/WEB-INF/tags/foto"
+	xmlns:tiles="http://tiles.apache.org/tags-tiles" 
+	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+	version="2.0"
+	>
+	<jsp:directive.page contentType="text/html;charset=UTF-8"/>
+
+	<!-- CONTENTTITLE -->
+	<div id="root_style_content_title">
+		Foto zu Vorgang
+	</div>
+	
+	<!-- TABMENU -->
+	<tiles:importAttribute name="tabmenu_item" ignore="true" toName="tabmenu_item"/>
+	<menu:tabmenuvorgang currentId="${tabmenu_item}" vorgangId="${vorgang.id}"/>
+	
+	<!-- ITEMINFO -->
+	<vorgang:iteminfo vorgang="${vorgang}"/>
+	
+	<!-- CONTENT -->
+	<div id="root_style_content">
+		<vorgang:vorgangPrintEmail vorgang="${vorgang}"/>
+		
+		<div class="fieldset" style="min-height:200px;">
+			<div class="fieldsettitle">Foto</div>
+			<table>
+				<c:if test="${vorgang.fotoExists}">
+					<tr>
+						<td>
+							<util:freigabestatus status="${vorgang.fotoFreigabeStatus}"/>
+							<c:if test="${not vorgang.archiviert and vorgang.status ne 'gemeldet'}">
+								<![CDATA[&nbsp;&nbsp;]]>
+								<form method="post" style="display: inline;">
+									<util:freigabestatusbutton name="Foto" status="${vorgang.fotoFreigabeStatus}" geloeschtEnable="true"/>
+									<c:if test="${vorgang.fotoFreigabeStatus ne 'geloescht'}">
+										<![CDATA[&nbsp;&nbsp;]]>
+										<foto:bearbeitung />
+									</c:if>
+								</form>
+							</c:if>
+						</td>
+					</tr>
+				</c:if>
+				<tr>
+					<td>
+						<foto:foto vorgang="${vorgang}"/>
+					</td>
+				</tr>
+			</table>
+		</div>
+			
+		
+			
+	</div>
+	
+	<!-- HELP -->
+	<div id="root_style_help">
+		<p>
+            Falls dem aktuell ausgewählten Vorgang ein Foto beigefügt ist, wird Ihnen dieses hier angezeigt. Sie können auch den <util:help anchor="Freigabestatus">Freigabestatus</util:help> des Fotos ändern oder das <util:help anchor="Fotobearbeiten">Foto bearbeiten</util:help>: Ein Klick auf den entsprechenden Button über dem Foto führt Sie in den Bearbeitungsmodus. Nun können Sie im Foto mit der Maus schwarze Rechtecke aufziehen, um mit diesen Bereiche im Foto zu überdecken, die nicht mehr erkennbar sein dürfen. Sobald Sie mit Ihren Änderungen einverstanden sind, können Sie diese durch Klick auf den entsprechenden Button speichern.			
+			
+		</p>
+	</div>
+
+</jsp:root>

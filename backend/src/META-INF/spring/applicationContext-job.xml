@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+	http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.5.xsd
+	http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+
+    <!-- <context:property-placeholder location="classpath*:settings.properties"/>-->
+
+	<task:annotation-driven/>
+
+	<task:scheduler id="scheduler"/>
+
+	<bean class="de.fraunhofer.igd.klarschiff.service.job.JobsService" id="jobsService"
+    	p:monthsToArchivVorgaenge="${job.monthsToArchivVorgaenge}"
+    	p:hoursToRemoveUnbestaetigtVorgang="${job.hoursToRemoveUnbestaetigtVorgang}"
+    	p:hoursToRemoveUnbestaetigtUnterstuetzer="${job.hoursToRemoveUnbestaetigtUnterstuetzer}"
+    	p:hoursToRemoveUnbestaetigtMissbrauchsmeldung="${job.hoursToRemoveUnbestaetigtMissbrauchsmeldung}"
+	/>
+</beans>

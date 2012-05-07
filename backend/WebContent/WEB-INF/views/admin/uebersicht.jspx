@@ -1,0 +1,29 @@
+<jsp:root 
+	xmlns:c="http://java.sun.com/jsp/jstl/core" 
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions" 
+	xmlns:spring="http://www.springframework.org/tags" 
+	xmlns:jsp="http://java.sun.com/JSP/Page" 
+	xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu"
+	xmlns:tiles="http://tiles.apache.org/tags-tiles" 
+	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+	version="2.0"
+	>
+	<jsp:directive.page contentType="text/html;charset=UTF-8"/>
+
+	<!-- CONTENTTITLE -->
+	<div id="root_style_content_title">
+		Administration
+	</div>
+	
+	<!-- TABMENU -->
+	<tiles:importAttribute name="tabmenu_item" ignore="true" toName="tabmenu_item"/>
+	<menu:tabmenuadmin currentId="${tabmenu_item}"/>
+	
+	<!-- CONTENT -->
+	<div id="root_style_content">
+		<p>
+			Als Administrator des Systems haben Sie die Möglichkeit sich eine Übersicht zu den <util:help anchor="Benutzerrollen">Benutzern und Rollen</util:help> des Systems anzeigen zu lassen, diverse <util:help anchor="Adminseiten">Einstellungen</util:help> am System vorzunehmen und verschiedene Funktionen des Systems zu <util:help anchor="Adminseiten">testen</util:help>. 
+		</p>
+	</div>
+
+</jsp:root>

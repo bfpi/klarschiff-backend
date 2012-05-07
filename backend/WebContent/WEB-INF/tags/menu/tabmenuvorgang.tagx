@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<jsp:root 
+	xmlns:c="http://java.sun.com/jsp/jstl/core" 
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions" 
+	xmlns:jsp="http://java.sun.com/JSP/Page" 
+	xmlns:spring="http://www.springframework.org/tags" 
+	xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu"
+	version="2.0"
+	>
+	<jsp:output omit-xml-declaration="yes" />
+	
+	<jsp:directive.attribute name="delegiert" type="java.lang.Boolean" required="false" rtexprvalue="true"/>
+	<jsp:directive.attribute name="currentId" type="java.lang.String" required="false" rtexprvalue="true" description="die ID des gerade aktuellen Menüpunktes" />
+	<jsp:directive.attribute name="vorgangId" type="java.lang.Integer" required="false" rtexprvalue="true" description="die ID des gerade aktuellen Menüpunktes" />
+
+	<c:if test="${empty delegiert}">
+		<c:set var="delegiert" value="false"/>
+	</c:if>
+	<c:set var="_url" value="${(delegiert) ? 'delegiert/' : ''}"/>
+
+	<menu:tabmenu>
+		<menu:tabmenuitem label="Suche" url="/vorgang/${_url}suchen" id="vorgang.suchen" cssClass="extra" currentId="${currentId}"/>
+		<c:if test="${currentId=='vorgang.erstsichtung'}">
+			<menu:tabmenuitem label="Erstsichtung" id="vorgang.erstsichtung" currentId="${currentId}"/>
+		</c:if>
+		<c:if test="${currentId!='vorgang.suchen' and currentId!='vorgang.erstsichtung'}">
+			<menu:tabmenuitem label="Übersicht" url="/vorgang/${_url}${vorgangId}/uebersicht" id="vorgang.uebersicht" currentId="${currentId}"/>
+			<menu:tabmenuitem label="Bearbeiten" url="/vorgang/${_url}${vorgangId}/bearbeiten" id="vorgang.bearbeiten" currentId="${currentId}"/>
+			<c:if test="${not delegiert}">
+				<menu:tabmenuitem label="Missbrauchsmeldungen" url="/vorgang/${_url}${vorgangId}/missbrauch" id="vorgang.missbrauch" currentId="${currentId}"/>
+			</c:if>
+			<menu:tabmenuitem label="Karte" url="/vorgang/${_url}${vorgangId}/karte" id="vorgang.karte" currentId="${currentId}"/>
+			<menu:tabmenuitem label="Foto" url="/vorgang/${_url}${vorgangId}/foto" id="vorgang.foto" currentId="${currentId}"/>
+			<c:if test="${not delegiert}">
+				<menu:tabmenuitem label="Verlauf" url="/vorgang/${_url}${vorgangId}/verlauf" id="vorgang.verlauf" currentId="${currentId}"/>
+			</c:if>
+		</c:if>
+	</menu:tabmenu>
+</jsp:root>

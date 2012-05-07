@@ -1,0 +1,510 @@
+<jsp:root 
+	xmlns:c="http://java.sun.com/jsp/jstl/core" 
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions" 
+	xmlns:spring="http://www.springframework.org/tags" 
+	xmlns:jsp="http://java.sun.com/JSP/Page" 
+	xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu"
+	xmlns:vorgang="urn:jsptagdir:/WEB-INF/tags/vorgang"
+	xmlns:role="urn:jsptagdir:/WEB-INF/tags/role"
+	xmlns:tiles="http://tiles.apache.org/tags-tiles" 
+	xmlns:sec="http://www.springframework.org/security/tags"
+	xmlns:fx="http://igd.fraunhofer.de/tags/elfunctions" 
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+	version="2.0"
+	>
+	<jsp:directive.page contentType="text/html;charset=UTF-8"/>
+
+	<c:set value="${cmd.vorgang}" var="vorgang"/>
+
+	<!-- CONTENTTITLE -->
+	<div id="root_style_content_title">
+		Vorgang bearbeiten
+	</div>
+	
+	<!-- TABMENU -->
+	<tiles:importAttribute name="tabmenu_item" ignore="true" toName="tabmenu_item"/>
+		<menu:tabmenuvorgang currentId="${tabmenu_item}" vorgangId="${vorgang.id}"/>
+	<!-- ITEMINFO -->
+	<vorgang:iteminfo vorgang="${vorgang}"/>
+	
+	<!-- CONTENT -->
+	<div id="root_style_content">
+		<vorgang:vorgangPrintEmail vorgang="${vorgang}"/>
+
+		<c:choose>
+			<c:when test="${not cmd.vorgang.archiviert}">
+			
+				<!-- Zuständigkeit -->
+				<div class="fieldset" id="zustaendigkeitpanel">
+					<div class="fieldsettitle closepanel" id="zustaendigkeittab"><div style="width:100%; height:15px;">Zuständigkeit</div></div>
+					<div id="zustaendigkeitcontent">
+						<div>
+							aktuelle Zuständigkeit: <vorgang:zustaendigkeit vorgang="${vorgang}"/>
+						</div>
+			
+						<ul class="formlist">
+							<c:set value="${fx:role(vorgang.zustaendigkeit)}" var="zustaendigkeit"/>
+							<c:set value="${fx:rminuso(fx:rminusc(allZustaendigkeiten, currentZustaendigkeiten), zustaendigkeit)}" var="moeglicheZustaendigkeiten"/>
+							<c:set value="${fx:rcontains(currentZustaendigkeiten, fx:role(cmd.vorgang.zustaendigkeit))}" var="isZustaendig"/>
+							<c:set value="${vorgang.zustaendigkeitStatus == 'akzeptiert'}" var="isAkzeptiert"/>
+							<c:set value="${fx:rsize(currentZustaendigkeiten)==1}" var="isZustaendigkeitenSingle"/>
+							
+							<!-- annehmen und akzeptieren -->
+							<c:choose>
+								<c:when test="${isZustaendig and not isAkzeptiert and isZustaendigkeitenSingle}">
+					 				<li class="akzeptieren">
+										<form:form method="POST" modelAttribute="cmd.vorgang">
+											Zuständigkeit für den Vorgang<![CDATA[&nbsp;]]>
+											<input type="submit" value="akzeptieren" name="action"/>
+										</form:form>
+									</li>
+								</c:when>
+								<c:when test="${isZustaendig and not isAkzeptiert and not isZustaendigkeitenSingle}">
+					 				<li class="akzeptieren">
+										<form:form method="POST" modelAttribute="cmd.vorgang">
+											Zuständigkeit für den Vorgang<![CDATA[&nbsp;]]>
+											<input type="submit" value="akzeptieren" name="action"/>
+										</form:form>
+									</li>
+					 				<li class="akzeptieren">
+										<form:form method="POST" modelAttribute="cmd.vorgang">
+											Als Zuständigkeit für den Vorgang<![CDATA[&nbsp;]]>
+											<form:select path="zustaendigkeit" cssErrorClass="error">
+								            	<form:option value="" label="Zuständigkeit wählen" cssClass="info"/>
+								            	<role:options roles="${fx:rminuso(currentZustaendigkeiten, zustaendigkeit)}"/>
+											</form:select> 
+											<![CDATA[&nbsp;]]>
+											<input type="submit" value="&#252;bernehmen und akzeptieren" name="action"/>
+										</form:form>
+									</li>
+								</c:when>
+								<c:when test="${isZustaendig and isAkzeptiert and not isZustaendigkeitenSingle}">
+					 				<li class="akzeptieren">
+										<form:form method="POST" modelAttribute="cmd.vorgang">
+											Als Zuständigkeit für den Vorgang<![CDATA[&nbsp;]]>
+											<form:select path="zustaendigkeit" cssErrorClass="error">
+								            	<form:option value="" label="Zuständigkeit wählen" cssClass="info"/>
+								            	<role:options roles="${fx:rminuso(currentZustaendigkeiten, zustaendigkeit)}"/>
+											</form:select> 
+											<![CDATA[&nbsp;]]>
+											<input type="submit" value="&#252;bernehmen und akzeptieren" name="action"/>
+										</form:form>
+									</li>
+								</c:when>
+								<c:when test="${not isZustaendig and isAkzeptiert and not isZustaendigkeitenSingle}">
+					 				<li class="akzeptieren">
+										<form:form method="POST" modelAttribute="cmd.vorgang">
+											Als Zuständigkeit für den Vorgang<![CDATA[&nbsp;]]>
+											<form:select path="zustaendigkeit" cssErrorClass="error">
+								            	<form:option value="" label="Zuständigkeit wählen" cssClass="info"/>
+								            	<role:options roles="${fx:rminuso(currentZustaendigkeiten, zustaendigkeit)}"/>
+											</form:select> 
+											<![CDATA[&nbsp;]]>
+											<input type="submit" value="&#252;bernehmen und akzeptieren" name="action"/>
+										</form:form>
+									</li>
+								</c:when>
+								<c:when test="${not isZustaendig and not isAkzeptiert and isZustaendigkeitenSingle}">
+					 				<li class="akzeptieren">
+										<form:form method="POST" modelAttribute="cmd.vorgang">
+											<input name="vorgang.zustaendigkeit" type="hidden" value="${currentZustaendigkeiten[0].id}"/>
+											Zuständigkeit für den Vorgang<![CDATA[&nbsp;]]>
+											<input type="submit" value="&#252;bernehmen und akzeptieren" name="action"/>
+										</form:form>
+									</li>
+								</c:when>
+								<c:when test="${not isZustaendig and not isAkzeptiert and not isZustaendigkeitenSingle and fx:rsize(currentZustaendigkeiten)>2}">
+					 				<li class="akzeptieren">
+										<form:form method="POST" modelAttribute="cmd.vorgang">
+											Als Zuständigkeit für den Vorgang<![CDATA[&nbsp;]]>
+											<form:select path="zustaendigkeit" cssErrorClass="error">
+								            	<form:option value="" label="Zuständigkeit wählen" cssClass="info"/>
+								            	<role:options roles="${currentZustaendigkeiten}"/>
+											</form:select> 
+											<![CDATA[&nbsp;]]>
+											<input type="submit" value="&#252;bernehmen und akzeptieren" name="action"/>
+										</form:form>
+									</li>
+								</c:when>
+							</c:choose>
+							
+							<!-- automatisch neu zuweisen -->
+							<c:if test="${not isDispatcherInVorgangHistoryClasses}">
+								<c:choose>
+									<c:when test="${isZustaendig and not isAkzeptiert}">
+										<li class="automatisch">
+											<form:form method="POST" modelAttribute="cmd.vorgang">
+												Zuständigkeit ablehnen und Vorgang<![CDATA[&nbsp;]]>
+												<input type="submit" value="automatisch neu zuweisen" name="action"/>
+											</form:form>
+										</li>
+									</c:when>
+									<c:otherwise>
+										<li class="automatisch">
+											<form:form method="POST" modelAttribute="cmd.vorgang">
+												Zuständigkeit für den Vorgang<![CDATA[&nbsp;]]>
+												<input type="submit" value="automatisch neu zuweisen" name="action"/>
+											</form:form>
+										</li>
+									</c:otherwise>
+								</c:choose>
+							</c:if>
+							<sec:authorize access="hasRole('ROLE_DISPATCHER') or hasRole('ROLE_ADMIN')">		
+								<c:if test="${isDispatcherInVorgangHistoryClasses}">
+									<li class="automatisch reset">
+										<form:form method="POST" modelAttribute="cmd.vorgang">
+											Zuständigkeitsfinder <![CDATA[&nbsp;]]>
+											<input type="submit" value="zur&#252;cksetzen" name="action"/>
+										</form:form>
+									</li>
+								</c:if>
+							</sec:authorize>
+							
+							<!-- manuel zuweisen -->
+							<c:if test="${not empty moeglicheZustaendigkeiten}">
+								<li class="manuell">
+									<form:form method="POST" modelAttribute="cmd.vorgang">
+										Vorgang
+										<![CDATA[&nbsp;]]>
+										<form:select path="zustaendigkeit" cssErrorClass="error">
+							            	<form:option value="" label="Zuständigkeit wählen" cssClass="info"/>
+							            	<role:options roles="${moeglicheZustaendigkeiten}"/>
+										</form:select> 
+										<![CDATA[&nbsp;]]>
+										<input type="submit" value="zuweisen" name="action"/>
+									</form:form>
+								</li>
+							</c:if>
+						</ul>
+					</div>
+				</div>
+				<util:ddpanel name="zustaendigkeit"/>
+
+				<!-- Status -->
+				<c:if test="${cmd.vorgang.status!='gemeldet'}">
+					<div class="fieldset" id="statuspanel">
+						<div class="fieldsettitle closepanel" id="statustab"><div style="width:100%; height:15px;">Status</div></div>
+						<div id="statuscontent">
+							<form:form method="POST" modelAttribute="cmd.vorgang" >
+								<div>
+									<form:label path="status" cssErrorClass="error">Status</form:label>
+									<form:select path="status" cssErrorClass="error">
+						            	<form:option value="" label="Status wählen" cssClass="info"/>
+						            	<form:options items="${allVorgangStatus}" itemLabel="text" htmlEscape="false"/>
+									</form:select> 
+								</div>
+								<div>
+									<table width="100%" cellpadding="0" cellspacing="0">
+										<tr>
+											<td valign="top" width="470px;">
+												<form:label path="statusKommentar" cssErrorClass="error">Kommentar</form:label>
+												<form:textarea path="statusKommentar" id="statusKommentar" cols="6" cssStyle="width:350px;"/>
+											</td>
+											<td valign="top" style="padding-left:10px;">
+												<select id="vorlage" onchange="vorlageSelect()">
+													<option class="info">Vorlage wählen</option>
+													<c:forEach items="${allStatusKommentarVorlage}" var="statusKommentarVorlage">
+														<option title="${statusKommentarVorlage.text}" value="${statusKommentarVorlage.text}">${statusKommentarVorlage.titelAbbreviate}</option>
+													</c:forEach>
+												</select>
+											
+												<script type="text/javascript">
+													function vorlageSelect() {
+														$('#statusKommentar')[0].value = $('select#vorlage')[0].value;
+														$('select#vorlage')[0].selectedIndex = 0;
+													}
+												</script>
+
+											</td>
+										</tr>
+										<form:errors path="statusKommentar">
+											<tr><td><form:errors cssClass="error" cssStyle="font-size: 0.8em; padding-left: 100px" element="div" path="statusKommentar"/></td></tr>
+										</form:errors>
+									</table>
+								</div>
+								<input type="submit" value="Status setzen" name="action"/>
+							</form:form>
+						</div>
+					</div>
+					<util:ddpanel name="status"/>
+				</c:if>
+
+				<!-- Vorgang -->		
+				<div class="fieldset" id="vorgangpanel">
+					<div class="fieldsettitle closepanel" id="vorgangtab"><div style="width:100%; height:15px;">Vorgangsdaten</div></div>
+					<div id="vorgangcontent">
+						<form:form method="POST" modelAttribute="cmd">
+					        <div>
+					        	<form:label path="vorgang.typ" cssErrorClass="error">Typ</form:label>
+					            <form:select path="vorgang.typ" id="typ" onchange="updateHauptkategorie()" style="width:358px;">
+					            	<form:option value="" label="Typ wählen" cssClass="info"/>
+					            	<c:forEach items="${vorgangtypen}" var="vorgangtyp">
+					            		<c:url value="/images/${vorgangtyp}_15.png" var="url"/>
+					            		<form:option value="${vorgangtyp}" label="${vorgangtyp.text}" cssStyle="background-image:url(${url});" cssClass="suffixiconsmall"/>
+					            	</c:forEach>
+					            </form:select>
+					        </div>
+					
+					        <div>
+					        	<form:label path="kategorie" cssErrorClass="error">Hauptkategorie</form:label>
+					            <form:select path="kategorie" id="hauptkategorie" onchange="updateUnterkategorie()" style="width:358px;">
+					            	<form:option value="" label="Hauptkategorie wählen" cssClass="info"/>
+									<form:options items="${hauptkategorien}" itemValue="id" itemLabel="name"/>
+					            </form:select>
+					        </div>
+					        
+					        <div>
+					        	<form:label path="vorgang.kategorie" cssErrorClass="error">Unterkategorie</form:label>
+					            <form:select path="vorgang.kategorie" id="unterkategorie" onchange="updateInfo()" cssStyle="width:358px;">
+					            	<form:option value="" label="Unterkategorie wählen" cssClass="info"/>
+									<form:options items="${unterkategorien}" itemValue="id" itemLabel="name"/>
+					            </form:select>
+					        </div>
+			
+							<c:url value="/kategorien" var="url"/>						
+							<script type="text/javascript">
+							
+							function isBlank(obj){
+								return(!obj || $.trim(obj) === "");
+							}
+			
+							function updateHauptkategorie()
+							{
+								var items = [];	  
+								items.push('<option value="" class="info">Hauptkategorie wählen</option>');
+							
+								var value = $('select#typ')[0].value;
+								var node = $('select#hauptkategorie');
+								node.empty();
+								node.append(items.join(''));
+								node.attr("disabled", "disabled");
+								
+								//Json-Anfrage
+								$.ajaxSetup({ scriptCharset: "utf-8" , contentType: "application/json; charset=utf-8"});
+								$.getJSON('${url}/kategorieTyp?typ='+value, function(data) {
+									$.each(data, function(index, val) {
+										items.push('<option value="' + val.id + '">' + val.nameEscapeHtml + '</option>');
+									});
+									node.empty();
+									node.append(items.join(''));
+									if (items.length>1) node.removeAttr("disabled"); 
+									updateUnterkategorie('');
+								});
+							}
+							
+							function updateUnterkategorie()
+							{
+								var value = $('select#hauptkategorie')[0].value;
+								var items = [];	  
+								items.push('<option value="" class="info">Unterkategorie wählen</option>');
+							
+								var node = $('select#unterkategorie');
+								node.empty();
+								node.append(items.join(''));
+								node.attr("disabled", "disabled");
+								
+								//Json-Anfrage
+								$.ajaxSetup({ scriptCharset: "utf-8" , contentType: "application/json; charset=utf-8"});
+								$.getJSON('${url}/kategorie?kategorie='+value, function(data) {
+									$.each(data, function(index, val) {
+										items.push('<option value="' + val.id + '">' + val.nameEscapeHtml + '</option>');
+									});
+									node.empty();
+									node.append(items.join(''));
+									if (items.length>1) node.removeAttr("disabled"); 
+								});
+							}
+							
+							function init()
+							{
+								typ = $('select#typ')[0].value;
+								hauptkategorie = $('select#hauptkategorie')[0].value;
+			
+								if (isBlank(typ)) {
+									updateHauptkategorie();
+								} else {
+									$('select#hauptkategorie').removeAttr("disabled");
+									if (isBlank(hauptkategorie)) {
+										updateUnterkategorie();
+									} else {
+										$('select#unterkategorie').removeAttr("disabled");
+									}
+								}
+							}
+							
+							init();
+							</script>
+			
+					        <div>
+					        	<form:label path="vorgang.betreff" cssErrorClass="error">Betreff</form:label>
+					        	<table cellpadding="0" cellspacing="0">
+					        		<tr>
+					        			<td valign="top">
+					        				<util:freigabestatus status="${cmd.vorgang.betreffFreigabeStatus}"/>
+								            <form:input path="vorgang.betreff" cssClass="inputtext" cssStyle="width:331px;"/>
+					        			</td>
+					        			<td valign="top" style="padding-left:5px;">
+											<util:freigabestatusbutton name="Betreff" status="${cmd.vorgang.betreffFreigabeStatus}"/>
+					        			</td>
+					        		</tr>
+					        	</table>
+					        </div>
+						
+					        <div>
+					        	<form:label path="vorgang.details" cssErrorClass="error">Details</form:label>
+					        	<table cellpadding="0" cellspacing="0">
+					        		<tr>
+					        			<td valign="top">
+					        				<util:freigabestatus status="${cmd.vorgang.detailsFreigabeStatus}"/>
+								            <form:textarea path="vorgang.details" cols="6" cssStyle="width:331px;"/>
+					        			</td>
+					        			<td valign="top" style="padding-left:5px;">
+											<util:freigabestatusbutton name="Details" status="${cmd.vorgang.detailsFreigabeStatus}"/>
+					        			</td>
+					        			
+					        		</tr>
+					        	</table>
+					        </div>
+					        <div>
+					        	<form:label path="vorgang.adresse">Adresse</form:label>
+					            <form:input path="vorgang.adresse" cssClass="inputtext" cssStyle="width:351px;"/>
+				       		</div>
+					        
+							<input type="submit" value="Vorgangsdaten &#228;ndern" name="action"/>
+						</form:form>
+					</div>
+				</div>
+				<util:ddpanel name="vorgang"/>
+
+				
+				<!-- Kommentare -->
+				<div class="fieldset" id="kommentarpanel">
+					<div class="fieldsettitle closepanel " id="kommentartab"><div style="width:100%; height:15px;">interne Kommentare</div></div>
+					<div id="kommentarcontent">
+		
+						<form:form method="POST" modelAttribute="cmd">
+							
+				        	<form:label path="kommentar" cssErrorClass="error">neuer Kommentar</form:label>
+				        	<table cellpadding="0" cellspacing="0">
+				        		<tr>
+				        			<td valign="top">
+							            <form:textarea path="kommentar" cols="6" cssStyle="width:350px;"/>
+				        			</td>
+				        		
+				        			<td valign="bottom" style="padding-left:5px;">
+										<input type="submit" value="Kommentar speichern" name="action"/>
+				        			</td>
+				        	
+				        		</tr>
+				        	</table>
+						</form:form>
+						
+				  		<c:forEach items="${kommentare}" var="kommentar" varStatus="s">
+				  			<div class="kommentar ${(s.index%2==0) ? 'odd' : 'even'}">
+				  				<div class="kommentarHeader">
+				  					<span style="margin-right:10px;padding:0px;">${kommentar.nutzer}</span>
+					       			<fmt:formatDate value="${kommentar.datum}" pattern="dd.MM.yyyy"/><![CDATA[&nbsp;&nbsp;]]>
+					       			<span style="font-size:0.8em; color:#666;"><fmt:formatDate value="${kommentar.datum}" pattern="HH:mm"/></span>
+				  				</div>
+								<div class="kommentarText" >
+					        		${fx:toHtml(kommentar.text)}
+								</div>	
+				  			</div>
+						</c:forEach>
+			            <c:if test="${not empty maxPages and not empty kommentare}">
+				            <util:pagination maxPages="${maxPages}" page="${cmd.page}" size="${cmd.size}" post="true"/>
+				            <br/>
+			            </c:if>
+					</div>	
+				</div>
+				<util:ddpanel name="kommentar"/>
+
+
+				<!-- Delegieren -->
+				<div class="fieldset" id="delegierenpanel">
+					<div class="fieldsettitle closepanel" id="delegierentab"><div style="width:100%; height:15px;">Delegieren</div></div>
+					<div id="delegierencontent">
+						<form:form method="POST" modelAttribute="cmd.vorgang" >
+							<div class="label">
+								an
+								<![CDATA[&nbsp;]]>
+								<form:select path="delegiertAn" cssErrorClass="error">
+					            	<form:option value="" label="" cssClass="info"/>
+									<c:forEach items="${allDelegiertAn}" var="role">
+					            			<form:option value="${role.id}" title="${role.description}"/>	
+									</c:forEach>
+								</form:select>
+								<![CDATA[&nbsp;]]> 
+								<input type="submit" value="delegieren" name="action"/>
+							</div>
+						</form:form>
+					</div>
+				</div>
+				<util:ddpanel name="delegieren"/>
+
+				<!-- Priorität -->
+				<div class="fieldset" id="prioritaetpanel">
+					<div class="fieldsettitle closepanel" id="prioritaettab"><div style="width:100%; height:15px;">Priorität</div></div>
+					<div id="prioritaetcontent">
+						<form:form method="POST" modelAttribute="cmd.vorgang" >
+							<div class="label">
+								Priorität auf
+								<![CDATA[&nbsp;]]>
+								<form:select path="prioritaet" cssErrorClass="error">
+					            	<form:options items="${allPrioritaet}" itemLabel="text" htmlEscape="false"/>
+								</form:select>
+								<![CDATA[&nbsp;]]> 
+								<input type="submit" value="setzen" name="action"/>
+							</div>
+						</form:form>
+					</div>
+				</div>
+				<util:ddpanel name="prioritaet"/>
+
+				<!-- Archiv -->
+				<c:if test="${cmd.vorgang.status!='gemeldet' and cmd.vorgang.status!='offen' and cmd.vorgang.status!='inBearbeitung'}">
+					<div class="fieldset" id="archivpanel">
+						<div class="fieldsettitle closepanel" id="archivtab"><div style="width:100%; height:15px;">Archiv</div></div>
+						<div id="archivcontent">
+							<form:form method="POST" modelAttribute="cmd.vorgang" >
+								<div>
+									Vorgang <input type="submit" value="archivieren" name="action"/>
+								</div>
+							</form:form>
+						</div>
+					</div>
+					<util:ddpanel name="archiv"/>
+				</c:if>
+			</c:when>
+
+			<c:otherwise>
+				<!-- Archiv -->
+				<c:if test="${cmd.vorgang.status!='gemeldet' and cmd.vorgang.status!='offen' and cmd.vorgang.status!='inBearbeitung'}">
+					<div class="fieldset" id="archivpanel">
+						<div class="fieldsettitle closepanel" id="archivtab"><div style="width:100%; height:15px;">Archiv</div></div>
+						<div id="archivcontent">
+							<form:form method="POST" modelAttribute="cmd.vorgang" >
+								<div>
+									Vorgang aus dem Archiv <input type="submit" value="wiederherstellen" name="action"/>
+								</div>
+							</form:form>
+						</div>
+					</div>
+				</c:if>
+			</c:otherwise>		
+		</c:choose>
+	</div>
+	
+	<!-- HELP -->
+	<div id="root_style_help">
+		<p>
+            Auf dieser Seite haben Sie die Möglichkeit den aktuell ausgewählten Vorgang zu bearbeiten. Je nach Status des Vorgangs können Sie die <util:help anchor="Zustndigkeit">Zuständigkeit ändern</util:help>, den <util:help anchor="Status">Status wechseln</util:help>, <util:help anchor="Vorgangsdatenbearbeiten">Vorgangsdaten ändern</util:help>, <util:help anchor="Kommentare">interne Kommentare hinzufügen</util:help>, den <util:help anchor="Delegieren">Vorgang delegieren</util:help>, die <util:help anchor="Prioritt">Priorität</util:help> des Vorgangs anpassen und/oder den <util:help anchor="Archiv">Vorgang archivieren</util:help>.
+		</p>
+		<p>
+            Die einzelnen Inhaltsblöcke lassen sich für eine bessere Übersicht <util:help anchor="Blckeauf-undzuklappen">ein- und ausklappen</util:help>. Die Einstellungen hierfür bleiben für Ihre aktuelle Sitzung erhalten.
+		</p>
+	</div>
+
+</jsp:root>

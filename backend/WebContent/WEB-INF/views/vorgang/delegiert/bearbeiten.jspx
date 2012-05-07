@@ -1,0 +1,118 @@
+<jsp:root 
+	xmlns:c="http://java.sun.com/jsp/jstl/core" 
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions" 
+	xmlns:spring="http://www.springframework.org/tags" 
+	xmlns:jsp="http://java.sun.com/JSP/Page" 
+	xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu"
+	xmlns:vorgang="urn:jsptagdir:/WEB-INF/tags/vorgang"
+	xmlns:tiles="http://tiles.apache.org/tags-tiles" 
+	xmlns:fx="http://igd.fraunhofer.de/tags/elfunctions" 
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+	version="2.0"
+	>
+	<jsp:directive.page contentType="text/html;charset=UTF-8"/>
+
+	<c:set value="${cmd.vorgang}" var="vorgang"/>
+
+	<!-- CONTENTTITLE -->
+	<div id="root_style_content_title">
+		Vorgang bearbeiten
+	</div>
+	
+	<!-- TABMENU -->
+	<tiles:importAttribute name="tabmenu_item" ignore="true" toName="tabmenu_item"/>
+	<menu:tabmenuvorgang currentId="${tabmenu_item}" vorgangId="${vorgang.id}"/>
+	
+	<!-- ITEMINFO -->
+	<vorgang:iteminfo vorgang="${vorgang}"/>
+	
+	<!-- CONTENT -->
+	<div id="root_style_content">
+		<vorgang:vorgangPrintEmail vorgang="${vorgang}"/>
+		
+		<c:choose>
+			<c:when test="${not cmd.vorgang.archiviert}">
+				<div class="fieldset" id="statuspanel">
+					<div class="fieldsettitle closepanel" id="statustab"><div style="width:100%; height:15px;">Status</div></div>
+					<div id="statuscontent">
+						<form:form method="POST" modelAttribute="cmd.vorgang" >
+							<div>
+								<form:label path="status" cssErrorClass="error">Status</form:label>
+								<form:select path="status" cssErrorClass="error">
+					            	<form:option value="" label="Status wählen" cssClass="info"/>
+					            	<form:options items="${allVorgangStatus}" itemLabel="text" htmlEscape="false"/>
+								</form:select> 
+							</div>
+							<input type="submit" value="Status setzen" name="action"/>
+						</form:form>
+					</div>
+				</div>
+			
+				<div class="fieldset" id="delegierenpanel">
+					<div class="fieldsettitle closepanel" id="delegierentab"><div style="width:100%; height:15px;">Delegieren</div></div>
+					<div id="delegierencontent">
+						<form:form method="POST" modelAttribute="cmd.vorgang" >
+							<div>
+								Vorgang<![CDATA[&nbsp;]]> 
+								<input type="submit" value="zur&#252;ckweisen" name="action"/>
+							</div>
+						</form:form>
+					</div>
+				</div>
+
+				<div class="fieldset" id="kommentarpanel">
+					<div class="fieldsettitle closepanel " id="kommentartab"><div style="width:100%; height:15px;">interne Kommentare</div></div>
+					<div id="kommentarcontent">
+		
+						<form:form method="POST" modelAttribute="cmd">
+							
+				        	<form:label path="kommentar" cssErrorClass="error">neuer Kommentar</form:label>
+				        	<table cellpadding="0" cellspacing="0">
+				        		<tr>
+				        			<td valign="top">
+							            <form:textarea path="kommentar" cols="6" cssStyle="width:350px;"/>
+				        			</td>
+				        		
+				        			<td valign="bottom" style="padding-left:5px;">
+										<input type="submit" value="Kommentar speichern" name="action"/>
+				        			</td>
+				        	
+				        		</tr>
+				        	</table>
+						</form:form>
+						
+				  		<c:forEach items="${kommentare}" var="kommentar" varStatus="s">
+				  			<div class="kommentar ${(s.index%2==0) ? 'odd' : 'even'}">
+				  				<div class="kommentarHeader">
+				  					<span style="margin-right:10px;padding:0px;">${kommentar.nutzer}</span>
+					       			<fmt:formatDate value="${kommentar.datum}" pattern="dd.MM.yyyy"/><![CDATA[&nbsp;&nbsp;]]>
+					       			<span style="font-size:0.8em; color:#666;"><fmt:formatDate value="${kommentar.datum}" pattern="HH:mm"/></span>
+				  				</div>
+								<div class="kommentarText" >
+					        		${fx:toHtml(kommentar.text)}
+								</div>	
+				  			</div>
+						</c:forEach>
+			            <c:if test="${not empty maxPages and not empty kommentare}">
+				            <util:pagination maxPages="${maxPages}" page="${cmd.page}" size="${cmd.size}" post="true"/>
+				            <br/>
+			            </c:if>
+					</div>	
+				</div>
+			</c:when>
+			<c:otherwise>
+				Der Vorgang ist archiviert und kann daher nicht bearbeitet werden.
+			</c:otherwise>
+		</c:choose>
+	</div>
+	
+	<!-- HELP -->
+	<div id="root_style_help">
+		<p>
+            Auf dieser Seite haben Sie die Möglichkeit den aktuell ausgewählten Vorgang zu bearbeiten. Je nach Status des Vorgangs können Sie den <util:help anchor="Status">Status wechseln</util:help>, den <util:help anchor="Zustndigkeit">Vorgang zurückweisen</util:help> und/oder <util:help anchor="Kommentare">interne Kommentare hinzufügen</util:help>.
+		</p>
+	</div>
+
+</jsp:root>

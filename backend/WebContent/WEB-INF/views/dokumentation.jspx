@@ -1,0 +1,70 @@
+<jsp:root 
+	xmlns:c="http://java.sun.com/jsp/jstl/core" 
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions" 
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:spring="http://www.springframework.org/tags" 
+	xmlns:jsp="http://java.sun.com/JSP/Page" 
+	xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu"
+	xmlns:vorgang="urn:jsptagdir:/WEB-INF/tags/vorgang"
+	xmlns:map="urn:jsptagdir:/WEB-INF/tags/map"
+	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+	xmlns:foto="urn:jsptagdir:/WEB-INF/tags/foto"
+	xmlns:tiles="http://tiles.apache.org/tags-tiles"
+	xmlns:fx="http://igd.fraunhofer.de/tags/elfunctions" 
+	version="2.0"
+	>
+	<jsp:directive.page contentType="text/html;charset=UTF-8"/>
+
+	<!-- CONTENTTITLE -->
+	<div id="root_style_content_title">
+		Dokumentation
+	</div>
+	
+	<!-- TABMENU -->
+	<tiles:importAttribute name="tabmenu_item" ignore="true" toName="tabmenu_item"/>
+	<menu:tabmenudokumentation currentId="${tabmenu_item}"/>
+		
+	<!-- CONTENT -->
+	<div id="root_style_content">
+		<c:choose>
+
+			<c:when test="${not empty externUrlId}">
+				<c:url value="/dokumentation/${externUrlId}.html" var="url"/>
+				<div style="text-align: right;"><a href="${url}" target="_blank">Druckversion</a></div>
+				<center>
+				<div id="documentationContent">
+					<c:out value="${content}" escapeXml="false"/>
+				</div>
+				</center>
+			</c:when>
+
+			<c:when test="${tabmenu_item eq 'dokumentation.api'}">
+				<c:url value="/dokumentation/apidoc/index.html" var="url"/>
+					<iframe height="800" width="100%" src="${url}" frameborder="0" scrolling="no" encoding="Cp1252">
+						<p>Ihr Browser kann leider keine eingebetteten Frames anzeigen.</p>
+					</iframe>
+			</c:when>
+
+			<c:otherwise>
+				<p>In diesem Bereich finden Sie verschiedene Dokumentationen zum Backend von Klarschiff:</p>
+				<ul>
+					<li>Benutzerhandbuch: Handbuch für Benutzer</li>
+					<li>Administrationshandbuch: Handbuch für Administratoren</li>
+					<li>Entwicklerdokumentation: Dokumentation für Entwickler</li>
+					<li>API-Dokumentation: Dokumentation der Implementierung für Entwickler</li>
+				</ul>
+				<br/>
+                <p>Die Dokumentation zum Frontend von Klarschiff finden Sie <a href="http://demo.klarschiff-hro.de/pc/dokumentation.html" target="_blank">hier.</a> Wichtigste Elemente dieser Dokumentation sind die Installationsanweisung (inklusive Hervorhebung besonders wichtiger Punkte) und die Kurzbeschreibung der Komponenten, aus denen sich das Frontend zusammensetzt.</p>
+			</c:otherwise>
+
+		</c:choose>
+	</div>
+	
+	<!-- HELP -->
+	<div id="root_style_help">
+		<p>
+			Über die Menüreiter oben auf dieser Seite haben Sie die Möglichkeit zwischen den vier verschiedenen Dokumentationen zum Backend von Klarschiff zu wechseln.
+		</p>
+	</div>
+
+</jsp:root>
