@@ -65,7 +65,7 @@ Die WAR-Datei ist beim Tomcat in das Verzeichnis @webapps@ zu kopieren und damit
 *9. Tomcat starten*
 Der Tomcat kann nun gestartet werden. Beim Start werden dabei die notwendigen Tabellen in der Datenbank angelegt.
 
-Unter der URL "http://localhost:8080/backend/":http://localhost:8080/backend/ sollte nun das Backend erreichbar sein.
+Unter der URL "http://localhost:8080/klarschiff.webapp/":http://localhost:8080/klarschiff.webapp/ sollte nun das Backend erreichbar sein.
 
 
 h2(#einstellungen). Einstellungen

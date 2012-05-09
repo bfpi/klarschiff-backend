@@ -1,0 +1,811 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+	http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.5.xsd
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+
+    <!-- <context:property-placeholder location="classpath*:settings.properties"/>-->
+
+
+	<bean class="de.fraunhofer.igd.klarschiff.service.init.InitializeService" id="initializeService" 
+		p:enable="true" 
+		p:executeSqlScriptFrontendDb="${init.sqlscript.frontenddb}"
+		p:executeSqlScriptDbLink="${init.sqlscript.dblink}"
+	>
+			
+		<property name="initObjectList">
+			<list>
+				<ref bean="statusKommentarVorlage_01"/>
+				<ref bean="statusKommentarVorlage_02"/>
+				<ref bean="statusKommentarVorlage_03"/>
+				<ref bean="statusKommentarVorlage_04"/>
+				<ref bean="statusKommentarVorlage_05"/>
+				<ref bean="statusKommentarVorlage_06"/>
+				<ref bean="stadtGrenze"/>
+				<ref bean="stadtteilGrenze_01"/>
+				<ref bean="stadtteilGrenze_02"/>
+				<ref bean="stadtteilGrenze_03"/>
+				<ref bean="stadtteilGrenze_04"/>
+				<ref bean="stadtteilGrenze_05"/>
+				<ref bean="stadtteilGrenze_06"/>
+				<ref bean="stadtteilGrenze_07"/>
+				<ref bean="stadtteilGrenze_08"/>
+				<ref bean="stadtteilGrenze_09"/>
+				<ref bean="stadtteilGrenze_10"/>
+				<ref bean="stadtteilGrenze_11"/>
+				<ref bean="stadtteilGrenze_12"/>
+				<ref bean="stadtteilGrenze_13"/>
+				<ref bean="stadtteilGrenze_14"/>
+				<ref bean="stadtteilGrenze_15"/>
+				<ref bean="stadtteilGrenze_16"/>
+				<ref bean="stadtteilGrenze_17"/>
+				<ref bean="stadtteilGrenze_18"/>
+				<ref bean="stadtteilGrenze_19"/>
+				<ref bean="stadtteilGrenze_20"/>
+				<ref bean="stadtteilGrenze_21"/>
+				<ref bean="stadtteilGrenze_22"/>
+				<ref bean="stadtteilGrenze_23"/>
+				<ref bean="stadtteilGrenze_24"/>
+				<ref bean="stadtteilGrenze_25"/>
+				<ref bean="stadtteilGrenze_26"/>
+				<ref bean="stadtteilGrenze_27"/>
+				<ref bean="stadtteilGrenze_28"/>
+				<ref bean="stadtteilGrenze_29"/>
+				<ref bean="stadtteilGrenze_30"/>
+				<ref bean="stadtteilGrenze_31"/>
+                
+                <ref bean="kat_01"/>
+				<ref bean="kat_01_01"/>
+				<ref bean="kat_01_02"/>
+				<ref bean="kat_01_03"/>
+				<ref bean="kat_01_04"/>
+				<ref bean="kat_01_05"/>
+				<ref bean="kat_01_06"/>
+				<ref bean="kat_01_07"/>
+				<ref bean="kat_01_08"/>
+				<ref bean="kat_01_09"/>
+				<ref bean="kat_01_10"/>
+				<ref bean="kat_01_11"/>
+				<ref bean="kat_01_12"/>
+				<ref bean="kat_01_13"/>
+				<ref bean="kat_01_14"/>
+								
+				<ref bean="kat_02"/>
+				<ref bean="kat_02_01"/>
+				<ref bean="kat_02_02"/>
+				<ref bean="kat_02_03"/>
+				<ref bean="kat_02_04"/>
+				<ref bean="kat_02_05"/>
+				<ref bean="kat_02_06"/>
+				<ref bean="kat_02_07"/>
+				<ref bean="kat_02_08"/>
+				<ref bean="kat_02_09"/>		
+				<ref bean="kat_02_10"/>		
+				<ref bean="kat_02_11"/>		
+				<ref bean="kat_02_12"/>	
+				<ref bean="kat_02_13"/>
+				<ref bean="kat_02_14"/>
+				
+				<ref bean="kat_03"/>
+				<ref bean="kat_03_01"/>
+				<ref bean="kat_03_02"/>
+				<ref bean="kat_03_03"/>
+				<ref bean="kat_03_04"/>
+				<ref bean="kat_03_05"/>
+				<ref bean="kat_03_06"/>
+				<ref bean="kat_03_07"/>
+				<ref bean="kat_03_08"/>
+				<ref bean="kat_03_09"/>
+				<ref bean="kat_03_10"/>
+				<ref bean="kat_03_11"/>
+				<ref bean="kat_03_12"/>
+				<ref bean="kat_03_13"/>
+				<ref bean="kat_03_14"/>
+				<ref bean="kat_03_15"/>
+				<ref bean="kat_03_16"/>
+				<ref bean="kat_03_17"/>
+				
+				<ref bean="kat_04"/>
+				<ref bean="kat_04_01"/>
+				<ref bean="kat_04_02"/>
+				
+				<ref bean="kat_05"/>
+				<ref bean="kat_05_01"/>
+				<ref bean="kat_05_02"/>
+				<ref bean="kat_05_03"/>
+				<ref bean="kat_05_04"/>
+				<ref bean="kat_05_05"/>
+				<ref bean="kat_05_06"/>
+				<ref bean="kat_05_07"/>
+				<ref bean="kat_05_08"/>
+				<ref bean="kat_05_09"/>
+				<ref bean="kat_05_10"/>
+				<ref bean="kat_05_11"/>
+				<ref bean="kat_05_12"/>
+				
+				<ref bean="kat_06"/>
+				<ref bean="kat_06_01"/>
+				<ref bean="kat_06_02"/>
+				<ref bean="kat_06_03"/>
+				<ref bean="kat_06_04"/>
+				<ref bean="kat_06_05"/>
+				<ref bean="kat_06_06"/>
+				<ref bean="kat_06_07"/>
+				<ref bean="kat_06_08"/>
+				<ref bean="kat_06_09"/>
+				<ref bean="kat_06_10"/>
+				<ref bean="kat_06_11"/>
+				<ref bean="kat_06_12"/>
+				<ref bean="kat_06_13"/>
+				<ref bean="kat_06_14"/>
+				<ref bean="kat_06_15"/>
+				<ref bean="kat_06_16"/>
+				<ref bean="kat_06_17"/>
+				<ref bean="kat_06_18"/>
+				<ref bean="kat_06_19"/>
+				
+				<ref bean="kat_07"/>
+				<ref bean="kat_07_01"/>
+				<ref bean="kat_07_02"/>
+				<ref bean="kat_07_03"/>
+				<ref bean="kat_07_04"/>
+				<ref bean="kat_07_05"/>
+				<ref bean="kat_07_06"/>
+				<ref bean="kat_07_07"/>
+				<ref bean="kat_07_08"/>
+				
+				<ref bean="kat_08"/>
+				<ref bean="kat_08_01"/>
+				<ref bean="kat_08_02"/>
+				<ref bean="kat_08_03"/>
+				<ref bean="kat_08_04"/>
+				<ref bean="kat_08_05"/>
+				<ref bean="kat_08_06"/>
+				<ref bean="kat_08_07"/>
+				<ref bean="kat_08_08"/>
+				<ref bean="kat_08_09"/>
+				<ref bean="kat_08_10"/>
+				<ref bean="kat_08_11"/>
+				<ref bean="kat_08_12"/>
+				<ref bean="kat_08_13"/>
+				<ref bean="kat_08_14"/>
+				<ref bean="kat_08_15"/>
+                
+                <ref bean="kat_09"/>
+				<ref bean="kat_09_01"/>
+				<ref bean="kat_09_02"/>
+				<ref bean="kat_09_03"/>
+				<ref bean="kat_09_04"/>
+				
+				<ref bean="kat_10"/>
+				<ref bean="kat_10_01"/>
+				<ref bean="kat_10_02"/>
+				<ref bean="kat_10_03"/>
+				<ref bean="kat_10_04"/>
+				
+				<ref bean="kat_11"/>
+				<ref bean="kat_11_01"/>
+				<ref bean="kat_11_02"/>
+				<ref bean="kat_11_03"/>
+				<ref bean="kat_11_04"/>
+				<ref bean="kat_11_05"/>
+				<ref bean="kat_11_06"/>
+				
+				<ref bean="kat_12"/>
+				<ref bean="kat_12_01"/>
+				<ref bean="kat_12_02"/>
+				<ref bean="kat_12_03"/>
+				<ref bean="kat_12_04"/>
+				<ref bean="kat_12_05"/>
+				<ref bean="kat_12_06"/>
+				<ref bean="kat_12_07"/>
+				
+				<ref bean="kat_13"/>
+				<ref bean="kat_13_01"/>
+				<ref bean="kat_13_02"/>
+				<ref bean="kat_13_03"/>
+				
+				<ref bean="kat_14"/>
+				<ref bean="kat_14_01"/>
+				<ref bean="kat_14_02"/>
+				<ref bean="kat_14_03"/>
+				<ref bean="kat_14_04"/>
+				<ref bean="kat_14_05"/>
+				<ref bean="kat_14_06"/>
+				<ref bean="kat_14_07"/>
+				
+				<ref bean="kat_15"/>				
+				<ref bean="kat_15_01"/>
+				<ref bean="kat_15_02"/>
+				<ref bean="kat_15_03"/>
+                
+                <ref bean="kat_16"/>				
+				<ref bean="kat_16_01"/>
+				<ref bean="kat_16_02"/>
+				<ref bean="kat_16_03"/>
+				<ref bean="kat_16_04"/>
+				<ref bean="kat_16_05"/>
+				<ref bean="kat_16_06"/>
+				<ref bean="kat_16_07"/>
+				
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="statusKommentarVorlage_01" class="de.fraunhofer.igd.klarschiff.vo.StatusKommentarVorlage" lazy-init="true" p:titel="Eigentum">
+		<property name="text"><value><![CDATA[Die Fläche befindet sich nicht im Eigentum der Hansestadt Rostock.]]></value></property>
+	</bean>
+    <bean id="statusKommentarVorlage_02" class="de.fraunhofer.igd.klarschiff.vo.StatusKommentarVorlage" lazy-init="true" p:titel="Gehölzschnitt">
+		<property name="text"><value><![CDATA[Schnitt- und Fällmaßnahmen können gemäß Bundesnaturschutzgesetz (§ 39 Abs. 5) nur vom 01. Oktober bis 28. Februar durchgeführt werden. Der Hinweis ist vorgemerkt.]]></value></property>
+	</bean>
+    <bean id="statusKommentarVorlage_03" class="de.fraunhofer.igd.klarschiff.vo.StatusKommentarVorlage" lazy-init="true" p:titel="Lichtraumprofil">
+		<property name="text"><value><![CDATA[Die Einschränkung der Durchgangsbreite ist noch nicht wesentlich. Derzeit besteht kein Handlungsbedarf.]]></value></property>
+	</bean>
+    <bean id="statusKommentarVorlage_04" class="de.fraunhofer.igd.klarschiff.vo.StatusKommentarVorlage" lazy-init="true" p:titel="Pflegeerfordernis">
+		<property name="text"><value><![CDATA[Ihr Hinweis ist berechtigt. Er wird in die turnusmäßige Pflege/Säuberung eingeordnet.]]></value></property>
+	</bean>
+    <bean id="statusKommentarVorlage_05" class="de.fraunhofer.igd.klarschiff.vo.StatusKommentarVorlage" lazy-init="true" p:titel="Pflegezustand">
+		<property name="text"><value><![CDATA[Ihr Hinweis ist nicht berechtigt. Der Pflegezustand/Reinigungszustand entspricht der Pflegestandard-Einstufung.]]></value></property>
+	</bean>
+    <bean id="statusKommentarVorlage_06" class="de.fraunhofer.igd.klarschiff.vo.StatusKommentarVorlage" lazy-init="true" p:titel="Unmut">
+		<property name="text"><value><![CDATA[Ihr Hinweis zielt auf übergeordnete kommunalpolitische Belange ab. Eine Bearbeitung ist uns mittels dieses Mediums nicht möglich.]]></value></property>
+	</bean>
+
+	<bean id="grenzeFactory" class="de.fraunhofer.igd.klarschiff.service.geo.GrenzeFactory"/>
+	
+	<bean id="stadtGrenze" factory-bean="grenzeFactory" factory-method="createStadtGrenze" lazy-init="true">
+		<constructor-arg value="META-INF/oviwkt/stadtgrenze.wkt"/>
+	</bean>
+	<bean id="stadtteilGrenze_01" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
+		<constructor-arg value="Hansaviertel"/>
+		<constructor-arg value="META-INF/oviwkt/Hansaviertel.wkt"/>
+	</bean>
+	<bean id="stadtteilGrenze_02" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
+		<constructor-arg value="Hinrichshagen"/>
+		<constructor-arg value="META-INF/oviwkt/Hinrichshagen.wkt"/>
+	</bean>
+	<bean id="stadtteilGrenze_03" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
+		<constructor-arg value="Dierkow-Neu"/>
+		<constructor-arg value="META-INF/oviwkt/Dierkow-Neu.wkt"/>
+	</bean>
+	<bean id="stadtteilGrenze_04" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
+		<constructor-arg value="Stuthof"/>
+		<constructor-arg value="META-INF/oviwkt/Stuthof.wkt"/>
+	</bean>
+	<bean id="stadtteilGrenze_05" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
+		<constructor-arg value="Dierkow-Ost"/>
+		<constructor-arg value="META-INF/oviwkt/Dierkow-Ost.wkt"/>
+	</bean>
+	<bean id="stadtteilGrenze_06" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
+		<constructor-arg value="Gehlsdorf"/>
+		<constructor-arg value="META-INF/oviwkt/Gehlsdorf.wkt"/>
+	</bean>
+	<bean id="stadtteilGrenze_07" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
+		<constructor-arg value="Krummendorf"/>
+		<constructor-arg value="META-INF/oviwkt/Krummendorf.wkt"/>
+	</bean>
+	<bean id="stadtteilGrenze_08" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
+		<constructor-arg value="Peez"/>
+		<constructor-arg value="META-INF/oviwkt/Peez.wkt"/>
+	</bean>
+
+	<bean id="stadtteilGrenze_09" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
+		<constructor-arg value="Kröpeliner-Tor-Vorstadt"/>
+		<constructor-arg value="META-INF/oviwkt/Kröpeliner-Tor-Vorstadt.wkt"/>
+	</bean>
+
+	<bean id="stadtteilGrenze_10" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
+		<constructor-arg value="Markgrafenheide"/>
+		<constructor-arg value="META-INF/oviwkt/Markgrafenheide.wkt"/>
+	</bean>
+	
+	<bean id="stadtteilGrenze_11" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
+		<constructor-arg value="Dierkow-West"/>
+		<constructor-arg value="META-INF/oviwkt/Dierkow-West.wkt"/>
+	</bean>
+	
+	<bean id="stadtteilGrenze_12" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
+		<constructor-arg value="Nienhagen"/>
+		<constructor-arg value="META-INF/oviwkt/Nienhagen.wkt"/>
+	</bean>
+	
+	<bean id="stadtteilGrenze_13" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
+		<constructor-arg value="Hinrichsdorf"/>
+		<constructor-arg value="META-INF/oviwkt/Hinrichsdorf.wkt"/>
+	</bean>
+		<bean id="stadtteilGrenze_14" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
+		<constructor-arg value="Schmarl"/>
+		<constructor-arg value="META-INF/oviwkt/Schmarl.wkt"/>
+	</bean>
+		<bean id="stadtteilGrenze_15" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
+		<constructor-arg value="Groß Klein"/>
+		<constructor-arg value="META-INF/oviwkt/Groß Klein.wkt"/>
+	</bean>
+		<bean id="stadtteilGrenze_16" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
+		<constructor-arg value="Südstadt"/>
+		<constructor-arg value="META-INF/oviwkt/Südstadt.wkt"/>
+	</bean>
+		<bean id="stadtteilGrenze_17" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
+		<constructor-arg value="Toitenwinkel"/>
+		<constructor-arg value="META-INF/oviwkt/Toitenwinkel.wkt"/>
+	</bean>
+		<bean id="stadtteilGrenze_18" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
+		<constructor-arg value="Wiethagen"/>
+		<constructor-arg value="META-INF/oviwkt/Wiethagen.wkt"/>
+	</bean>
+		<bean id="stadtteilGrenze_19" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
+		<constructor-arg value="Torfbrücke"/>
+		<constructor-arg value="META-INF/oviwkt/Torfbrücke.wkt"/>
+	</bean>
+		<bean id="stadtteilGrenze_20" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
+		<constructor-arg value="Jürgeshof"/>
+		<constructor-arg value="META-INF/oviwkt/Jürgeshof.wkt"/>
+	</bean>
+		<bean id="stadtteilGrenze_21" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
+		<constructor-arg value="Brinckmansdorf"/>
+		<constructor-arg value="META-INF/oviwkt/Brinckmansdorf.wkt"/>
+	</bean>
+		<bean id="stadtteilGrenze_22" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
+		<constructor-arg value="Stadtmitte"/>
+		<constructor-arg value="META-INF/oviwkt/Stadtmitte.wkt"/>
+	</bean>
+		<bean id="stadtteilGrenze_23" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
+		<constructor-arg value="Hohe Düne"/>
+		<constructor-arg value="META-INF/oviwkt/Hohe Düne.wkt"/>
+	</bean>
+		<bean id="stadtteilGrenze_24" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
+		<constructor-arg value="Biestow"/>
+		<constructor-arg value="META-INF/oviwkt/Biestow.wkt"/>
+	</bean>
+		<bean id="stadtteilGrenze_25" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
+		<constructor-arg value="Gartenstadt"/>
+		<constructor-arg value="META-INF/oviwkt/Gartenstadt.wkt"/>
+	</bean>
+		<bean id="stadtteilGrenze_26" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
+		<constructor-arg value="Reutershagen"/>
+		<constructor-arg value="META-INF/oviwkt/Reutershagen.wkt"/>
+	</bean>
+		<bean id="stadtteilGrenze_27" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
+		<constructor-arg value="Seebad Warnemünde"/>
+		<constructor-arg value="META-INF/oviwkt/Seebad Warnemünde.wkt"/>
+	</bean>
+		<bean id="stadtteilGrenze_28" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
+		<constructor-arg value="Diedrichshagen"/>
+		<constructor-arg value="META-INF/oviwkt/Diedrichshagen.wkt"/>
+	</bean>
+		<bean id="stadtteilGrenze_29" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
+		<constructor-arg value="Lichtenhagen"/>
+		<constructor-arg value="META-INF/oviwkt/Lichtenhagen.wkt"/>
+	</bean>
+		<bean id="stadtteilGrenze_30" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
+		<constructor-arg value="Lütten Klein"/>
+		<constructor-arg value="META-INF/oviwkt/Lütten Klein.wkt"/>
+	</bean>
+		<bean id="stadtteilGrenze_31" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
+		<constructor-arg value="Evershagen"/>
+		<constructor-arg value="META-INF/oviwkt/Evershagen.wkt"/>
+	</bean>
+    
+    
+	<bean id="kat_01" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:name="Gehweg/Radweg/Straße" p:typ="problem">
+		<property name="children">
+			<list>
+				<ref bean="kat_01_01"/>
+				<ref bean="kat_01_02"/>
+				<ref bean="kat_01_03"/>
+				<ref bean="kat_01_04"/>
+				<ref bean="kat_01_05"/>
+				<ref bean="kat_01_06"/>
+				<ref bean="kat_01_07"/>
+				<ref bean="kat_01_08"/>
+				<ref bean="kat_01_09"/>
+				<ref bean="kat_01_10"/>
+				<ref bean="kat_01_11"/>
+				<ref bean="kat_01_12"/>
+				<ref bean="kat_01_13"/>
+				<ref bean="kat_01_14"/>
+			</list>
+		</property>
+	</bean>	
+    <bean id="kat_01_01" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_01" p:initialZustaendigkeit="a73_strassenreinigung,a67_ausstattung,a82" p:name="Abfallbehälter/Papierkorb schadhaft"/>
+    <bean id="kat_01_02" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_01" p:initialZustaendigkeit="a73_strassenreinigung,a67_ausstattung,a82" p:name="Abfallbehälter/Papierkorb überfüllt"/>
+    <bean id="kat_01_03" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_01" p:initialZustaendigkeit="a66_ampeln" p:name="Ampel schadhaft" p:naehereBeschreibungNotwendig="details"/>
+    <bean id="kat_01_04" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_01" p:initialZustaendigkeit="a66_strassenaufsicht,a67_gruenflaechen,a82" p:name="bauliche Gefahrenstelle" p:naehereBeschreibungNotwendig="details"/>
+    <bean id="kat_01_05" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_01" p:initialZustaendigkeit="a66_beleuchtung" p:name="Beleuchtung schadhaft" p:naehereBeschreibungNotwendig="details"/>
+    <bean id="kat_01_06" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_01" p:initialZustaendigkeit="a66_beschilderung,a67_ausstattung,a82" p:name="Beschilderung/Markierung schadhaft" p:naehereBeschreibungNotwendig="details"/>
+    <bean id="kat_01_07" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_01" p:initialZustaendigkeit="a66_bauwerke" p:name="Brücke/Tunnel/Mauer/Treppe schadhaft" p:naehereBeschreibungNotwendig="details"/>
+    <bean id="kat_01_08" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_01" p:initialZustaendigkeit="a66_ausstattung,a67_ausstattung,a82" p:name="Fahrradständer schadhaft"/>
+    <bean id="kat_01_09" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_01" p:initialZustaendigkeit="a66_strassenaufsicht,a67_ausstattung" p:name="Gully schadhaft" p:naehereBeschreibungNotwendig="details"/>
+    <bean id="kat_01_10" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_01" p:initialZustaendigkeit="a73_strassenreinigung,a67_gruenflaechen" p:name="Hundekot"/>
+    <bean id="kat_01_11" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_01" p:initialZustaendigkeit="a66_ausstattung,a67_ausstattung,a82" p:name="Poller/Planke/Absperrelement schadhaft"/>
+    <bean id="kat_01_12" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_01" p:initialZustaendigkeit="a67_ausstattung,a82" p:name="Sitzgelegenheit schadhaft"/>
+	<bean id="kat_01_13" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_01" p:initialZustaendigkeit="a73_strassenreinigung,a67_gruenflaechen,a82" p:name="Wegereinigung fehlt" p:naehereBeschreibungNotwendig="details"/>
+	<bean id="kat_01_14" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_01" p:initialZustaendigkeit="a73_strassenreinigung,a67_gruenflaechen,a82" p:name="Wildwuchs" p:naehereBeschreibungNotwendig="details"/>
+    
+	
+	<bean id="kat_02" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:name="Müll/Schmutz" p:typ="problem">
+		<property name="children">
+			<list>
+				<ref bean="kat_02_01"/>
+				<ref bean="kat_02_02"/>
+				<ref bean="kat_02_03"/>
+				<ref bean="kat_02_04"/>
+				<ref bean="kat_02_05"/>
+				<ref bean="kat_02_06"/>
+				<ref bean="kat_02_07"/>
+				<ref bean="kat_02_08"/>
+				<ref bean="kat_02_09"/>
+				<ref bean="kat_02_10"/>
+				<ref bean="kat_02_11"/>
+				<ref bean="kat_02_12"/>
+				<ref bean="kat_02_13"/>	
+				<ref bean="kat_02_14"/>	
+			</list>
+		</property>
+	</bean>	
+	<bean id="kat_02_01" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_02" p:initialZustaendigkeit="a73_strassenreinigung,a67_ausstattung,a82" p:name="Abfallbehälter/Papierkorb überfüllt"/>
+    <bean id="kat_02_02" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_02" p:initialZustaendigkeit="a73_altfahrzeuge,a82" p:name="Altfahrzeug/Schrottfahrrad" p:naehereBeschreibungNotwendig="details"/>
+	<bean id="kat_02_03" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_02" p:initialZustaendigkeit="a73_umweltaufsicht,a67_gruenflaechen,a82" p:name="Bauabfall" p:naehereBeschreibungNotwendig="details"/>
+	<bean id="kat_02_04" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_02" p:initialZustaendigkeit="a73_strassenreinigung" p:name="Beutel in Hundetoilette fehlen"/>
+	<bean id="kat_02_05" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_02" p:initialZustaendigkeit="a73_umweltaufsicht,a67_gruenflaechen,a82" p:name="Elektroschrott" p:naehereBeschreibungNotwendig="details"/>
+	<bean id="kat_02_06" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_02" p:initialZustaendigkeit="a73_umweltaufsicht,a67_gruenflaechen,a82" p:name="Grünschnitt/Weihnachtsbäume" p:naehereBeschreibungNotwendig="details"/>
+	<bean id="kat_02_07" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_02" p:initialZustaendigkeit="a73_umweltaufsicht,a67_gruenflaechen,a82" p:name="Hausmüll" p:naehereBeschreibungNotwendig="details"/>
+	<bean id="kat_02_08" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_02" p:initialZustaendigkeit="a73_strassenreinigung,a67_gruenflaechen" p:name="Hundekot"/>
+    <bean id="kat_02_09" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_02" p:initialZustaendigkeit="a73_muelltonnen" p:name="Mülltonne überfüllt"/>
+	<bean id="kat_02_10" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_02" p:initialZustaendigkeit="a73_container" p:name="Nebenablagerungen an Recycling-Container"/>
+    <bean id="kat_02_11" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_02" p:initialZustaendigkeit="a73_container" p:name="Recycling-Container überfüllt"/>
+	<bean id="kat_02_12" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_02" p:initialZustaendigkeit="a73_umweltaufsicht,a82" p:name="Sondermüll" p:naehereBeschreibungNotwendig="details"/>
+	<bean id="kat_02_13" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_02" p:initialZustaendigkeit="a73_umweltaufsicht,a67_gruenflaechen,a82" p:name="Sperrmüll" p:naehereBeschreibungNotwendig="details"/>
+	<bean id="kat_02_14" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_02" p:initialZustaendigkeit="a73_strassenreinigung,a67_gruenflaechen,a82" p:name="Wegereinigung fehlt" p:naehereBeschreibungNotwendig="details"/>
+
+	
+	<bean id="kat_03" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:name="Öffentliches Grün/Spielplatz" p:typ="problem">
+		<property name="children">
+			<list>
+				<ref bean="kat_03_01"/>
+				<ref bean="kat_03_02"/>
+				<ref bean="kat_03_03"/>
+				<ref bean="kat_03_04"/>
+				<ref bean="kat_03_05"/>
+				<ref bean="kat_03_06"/>
+				<ref bean="kat_03_07"/>
+				<ref bean="kat_03_08"/>
+				<ref bean="kat_03_09"/>
+				<ref bean="kat_03_10"/>
+				<ref bean="kat_03_11"/>
+				<ref bean="kat_03_12"/>
+				<ref bean="kat_03_13"/>
+				<ref bean="kat_03_14"/>
+				<ref bean="kat_03_15"/>
+				<ref bean="kat_03_16"/>
+				<ref bean="kat_03_17"/>
+			</list>
+		</property>
+	</bean>	
+    <bean id="kat_03_01" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_03" p:initialZustaendigkeit="a67_ausstattung,a73_strassenreinigung" p:name="Abfallbehälter/Papierkorb schadhaft"/>
+	<bean id="kat_03_02" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_03" p:initialZustaendigkeit="a67_ausstattung,a73_strassenreinigung" p:name="Abfallbehälter/Papierkorb überfüllt"/>
+	<bean id="kat_03_03" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_03" p:initialZustaendigkeit="a67_stadtbaeume" p:name="Baum schadhaft" p:naehereBeschreibungNotwendig="details"/>
+	<bean id="kat_03_04" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_03" p:initialZustaendigkeit="a67_stadtbaeume" p:name="Baumscheibe ungepflegt" p:naehereBeschreibungNotwendig="details"/>
+    <bean id="kat_03_05" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_03" p:initialZustaendigkeit="a66_beleuchtung" p:name="Beleuchtung schadhaft" p:naehereBeschreibungNotwendig="details"/>
+	<bean id="kat_03_06" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_03" p:initialZustaendigkeit="a67_ausstattung,a66_beschilderung" p:name="Beschilderung/Markierung schadhaft" p:naehereBeschreibungNotwendig="details"/>
+	<bean id="kat_03_07" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_03" p:initialZustaendigkeit="a73_strassenreinigung" p:name="Beutel in Hundetoilette fehlen"/>
+	<bean id="kat_03_08" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_03" p:initialZustaendigkeit="a67_ausstattung" p:name="Brunnen schadhaft" p:naehereBeschreibungNotwendig="details"/>
+	<bean id="kat_03_09" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_03" p:initialZustaendigkeit="a41" p:name="Denkmal schadhaft"/>
+    <bean id="kat_03_10" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_03" p:initialZustaendigkeit="a67_ausstattung,a66_ausstattung" p:name="Fahrradständer schadhaft"/>
+	<bean id="kat_03_11" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_03" p:initialZustaendigkeit="a67_gruenflaechen" p:name="Grünanlage ungepflegt" p:naehereBeschreibungNotwendig="details"/>
+	<bean id="kat_03_12" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_03" p:initialZustaendigkeit="a67_gruenflaechen,a73_strassenreinigung" p:name="Hundekot"/>
+    <bean id="kat_03_13" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_03" p:initialZustaendigkeit="a73_strassenreinigung" p:name="Hundetoilette schadhaft"/>
+    <bean id="kat_03_14" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_03" p:initialZustaendigkeit="a67_ausstattung,a66_ausstattung" p:name="Poller/Absperrelement schadhaft"/>
+	<bean id="kat_03_15" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_03" p:initialZustaendigkeit="a67_ausstattung" p:name="Sitzgelegenheit schadhaft"/>
+	<bean id="kat_03_16" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_03" p:initialZustaendigkeit="a67_spielplatzservice" p:name="Spielgerät schadhaft" p:naehereBeschreibungNotwendig="details"/>
+    <bean id="kat_03_17" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_03" p:initialZustaendigkeit="a67_gruenflaechen,a73_strassenreinigung" p:name="Wegereinigung fehlt" p:naehereBeschreibungNotwendig="details"/>
+	
+	
+	<bean id="kat_04" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:name="Parken" p:typ="problem">
+		<property name="children">
+			<list>
+				<ref bean="kat_04_01"/>
+				<ref bean="kat_04_02"/>
+			</list>
+		</property>
+	</bean>	
+	<bean id="kat_04_01" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_04" p:initialZustaendigkeit="a66_ausstattung" p:name="Parkautomat schadhaft" p:naehereBeschreibungNotwendig="details"/>
+	<bean id="kat_04_02" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_04" p:initialZustaendigkeit="a67_gruenflaechen,a82_ordnungswidrigkeiten" p:name="verkehrswidriges Parken" p:naehereBeschreibungNotwendig="details"/>
+
+
+	<bean id="kat_05" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:name="Stadtmöbel" p:typ="problem">
+		<property name="children">
+			<list>
+				<ref bean="kat_05_01"/>
+				<ref bean="kat_05_02"/>
+				<ref bean="kat_05_03"/>
+				<ref bean="kat_05_04"/>
+				<ref bean="kat_05_05"/>
+				<ref bean="kat_05_06"/>
+				<ref bean="kat_05_07"/>
+				<ref bean="kat_05_08"/>
+				<ref bean="kat_05_09"/>
+				<ref bean="kat_05_10"/>
+				<ref bean="kat_05_11"/>
+				<ref bean="kat_05_12"/>
+			</list>
+		</property>
+	</bean>	
+    <bean id="kat_05_01" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_05" p:initialZustaendigkeit="a73_strassenreinigung,a67_ausstattung" p:name="Abfallbehälter/Papierkorb schadhaft"/>
+    <bean id="kat_05_02" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_05" p:initialZustaendigkeit="a73_strassenreinigung,a67_ausstattung" p:name="Abfallbehälter/Papierkorb überfüllt"/>
+    <bean id="kat_05_03" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_05" p:initialZustaendigkeit="a66_beschilderung" p:name="Beschilderung schadhaft" p:naehereBeschreibungNotwendig="details"/>
+	<bean id="kat_05_04" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_05" p:initialZustaendigkeit="a73_strassenreinigung" p:name="Beutel in Hundetoilette fehlen"/>
+	<bean id="kat_05_05" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_05" p:initialZustaendigkeit="a67_ausstattung" p:name="Brunnen schadhaft" p:naehereBeschreibungNotwendig="details"/>
+	<bean id="kat_05_06" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_05" p:initialZustaendigkeit="a41" p:name="Denkmal schadhaft"/>
+    <bean id="kat_05_07" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_05" p:initialZustaendigkeit="a66_ausstattung,a67_ausstattung" p:name="Fahrradständer schadhaft"/>
+    <bean id="kat_05_08" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_05" p:initialZustaendigkeit="a73_strassenreinigung" p:name="Hundetoilette schadhaft"/>
+    <bean id="kat_05_09" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_05" p:initialZustaendigkeit="a66_ausstattung" p:name="Parkautomat schadhaft" p:naehereBeschreibungNotwendig="details"/>
+    <bean id="kat_05_10" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_05" p:initialZustaendigkeit="a66_ausstattung" p:name="Poller/Absperrelement schadhaft"/>
+	<bean id="kat_05_11" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_05" p:initialZustaendigkeit="a67_ausstattung" p:name="Sitzgelegenheit schadhaft"/>
+	<bean id="kat_05_12" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_05" p:initialZustaendigkeit="a67_spielplatzservice" p:name="Spielgerät schadhaft" p:naehereBeschreibungNotwendig="details"/>
+
+
+	<bean id="kat_06" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:name="Vandalismus/Schmiererei" p:typ="problem">
+		<property name="children">
+			<list>
+				<ref bean="kat_06_01"/>
+				<ref bean="kat_06_02"/>
+				<ref bean="kat_06_03"/>
+				<ref bean="kat_06_04"/>
+				<ref bean="kat_06_05"/>
+				<ref bean="kat_06_06"/>
+				<ref bean="kat_06_07"/>
+				<ref bean="kat_06_08"/>
+				<ref bean="kat_06_09"/>
+				<ref bean="kat_06_10"/>
+				<ref bean="kat_06_11"/>
+				<ref bean="kat_06_12"/>
+				<ref bean="kat_06_13"/>
+				<ref bean="kat_06_14"/>
+				<ref bean="kat_06_15"/>
+				<ref bean="kat_06_16"/>
+				<ref bean="kat_06_17"/>
+				<ref bean="kat_06_18"/>
+				<ref bean="kat_06_19"/>
+			</list>
+		</property>
+	</bean>	
+	<bean id="kat_06_01" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_06" p:initialZustaendigkeit="a73_strassenreinigung,a67_ausstattung,a82" p:name="Abfallbehälter/Papierkorb"/>
+    <bean id="kat_06_02" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_06" p:initialZustaendigkeit="a66_ampeln" p:name="Ampel" p:naehereBeschreibungNotwendig="details"/>
+	<bean id="kat_06_03" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_06" p:initialZustaendigkeit="a67_stadtbaeume,a82" p:name="Baum" p:naehereBeschreibungNotwendig="details"/>
+	<bean id="kat_06_04" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_06" p:initialZustaendigkeit="a66_beleuchtung" p:name="Beleuchtung" p:naehereBeschreibungNotwendig="details"/>
+	<bean id="kat_06_05" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_06" p:initialZustaendigkeit="a66_beschilderung,a67_ausstattung,a82" p:name="Beschilderung/Markierung" p:naehereBeschreibungNotwendig="details"/>
+    <bean id="kat_06_06" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_06" p:initialZustaendigkeit="a66_bauwerke" p:name="Brücke/Tunnel/Mauer/Treppe" p:naehereBeschreibungNotwendig="details"/>
+	<bean id="kat_06_07" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_06" p:initialZustaendigkeit="a67_ausstattung" p:name="Brunnen" p:naehereBeschreibungNotwendig="details"/>
+	<bean id="kat_06_08" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_06" p:initialZustaendigkeit="a41" p:name="Denkmal"/>
+	<bean id="kat_06_09" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_06" p:initialZustaendigkeit="a66_ausstattung,a67_ausstattung,a82" p:name="Fahrradständer"/>
+	<bean id="kat_06_10" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_06" p:initialZustaendigkeit="a66_strassenaufsicht,a67_ausstattung" p:name="Gully" p:naehereBeschreibungNotwendig="details"/>
+	<bean id="kat_06_11" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_06" p:initialZustaendigkeit="a66_oepnv,a66_strassenaufsicht" p:name="Haltestelle" p:naehereBeschreibungNotwendig="details"/>
+    <bean id="kat_06_12" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_06" p:initialZustaendigkeit="a73_strassenreinigung" p:name="Hundetoilette"/>
+    <bean id="kat_06_13" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_06" p:initialZustaendigkeit="a73_muelltonnen" p:name="Mülltonne"/>
+	<bean id="kat_06_14" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_06" p:initialZustaendigkeit="a66_ausstattung" p:name="Parkautomat" p:naehereBeschreibungNotwendig="details"/>
+    <bean id="kat_06_15" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_06" p:initialZustaendigkeit="a66_ausstattung,a67_ausstattung,a82" p:name="Poller/Planke/Absperrelement"/>
+    <bean id="kat_06_16" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_06" p:initialZustaendigkeit="a73_container" p:name="Recycling-Container"/>
+    <bean id="kat_06_17" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_06" p:initialZustaendigkeit="a82" p:name="Schutzhütte" p:naehereBeschreibungNotwendig="details"/>
+	<bean id="kat_06_18" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_06" p:initialZustaendigkeit="a67_ausstattung,a82" p:name="Sitzgelegenheit"/>
+	<bean id="kat_06_19" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_06" p:initialZustaendigkeit="a67_spielplatzservice" p:name="Spielgerät" p:naehereBeschreibungNotwendig="details"/>
+
+	
+	<bean id="kat_07" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:name="Verkehrseinrichtung/Beleuchtung" p:typ="problem">
+		<property name="children">
+			<list>
+				<ref bean="kat_07_01"/>
+				<ref bean="kat_07_02"/>
+				<ref bean="kat_07_03"/>
+				<ref bean="kat_07_04"/>
+				<ref bean="kat_07_05"/>
+				<ref bean="kat_07_06"/>
+				<ref bean="kat_07_07"/>
+				<ref bean="kat_07_08"/>
+			</list>
+		</property>
+	</bean>	
+	<bean id="kat_07_01" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_07" p:initialZustaendigkeit="a66_ampeln" p:name="Ampel schadhaft" p:naehereBeschreibungNotwendig="details"/>
+	<bean id="kat_07_02" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_07" p:initialZustaendigkeit="a66_beleuchtung" p:name="Beleuchtung schadhaft" p:naehereBeschreibungNotwendig="details"/>
+	<bean id="kat_07_03" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_07" p:initialZustaendigkeit="a66_beschilderung" p:name="Beschilderung/Markierung schadhaft" p:naehereBeschreibungNotwendig="details"/>
+	<bean id="kat_07_04" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_07" p:initialZustaendigkeit="a66_ausstattung" p:name="Fahrradständer schadhaft"/>
+	<bean id="kat_07_05" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_07" p:initialZustaendigkeit="a66_strassenaufsicht" p:name="Gully schadhaft" p:naehereBeschreibungNotwendig="details"/>
+	<bean id="kat_07_06" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_07" p:initialZustaendigkeit="a66_oepnv,a66_strassenaufsicht" p:name="Haltestelle schadhaft" p:naehereBeschreibungNotwendig="details"/>
+	<bean id="kat_07_07" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_07" p:initialZustaendigkeit="a66_ausstattung" p:name="Parkautomat schadhaft" p:naehereBeschreibungNotwendig="details"/>
+	<bean id="kat_07_08" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_07" p:initialZustaendigkeit="a66_ausstattung" p:name="Poller/Planke/Absperrelement schadhaft"/>
+
+
+    <bean id="kat_08" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:name="Wald" p:typ="problem">
+	<property name="children">
+			<list>
+				<ref bean="kat_08_01"/>
+				<ref bean="kat_08_02"/>
+				<ref bean="kat_08_03"/>
+				<ref bean="kat_08_04"/>
+				<ref bean="kat_08_05"/>
+				<ref bean="kat_08_06"/>
+				<ref bean="kat_08_07"/>
+				<ref bean="kat_08_08"/>
+				<ref bean="kat_08_09"/>
+				<ref bean="kat_08_10"/>
+				<ref bean="kat_08_11"/>
+				<ref bean="kat_08_12"/>
+				<ref bean="kat_08_13"/>
+				<ref bean="kat_08_14"/>
+				<ref bean="kat_08_15"/>
+			</list>
+		</property>
+	</bean>	
+    <bean id="kat_08_01" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_08" p:initialZustaendigkeit="a82" p:name="Baum schadhaft" p:naehereBeschreibungNotwendig="details"/>
+    <bean id="kat_08_02" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_08" p:initialZustaendigkeit="a82,a66_beschilderung" p:name="Beschilderung/Markierung schadhaft" p:naehereBeschreibungNotwendig="details"/>
+    <bean id="kat_08_03" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_08" p:initialZustaendigkeit="a41" p:name="Denkmal schadhaft"/>
+    <bean id="kat_08_04" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_08" p:initialZustaendigkeit="a82,a66_ausstattung,a67_ausstattung" p:name="Fahrradständer schadhaft"/>
+    <bean id="kat_08_05" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_08" p:initialZustaendigkeit="a82,a73_strassenreinigung" p:name="Müllablagerung" p:naehereBeschreibungNotwendig="details"/>
+    <bean id="kat_08_06" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_08" p:initialZustaendigkeit="a82,a66_ausstattung" p:name="Poller/Absperrelement schadhaft"/>
+    <bean id="kat_08_07" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_08" p:initialZustaendigkeit="a82_ordnungswidrigkeiten" p:name="Reiten abseits der Reitwege" p:naehereBeschreibungNotwendig="details"/>
+    <bean id="kat_08_08" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_08" p:initialZustaendigkeit="a82" p:name="Schutzhütte schadhaft" p:naehereBeschreibungNotwendig="details"/>
+    <bean id="kat_08_09" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_08" p:initialZustaendigkeit="a82" p:name="Sitzgelegenheit schadhaft"/>
+    <bean id="kat_08_10" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_08" p:initialZustaendigkeit="a67_spielplatzservice" p:name="Spielgerät schadhaft" p:naehereBeschreibungNotwendig="details"/>
+    <bean id="kat_08_11" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_08" p:initialZustaendigkeit="a82_ordnungswidrigkeiten" p:name="verbotenes Campen" p:naehereBeschreibungNotwendig="details"/>
+    <bean id="kat_08_12" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_08" p:initialZustaendigkeit="a82_ordnungswidrigkeiten" p:name="verbotenes Fahren mit Kfz" p:naehereBeschreibungNotwendig="details"/>
+    <bean id="kat_08_13" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_08" p:initialZustaendigkeit="a82_ordnungswidrigkeiten" p:name="verbotenes Feuermachen" p:naehereBeschreibungNotwendig="details"/>
+    <bean id="kat_08_14" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_08" p:initialZustaendigkeit="a82_ordnungswidrigkeiten" p:name="verkehrswidriges Parken" p:naehereBeschreibungNotwendig="details"/>
+    <bean id="kat_08_15" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_08" p:initialZustaendigkeit="a82,a73_strassenreinigung" p:name="Wegereinigung fehlt" p:naehereBeschreibungNotwendig="details"/>
+    
+    
+	<bean id="kat_09" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:name="Winterdienst" p:typ="problem">
+		<property name="children">
+			<list>
+				<ref bean="kat_09_01"/>
+				<ref bean="kat_09_02"/>
+				<ref bean="kat_09_03"/>
+				<ref bean="kat_09_04"/>
+			</list>
+		</property>
+	</bean>	
+	<bean id="kat_09_01" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_09" p:initialZustaendigkeit="a73_strassenreinigung" p:name="Gehweg nicht geräumt"/>
+	<bean id="kat_09_02" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_09" p:initialZustaendigkeit="a73_strassenreinigung" p:name="Radweg nicht geräumt"/>
+	<bean id="kat_09_03" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_09" p:initialZustaendigkeit="a73_strassenreinigung" p:name="Straße nicht geräumt"/>
+	<bean id="kat_09_04" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_09" p:initialZustaendigkeit="a73_strassenreinigung" p:name="verbotener Streusalzeinsatz"/>
+	
+
+	<bean id="kat_10" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:name="Barrierefreiheit" p:typ="idee">
+		<property name="children">
+			<list>
+				<ref bean="kat_10_01"/>
+				<ref bean="kat_10_02"/>
+				<ref bean="kat_10_03"/>
+				<ref bean="kat_10_04"/>
+			</list>
+		</property>
+	</bean>	
+	<bean id="kat_10_01" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_10" p:initialZustaendigkeit="a66_ampeln" p:name="Ampel behindertengerecht gestalten" p:naehereBeschreibungNotwendig="details"/>
+	<bean id="kat_10_02" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_10" p:initialZustaendigkeit="a66_ampeln" p:name="Ampelschaltung ändern" p:naehereBeschreibungNotwendig="details"/>
+	<bean id="kat_10_03" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_10" p:initialZustaendigkeit="a66_strassenaufsicht" p:name="Bordstein absenken" p:naehereBeschreibungNotwendig="details"/>
+	<bean id="kat_10_04" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_10" p:initialZustaendigkeit="a66_strassenaufsicht" p:name="Zugang rollstuhlgerecht gestalten" p:naehereBeschreibungNotwendig="details"/>
+
+
+	<bean id="kat_11" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:name="Fahrradverkehr" p:typ="idee">
+		<property name="children">
+			<list>
+				<ref bean="kat_11_01"/>
+				<ref bean="kat_11_02"/>
+				<ref bean="kat_11_03"/>
+				<ref bean="kat_11_04"/>
+				<ref bean="kat_11_05"/>
+				<ref bean="kat_11_06"/>
+			</list>
+		</property>
+	</bean>	
+	<bean id="kat_11_01" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_11" p:initialZustaendigkeit="a66_ampeln" p:name="Ampelschaltung ändern" p:naehereBeschreibungNotwendig="details"/>
+    <bean id="kat_11_02" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_11" p:initialZustaendigkeit="a66_beleuchtung" p:name="Beleuchtung verändern" p:naehereBeschreibungNotwendig="details"/>
+    <bean id="kat_11_03" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_11" p:initialZustaendigkeit="a66_beschilderung,a67_ausstattung,a82" p:name="Beschilderung/Markierung ändern" p:naehereBeschreibungNotwendig="details"/>
+	<bean id="kat_11_04" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_11" p:initialZustaendigkeit="a66_beschilderung,a67_ausstattung,a82" p:name="Beschilderung/Markierung einführen" p:naehereBeschreibungNotwendig="details"/>
+    <bean id="kat_11_05" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_11" p:initialZustaendigkeit="a66_strassenaufsicht" p:name="Bordstein absenken" p:naehereBeschreibungNotwendig="details"/>
+	<bean id="kat_11_06" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_11" p:initialZustaendigkeit="a66_ausstattung,a67_ausstattung,a82" p:name="Fahrradständer aufstellen" p:naehereBeschreibungNotwendig="details"/>
+
+    
+	<bean id="kat_12" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:name="Fußgänger" p:typ="idee">
+		<property name="children">
+			<list>
+				<ref bean="kat_12_01"/>
+				<ref bean="kat_12_02"/>
+				<ref bean="kat_12_03"/>
+				<ref bean="kat_12_04"/>
+				<ref bean="kat_12_05"/>
+				<ref bean="kat_12_06"/>
+				<ref bean="kat_12_07"/>
+			</list>
+		</property>
+	</bean>	
+    <bean id="kat_12_01" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_12" p:initialZustaendigkeit="a73_strassenreinigung,a67_ausstattung,a82" p:name="Abfallbehälter/Papierkorb aufstellen" p:naehereBeschreibungNotwendig="details"/>
+	<bean id="kat_12_02" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_12" p:initialZustaendigkeit="a66_ampeln" p:name="Ampelschaltung ändern" p:naehereBeschreibungNotwendig="details"/>
+    <bean id="kat_12_03" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_12" p:initialZustaendigkeit="a66_beleuchtung" p:name="Beleuchtung verändern" p:naehereBeschreibungNotwendig="details"/>
+	<bean id="kat_12_04" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_12" p:initialZustaendigkeit="a66_beschilderung,a67_ausstattung,a82" p:name="Beschilderung/Markierung ändern" p:naehereBeschreibungNotwendig="details"/>
+	<bean id="kat_12_05" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_12" p:initialZustaendigkeit="a66_beschilderung,a67_ausstattung,a82" p:name="Beschilderung/Markierung einführen" p:naehereBeschreibungNotwendig="details"/>
+    <bean id="kat_12_06" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_12" p:initialZustaendigkeit="a66_strassenaufsicht" p:name="Bordstein absenken" p:naehereBeschreibungNotwendig="details"/>
+    <bean id="kat_12_07" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_12" p:initialZustaendigkeit="a67_ausstattung,a82" p:name="Sitzgelegenheit aufstellen" p:naehereBeschreibungNotwendig="details"/>
+
+	
+	<bean id="kat_13" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:name="Öffentlicher Nahverkehr" p:typ="idee">
+		<property name="children">
+			<list>
+				<ref bean="kat_13_01"/>
+				<ref bean="kat_13_02"/>
+				<ref bean="kat_13_03"/>
+			</list>
+		</property>
+	</bean>	
+	<bean id="kat_13_01" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_13" p:initialZustaendigkeit="a66_oepnv,a66_strassenaufsicht" p:name="Fahrplan ändern" p:naehereBeschreibungNotwendig="details"/>
+	<bean id="kat_13_02" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_13" p:initialZustaendigkeit="a66_oepnv,a66_strassenaufsicht" p:name="Haltestelle verlegen" p:naehereBeschreibungNotwendig="details"/>
+	<bean id="kat_13_03" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_13" p:initialZustaendigkeit="a66_oepnv,a66_strassenaufsicht" p:name="Linienführung ändern" p:naehereBeschreibungNotwendig="details"/>
+
+
+	<bean id="kat_14" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:name="Stadtmöbel/Beleuchtung" p:typ="idee">
+		<property name="children">
+			<list>
+				<ref bean="kat_14_01"/>
+				<ref bean="kat_14_02"/>
+				<ref bean="kat_14_03"/>
+				<ref bean="kat_14_04"/>
+				<ref bean="kat_14_05"/>
+				<ref bean="kat_14_06"/>
+				<ref bean="kat_14_07"/>
+			</list>
+		</property>
+	</bean>	
+	<bean id="kat_14_01" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_14" p:initialZustaendigkeit="a73_strassenreinigung,a67_ausstattung" p:name="Abfallbehälter/Papierkorb aufstellen" p:naehereBeschreibungNotwendig="details"/>
+	<bean id="kat_14_02" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_14" p:initialZustaendigkeit="a66_beleuchtung" p:name="Beleuchtung verändern" p:naehereBeschreibungNotwendig="details"/>
+    <bean id="kat_14_03" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_14" p:initialZustaendigkeit="a66_ausstattung,a67_ausstattung" p:name="Fahrradständer aufstellen" p:naehereBeschreibungNotwendig="details"/>
+	<bean id="kat_14_04" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_14" p:initialZustaendigkeit="a73_strassenreinigung" p:name="Hundetoilette aufstellen" p:naehereBeschreibungNotwendig="details"/>
+    <bean id="kat_14_05" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_14" p:initialZustaendigkeit="a73_container" p:name="Recycling-Container aufstellen" p:naehereBeschreibungNotwendig="details"/>
+	<bean id="kat_14_06" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_14" p:initialZustaendigkeit="a67_ausstattung" p:name="Sitzgelegenheit aufstellen" p:naehereBeschreibungNotwendig="details"/>
+	<bean id="kat_14_07" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_14" p:initialZustaendigkeit="a67_spielplatzservice" p:name="Spielplatz verändern" p:naehereBeschreibungNotwendig="details"/>
+
+
+	<bean id="kat_15" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:name="Straßenverkehr" p:typ="idee">
+		<property name="children">
+			<list>
+				<ref bean="kat_15_01"/>
+				<ref bean="kat_15_02"/>
+				<ref bean="kat_15_03"/>
+			</list>
+		</property>
+	</bean>	
+	<bean id="kat_15_01" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_15" p:initialZustaendigkeit="a66_ampeln" p:name="Ampelschaltung ändern" p:naehereBeschreibungNotwendig="details"/>
+	<bean id="kat_15_02" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_15" p:initialZustaendigkeit="a66_beschilderung" p:name="Beschilderung/Markierung ändern" p:naehereBeschreibungNotwendig="details"/>
+	<bean id="kat_15_03" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_15" p:initialZustaendigkeit="a66_beschilderung" p:name="Beschilderung/Markierung einführen" p:naehereBeschreibungNotwendig="details"/>
+    
+    
+    <bean id="kat_16" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:name="Wald" p:typ="idee">
+		<property name="children">
+			<list>
+				<ref bean="kat_16_01"/>
+				<ref bean="kat_16_02"/>
+				<ref bean="kat_16_03"/>
+				<ref bean="kat_16_04"/>
+				<ref bean="kat_16_05"/>
+				<ref bean="kat_16_06"/>
+				<ref bean="kat_16_07"/>
+			</list>
+		</property>
+	</bean>	
+	<bean id="kat_16_01" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_16" p:initialZustaendigkeit="a82,a73_strassenreinigung" p:name="Abfallbehälter/Papierkorb aufstellen" p:naehereBeschreibungNotwendig="details"/>
+	<bean id="kat_16_02" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_16" p:initialZustaendigkeit="a82,a66_beschilderung" p:name="Beschilderung/Markierung ändern" p:naehereBeschreibungNotwendig="details"/>
+	<bean id="kat_16_03" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_16" p:initialZustaendigkeit="a82,a66_beschilderung" p:name="Beschilderung/Markierung einführen" p:naehereBeschreibungNotwendig="details"/>
+    <bean id="kat_16_04" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_16" p:initialZustaendigkeit="a82,a66_ausstattung,a67_ausstattung" p:name="Fahrradständer aufstellen" p:naehereBeschreibungNotwendig="details"/>
+    <bean id="kat_16_05" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_16" p:initialZustaendigkeit="a67_spielplatzservice" p:name="Spielplatz verändern" p:naehereBeschreibungNotwendig="details"/>
+    <bean id="kat_16_06" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_16" p:initialZustaendigkeit="a82" p:name="Schutzhütte aufstellen" p:naehereBeschreibungNotwendig="details"/>
+    <bean id="kat_16_07" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_16" p:initialZustaendigkeit="a82" p:name="Sitzgelegenheit aufstellen" p:naehereBeschreibungNotwendig="details"/>
+
+	
+</beans>

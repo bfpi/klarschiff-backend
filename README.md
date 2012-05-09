@@ -1,9 +1,9 @@
 # Klarschiff – Back-end
 
 
-## What is it?
+## Background
 
-Basically, **Klarschiff** is a web portal for public participation. It is hoped to be a helpful application mainly for municipalities and other (public) administrative institutions to improve communication with their members (i.e. citizens, people). The application consists of two parts fundamentally linked together: the back-end (as described here) and the front-end.
+Basically, **Klarschiff** is a web portal for public participation. It is hoped to be a helpful application mainly for municipalities and other (public) administrative institutions to improve communication with their members (i.e. citizens, people). The application consists of two parts fundamentally linked together: the back-end (as provided and described here) and the front-end.
 
 The back-end of **Klarschiff** is a web application which can be used by municipalities and other (public) administrative institutions to manage all incoming events reported via the corresponding front-end.
 
