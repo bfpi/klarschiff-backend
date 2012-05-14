@@ -44,6 +44,8 @@ vielen Dank für Ihre Meldung. Für die weitere Bearbeitung benötigen wir nochm
 
 Mit Ihrer Bestätigung erklären Sie sich damit einverstanden, dass wir die von Ihnen im Rahmen der Meldung selbständig gemachten Angaben (Betreff, Details) sowie insbesondere das Foto redaktionell bearbeiten dürfen. Bitte beachten Sie außerdem: Falls Sie nicht innerhalb der 24-Stunden-Frist bestätigen, so wird Ihre Meldung automatisch gelöscht.
 
+Ihre Meldung direkt aufrufen können Sie nun über folgende URL: %meldungLink%
+
 Wenn Sie Ihre Meldung löschen möchten, so können Sie dies durch das einmalige Aufrufen folgender URL tun: %baseUrlFrontend%vorgangLoeschen/?hash=%hash%
 
 Bitte beachten Sie: Das Löschen funktioniert nur, solange wir Ihre Meldung noch nicht in Bearbeitung genommen haben, also das Symbol in der Karte noch rot ist.

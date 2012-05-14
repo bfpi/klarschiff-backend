@@ -81,6 +81,9 @@ public class MailService {
 		String mailText = msg.getText();
 		mailText = mailText.replaceAll("%baseUrlFrontend%", getServerBaseUrlFrontend());
 		mailText = mailText.replaceAll("%hash%", vorgang.getHash());
+		StringBuilder str = new StringBuilder();
+		str.append(geoService.getMapExternExternUrl(vorgang));
+		mailText = mailText.replaceAll("%meldungLink%", str.toString());
 		msg.setText(mailText);
 		jobExecutorService.runJob(new MailSenderJob(this, msg));
 	}
@@ -338,15 +341,16 @@ public class MailService {
 		str.append("ID            : "+vorgang.getId()+"\n");
 		str.append("Typ           : "+vorgang.getTyp().getText()+"\n");
 		str.append("Hauptkategorie: "+vorgang.getKategorie().getParent().getName()+"\n");
-		str.append("Unterkategorie: "+vorgang.getKategorie().getName());
+		str.append("Unterkategorie: "+vorgang.getKategorie().getName()+"\n\n\n");
+		str.append(geoService.getMapExternExternUrl(vorgang)+"\n");
 		mailtext = mailtext.replaceAll("%vorgang%", str.toString());
 		//Datum
 		mailtext = mailtext.replaceAll("%datum%", formatter.format(vorgang.getDatum()));
 		//Status
 		str = new StringBuilder();
-		str.append("Status        : "+vorgang.getStatus().getText()+"\n");
+		str.append(vorgang.getStatus().getText());
 		if (!StringUtils.isBlank(vorgang.getStatusKommentar()))
-			str.append("Kommentar         : "+vorgang.getStatusKommentar()+"\n");
+			str.append(" (Info der Verwaltung: "+vorgang.getStatusKommentar()+")\n");
 		mailtext = mailtext.replaceAll("%status%", str.toString());
 		
 		msg.setText(mailtext);
