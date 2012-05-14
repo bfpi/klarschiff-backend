@@ -115,7 +115,7 @@ public class VorgangFeedController {
     		channel.addContent( item);
 
         	elem = new Element("title");
-        	elem.addContent(dateFormat.format(vorgang.getDatum()) + " - " + vorgang.getKategorie().getName());
+        	elem.addContent(vorgang.getKategorie().getParent().getName() + " – " + vorgang.getKategorie().getName());
         	item.addContent(elem);
 
         	StringBuilder str = new StringBuilder();
@@ -136,6 +136,9 @@ public class VorgangFeedController {
         	str.append("<br/>");
         	str.append("Unterkategorie: ");
         	str.append(vorgang.getKategorie().getName());
+        	str.append("<br/>");
+        	str.append("Adresse: ");
+        	str.append(vorgang.getAdresse());
         	str.append("<br/>");
         	str.append("Status: ");
         	str.append(vorgang.getStatus().getText());
