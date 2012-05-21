@@ -24,7 +24,7 @@ The current documentation is, as already mentioned above, available in German la
 
 ## Demo
 
-The initiators of the **Klarschiff** project are hosting a [demo verion](http://demo.klarschiff-hro.de/backend) (login with the name `interner` and the password `interner`) of the project on their servers. This demo version uses the code hosted here on GitHub, with settings slightly adjusted to the local conditions, of course.
+The initiators of the **Klarschiff** project are hosting a [demo version](http://demo.klarschiff-hro.de/backend) (login with the name `interner` and the password `interner`) of the project on their servers. This demo version uses the code hosted here on GitHub, with settings slightly adjusted to the local conditions, of course.
 
 Apart from that demo, there is also a real-world productive version running on the initiators' servers which is accessible internally only.
 
