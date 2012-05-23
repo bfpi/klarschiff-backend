@@ -499,7 +499,7 @@
 	<bean id="kat_03_06" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_03" p:initialZustaendigkeit="a67_ausstattung,a66_beschilderung" p:name="Beschilderung/Markierung schadhaft" p:naehereBeschreibungNotwendig="details"/>
 	<bean id="kat_03_07" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_03" p:initialZustaendigkeit="a73_strassenreinigung" p:name="Beutel in Hundetoilette fehlen"/>
 	<bean id="kat_03_08" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_03" p:initialZustaendigkeit="a67_ausstattung" p:name="Brunnen schadhaft" p:naehereBeschreibungNotwendig="details"/>
-	<bean id="kat_03_09" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_03" p:initialZustaendigkeit="a41" p:name="Denkmal schadhaft"/>
+	<bean id="kat_03_09" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_03" p:initialZustaendigkeit="a41" p:name="Denkmal schadhaft" p:naehereBeschreibungNotwendig="details"/>
     <bean id="kat_03_10" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_03" p:initialZustaendigkeit="a67_ausstattung,a66_ausstattung" p:name="Fahrradständer schadhaft"/>
 	<bean id="kat_03_11" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_03" p:initialZustaendigkeit="a67_gruenflaechen" p:name="Grünanlage ungepflegt" p:naehereBeschreibungNotwendig="details"/>
 	<bean id="kat_03_12" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_03" p:initialZustaendigkeit="a67_gruenflaechen,a73_strassenreinigung" p:name="Hundekot"/>
@@ -545,7 +545,7 @@
     <bean id="kat_05_03" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_05" p:initialZustaendigkeit="a66_beschilderung" p:name="Beschilderung schadhaft" p:naehereBeschreibungNotwendig="details"/>
 	<bean id="kat_05_04" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_05" p:initialZustaendigkeit="a73_strassenreinigung" p:name="Beutel in Hundetoilette fehlen"/>
 	<bean id="kat_05_05" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_05" p:initialZustaendigkeit="a67_ausstattung" p:name="Brunnen schadhaft" p:naehereBeschreibungNotwendig="details"/>
-	<bean id="kat_05_06" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_05" p:initialZustaendigkeit="a41" p:name="Denkmal schadhaft"/>
+	<bean id="kat_05_06" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_05" p:initialZustaendigkeit="a41" p:name="Denkmal schadhaft" p:naehereBeschreibungNotwendig="details"/>
     <bean id="kat_05_07" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_05" p:initialZustaendigkeit="a66_ausstattung,a67_ausstattung" p:name="Fahrradständer schadhaft"/>
     <bean id="kat_05_08" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_05" p:initialZustaendigkeit="a73_strassenreinigung" p:name="Hundetoilette schadhaft"/>
     <bean id="kat_05_09" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_05" p:initialZustaendigkeit="a66_ausstattung" p:name="Parkautomat schadhaft" p:naehereBeschreibungNotwendig="details"/>
@@ -586,7 +586,7 @@
 	<bean id="kat_06_05" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_06" p:initialZustaendigkeit="a66_beschilderung,a67_ausstattung,a82" p:name="Beschilderung/Markierung" p:naehereBeschreibungNotwendig="details"/>
     <bean id="kat_06_06" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_06" p:initialZustaendigkeit="a66_bauwerke" p:name="Brücke/Tunnel/Mauer/Treppe" p:naehereBeschreibungNotwendig="details"/>
 	<bean id="kat_06_07" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_06" p:initialZustaendigkeit="a67_ausstattung" p:name="Brunnen" p:naehereBeschreibungNotwendig="details"/>
-	<bean id="kat_06_08" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_06" p:initialZustaendigkeit="a41" p:name="Denkmal"/>
+	<bean id="kat_06_08" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_06" p:initialZustaendigkeit="a41" p:name="Denkmal" p:naehereBeschreibungNotwendig="details"/>
 	<bean id="kat_06_09" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_06" p:initialZustaendigkeit="a66_ausstattung,a67_ausstattung,a82" p:name="Fahrradständer"/>
 	<bean id="kat_06_10" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_06" p:initialZustaendigkeit="a66_strassenaufsicht,a67_ausstattung" p:name="Gully" p:naehereBeschreibungNotwendig="details"/>
 	<bean id="kat_06_11" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_06" p:initialZustaendigkeit="a66_oepnv,a66_strassenaufsicht" p:name="Haltestelle" p:naehereBeschreibungNotwendig="details"/>
@@ -647,7 +647,7 @@
 	</bean>	
     <bean id="kat_08_01" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_08" p:initialZustaendigkeit="a82" p:name="Baum schadhaft" p:naehereBeschreibungNotwendig="details"/>
     <bean id="kat_08_02" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_08" p:initialZustaendigkeit="a82,a66_beschilderung" p:name="Beschilderung/Markierung schadhaft" p:naehereBeschreibungNotwendig="details"/>
-    <bean id="kat_08_03" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_08" p:initialZustaendigkeit="a41" p:name="Denkmal schadhaft"/>
+    <bean id="kat_08_03" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_08" p:initialZustaendigkeit="a41" p:name="Denkmal schadhaft" p:naehereBeschreibungNotwendig="details"/>
     <bean id="kat_08_04" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_08" p:initialZustaendigkeit="a82,a66_ausstattung,a67_ausstattung" p:name="Fahrradständer schadhaft"/>
     <bean id="kat_08_05" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_08" p:initialZustaendigkeit="a82,a73_strassenreinigung" p:name="Müllablagerung" p:naehereBeschreibungNotwendig="details"/>
     <bean id="kat_08_06" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_08" p:initialZustaendigkeit="a82,a66_ausstattung" p:name="Poller/Absperrelement schadhaft"/>
