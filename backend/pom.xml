@@ -25,6 +25,7 @@
 		<postgresql.version>9.0-801.jdbc4</postgresql.version>
 		<postgis.version>[1.1.6,)</postgis.version>
 		<poi.version>3.7</poi.version>
+		<project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
 	</properties>
 
 	<repositories>
@@ -559,6 +560,16 @@
 			<artifactId>commons-exec</artifactId>
 			<version>1.1</version>
 		</dependency>
+		<dependency>
+			<groupId>commons-regex</groupId>
+			<artifactId>commons-regex</artifactId>
+			<version>0.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernatespatial</groupId>
+			<artifactId>hibernate-spatial-postgis</artifactId>
+			<version>1.1</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -567,6 +578,13 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
 				<version>2.1-beta-1</version>
+				<configuration>
+					<archive>
+						<manifest>
+							<addClasspath>true</addClasspath>
+						</manifest>
+					</archive>
+				</configuration>
 				<!-- <configuration> <webXml>target/web.xml</webXml> </configuration> -->
 			</plugin>
 			<plugin>
@@ -576,7 +594,7 @@
 				<configuration>
 					<source>1.6</source>
 					<target>1.6</target>
-					<encoding>UTF-8</encoding>
+					<encoding>${project.build.sourceEncoding}</encoding>
 				</configuration>
 			</plugin>
 			<plugin>
