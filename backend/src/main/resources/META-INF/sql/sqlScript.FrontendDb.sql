@@ -160,7 +160,12 @@ CREATE TABLE klarschiff_vorgang (
     bemerkung character varying(300),
     foto_normal_jpg bytea,
     foto_thumb_jpg bytea,
+    foto_vorhanden boolean,
     foto_freigegeben boolean,
+    betreff_vorhanden boolean,
+    betreff_freigegeben boolean,
+    details_vorhanden boolean,
+    details_freigegeben boolean,
     archiviert boolean,
     CONSTRAINT enforce_dims_the_geom CHECK ((ndims(the_geom) = 2)),
     CONSTRAINT enforce_geotype_the_geom CHECK (((geometrytype(the_geom) = 'POINT'::text) OR (the_geom IS NULL))),
@@ -365,63 +370,6 @@ CREATE TRIGGER klarschiff_trigger_vorgang
 -- # Views                                                                               #
 -- #######################################################################################
 
--- Name: klarschiff_wfs; Type: VIEW; Schema: ${f_schema}; Owner: ${f_username}
---CREATE OR REPLACE VIEW klarschiff_wfs AS 
---	SELECT 
---		v.id, 
---		v.datum, 
---		v.details, 
---		v.bemerkung, 
---		v.kategorieid, 
---		COALESCE(
---			( 
---				SELECT klarschiff_kategorie.parent
---				FROM klarschiff_kategorie
---				WHERE klarschiff_kategorie.id = v.kategorieid
---			),
---			v.kategorieid) AS hauptkategorieid, 
---		v.the_geom, 
---		v.titel, 
---		v.vorgangstyp, 
---		v.status, 
---		count(u.id) AS unterstuetzer, 
---		v.foto_normal_jpg IS NOT NULL AS foto_vorhanden, 
---		v.foto_freigegeben
---	FROM 
---		klarschiff_vorgang v 
---		LEFT JOIN 
---		klarschiff_unterstuetzer u ON v.id = u.vorgang AND u.datum IS NOT NULL
---	WHERE v.status::text <> 'geloescht'::text 
---		AND (
---			( 
---				SELECT count(*) AS count
---				FROM klarschiff_missbrauchsmeldung
---				WHERE klarschiff_missbrauchsmeldung.datum_bestaetigung IS NOT NULL 
---				AND klarschiff_missbrauchsmeldung.datum_abarbeitung IS NULL 
---				AND klarschiff_missbrauchsmeldung.vorgang = v.id
---			)
---		) = 0
---	GROUP BY 
---		v.id, 
---		v.datum, 
---		v.details, 
---		v.bemerkung, 
---		v.kategorieid, 
---		COALESCE(
---			(
---				SELECT klarschiff_kategorie.parent
---				FROM klarschiff_kategorie
---				WHERE klarschiff_kategorie.id = v.kategorieid
---			), 
---			v.kategorieid
---		), 
---		v.the_geom, 
---		v.titel, 
---		v.vorgangstyp, 
---		v.status, 
---		v.foto_normal_jpg, 
---		v.foto_freigegeben;
-
 CREATE OR REPLACE VIEW klarschiff_wfs AS 
 	SELECT 
 		v.id, 
@@ -442,8 +390,12 @@ CREATE OR REPLACE VIEW klarschiff_wfs AS
 				v.id = u.vorgang AND 
 				u.datum IS NOT NULL
 		) AS unterstuetzer,
-		v.foto_freigegeben AS foto_vorhanden, 
-		v.foto_freigegeben
+		v.foto_vorhanden, 
+		v.foto_freigegeben,
+        v.betreff_vorhanden,
+        v.betreff_freigegeben,
+        v.details_vorhanden,
+        v.details_freigegeben
 	FROM 
 		klarschiff_vorgang v, 
 		klarschiff_kategorie k
@@ -463,38 +415,6 @@ CREATE OR REPLACE VIEW klarschiff_wfs AS
 		
 ALTER TABLE klarschiff_wfs OWNER TO ${f_username};
 
--- Name: klarschiff_wfs_tmpl; Type: VIEW; Schema: ${f_schema}; Owner: ${f_username}
---CREATE VIEW klarschiff_wfs_tmpl AS
---    SELECT 
---    	v.id, 
---    	v.datum, 
---    	v.details, 
---    	v.bemerkung, 
---    	v.kategorieid, 
---    	k.name AS kategorie_name, 
---    	v.hauptkategorieid, 
---    	kh.name AS hauptkategorie_name, 
---    	v.the_geom, 
---    	v.titel, 
---    	v.vorgangstyp, 
---    	t.name AS vorgangstyp_name, 
---    	v.status, 
---    	s.name AS status_name, 
---    	v.unterstuetzer, 
---    	v.foto_vorhanden, 
---    	v.foto_freigegeben 
---    FROM (
---    	(
---    		(
---    			(
---    				klarschiff_wfs v JOIN klarschiff_status s ON (((v.status)::text = (s.id)::text))
---    			) 
---    			JOIN klarschiff_kategorie k ON ((v.kategorieid = k.id))
---    		) 
---    		JOIN klarschiff_kategorie kh ON ((v.hauptkategorieid = kh.id))
---    	) JOIN klarschiff_vorgangstyp t ON (((v.vorgangstyp)::text = (t.id)::text))
---    );
-    
 CREATE VIEW klarschiff_wfs_tmpl AS
     SELECT 
     	v.id, 
@@ -513,7 +433,11 @@ CREATE VIEW klarschiff_wfs_tmpl AS
     	s.name AS status_name, 
     	v.unterstuetzer, 
     	v.foto_vorhanden, 
-    	v.foto_freigegeben 
+		v.foto_freigegeben,
+        v.betreff_vorhanden,
+        v.betreff_freigegeben,
+        v.details_vorhanden,
+        v.details_freigegeben
     FROM 
     	klarschiff_wfs v,
     	klarschiff_status s,

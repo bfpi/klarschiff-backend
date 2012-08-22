@@ -912,16 +912,16 @@ BEGIN
 	ELSIF (TG_OP = 'UPDATE') THEN
 	
 		query := '
-			UPDATE ${f_schema}.klarschiff_vorgang 
+			UPDATE klarschiff.klarschiff_vorgang 
 			SET datum='''''||new.datum::varchar(50)||''''', vorgangstyp='''''||new.typ||''''', the_geom='''''||new.ovi::text||''''', status='''''||new.status||''''', kategorieid='||new.kategorie||', ';
 		--betreff
-		IF (new.betreff_freigabe_status='extern' AND new.betreff IS NOT NULL) THEN
+		IF (new.betreff_freigabe_status='extern' AND new.betreff IS NOT NULL AND new.betreff <> '') THEN
   			query := query||'titel='''''||new.betreff||''''', ';
  		ELSE
   			query := query||'titel='''''''', ';
 		END IF;
 		--details
-		IF (new.details_freigabe_status='extern' AND new.details IS NOT NULL) THEN
+		IF (new.details_freigabe_status='extern' AND new.details IS NOT NULL AND new.details <> '') THEN
   			query := query||'details='''''||new.details||''''', ';
  		ELSE
   			query := query||'details='''''''', ';
@@ -938,11 +938,45 @@ BEGIN
 			foto_thumb = encode(new.foto_thumb_jpg, 'base64');
 			query := query||'foto_normal_jpg=decode('''''||foto_normal||''''', ''''base64''''), ';
 			query := query||'foto_thumb_jpg=decode('''''||foto_thumb||''''', ''''base64''''), ';
-			query := query||'foto_freigegeben=TRUE, ';
 		ELSE	
 			query := query||'foto_normal_jpg=NULL, ';
 			query := query||'foto_thumb_jpg=NULL, ';
-			query := query||'foto_freigegeben=FALSE, ';
+		END IF;
+        --fotoVorhanden
+		IF (length(new.foto_normal_jpg) IS NOT NULL AND length(new.foto_thumb_jpg) IS NOT NULL) THEN
+  			query := query||'foto_vorhanden=TRUE, ';
+ 		ELSE
+  			query := query||'foto_vorhanden=FALSE, ';
+		END IF;
+        --fotoFreigegeben
+		IF (new.foto_freigabe_status='extern') THEN
+  			query := query||'foto_freigegeben=TRUE, ';
+ 		ELSE
+  			query := query||'foto_freigegeben=FALSE, ';
+		END IF;
+        --betreffVorhanden
+		IF (new.betreff IS NOT NULL AND new.betreff <> '') THEN
+  			query := query||'betreff_vorhanden=TRUE, ';
+ 		ELSE
+  			query := query||'betreff_vorhanden=FALSE, ';
+		END IF;
+        --betreffFreigegeben
+		IF (new.betreff_freigabe_status='extern') THEN
+  			query := query||'betreff_freigegeben=TRUE, ';
+ 		ELSE
+  			query := query||'betreff_freigegeben=FALSE, ';
+		END IF;
+        --detailsVorhanden
+		IF (new.details IS NOT NULL AND new.details <> '') THEN
+  			query := query||'details_vorhanden=TRUE, ';
+ 		ELSE
+  			query := query||'details_vorhanden=FALSE, ';
+		END IF;
+        --detailsFreigegeben
+		IF (new.details_freigabe_status='extern') THEN
+  			query := query||'details_freigegeben=TRUE, ';
+ 		ELSE
+  			query := query||'details_freigegeben=FALSE, ';
 		END IF;
 		--archiviert
 		IF new.archiviert IS NOT NULL THEN
@@ -960,16 +994,16 @@ BEGIN
     ELSIF (TG_OP = 'INSERT') THEN
     
 		query := '
-			INSERT INTO ${f_schema}.klarschiff_vorgang (id, datum, vorgangstyp, the_geom, status, kategorieid, titel, details, bemerkung, foto_normal_jpg, foto_thumb_jpg, foto_freigegeben, archiviert)
+			INSERT INTO klarschiff.klarschiff_vorgang (id, datum, vorgangstyp, the_geom, status, kategorieid, titel, details, bemerkung, foto_normal_jpg, foto_thumb_jpg, foto_vorhanden, foto_freigegeben, betreff_vorhanden, betreff_freigegeben, details_vorhanden, details_freigegeben, archiviert)
 			VALUES ('||new.id||', '''''||new.datum::varchar(50)||''''', '''''||new.typ||''''', '''''||new.ovi::text||''''', '''''||new.status||''''', '||new.kategorie||', ';
 		--betreff
-		IF (new.betreff_freigabe_status='extern' AND new.betreff IS NOT NULL) THEN
+		IF (new.betreff_freigabe_status='extern' AND new.betreff IS NOT NULL AND new.betreff <> '') THEN
   			query := query||''''''||new.betreff||''''', ';
  		ELSE
   			query := query||''''''''', ';
 		END IF;
 		--details
-		IF (new.details_freigabe_status='extern' AND new.details IS NOT NULL) THEN
+		IF (new.details_freigabe_status='extern' AND new.details IS NOT NULL AND new.details <> '') THEN
   			query := query||''''''||new.details||''''', ';
  		ELSE
   			query := query||''''''''', ';
@@ -986,11 +1020,45 @@ BEGIN
 			foto_thumb = encode(new.foto_thumb_jpg, 'base64');
 			query := query||'decode('''''||foto_normal||''''', ''''base64''''), ';
 			query := query||'decode('''''||foto_thumb||''''', ''''base64''''), ';
-			query := query||'TRUE, ';
 		ELSE	
 			query := query||'NULL, ';
 			query := query||'NULL, ';
-			query := query||'FALSE, ';
+		END IF;
+        --fotoVorhanden
+		IF (length(new.foto_normal_jpg) IS NOT NULL AND length(new.foto_thumb_jpg) IS NOT NULL) THEN
+  			query := query||'TRUE, ';
+ 		ELSE
+  			query := query||'FALSE, ';
+		END IF;
+        --fotoFreigegeben
+		IF (new.foto_freigabe_status='extern') THEN
+  			query := query||'TRUE, ';
+ 		ELSE
+  			query := query||'FALSE, ';
+		END IF;
+        --betreffVorhanden
+		IF (new.betreff IS NOT NULL AND new.betreff <> '') THEN
+  			query := query||'TRUE, ';
+ 		ELSE
+  			query := query||'FALSE, ';
+		END IF;
+        --betreffFreigegeben
+		IF (new.betreff_freigabe_status='extern') THEN
+  			query := query||'TRUE, ';
+ 		ELSE
+  			query := query||'FALSE, ';
+		END IF;
+        --detailsVorhanden
+		IF (new.details IS NOT NULL AND new.details <> '') THEN
+  			query := query||'TRUE, ';
+ 		ELSE
+  			query := query||'FALSE, ';
+		END IF;
+        --detailsFreigegeben
+		IF (new.details_freigabe_status='extern') THEN
+  			query := query||'TRUE, ';
+ 		ELSE
+  			query := query||'FALSE, ';
 		END IF;
 		--archiviert
 		IF new.archiviert IS NOT NULL THEN
