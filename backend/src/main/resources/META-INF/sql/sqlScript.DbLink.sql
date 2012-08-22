@@ -912,7 +912,7 @@ BEGIN
 	ELSIF (TG_OP = 'UPDATE') THEN
 	
 		query := '
-			UPDATE klarschiff.klarschiff_vorgang 
+			UPDATE ${f_schema}.klarschiff_vorgang 
 			SET datum='''''||new.datum::varchar(50)||''''', vorgangstyp='''''||new.typ||''''', the_geom='''''||new.ovi::text||''''', status='''''||new.status||''''', kategorieid='||new.kategorie||', ';
 		--betreff
 		IF (new.betreff_freigabe_status='extern' AND new.betreff IS NOT NULL AND new.betreff <> '') THEN
@@ -994,7 +994,7 @@ BEGIN
     ELSIF (TG_OP = 'INSERT') THEN
     
 		query := '
-			INSERT INTO klarschiff.klarschiff_vorgang (id, datum, vorgangstyp, the_geom, status, kategorieid, titel, details, bemerkung, foto_normal_jpg, foto_thumb_jpg, foto_vorhanden, foto_freigegeben, betreff_vorhanden, betreff_freigegeben, details_vorhanden, details_freigegeben, archiviert)
+			INSERT INTO ${f_schema}.klarschiff_vorgang (id, datum, vorgangstyp, the_geom, status, kategorieid, titel, details, bemerkung, foto_normal_jpg, foto_thumb_jpg, foto_vorhanden, foto_freigegeben, betreff_vorhanden, betreff_freigegeben, details_vorhanden, details_freigegeben, archiviert)
 			VALUES ('||new.id||', '''''||new.datum::varchar(50)||''''', '''''||new.typ||''''', '''''||new.ovi::text||''''', '''''||new.status||''''', '||new.kategorie||', ';
 		--betreff
 		IF (new.betreff_freigabe_status='extern' AND new.betreff IS NOT NULL AND new.betreff <> '') THEN
