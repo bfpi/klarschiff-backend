@@ -39,6 +39,21 @@
 				<div class="error" style="padding-top:10px">Die Anmeldung schlug fehl. Wahrscheinlich haben Sie den Benutzernamen und/oder das Passwort falsch angegeben.</div>
 			</c:if>
 		</form>
+        
+        <div class="dev" style="margin-top: 20px;">
+				Folgende Zugangsdaten können Sie nutzen:
+                <br/>
+                <br/>
+	       		<table>
+	       			<thead>
+	       				<tr style="font-weight:bold;"><td>Benutzername</td><td>Passwort</td><td>Beschreibung</td></tr>
+	       			</thead>
+	       			<tbody>
+	       				<tr><td>interner</td><td>interner</td><td>interne (Verwaltungs-)Rolle, in der Sie eigentlich alles tun können</td></tr>
+	       				<tr><td>externer</td><td>externer</td><td>externe Rolle (einer Firma), in der Sie nur delegierte Vorgänge eingeschränkt bearbeiten können</td></tr>
+	       			</tbody>
+	       		</table>
+	       	</div>
 		
 		<c:if test="${fx:showLogins()}">
 	       	<div class="dev" style="margin-top: 20px;">
