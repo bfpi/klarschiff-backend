@@ -45,7 +45,7 @@
 							</c:when>
 							<c:when test="${verlaufItem.typ=='statusKommentar'}">
 								<c:choose>
-									<c:when test="${not empty verlaufItem.wertNeu}">Statuskommentar gesetzt: ${fx:toHtml(verlaufItem.wertNeu)}</c:when>
+									<c:when test="${not empty verlaufItem.wertNeu}">Statuskommentar geändert.</c:when>
 									<c:otherwise>Statuskommentar gelöscht.</c:otherwise>
 								</c:choose>
 							</c:when>
