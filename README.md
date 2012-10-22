@@ -22,9 +22,14 @@ Hopefully we will find both the time and the spiritedness to improve this situat
 The current documentation is, as already mentioned above, available in German language only. Nevertheless, you are invited to read through the `dokumentation` directory.
 
 
-## Demo
+## Virtual machine demo
 
-The initiators of the **Klarschiff** project are hosting a [demo version](http://demo.klarschiff-hro.de/backend) (login with the name `interner` and the password `interner`) of the project on their servers. This demo version uses the code hosted here on GitHub, with settings slightly adjusted to the local conditions, of course.
+The initiators of the **Klarschiff** project are hosting a ready-to-use virtual machine (VM) in [VMware format](http://en.wikipedia.org/wiki/Vmdk) on their servers which comes with the complete **Klarschiff** demo version pre-installed on it: the demo is executable locally – for more details see the readme file that is shipped with the VM. The VM is compressed and made available as a 5 GB gzip archive via the following link: [klarschiff-demo-vm.tar.gz](https://geo.sv.rostock.de/download/klarschiff-demo-vm.tar.gz)
+
+
+## Online demo
+
+Additionally, the initiators of the **Klarschiff** project are hosting a [demo version](http://demo.klarschiff-hro.de/backend) (login with the name `interner` and the password `interner`) of the project on their servers. This demo version uses the code hosted here on GitHub, with settings slightly adjusted to the local conditions, of course.
 
 Apart from that demo, there is also a real-world productive version running on the initiators' servers which is accessible internally only.
 
