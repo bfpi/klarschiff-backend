@@ -134,7 +134,7 @@ Neben *Spring Core* wurden die folgenden Spring-Projekte im Backend verwendet:
 * *Spring LDAP*: Zugriff auf LDAP-Systeme
 * *Spring IDE*: Entwicklungsunterstützung bei der Erstellung von Spring-Anwendungen (ist in der STS enthalten)
 
-h2. Biliotheken
+h2. Bibliotheken
 
 table(tableclass).
 (tableHeader). | Bibliothek | Version | URL | Lizenz | Kommentar | Verwendung |
@@ -233,7 +233,7 @@ Der ausgepackte Tomcat ist im STS zu registreren (_Window > Preferences > Server
 Das Projekt Klarschiff befindet sich in einem GitRepository. Hierfür ist ein entsprechender Git Client zu installieren. Dier Git Client kann über das _Dashboard_ oder über den _Eclipse Marketplace_ installiert werden.
 
 *12. Projekt aus dem Git Repository auschecken*
-Das Projekt klarschiff.webapp kann nun aus dem Git Repository ("https://github.com/klarschiff/backend":https://github.com/klarschiff/backend) ausgecheckt werden. Hierzu empfielt es sich zur _Git Repository Exploring perpective_ (Window > Open perspective > Other... > Git Repository Exploring) zu wechseln. Über den Button _Clone a Git Repository and add the clone to this view_ öffnet sich ein Dialog in dem die entsprechenden Eingaben zu erledigen sind. 
+Das Projekt klarschiff.webapp kann nun aus dem Git Repository ("https://github.com/rostock/klarschiff-backend":https://github.com/rostock/klarschiff-backend) ausgecheckt werden. Hierzu empfielt es sich zur _Git Repository Exploring perpective_ (Window > Open perspective > Other... > Git Repository Exploring) zu wechseln. Über den Button _Clone a Git Repository and add the clone to this view_ öffnet sich ein Dialog in dem die entsprechenden Eingaben zu erledigen sind. 
 
 [TODO:Bild einfügen mit den vorausgefüllten Eingaben und genauer beschreiben]
 
