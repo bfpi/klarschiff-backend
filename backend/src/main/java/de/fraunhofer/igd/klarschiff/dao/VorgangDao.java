@@ -251,6 +251,10 @@ public class VorgangDao {
 						"vo.kategorie.name LIKE :fulltext OR " +
 						"vo.kategorie.parent.name LIKE :fulltext)").addParameter("fulltext", "%"+cmd.getErweitertFulltext().toLowerCase()+"%");
 			}
+			//Nummer
+			if (cmd.getErweitertNummerAsLong()!=null) {
+				query.addWhereConditions("(vo.id = :nummer)").addParameter("nummer", cmd.getErweitertNummerAsLong());
+			}
 			//Kategorie
 			if (cmd.getErweitertKategorie()!=null) {
 				query.addWhereConditions("(vo.kategorie = :kategorie)").addParameter("kategorie", cmd.getErweitertKategorie());
