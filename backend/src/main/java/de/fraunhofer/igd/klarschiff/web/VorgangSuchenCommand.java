@@ -54,6 +54,7 @@ public class VorgangSuchenCommand implements Serializable {
 	EnumPrioritaet erweitertPrioritaet;
 	String erweitertDelegiertAn;
 	Integer erweitertStadtteilgrenze;
+	String erweitertNummer;
 	
 	//NUR ADMIN dürfen andere Zuständigkeiten sehen
 	
@@ -130,6 +131,32 @@ public class VorgangSuchenCommand implements Serializable {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	public Long getErweitertNummerAsLong() {
+		if(this.erweitertNummer == null) {
+			return null;
+		}
+		try {
+			return Long.parseLong(erweitertNummer);
+		}
+		catch (Exception e) {
+			return null;
+		}
+	}
+
+	public String getErweitertNummer() {
+		Long erwNummer = this.getErweitertNummerAsLong();
+		if(erwNummer == null)  {
+			return "";
+		}
+		else {
+			return erwNummer.toString();
+		}
+	}
+
+	public void setErweitertNummer(String erweitertNummer) {
+		this.erweitertNummer = erweitertNummer;
 	}
 
 	public EnumVorgangTyp getErweitertVorgangTyp() {

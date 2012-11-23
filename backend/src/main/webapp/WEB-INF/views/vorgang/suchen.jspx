@@ -122,14 +122,14 @@
 									</form:select>
 								</div>
 
-								<div style="padding-top: 20px;">
+								<div>
 									<form:label path="erweitertVorgangStatus">Status</form:label>	
 									<div style="padding-left: 85px;">
 									<table>
 										<c:forEach items="${allVorgangStatus}" var="vorgangStatus">
 											<tr>
 												<td><form:checkbox path="erweitertVorgangStatus" value="${vorgangStatus}" onchange="updateStatus(this)" id="erweitertVorgangStatus_${vorgangStatus}"/></td>
-												<td style="padding-top:5px;"><c:url value="/images/status_${vorgangStatus}_15.png" var="url"/><img alt="${vorgangStatus}" src="${url}"/></td>
+												<td style="padding-top:4px;"><c:url value="/images/status_${vorgangStatus}_15.png" var="url"/><img alt="${vorgangStatus}" src="${url}"/></td>
 												<td>${vorgangStatus.text}</td>
 											</tr>										
 										</c:forEach>
@@ -151,7 +151,7 @@
 									}
 								</script>
 
-								<div style="padding-top: 20px;">
+								<div>
 									<form:label path="erweitertArchiviert">archiviert</form:label>
 									<form:select path="erweitertArchiviert" onchange="updateArchiviert(this)" id="erweitertArchiviert">
 						            	<form:option value="" label="egal" cssClass="info"/>
@@ -169,6 +169,11 @@
 										}
 									}
 								</script>
+
+								<div style="padding-top: 10px;">
+									<form:label path="erweitertNummer">Nummer</form:label>
+									<form:input path="erweitertNummer" cssClass="inputtext" cssStyle="width:202px;"/>
+								</div>
 							</td>
 
 
@@ -317,7 +322,7 @@
 									</form:select>
 								</div>
 
-								<div style="padding-top: 20px;">
+								<div style="padding-top: 10px;">
 									<form:label path="erweitertStadtteilgrenze">Ortsteil</form:label>
 									<form:select path="erweitertStadtteilgrenze">
 						            	<form:option value="" label="egal" cssClass="info"/>
