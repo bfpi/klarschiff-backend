@@ -5,9 +5,11 @@
 	xmlns:spring="http://www.springframework.org/tags" 
 	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
 	xmlns:fx="http://igd.fraunhofer.de/tags/elfunctions" 
+	xmlns="http://www.w3.org/1999/xhtml"
 >  
 	
-	<jsp:output doctype-root-element="HTML" doctype-system="about:legacy-compat" />
+	<jsp:output doctype-root-element="html" doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN" 
+                  doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd" />
 	
 	<jsp:directive.page contentType="text/html;charset=UTF-8" />  
 	<jsp:directive.page pageEncoding="UTF-8" /> 
@@ -17,8 +19,8 @@
 	<tiles:importAttribute name="exception_type" ignore="true" toName="exception_type"/>
 			
 	<head>
+		<meta http-equiv="X-UA-Compatible" content="IE=Edge" />	
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-		<meta http-equiv="X-UA-Compatible" content="IE=8" />	
 
 		<!-- Titel -->
 		<title>Klarschiff – Backend</title>

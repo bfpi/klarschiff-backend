@@ -27,7 +27,7 @@
 	<!-- CONTENT -->
 	<div id="root_style_content">
 
-		<script language="JavaScript" type="text/javascript">
+		<script type="text/javascript">
 			function print_me() {
 			window.print();
 			window.close();

@@ -61,35 +61,35 @@
 				<c:if test="${not delegiert}">
 					<c:set value="${fx:countMissbrauchsmeldungen(vorgang)}" var="countMissbrauchsmeldungen"/>
 					<c:if test="${countMissbrauchsmeldungen!=0}">
-						<td valgin="middle" >		
+						<td valign="middle" >		
 							<div class="missbrauchsmeldungLegende" title="Es liegen ${countMissbrauchsmeldungen} Missbrauchsmeldungen vor" style="height:15px; padding:0px 3px;">M</div>
 						</td>
 					</c:if>										
 				</c:if>
 
 				<c:if test="${not empty vorgang.betreff}">
-					<td valgin="middle" >		
+					<td valign="middle" >		
 						<span>B
 						<c:url value="/images/freigabeStatus_${vorgang.betreffFreigabeStatus}.png" var="url"/>
-						<img alt="${vorgang.betreffFreigabeStatus}" align="top" src="${url}" height="13" width="13" title="Freigabestatus für Betreff: ${vorgang.betreffFreigabeStatus}"/>
+						<img alt="${vorgang.betreffFreigabeStatus}" style="vertical-align:top" src="${url}" height="13" width="13" title="Freigabestatus für Betreff: ${vorgang.betreffFreigabeStatus}"/>
 						</span>
 					</td>
 				</c:if>										
 
 				<c:if test="${not empty vorgang.details}">
-					<td valgin="middle">
+					<td valign="middle">
 						<span>D
 						<c:url value="/images/freigabeStatus_${vorgang.detailsFreigabeStatus}.png" var="url"/>
-						<img alt="${vorgang.detailsFreigabeStatus}" align="top" src="${url}" height="13" width="13"  title="Freigabestatus für Details: ${vorgang.detailsFreigabeStatus}"/>
+						<img alt="${vorgang.detailsFreigabeStatus}" style="vertical-align:top" src="${url}" height="13" width="13"  title="Freigabestatus für Details: ${vorgang.detailsFreigabeStatus}"/>
 						</span>
 					</td>
 				</c:if>					
 				
 				<c:if test="${not empty vorgang.fotoThumbJpg}">
-					<td valgin="middle">
+					<td valign="middle">
 						<span>F
 						<c:url value="/images/freigabeStatus_${vorgang.fotoFreigabeStatus}.png" var="url"/>
-						<img alt="${vorgang.fotoFreigabeStatus}" align="top" src="${url}" height="13" width="13" title="Freigabestatus für Foto: ${vorgang.fotoFreigabeStatus}"/>
+						<img alt="${vorgang.fotoFreigabeStatus}" style="vertical-align:top" src="${url}" height="13" width="13" title="Freigabestatus für Foto: ${vorgang.fotoFreigabeStatus}"/>
 						</span>
 					</td>
 				</c:if>
