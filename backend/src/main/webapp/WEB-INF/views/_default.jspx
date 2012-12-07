@@ -27,10 +27,10 @@
 		<c:url value="/styles/styles.css" var="url"/>
 		<link rel="stylesheet" type="text/css" href="${url}"> <!-- styles.css --> </link>
 
-		<c:url value="/script/jquery/jquery-1.5.js" var="url"/>
+		<c:url value="/script/jquery/jquery-1.8.3.min.js" var="url"/>
 		<script src="${url}" type="text/javascript"><!-- //jQuery --></script>
 
-		<c:url value="/script/jquery/jquery-cookie.js" var="url"/>
+		<c:url value="/script/jquery/jquery.cookie.js" var="url"/>
 		<script src="${url}" type="text/javascript"><!-- //jQuery Cookie--></script>
 
 		<c:url value="/script/dropDownPanel/dropDownPanel.js" var="url"/>
