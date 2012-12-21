@@ -240,6 +240,17 @@
                         map.addLayer(layer);
                 </c:forEach>
                 
+                var luftbild = new OpenLayers.Layer.TMS( 
+                    "Luftbild", 
+                    "http://geo.sv.rostock.de/geodienste/luftbild/tms/", {
+                        layername: 'luftbild_EPSG25833',
+                        type: 'png',
+                        transitionEffect: 'resize',
+                        serverResolutions: [529.166666667, 352.777777778, 264.583333333, 176.388888889, 88.1944444444, 52.9166666667, 35.2777777778, 28.2222222222, 22.9305555556, 17.6388888889, 12.3472222222, 8.8194444444, 7.0555555556, 5.2916666667, 3.5277777778, 2.6458333333, 1.7638888889, 0.8819444444, 0.3527777778, 0.1763888889],
+                        tileSize: new OpenLayers.Size(256, 256)
+                    } );
+                map.addLayer(luftbild);
+                
                 //höchste Zoomstufe ermitteln (auf dieser soll kein Clustering mehr stattfinden)
                 var clusterMaxZoom = map.getNumZoomLevels() - 1;
                 
