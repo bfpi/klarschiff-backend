@@ -157,7 +157,7 @@ CREATE TABLE klarschiff_vorgang (
     titel character varying(300),
     vorgangstyp character varying(255),
     status character varying(255),
-    bemerkung character varying(300),
+    bemerkung character varying(500),
     foto_normal_jpg bytea,
     foto_thumb_jpg bytea,
     foto_vorhanden boolean,
