@@ -147,7 +147,7 @@ public class Vorgang implements Serializable {
     /**
      * Kommentar zum Status
      */
-	@Size(max = 300)
+	@Size(max = 500)
     private String statusKommentar;
     
 	/**

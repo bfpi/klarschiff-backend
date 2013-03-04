@@ -200,7 +200,7 @@
 										<tr>
 											<td valign="top" width="470px;">
 												<form:label path="statusKommentar" cssErrorClass="error">Kommentar</form:label>
-												<form:textarea path="statusKommentar" id="statusKommentar" cols="6" cssStyle="width:350px;"/>
+												<form:textarea path="statusKommentar" id="statusKommentar" cols="6" maxlength="500" cssStyle="width:350px;"/>
 											</td>
 											<td valign="top" style="padding-left:10px;">
 												<select id="vorlage" onchange="vorlageSelect()">

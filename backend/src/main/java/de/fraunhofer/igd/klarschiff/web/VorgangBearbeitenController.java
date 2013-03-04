@@ -244,7 +244,7 @@ public class VorgangBearbeitenController {
 		
 		assertNotEmpty(cmd, result, Assert.EvaluateOn.ever, "vorgang.zustaendigkeit", null);
 		assertNotEmpty(cmd, result, Assert.EvaluateOn.ever, "vorgang.status", null);
-		assertMaxLength(cmd, result,  Assert.EvaluateOn.ever, "vorgang.statusKommentar", 300, "Der Statuskommentar ist zu lang");
+		assertMaxLength(cmd, result,  Assert.EvaluateOn.ever, "vorgang.statusKommentar", 500, "Der Statuskommentar ist zu lang");
 		if (result.hasErrors()) {
 			cmd.setVorgang(getVorgang(id));
 			updateKategorieInModel(model, cmd);
