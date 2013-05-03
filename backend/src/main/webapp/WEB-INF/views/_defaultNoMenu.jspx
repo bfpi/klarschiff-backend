@@ -39,7 +39,7 @@
 			}
 		</style>
 
-		<c:url value="/script/jquery/jquery-1.5.js" var="url"/>
+		<c:url value="/script/jquery/jquery-1.8.3.min.js" var="url"/>
 		<script src="${url}" type="text/javascript"><!-- //jQuery --></script>
 
 		<c:url value="/script/iframeDialog/iframeDialog.js" var="url"/>
