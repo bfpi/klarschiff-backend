@@ -893,51 +893,53 @@ CREATE TRIGGER klarschiff_trigger_verlauf
 CREATE OR REPLACE FUNCTION klarschiff_triggerfunction_vorgang() RETURNS trigger AS
 $BODY$
 DECLARE
-  	foto_normal text;          -- Backend = Frontend: foto_normal_jpg
-  	foto_thumb text;           -- Backend = Frontend: foto_thumb_jpg
+  foto_normal text;          -- Backend = Frontend: foto_normal_jpg
+  foto_thumb text;           -- Backend = Frontend: foto_thumb_jpg
 	query text;
 
 BEGIN
-	PERFORM dblink_connect('hostaddr=${f_host} port=${f_port} dbname=${f_dbname} user=${f_username} password=${f_password}');
+  PERFORM dblink_connect('hostaddr=${f_host} port=${f_port} dbname=${f_dbname} user=${f_username} password=${f_password}');
   
-	IF (TG_OP = 'DELETE') THEN
+  IF TG_OP = 'DELETE' THEN
 
-		query := 'DELETE FROM ${f_schema}.klarschiff_vorgang WHERE id='||old.id;
-		--RAISE NOTICE 'Query : %', query;
-		EXECUTE 'SELECT dblink_exec('''||query||''');';
-		
-		PERFORM dblink_disconnect();
-		RETURN old;
+    query := 'DELETE FROM ${f_schema}.klarschiff_vorgang WHERE id='||old.id;
+    --RAISE NOTICE 'Query : %', query;
+    EXECUTE 'SELECT dblink_exec(' || quote_literal(query) || ');';
 
-	ELSIF (TG_OP = 'UPDATE') THEN
-	
-		query := '
-			UPDATE ${f_schema}.klarschiff_vorgang 
-			SET datum='''''||new.datum::varchar(50)||''''', vorgangstyp='''''||new.typ||''''', the_geom='''''||new.ovi::text||''''', status='''''||new.status||''''', kategorieid='||new.kategorie||', ';
-		--betreff
-		IF (new.betreff_freigabe_status='extern' AND new.betreff IS NOT NULL AND new.betreff <> '') THEN
-  			query := query||'titel='''''||new.betreff||''''', ';
- 		ELSE
-  			query := query||'titel='''''''', ';
-		END IF;
+    PERFORM dblink_disconnect();
+    RETURN old;
+
+  ELSIF TG_OP = 'UPDATE' THEN
+  
+    query := 'UPDATE ${f_schema}.klarschiff_vorgang SET' ||
+      ' datum=''' || new.datum::varchar(50) || ''', vorgangstyp=' || quote_literal(new.typ) || ', ' ||
+      ' the_geom=''' || new.ovi::text || ''', status=' || quote_literal(new.status) || ', ' ||
+      ' kategorieid='||new.kategorie||', ';
+    --betreff
+    query := query || 'titel='
+    IF new.betreff_freigabe_status = 'extern' AND new.betreff IS NOT NULL AND new.betreff <> '' THEN
+      query := query || 'titel=' || quote_literal(new.betreff) || ', ';
+    ELSE
+      query := query || 'titel='''', ';
+    END IF;
 		--details
-		IF (new.details_freigabe_status='extern' AND new.details IS NOT NULL AND new.details <> '') THEN
-  			query := query||'details='''''||new.details||''''', ';
- 		ELSE
-  			query := query||'details='''''''', ';
-		END IF;
+    IF new.details_freigabe_status = 'extern' AND new.details IS NOT NULL AND new.details <> '' THEN
+      query := query || 'details=' || quote_literal(new.details) || ', ';
+    ELSE
+      query := query || 'details='''', ';
+    END IF;
 		--statusKommentar
 		IF new.status_kommentar IS NOT NULL THEN
-  			query := query||'bemerkung='''''||new.status_kommentar||''''', ';
+  			query := query || 'bemerkung=' || quote_literal(new.status_kommentar) || ', ';
  		ELSE
-  			query := query||'bemerkung='''''''', ';
+  			query := query || 'bemerkung='''', ';
 		END IF;
 		--fotoNormalJpg & fotoThumbJpg
 		IF (new.foto_normal_jpg IS NOT NULL AND new.foto_freigabe_status='extern') THEN
 			foto_normal = encode(new.foto_normal_jpg, 'base64');
 			foto_thumb = encode(new.foto_thumb_jpg, 'base64');
-			query := query||'foto_normal_jpg=decode('''''||foto_normal||''''', ''''base64''''), ';
-			query := query||'foto_thumb_jpg=decode('''''||foto_thumb||''''', ''''base64''''), ';
+			query := query||'foto_normal_jpg=decode('''||foto_normal||''', ''base64''), ';
+			query := query||'foto_thumb_jpg=decode('''||foto_thumb||''', ''base64''), ';
 		ELSE	
 			query := query||'foto_normal_jpg=NULL, ';
 			query := query||'foto_thumb_jpg=NULL, ';
@@ -986,7 +988,7 @@ BEGIN
 		END IF;
 		query := query||' WHERE id='||new.id;
 		--RAISE NOTICE 'Query : %', query;
-		EXECUTE 'SELECT dblink_exec('''||query||''');';
+		EXECUTE 'SELECT dblink_exec('||quote_literal(query)||');';
 
 		PERFORM dblink_disconnect();
 		RETURN new;
@@ -998,19 +1000,19 @@ BEGIN
 			VALUES ('||new.id||', '''''||new.datum::varchar(50)||''''', '''''||new.typ||''''', '''''||new.ovi::text||''''', '''''||new.status||''''', '||new.kategorie||', ';
 		--betreff
 		IF (new.betreff_freigabe_status='extern' AND new.betreff IS NOT NULL AND new.betreff <> '') THEN
-  			query := query||''''''||new.betreff||''''', ';
+  			query := query||''''''||quote_literal(new.betreff)||''''', ';
  		ELSE
   			query := query||''''''''', ';
 		END IF;
 		--details
 		IF (new.details_freigabe_status='extern' AND new.details IS NOT NULL AND new.details <> '') THEN
-  			query := query||''''''||new.details||''''', ';
+  			query := query||''''''||quote_literal(new.details)||''''', ';
  		ELSE
   			query := query||''''''''', ';
 		END IF;
 		--statusKommentar
 		IF new.status_kommentar IS NOT NULL THEN
-  			query := query||''''''||new.status_kommentar||''''', ';
+  			query := query||''''''||quote_literal(new.status_kommentar)||''''', ';
  		ELSE
   			query := query||''''''''', ';
 		END IF;
@@ -1078,7 +1080,8 @@ BEGIN
 	RETURN NULL;
 EXCEPTION WHEN others THEN
 	PERFORM dblink_disconnect();
-	RAISE EXCEPTION '(%)', SQLERRM;
+	-- RAISE EXCEPTION '(%)', SQLERRM;
+	RAISE;-- EXCEPTION '(%)', SQLERRM;
 END;
 $BODY$ LANGUAGE plpgsql VOLATILE COST 100;
 
