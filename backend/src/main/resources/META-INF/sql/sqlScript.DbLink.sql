@@ -21,17 +21,17 @@ BEGIN
   PERFORM dblink_connect('hostaddr=${f_host} port=${f_port} dbname=${f_dbname} ' ||
     'user=${f_username} password=${f_password}');
   
-  query := CASE TG_OG
+  query := CASE TG_OP
     WHEN 'DELETE' THEN
-      'DELETE FROM ${f_schema}.klarschiff_status WHERE id = ' || old.id
+      'DELETE FROM ${f_schema}.klarschiff_status WHERE id = ' || quote_literal(old.id)
     WHEN 'UPDATE' THEN
       'UPDATE ${f_schema}.klarschiff_status ' ||
       'SET "name" = ' || quote_literal(new."text") || ', ' ||
       'nid = ' || new.ordinal || ' ' || 
-      'WHERE id = ' || new.id
+      'WHERE id = ' || quote_literal(new.id)
     WHEN 'INSERT' THEN
       'INSERT INTO ${f_schema}.klarschiff_status (id, "name", nid) ' ||
-      'VALUES (' || new.id || ', ' || quote_literal(new."text") || ', ' || 
+      'VALUES (' || quote_literal(new.id) || ', ' || quote_literal(new."text") || ', ' || 
         new.ordinal || ')'
     ELSE 
       'SELECT 1'
@@ -67,9 +67,9 @@ CREATE TRIGGER klarschiff_trigger_enum_vorgang_status
   FOR EACH ROW EXECUTE PROCEDURE klarschiff_triggerfunction_enum_vorgang_status();
 
 -- Test
---INSERT INTO klarschiff_enum_vorgang_status (id, "text", ordinal) values ('test', 'test', 100);
---UPDATE klarschiff_enum_vorgang_status SET text='Test' WHERE id='test';
---DELETE FROM klarschiff_enum_vorgang_status WHERE id = 'test';
+-- INSERT INTO klarschiff_enum_vorgang_status (id, "text", ordinal) values ('test', 'test', 100);
+-- UPDATE klarschiff_enum_vorgang_status SET text='Test' WHERE id='test';
+-- DELETE FROM klarschiff_enum_vorgang_status WHERE id = 'test';
 
 
 -- #######################################################################################
@@ -858,7 +858,7 @@ BEGIN
           'FALSE'
         END || ', ' ||
       --archiviert
-      'archiviert = ' CASE
+      'archiviert = ' || CASE
         WHEN new.archiviert IS NOT NULL THEN
           new.archiviert
          ELSE
@@ -951,6 +951,8 @@ BEGIN
           ELSE
             'FALSE'
         END || ')'
+    ELSE
+      'SELECT 1'
   END;
 
   RAISE DEBUG 'Query : %', query;
