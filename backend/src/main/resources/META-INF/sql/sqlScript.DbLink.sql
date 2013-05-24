@@ -85,7 +85,7 @@ BEGIN
   PERFORM dblink_connect('hostaddr=${f_host} port=${f_port} dbname=${f_dbname} user=${f_username} password=${f_password}');
 
   IF TG_OP = 'DELETE' THEN
-    query := 'DELETE FROM ${f_schema}.klarschiff_vorgangstyp WHERE id = ' || old.id;
+    query := 'DELETE FROM ${f_schema}.klarschiff_vorgangstyp WHERE id = ' || quote_literal(old.id);
     RAISE DEBUG 'Query : %', query;
     EXECUTE 'SELECT dblink_exec(' || quote_literal(query) || ');';
     PERFORM dblink_disconnect();
@@ -94,7 +94,7 @@ BEGIN
   ELSIF TG_OP = 'UPDATE' THEN
     query := 'UPDATE ${f_schema}.klarschiff_vorgangstyp ' ||
       'SET "name" = ' || quote_literal(new."text") || ', ordinal = ' || new.ordinal || ' ' ||
-      'WHERE id = ' || new.id;
+      'WHERE id = ' || quote_literal(new.id);
     RAISE DEBUG 'Query : %', query;
     EXECUTE 'SELECT dblink_exec(' || quote_literal(query) || ');';
     PERFORM dblink_disconnect();
@@ -102,7 +102,7 @@ BEGIN
 
   ELSIF TG_OP = 'INSERT' THEN
     query := 'INSERT INTO ${f_schema}.klarschiff_vorgangstyp (id, "name", ordinal) ' ||
-      'VALUES (' || new.id || ', ' || quote_literal(new."text") || ', ' || new.ordinal || ')';
+      'VALUES (' || quote_literal(new.id) || ', ' || quote_literal(new."text") || ', ' || new.ordinal || ')';
     RAISE DEBUG 'Query : %', query;
     EXECUTE 'SELECT dblink_exec(' || quote_literal(query) || ');';
     PERFORM dblink_disconnect();
