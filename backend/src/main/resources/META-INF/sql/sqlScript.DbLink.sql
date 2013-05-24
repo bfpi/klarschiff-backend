@@ -35,9 +35,9 @@ BEGIN
         new.ordinal || ')'
     ELSE 
       'SELECT 1'
-    END CASE;
+    END;
 
-  RAISE DEBUG1 'Query : %', query;
+  RAISE DEBUG 'Query : %', query;
   EXECUTE 'SELECT dblink_exec(' || quote_literal(query) || ');';
   PERFORM dblink_disconnect();
 
@@ -86,7 +86,7 @@ BEGIN
 
   IF TG_OP = 'DELETE' THEN
     query := 'DELETE FROM ${f_schema}.klarschiff_vorgangstyp WHERE id = ' || old.id;
-    RAISE DEBUG1 'Query : %', query;
+    RAISE DEBUG 'Query : %', query;
     EXECUTE 'SELECT dblink_exec(' || quote_literal(query) || ');';
     PERFORM dblink_disconnect();
     RETURN old;
@@ -95,7 +95,7 @@ BEGIN
     query := 'UPDATE ${f_schema}.klarschiff_vorgangstyp ' ||
       'SET "name" = ' || quote_literal(new."text") || ', ordinal = ' || new.ordinal || ' ' ||
       'WHERE id = ' || new.id;
-    RAISE DEBUG1 'Query : %', query;
+    RAISE DEBUG 'Query : %', query;
     EXECUTE 'SELECT dblink_exec(' || quote_literal(query) || ');';
     PERFORM dblink_disconnect();
     RETURN new;
@@ -103,7 +103,7 @@ BEGIN
   ELSIF TG_OP = 'INSERT' THEN
     query := 'INSERT INTO ${f_schema}.klarschiff_vorgangstyp (id, "name", ordinal) ' ||
       'VALUES (' || new.id || ', ' || quote_literal(new."text") || ', ' || new.ordinal || ')';
-    RAISE DEBUG1 'Query : %', query;
+    RAISE DEBUG 'Query : %', query;
     EXECUTE 'SELECT dblink_exec(' || quote_literal(query) || ');';
     PERFORM dblink_disconnect();
     RETURN new;
@@ -150,7 +150,7 @@ BEGIN
 
   IF TG_OP = 'DELETE' THEN
     query := 'DELETE FROM ${f_schema}.klarschiff_geo_rss WHERE id = ' || old.id;
-    RAISE DEBUG1 'Query : %', query;
+    RAISE DEBUG 'Query : %', query;
     EXECUTE 'SELECT dblink_exec(' || quote_literal(query) || ');';
     PERFORM dblink_disconnect();
     RETURN old;
@@ -164,7 +164,7 @@ BEGIN
       'probleme_kategorien = ' || quote_literal(new.probleme_kategorien) || ', ' || 
       'the_geom = ' || quote_literal(new.ovi::text) || ' ' ||
       'WHERE id = ' || new.id;
-    RAISE DEBUG1 'Query : %', query;
+    RAISE DEBUG 'Query : %', query;
     EXECUTE 'SELECT dblink_exec(' || quote_literal(query) || ');';
     PERFORM dblink_disconnect();
     RETURN new;
@@ -176,7 +176,7 @@ BEGIN
       new.ideen || ', ' || quote_literal(new.ideen_kategorien) || ', ' || 
       new.probleme || ', ' || quote_literal(new.probleme_kategorien) || ', ' ||
       quote_literal(new.ovi::text) || ')';
-    RAISE DEBUG1 'Query : %', query;
+    RAISE DEBUG 'Query : %', query;
     EXECUTE 'SELECT dblink_exec(' || quote_literal(query) || ');';
     PERFORM dblink_disconnect();
     RETURN new;
@@ -223,7 +223,7 @@ BEGIN
 
   IF TG_OP = 'DELETE' THEN
     query := 'DELETE FROM ${f_schema}.klarschiff_kategorie WHERE id = ' || old.id;
-    RAISE DEBUG1 'Query : %', query;
+    RAISE DEBUG 'Query : %', query;
     EXECUTE 'SELECT dblink_exec(' || quote_literal(query) || ');';
     PERFORM dblink_disconnect();
     RETURN old;
@@ -256,7 +256,7 @@ BEGIN
         query := query || 'aufforderung = TRUE ';
     END IF;
     query := query || 'WHERE id = ' || new.id;
-    RAISE DEBUG1 'Query : %', query;
+    RAISE DEBUG 'Query : %', query;
     EXECUTE 'SELECT dblink_exec(' || quote_literal(query) || ');';
     PERFORM dblink_disconnect();
     RETURN new;
@@ -289,7 +289,7 @@ BEGIN
      ELSE
         query := query || 'TRUE)';
     END IF;
-    RAISE DEBUG1 'Query : %', query;
+    RAISE DEBUG 'Query : %', query;
     EXECUTE 'SELECT dblink_exec(' || quote_literal(query) || ');';
     PERFORM dblink_disconnect();
     RETURN new;
@@ -339,7 +339,7 @@ BEGIN
 
   IF TG_OP = 'DELETE' THEN
     query := 'DELETE FROM ${f_schema}.klarschiff_missbrauchsmeldung WHERE id = ' || old.id;
-    RAISE DEBUG1 'Query : %', query;
+    RAISE DEBUG 'Query : %', query;
     EXECUTE 'SELECT dblink_exec(' || quote_literal(query) || ');';
     PERFORM dblink_disconnect();
     RETURN old;
@@ -360,7 +360,7 @@ BEGIN
         query := query || 'datum_bestaetigung = NULL ';
     END IF;
     query := query || 'WHERE id = ' || new.id;
-    RAISE DEBUG1 'Query : %', query;
+    RAISE DEBUG 'Query : %', query;
     EXECUTE 'SELECT dblink_exec(' || quote_literal(query) || ');';
     PERFORM dblink_disconnect();
     RETURN new;
@@ -381,7 +381,7 @@ BEGIN
      ELSE
         query := query || 'NULL)';
     END IF;
-    RAISE DEBUG1 'Query : %', query;
+    RAISE DEBUG 'Query : %', query;
     EXECUTE 'SELECT dblink_exec(' || quote_literal(query) || ');';
     PERFORM dblink_disconnect();
     RETURN new;
@@ -429,7 +429,7 @@ BEGIN
 
   IF TG_OP = 'DELETE' THEN
     query := 'DELETE FROM ${f_schema}.klarschiff_stadtgrenze_hro WHERE ogc_fid = ' || old.id;
-    RAISE DEBUG1 'Query : %', query;
+    RAISE DEBUG 'Query : %', query;
     EXECUTE 'SELECT dblink_exec(' || quote_literal(query) || ');';
     PERFORM dblink_disconnect();
     RETURN old;
@@ -439,7 +439,7 @@ BEGIN
     query := 'UPDATE ${f_schema}.klarschiff_stadtgrenze_hro ' ||
       'SET the_geom = ' || quote_literal(geom::text) || ' ' ||
       'WHERE ogc_fid = ' || new.id;
-    RAISE DEBUG1 'Query : %', query;
+    RAISE DEBUG 'Query : %', query;
     EXECUTE 'SELECT dblink_exec(' || quote_literal(query) || ');';
     PERFORM dblink_disconnect();
     RETURN new;
@@ -448,7 +448,7 @@ BEGIN
     geom = new.grenze;
     query := 'INSERT INTO ${f_schema}.klarschiff_stadtgrenze_hro (ogc_fid, the_geom) ' ||
       'VALUES (' || new.id || ', ' || quote_literal(geom::text) || ')';
-    RAISE DEBUG1 'Query : %', query;
+    RAISE DEBUG 'Query : %', query;
     EXECUTE 'SELECT dblink_exec(' || quote_literal(query) || ');';
     PERFORM dblink_disconnect();
     RETURN new;
@@ -491,7 +491,7 @@ BEGIN
 
   IF TG_OP = 'DELETE' THEN
     query := 'DELETE FROM ${f_schema}.klarschiff_stadtteile_hro WHERE ogc_fid = ' || old.id;
-    RAISE DEBUG1 'Query : %', query;
+    RAISE DEBUG 'Query : %', query;
     EXECUTE 'SELECT dblink_exec(' || quote_literal(query) || ');';
     PERFORM dblink_disconnect();
     RETURN old;
@@ -502,7 +502,7 @@ BEGIN
       'SET bezeichnung = ' || quote_literal(new."name") || ', ' ||
       'the_geom = ' || quote_literal(geom::text) || ' ' ||
       'WHERE ogc_fid = ' || new.id;
-    RAISE DEBUG1 'Query : %', query;
+    RAISE DEBUG 'Query : %', query;
     EXECUTE 'SELECT dblink_exec(' || quote_literal(query) || ');';
     PERFORM dblink_disconnect();
     RETURN new;
@@ -512,7 +512,7 @@ BEGIN
     query := 'INSERT INTO ${f_schema}.klarschiff_stadtteile_hro (ogc_fid, bezeichnung, the_geom) ' ||
       'VALUES (' || new.id || ', ' || quote_literal(new."name") || ', ' ||
       quote_literal(geom::text) || ')';
-    RAISE DEBUG1 'Query : %', query;
+    RAISE DEBUG 'Query : %', query;
     EXECUTE 'SELECT dblink_exec(' || quote_literal(query) || ');';
     PERFORM dblink_disconnect();
     RETURN new;
@@ -554,7 +554,7 @@ BEGIN
 
   IF TG_OP = 'DELETE' THEN
     query := 'DELETE FROM ${f_schema}.klarschiff_trashmail_blacklist WHERE id = ' || old.id;
-    RAISE DEBUG1 'Query : %', query;
+    RAISE DEBUG 'Query : %', query;
     EXECUTE 'SELECT dblink_exec(' || quote_literal(query) || ');';
     PERFORM dblink_disconnect();
     RETURN old;
@@ -563,7 +563,7 @@ BEGIN
     query := 'UPDATE ${f_schema}.klarschiff_trashmail_blacklist ' ||
       'SET pattern = ' || quote_literal(new.pattern) || ' ' || 
       'WHERE id = ' || new.id; 
-    RAISE DEBUG1 'Query : %', query;
+    RAISE DEBUG 'Query : %', query;
     EXECUTE 'SELECT dblink_exec(' || quote_literal(query) || ');';
     PERFORM dblink_disconnect();
     RETURN new;
@@ -571,7 +571,7 @@ BEGIN
   ELSIF TG_OP = 'INSERT' THEN
     query := 'INSERT INTO ${f_schema}.klarschiff_trashmail_blacklist (id, pattern) ' ||
       'VALUES (' || new.id || ', ' || quote_literal(new.pattern ) || ')';
-    RAISE DEBUG1 'Query : %', query;
+    RAISE DEBUG 'Query : %', query;
     EXECUTE 'SELECT dblink_exec(' || quote_literal(query) || ');';
     PERFORM dblink_disconnect();
     RETURN new;
@@ -618,7 +618,7 @@ BEGIN
 
   IF TG_OP = 'DELETE' THEN
     query := 'DELETE FROM ${f_schema}.klarschiff_unterstuetzer WHERE id = ' || old.id;
-    RAISE DEBUG1 'Query : %', query;
+    RAISE DEBUG 'Query : %', query;
     EXECUTE 'SELECT dblink_exec(' || quote_literal(query) || ');';
     PERFORM dblink_disconnect();
     RETURN old;
@@ -633,7 +633,7 @@ BEGIN
         query := query || 'datum = NULL ';
     END IF;
     query := query || 'WHERE id = ' || new.id;
-    RAISE DEBUG1 'Query : %', query;
+    RAISE DEBUG 'Query : %', query;
     EXECUTE 'SELECT dblink_exec(' || quote_literal(query) || ');';
     PERFORM dblink_disconnect();
     RETURN new;
@@ -647,7 +647,7 @@ BEGIN
      ELSE
         query := query || 'NULL)';
     END IF;
-    RAISE DEBUG1 'Query : %', query;
+    RAISE DEBUG 'Query : %', query;
     EXECUTE 'SELECT dblink_exec(' || quote_literal(query) || ');';
     PERFORM dblink_disconnect();
     RETURN new;
@@ -702,7 +702,7 @@ BEGIN
       query := query || 'datum_abgeschlossen = datum_abgeschlossen ';
     END IF;
     query := query || 'WHERE id = ' || old.vorgang;
-    RAISE DEBUG1 'Query : %', query;
+    RAISE DEBUG 'Query : %', query;
     EXECUTE 'SELECT dblink_exec(' || quote_literal(query) || ');';
     PERFORM dblink_disconnect();
     RETURN old;
@@ -717,7 +717,7 @@ BEGIN
       query := query || 'datum_abgeschlossen = datum_abgeschlossen ';
     END IF;
     query := query || 'WHERE id = ' || new.vorgang;
-    RAISE DEBUG1 'Query : %', query;
+    RAISE DEBUG 'Query : %', query;
     EXECUTE 'SELECT dblink_exec(' || quote_literal(query) || ');';
     PERFORM dblink_disconnect();
     RETURN new;
@@ -732,7 +732,7 @@ BEGIN
       query := query || 'datum_abgeschlossen = datum_abgeschlossen ';
     END IF;
     query := query || 'WHERE id = ' || new.vorgang;
-    RAISE DEBUG1 'Query : %', query;
+    RAISE DEBUG 'Query : %', query;
     EXECUTE 'SELECT dblink_exec(' || quote_literal(query) || ');';
     PERFORM dblink_disconnect();
     RETURN new;
@@ -953,7 +953,7 @@ BEGIN
         END || ')'
   END;
 
-  RAISE DEBUG1 'Query : %', query;
+  RAISE DEBUG 'Query : %', query;
   EXECUTE 'SELECT dblink_exec(' || quote_literal(query) || ');';
   PERFORM dblink_disconnect();
 
