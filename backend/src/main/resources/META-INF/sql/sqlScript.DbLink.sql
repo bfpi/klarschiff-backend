@@ -18,37 +18,36 @@ DECLARE
   query text;
 
 BEGIN
-  PERFORM dblink_connect('hostaddr=${f_host} port=${f_port} dbname=${f_dbname} user=${f_username} password=${f_password}');
-
-  IF TG_OP = 'DELETE' THEN
-    query := 'DELETE FROM ${f_schema}.klarschiff_status WHERE id = ' || old.id;
-    RAISE DEBUG1 'Query : %', query;
-    EXECUTE 'SELECT dblink_exec(' || quote_literal(query) || ');';
-    PERFORM dblink_disconnect();
-    RETURN old;
-
-  ELSIF TG_OP = 'UPDATE' THEN
-    query := 'UPDATE ${f_schema}.klarschiff_status ' ||
+  PERFORM dblink_connect('hostaddr=${f_host} port=${f_port} dbname=${f_dbname} ' ||
+    'user=${f_username} password=${f_password}');
+  
+  query := CASE TG_OG
+    WHEN 'DELETE' THEN
+      'DELETE FROM ${f_schema}.klarschiff_status WHERE id = ' || old.id
+    WHEN 'UPDATE' THEN
+      'UPDATE ${f_schema}.klarschiff_status ' ||
       'SET "name" = ' || quote_literal(new."text") || ', ' ||
       'nid = ' || new.ordinal || ' ' || 
-      'WHERE id = ' || new.id;
-    RAISE DEBUG1 'Query : %', query;
-    EXECUTE 'SELECT dblink_exec(' || quote_literal(query) ||');';
-    PERFORM dblink_disconnect();
-    RETURN new;
+      'WHERE id = ' || new.id
+    WHEN 'INSERT' THEN
+      'INSERT INTO ${f_schema}.klarschiff_status (id, "name", nid) ' ||
+      'VALUES (' || new.id || ', ' || quote_literal(new."text") || ', ' || 
+        new.ordinal || ')'
+    ELSE 
+      'SELECT 1'
+    END CASE;
 
-  ELSIF TG_OP = 'INSERT' THEN
-    query := 'INSERT INTO ${f_schema}.klarschiff_status (id, "name", nid) ' ||
-      'VALUES (' || new.id || ', ' || quote_literal(new."text") || ', ' || new.ordinal || ')';
-    RAISE DEBUG1 'Query : %', query;
-    EXECUTE 'SELECT dblink_exec(' || query || ');';
-    PERFORM dblink_disconnect();
-    RETURN new;
-
-  END IF;
-
+  RAISE DEBUG1 'Query : %', query;
+  EXECUTE 'SELECT dblink_exec(' || quote_literal(query) || ');';
   PERFORM dblink_disconnect();
-  RETURN NULL;
+
+  IF TG_OP = 'DELETE' THEN 
+    RETURN old;
+  ELSIF TG_OP IN ('INSERT', 'UPDATE') THEN
+    RETURN new;
+  ELSE
+    RETURN NULL;
+  END IF;
 EXCEPTION WHEN others THEN
   PERFORM dblink_disconnect();
   RAISE;
