@@ -87,15 +87,15 @@ BEGIN
 
   query := CASE TG_OP
     WHEN 'DELETE' THEN
-      'DELETE FROM ${f_schema}.klarschiff_vorgangstyp WHERE id = ' || quote_literal(old.id);
+      'DELETE FROM ${f_schema}.klarschiff_vorgangstyp WHERE id = ' || quote_literal(old.id)
     WHEN 'UPDATE' THEN
       'UPDATE ${f_schema}.klarschiff_vorgangstyp ' ||
       'SET "name" = ' || quote_literal(new."text") || ', ordinal = ' || new.ordinal || ' ' ||
-      'WHERE id = ' || quote_literal(new.id);
+      'WHERE id = ' || quote_literal(new.id)
     WHEN 'INSERT' THEN
       'INSERT INTO ${f_schema}.klarschiff_vorgangstyp (id, "name", ordinal) ' ||
       'VALUES (' || quote_literal(new.id) || ', ' || quote_literal(new."text") || ', ' || 
-        new.ordinal || ')';
+        new.ordinal || ')'
     ELSE
       'SELECT 1'
     END;
