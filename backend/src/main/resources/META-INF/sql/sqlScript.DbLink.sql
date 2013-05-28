@@ -408,9 +408,9 @@ CREATE TRIGGER klarschiff_trigger_missbrauchsmeldung
   FOR EACH ROW EXECUTE PROCEDURE klarschiff_triggerfunction_missbrauchsmeldung();
 
 -- Test
---INSERT INTO klarschiff_missbrauchsmeldung () VALUES ();
---UPDATE klarschiff_missbrauchsmeldung SET  WHERE id=;
---DELETE FROM klarschiff_missbrauchsmeldung WHERE id=;
+-- INSERT INTO klarschiff_missbrauchsmeldung (id, datum, datum_abarbeitung, datum_bestaetigung) VALUES (1000, '20130501', 9);
+-- UPDATE klarschiff_missbrauchsmeldung SET datum_abarbeitung = '20130515', datum_bestaetigung = '20130527' WHERE id = 1000;
+-- DELETE FROM klarschiff_missbrauchsmeldung WHERE id = 1000;
 
 
 -- #######################################################################################
@@ -473,6 +473,11 @@ CREATE TRIGGER klarschiff_trigger_stadt_grenze
   BEFORE INSERT OR UPDATE OR DELETE
   ON klarschiff_stadt_grenze
   FOR EACH ROW EXECUTE PROCEDURE klarschiff_triggerfunction_stadt_grenze();
+
+-- Test
+-- INSERT INTO klarschiff_stadt_grenze (id, grenze) VALUES (1000, st_geomfromtext('polygon((1 1, 0 0, 2 2, 1 1))', 25833));
+-- UPDATE klarschiff_stadt_grenze SET grenze = st_geomfromtext('polygon((1 1, 0 0, 2 2, 3 3, 1 1))', 25833) WHERE id = 1000;
+-- DELETE FROM klarschiff_stadt_grenze WHERE id = 1000;
 
 
 -- #######################################################################################
@@ -538,6 +543,11 @@ CREATE TRIGGER klarschiff_trigger_stadtteil_grenze
   ON klarschiff_stadtteil_grenze
   FOR EACH ROW EXECUTE PROCEDURE klarschiff_triggerfunction_stadtteil_grenze();
 
+-- Test
+-- INSERT INTO klarschiff_stadtteil_grenze (id, name, grenze) VALUES (1000, 'Testgrenze', st_geometryfromtext('polygon((1 1, 2 2, 3 3, 1 1))', 25833));
+-- UPDATE klarschiff_stadtteil_grenze SET grenze = st_geometryfromtext('polygon((1 1, 0 0, 3 3, 1 1))', 25833), name = 'Neue Testgrenze' WHERE id = 1000;
+-- DELETE FROM klarschiff_stadtteil_grenze WHERE id = 1000;
+
 
 -- #######################################################################################
 -- # Trashmail                                                                           #
@@ -598,9 +608,9 @@ CREATE TRIGGER klarschiff_trigger_trashmail
   FOR EACH ROW EXECUTE PROCEDURE klarschiff_triggerfunction_trashmail();
 
 -- Test
---INSERT INTO klarschiff_trashmail (id, pattern) VALUES (426, '0815.ru');
---UPDATE klarschiff_trashmail SET pattern='0815a.ru' WHERE id=426;
---DELETE FROM klarschiff_trashmail WHERE id=426;
+-- INSERT INTO klarschiff_trashmail (id, pattern) VALUES (426, '0815.ru');
+-- UPDATE klarschiff_trashmail SET pattern = '0815a.ru' WHERE id = 426;
+-- DELETE FROM klarschiff_trashmail WHERE id = 426;
   
 
 -- #######################################################################################
@@ -674,11 +684,9 @@ CREATE TRIGGER klarschiff_trigger_unterstuetzer
   FOR EACH ROW EXECUTE PROCEDURE klarschiff_triggerfunction_unterstuetzer();
 
 -- Test
---INSERT INTO klarschiff_unterstuetzer (id, datum, datum_bestaetigung, hash, vorgang) VALUES (769, '2011-07-31 19:54:23.881',NULL,'5qgfaijqe74t1k0d1knlbbl3lh',9);
---INSERT INTO klarschiff_unterstuetzer (id, datum, datum_bestaetigung, hash, vorgang) VALUES (770, '2011-07-31 20:44:06.462', '2011-07-31 20:50:10', '3o9lqmb9g3ria2lh33hiovjh2j', 9);
---INSERT INTO klarschiff_unterstuetzer (id, datum, datum_bestaetigung, hash, vorgang) VALUES (769, '2011-07-31 19:54:23.881',NULL,'5qgfaijqe74t1k0d1knlbbl3lh',9);
---UPDATE klarschiff_unterstuetzer SET datum_bestaetigung = '2011-07-31 20:50:10' WHERE id = 769;
---DELETE FROM klarschiff_unterstuetzer WHERE id=770;
+-- INSERT INTO klarschiff_unterstuetzer (id, datum, datum_bestaetigung, hash, vorgang) VALUES (769, '2011-07-31 19:54:23.881', NULL, '5qgfaijqe74t1k0d1knlbbl3lh', 9);
+-- UPDATE klarschiff_unterstuetzer SET datum_bestaetigung = '2011-07-31 20:50:10' WHERE id = 769;
+-- DELETE FROM klarschiff_unterstuetzer WHERE id = 769;
 
 
 -- #######################################################################################
@@ -689,53 +697,45 @@ CREATE OR REPLACE FUNCTION klarschiff_triggerfunction_verlauf()
 RETURNS trigger AS $BODY$
 DECLARE
   query text;
-
 BEGIN
-  PERFORM dblink_connect('hostaddr=${f_host} port=${f_port} dbname=${f_dbname} user=${f_username} password=${f_password}');
+  PERFORM dblink_connect('hostaddr=${f_host} port=${f_port} dbname=${f_dbname} ' ||
+    'user=${f_username} password=${f_password}');
+
+  query := 'UPDATE ${f_schema}.klarschiff_vorgang SET datum_abgeschlossen = ' || CASE
+    WHEN TG_OP = 'DELETE' THEN
+      CASE WHEN old.typ = 'status' AND 
+        old.wert_neu IN ('abgeschlossen', 'wird nicht bearbeitet')
+      THEN
+        'NULL'
+      ELSE
+        'datum_abgeschlossen'
+      END ||
+      ' WHERE id = ' || old.vorgang
+    WHEN TG_OP IN ('INSERT', 'UPDATE') THEN
+      CASE WHEN new.typ = 'status' THEN
+        CASE
+        WHEN new.wert_neu IN ('abgeschlossen', 'wird nicht bearbeitet') THEN
+          quote_literal(new.datum)
+        ELSE
+          'NULL'
+        END
+      ELSE
+        'datum_abgeschlossen'
+      END || ' WHERE id = ' || new.vorgang
+    ELSE
+      'datum_abgeschlossen WHERE id IS NULL'
+    END;
+
+  RAISE DEBUG 'Query : %', query;
+  EXECUTE 'SELECT dblink_exec(' || quote_literal(query) || ');';
+  PERFORM dblink_disconnect();
 
   IF TG_OP = 'DELETE' THEN
-    query := 'UPDATE ${f_schema}.klarschiff_vorgang SET ';
-    IF old.typ = 'status' AND (old.wert_neu = 'abgeschlossen' OR old.wert_neu = 'wird nicht bearbeitet') THEN
-      query := query || 'datum_abgeschlossen = NULL ';
-    ELSE
-      query := query || 'datum_abgeschlossen = datum_abgeschlossen ';
-    END IF;
-    query := query || 'WHERE id = ' || old.vorgang;
-    RAISE DEBUG 'Query : %', query;
-    EXECUTE 'SELECT dblink_exec(' || quote_literal(query) || ');';
-    PERFORM dblink_disconnect();
     RETURN old;
-
-  ELSIF TG_OP = 'UPDATE' THEN
-    query := 'UPDATE ${f_schema}.klarschiff_vorgang SET ';
-    IF new.typ = 'status' AND (new.wert_neu = 'abgeschlossen' OR new.wert_neu = 'wird nicht bearbeitet') THEN
-      query := query || 'datum_abgeschlossen = ' || quote_literal(new.datum) || ' ';
-    ELSIF new.typ = 'status' AND NOT (new.wert_neu = 'abgeschlossen' OR new.wert_neu = 'wird nicht bearbeitet') THEN
-       query := query || 'datum_abgeschlossen = NULL ';
-     ELSE
-      query := query || 'datum_abgeschlossen = datum_abgeschlossen ';
-    END IF;
-    query := query || 'WHERE id = ' || new.vorgang;
-    RAISE DEBUG 'Query : %', query;
-    EXECUTE 'SELECT dblink_exec(' || quote_literal(query) || ');';
-    PERFORM dblink_disconnect();
+  ELSIF TG_OP IN ('INSERT', 'UPDATE') THEN
     RETURN new;
-
-  ELSIF TG_OP = 'INSERT' THEN
-    query := 'UPDATE ${f_schema}.klarschiff_vorgang SET ';
-    IF new.typ = 'status' AND (new.wert_neu = 'abgeschlossen' OR new.wert_neu = 'wird nicht bearbeitet') THEN
-      query := query || 'datum_abgeschlossen = ' || quote_literal(new.datum) || ' ';
-    ELSIF new.typ = 'status' AND NOT (new.wert_neu = 'abgeschlossen' OR new.wert_neu = 'wird nicht bearbeitet') THEN
-       query := query || 'datum_abgeschlossen = NULL ';
-     ELSE
-      query := query || 'datum_abgeschlossen = datum_abgeschlossen ';
-    END IF;
-    query := query || 'WHERE id = ' || new.vorgang;
-    RAISE DEBUG 'Query : %', query;
-    EXECUTE 'SELECT dblink_exec(' || quote_literal(query) || ');';
-    PERFORM dblink_disconnect();
-    RETURN new;
-
+  ELSE
+    RETURN NULL;
   END IF;
 
   PERFORM dblink_disconnect();
@@ -758,6 +758,14 @@ CREATE TRIGGER klarschiff_trigger_verlauf
   ON klarschiff_verlauf
   FOR EACH ROW EXECUTE PROCEDURE klarschiff_triggerfunction_verlauf();
 
+-- Test
+-- Get ID for valid "verlauf" from frontend: SELECT id, datum, datum_abgeschlossen FROM klarschiff.klarschiff_vorgang WHERE datum_abgeschlossen IS NULL ORDER BY id DESC;
+-- INSERT INTO klarschiff_verlauf (id, typ, wert_neu, vorgang) VALUES (1000, 'status', NULL, 30);
+-- INSERT INTO klarschiff_verlauf (id, typ, wert_neu, datum, vorgang) VALUES (1001, 'status', 'abgeschlossen', '20130527', 31);
+-- INSERT INTO klarschiff_verlauf (id, typ, wert_neu, datum, vorgang) VALUES (1002, 'status', 'abgeschlo', '20130527', 32);
+-- UPDATE klarschiff_verlauf SET typ = 'status', wert_neu = 'abgeschlossen', datum = now() WHERE id = 1000;
+-- DELETE FROM klarschiff_verlauf WHERE id IN (1000, 1001, 1002);
+
 
 -- #######################################################################################
 -- # Vorgang                                                                             #
@@ -773,8 +781,10 @@ DECLARE
 BEGIN
   PERFORM dblink_connect('hostaddr=${f_host} port=${f_port} dbname=${f_dbname} user=${f_username} password=${f_password}');
 
-  foto_normal := encode(new.foto_normal_jpg, 'base64');
-  foto_thumb := encode(new.foto_thumb_jpg, 'base64');
+  IF TG_OP IN ('INSERT', 'UPDATE') THEN
+    foto_normal := encode(new.foto_normal_jpg, 'base64');
+    foto_thumb := encode(new.foto_thumb_jpg, 'base64');
+  END IF;
 
   query := CASE TG_OP
     WHEN 'DELETE' THEN
@@ -982,6 +992,20 @@ CREATE TRIGGER klarschiff_trigger_vorgang
   BEFORE INSERT OR UPDATE OR DELETE
   ON klarschiff_vorgang
   FOR EACH ROW EXECUTE PROCEDURE klarschiff_triggerfunction_vorgang();
+
+-- Test
+-- INSERT INTO klarschiff_vorgang (adresse, archiviert, autor_email, betreff, betreff_freigabe_status, datum, delegiert_an, details, 
+--  details_freigabe_status, erstsichtung_erfolgt, foto_freigabe_status, foto_normal_jpg, foto_thumb_jpg, hash, kategorie, ovi, prioritaet, 
+--  prioritaet_ordinal, status, status_kommentar, status_ordinal, typ, version, zustaendigkeit, zustaendigkeit_status, id) 
+--  VALUES (NULL, NULL, 'fasdfsda@example.com', 'test1''test11', 'intern', '2013-05-21 17:16:13.919000 +02:00:00', NULL, 'test2''test22',
+--  'intern', '0', 'intern', NULL, NULL, '3r13f3lool196c096g5ugeftc4', '17', 'SRID=25833;POINT(308399.3246514606 6003650.909966981)', 
+--  'mittel', '1', 'gemeldet', NULL, '0', 'problem', '2013-05-21 17:16:13.934000 +02:00:00', NULL, NULL, '40');
+-- UPDATE klarschiff_vorgang SET betreff = 'test''test', betreff_freigabe_status = 'extern' WHERE id = 41;
+-- DELETE FROM klarschiff_vorgang_features WHERE vorgang IN (40, 41);
+-- DELETE FROM klarschiff_verlauf WHERE vorgang IN (40, 41);
+-- DELETE FROM klarschiff_vorgang_history_classes_history_classes WHERE vorgang_history_classes IN (40, 41);
+-- DELETE FROM klarschiff_vorgang_history_classes WHERE vorgang IN (40, 41);
+-- DELETE FROM klarschiff_vorgang WHERE id IN (40, 41);
 
 
 -- #######################################################################################
