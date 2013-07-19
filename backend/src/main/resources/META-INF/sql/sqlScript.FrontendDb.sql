@@ -374,7 +374,8 @@ CREATE OR REPLACE VIEW klarschiff_wfs AS
 	SELECT 
 		v.id, 
 		v.datum, 
-		to_char(v.datum_abgeschlossen, 'DD.MM.YYYY'::text)::character varying AS datum_abgeschlossen, 
+		to_char(v.datum, 'DD.MM.YYYY'::text)::character varying AS datum_erstellt, 
+		to_char(v.datum_statusaenderung, 'DD.MM.YYYY'::text)::character varying AS datum_statusaenderung, 
 		v.details, 
 		v.bemerkung, 
 		v.kategorieid,

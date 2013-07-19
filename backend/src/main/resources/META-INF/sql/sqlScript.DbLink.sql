@@ -701,29 +701,23 @@ BEGIN
   PERFORM dblink_connect('hostaddr=${f_host} port=${f_port} dbname=${f_dbname} ' ||
     'user=${f_username} password=${f_password}');
 
-  query := 'UPDATE ${f_schema}.klarschiff_vorgang SET datum_abgeschlossen = ' || CASE
+  query := 'UPDATE ${f_schema}.klarschiff_vorgang SET datum_statusaenderung = ' || CASE
     WHEN TG_OP = 'DELETE' THEN
-      CASE WHEN old.typ = 'status' AND 
-        old.wert_neu IN ('abgeschlossen', 'wird nicht bearbeitet')
+      CASE WHEN old.typ = 'status' OR old.typ = 'erzeugt'
       THEN
         'NULL'
       ELSE
-        'datum_abgeschlossen'
+        'datum_statusaenderung'
       END ||
       ' WHERE id = ' || old.vorgang
     WHEN TG_OP IN ('INSERT', 'UPDATE') THEN
-      CASE WHEN new.typ = 'status' THEN
-        CASE
-        WHEN new.wert_neu IN ('abgeschlossen', 'wird nicht bearbeitet') THEN
-          quote_literal(new.datum)
-        ELSE
-          'NULL'
-        END
+      CASE WHEN new.typ = 'status' OR new.typ = 'erzeugt' THEN
+        quote_literal(new.datum)
       ELSE
-        'datum_abgeschlossen'
+        'datum_statusaenderung'
       END || ' WHERE id = ' || new.vorgang
     ELSE
-      'datum_abgeschlossen WHERE id IS NULL'
+      'datum_statusaenderung WHERE id IS NULL'
     END;
 
   RAISE DEBUG 'Query : %', query;
