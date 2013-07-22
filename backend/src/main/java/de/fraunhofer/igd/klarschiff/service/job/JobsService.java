@@ -168,13 +168,28 @@ public class JobsService {
 		//sende eMail
 		mailService.sendInformDispatcherMail(vorgaenge, securityService.getAllUserEmailsForRole(securityService.getDispatcherZustaendigkeitId()));
 	}
+    
+    /**
+	 * Der Job informiert den Ersteller von Vorgängen über deren Übergang in den Status "in Bearbeitung".
+	 */
+	@ScheduledSyncInCluster(cron="0 5 10 * * *", name="Ersteller ueber Statusaenderung nach in Bearbeitung informieren")
+	public void informErstellerInBearbeitung() {
+		Date date = DateUtils.addDays(new Date(), -1);
+		
+		//Finde alle Vorgänge, deren Status sich in den letzten 24h auf "in Bearbeitung" geändert hat und eine autorEmail haben
+		List<Vorgang> vorgaenge = vorgangDao.findInProgressVorgaenge(date);
+		
+		//sende eMail
+		for (Vorgang vorgang : vorgaenge)
+			mailService.sendInformErstellerMailInBearbeitung(vorgang);
+	}
 
 	
 	/**
 	 * Der Job informiert den Ersteller von Vorgängen über deren Abschluß.
 	 */
 	@ScheduledSyncInCluster(cron="0 5 10 * * *", name="Ersteller ueber Vorgangsabschluss informieren")
-	public void informErsteller() {
+	public void informErstellerAbschluss() {
 		Date date = DateUtils.addDays(new Date(), -1);
 		
 		//Finde alle Vorgänge, die in den letzten 24h abgeschlossen wurden und eine autorEmail haben
@@ -182,7 +197,7 @@ public class JobsService {
 		
 		//sende eMail
 		for (Vorgang vorgang : vorgaenge)
-			mailService.sendInformErstellerMail(vorgang);
+			mailService.sendInformErstellerMailAbschluss(vorgang);
 	}
 
 

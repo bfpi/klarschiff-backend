@@ -672,6 +672,24 @@ public class VorgangDao {
 			.addWhereConditions("vo.delegiertAn=:delegiertAn").addParameter("delegiertAn", delegiertAn);
 		return query.getResultList(em);
 	}
+    
+    
+    /**
+	 * Ermittelt alle Vorgänge, die ab einer bestimmten Zeit den Status "in Bearbeitung" erhalten haben.
+	 * @param lastChange Zeitpunkt, ab dem die Vorgänge den Status "in Bearbeitung" erhalten haben.
+	 * @return Liste mit Vorgängen
+	 */
+	@SuppressWarnings("unchecked")
+	public List<Vorgang> findInProgressVorgaenge(Date lastChange) {
+		HqlQueryHelper query = addGroupByVorgang(new HqlQueryHelper())
+			.addFromTables("Vorgang vo JOIN vo.verlauf ve")
+			.addWhereConditions("ve.typ=:verlaufTyp").addParameter("verlaufTyp", EnumVerlaufTyp.status)
+			.addWhereConditions("ve.datum>=:datum").addParameter("datum", lastChange)
+			.addWhereConditions("vo.status IN (:status)").addParameter("status", Arrays.asList(EnumVorgangStatus.inProgressVorgangStatus()))
+			.addWhereConditions("vo.autorEmail IS NOT NULL")
+			.addWhereConditions("vo.autorEmail!=:autorEmail").addParameter("autorEmail", "");
+		return query.getResultList(em);
+	}
 
 	
 	/**

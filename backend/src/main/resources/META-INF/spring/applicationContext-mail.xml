@@ -33,7 +33,8 @@
     	p:vorgangWeiterleitenMailTemplate-ref="vorgangWeiterleitenMailTemplate"
     	p:informDispatcherMailTemplate-ref="informDispatcherMailTemplate"
     	p:informExternMailTemplate-ref="informExternMailTemplate"
-    	p:informErstellerMailTemplate-ref="informErstellerMailTemplate"
+    	p:informErstellerMailInBearbeitungTemplate-ref="informErstellerMailInBearbeitungTemplate"
+    	p:informErstellerMailAbschlussTemplate-ref="informErstellerMailAbschlussTemplate"
     />
 
 	<bean class="org.springframework.mail.SimpleMailMessage" id="vorgangBestaetigungMailTemplate"
@@ -142,7 +143,23 @@ Vielen Dank und mit freundlichen Grüßen
 Ihr Klarschiff-Demo-Team]]></value></property>
 	</bean>
 
-	<bean class="org.springframework.mail.SimpleMailMessage" id="informErstellerMailTemplate"
+	<bean class="org.springframework.mail.SimpleMailMessage" id="informErstellerMailInBearbeitungTemplate"
+	p:from="${mail.from}" p:subject="Klarschiff-Demo: Meldung in Bearbeitung">
+		<property name="text"><value><![CDATA[Sehr geehrte(r) NutzerIn der Klarschiff-Demo,
+		
+hiermit teilen wir Ihnen mit, dass Ihre Meldung vom %datum% nun in Bearbeitung ist.
+
+Nachfolgend können Sie nochmals die wichtigsten Daten Ihrer Meldung in kompakter Form einsehen:
+
+%vorgang%
+
+Vielen Dank und mit freundlichen Grüßen
+
+
+Ihr Klarschiff-Demo-Team]]></value></property>
+	</bean>
+
+	<bean class="org.springframework.mail.SimpleMailMessage" id="informErstellerMailAbschlussTemplate"
 	p:from="${mail.from}" p:subject="Klarschiff-Demo: Bearbeitung einer Meldung ist abgeschlossen">
 		<property name="text"><value><![CDATA[Sehr geehrte(r) NutzerIn der Klarschiff-Demo,
 		

@@ -150,7 +150,7 @@ ALTER TABLE klarschiff_unterstuetzer OWNER TO ${f_username};
 CREATE TABLE klarschiff_vorgang (
     id bigint NOT NULL,
     datum timestamp without time zone,
-    datum_abgeschlossen timestamp without time zone,
+    datum_statusaenderung timestamp without time zone,
     details text,
     kategorieid bigint,
     the_geom geometry,

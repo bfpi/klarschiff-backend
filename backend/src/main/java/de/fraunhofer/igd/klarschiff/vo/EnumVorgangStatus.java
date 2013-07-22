@@ -18,11 +18,19 @@ public enum EnumVorgangStatus implements EnumText {
     geloescht("gel&#246;scht");
 
     /**
-     * Gibt alle Status zurück bei dennen der Vorgang noch offen ist.
+     * Gibt alle Status zurück bei denen der Vorgang noch offen ist.
      * @return offen Status
      */
     public static EnumVorgangStatus[] openVorgangStatus() {
     	return new EnumVorgangStatus[] {gemeldet, offen, inBearbeitung};
+    }
+    
+    /**
+     * Gibt alle Status zurück bei denen der Vorgang noch in Bearbeitung ist.
+     * @return inBearbeitung Status
+     */
+    public static EnumVorgangStatus[] inProgressVorgangStatus() {
+    	return new EnumVorgangStatus[] {inBearbeitung};
     }
     
     /**

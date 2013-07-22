@@ -145,8 +145,10 @@ public class AdminController {
 			jobsService.informExtern();
 		} else if(action.equalsIgnoreCase("informDispatcher")) {
 			jobsService.informDispatcher();
-		} else if(action.equalsIgnoreCase("informErsteller")) {
-			jobsService.informErsteller();
+		} else if(action.equalsIgnoreCase("informErstellerInBearbeitung")) {
+			jobsService.informErstellerInBearbeitung();
+		} else if(action.equalsIgnoreCase("informErstellerAbschluss")) {
+			jobsService.informErstellerAbschluss();
 		}
 		return "admin/test";
 	}

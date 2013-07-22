@@ -121,7 +121,20 @@
 					<input type="submit" value="Ausführen"/>
 				</form>
 	
-				<div class="subtitle">informErsteller</div>
+				<div class="subtitle">informErstellerInBearbeitung</div>
+				<p class="help">
+					Ersteller von Vorgängen werden über die Statusänderung der Vorgägnge auf in Bearbeitung informiert. 
+				</p>
+				<ul class="help">
+					<li>Zeit: 5:10 Uhr</li>
+					<li>Es werden immer die Vorgänge berücksichtigt, die innerhalb der letzten 24h auf den Status in Bearbeitung gesetzt wurden.</li>
+				</ul>
+				<form method="post">
+					<input type="hidden" name="action" value="informErstellerInBearbeitung"/>
+					<input type="submit" value="Ausführen"/>
+				</form>
+	
+				<div class="subtitle">informErstellerAbschluss</div>
 				<p class="help">
 					Ersteller von Vorgängen werden über den Abschluss der Vorgägnge informiert. 
 				</p>
@@ -130,7 +143,7 @@
 					<li>Es werden immer die Vorgänge berücksichtigt, die innerhalb der letzten 24h abgeschlossen wurden.</li>
 				</ul>
 				<form method="post">
-					<input type="hidden" name="action" value="informErsteller"/>
+					<input type="hidden" name="action" value="informErstellerAbschluss"/>
 					<input type="submit" value="Ausführen"/>
 				</form>
 			</div>

@@ -66,7 +66,8 @@ public class MailService {
 	SimpleMailMessage vorgangWeiterleitenMailTemplate;
 	SimpleMailMessage informDispatcherMailTemplate;
 	SimpleMailMessage informExternMailTemplate;
-	SimpleMailMessage informErstellerMailTemplate;
+	SimpleMailMessage informErstellerMailInBearbeitungTemplate;
+	SimpleMailMessage informErstellerMailAbschlussTemplate;
 
 	private SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy HH:mm");
 	
@@ -291,7 +292,7 @@ public class MailService {
 		msg.setTo(to);
 		StringBuilder str = new StringBuilder();
 		for(Vorgang vorgang : newVorgaenge) {
-			str.append("ID            : "+vorgang.getId()+"\n");
+			str.append("Nummer        : "+vorgang.getId()+"\n");
 			str.append("Hauptkategorie: "+vorgang.getKategorie().getParent().getName()+"\n");
 			str.append("Unterkategorie: "+vorgang.getKategorie().getName()+"\n");
 			str.append("URL           : "+getServerBaseUrlBackend()+"vorgang/"+vorgang.getId()+"/uebersicht\n");
@@ -315,7 +316,7 @@ public class MailService {
 		msg.setTo(to);
 		StringBuilder str = new StringBuilder();
 		for(Vorgang vorgang : newVorgaenge) {
-			str.append("ID            : "+vorgang.getId()+"\n");
+			str.append("Nummer        : "+vorgang.getId()+"\n");
 			str.append("Hauptkategorie: "+vorgang.getKategorie().getParent().getName()+"\n");
 			str.append("Unterkategorie: "+vorgang.getKategorie().getName()+"\n");
 			str.append("URL           : "+getServerBaseUrlBackend()+"vorgang/delegiert/"+vorgang.getId()+"/uebersicht\n");
@@ -325,20 +326,52 @@ public class MailService {
 		msg.setText(msg.getText().replaceAll("%vorgaenge%", str.toString()));
 		jobExecutorService.runJob(new MailSenderJob(this, msg));
 	}
+    
+    
+    /**
+	 * Sendet eine E-Mail an den Ersteller eines Vorganges mit den Daten über den aktuellen Status des Vorganges.
+	 * @param vorgang Vorgang zu dem der Ersteller informiert werden sollen.
+	 */
+	public void sendInformErstellerMailInBearbeitung(Vorgang vorgang) {
+		SimpleMailMessage msg = new SimpleMailMessage(informErstellerMailInBearbeitungTemplate);
+		msg.setTo(vorgang.getAutorEmail());
+
+		String mailtext = msg.getText();
+		StringBuilder str = new StringBuilder();
+		//Vorgang
+		str.append("Nummer        : "+vorgang.getId()+"\n");
+		str.append("Typ           : "+vorgang.getTyp().getText()+"\n");
+		str.append("Hauptkategorie: "+vorgang.getKategorie().getParent().getName()+"\n");
+		str.append("Unterkategorie: "+vorgang.getKategorie().getName()+"\n\n\n");
+		str.append(geoService.getMapExternExternUrl(vorgang)+"\n");
+		mailtext = mailtext.replaceAll("%vorgang%", str.toString());
+		//Datum
+		mailtext = mailtext.replaceAll("%datum%", formatter.format(vorgang.getDatum()));
+		//Status
+		str = new StringBuilder();
+		str.append(vorgang.getStatus().getText());
+		if (!StringUtils.isBlank(vorgang.getStatusKommentar()))
+			str.append(" (Info der Verwaltung: "+vorgang.getStatusKommentar()+")\n");
+		mailtext = mailtext.replaceAll("%status%", str.toString());
+		
+		msg.setText(mailtext);
+		
+		jobExecutorService.runJob(new MailSenderJob(this, msg));
+	}
 
 	
 	/**
 	 * Sendet eine E-Mail an den Ersteller eines Vorganges mit den Daten über den aktuellen Status des Vorganges.
 	 * @param vorgang Vorgang zu dem der Ersteller informiert werden sollen.
 	 */
-	public void sendInformErstellerMail(Vorgang vorgang) {
-		SimpleMailMessage msg = new SimpleMailMessage(informErstellerMailTemplate);
+	public void sendInformErstellerMailAbschluss(Vorgang vorgang) {
+		SimpleMailMessage msg = new SimpleMailMessage(informErstellerMailAbschlussTemplate);
 		msg.setTo(vorgang.getAutorEmail());
 
 		String mailtext = msg.getText();
 		StringBuilder str = new StringBuilder();
 		//Vorgang
-		str.append("ID            : "+vorgang.getId()+"\n");
+		str.append("Nummer        : "+vorgang.getId()+"\n");
 		str.append("Typ           : "+vorgang.getTyp().getText()+"\n");
 		str.append("Hauptkategorie: "+vorgang.getKategorie().getParent().getName()+"\n");
 		str.append("Unterkategorie: "+vorgang.getKategorie().getName()+"\n\n\n");
@@ -440,12 +473,19 @@ public class MailService {
 	public void setServerBaseUrlFrontend(String serverBaseUrlFrontend) {
 		this.serverBaseUrlFrontend = serverBaseUrlFrontend;
 	}
-	public SimpleMailMessage getInformErstellerMailTemplate() {
-		return informErstellerMailTemplate;
+    public SimpleMailMessage getInformErstellerMailInBearbeitungTemplate() {
+		return informErstellerMailInBearbeitungTemplate;
 	}
-	public void setInformErstellerMailTemplate(
-			SimpleMailMessage informErstellerMailTemplate) {
-		this.informErstellerMailTemplate = informErstellerMailTemplate;
+	public void setInformErstellerMailInBearbeitungTemplate(
+			SimpleMailMessage informErstellerMailInBearbeitungTemplate) {
+		this.informErstellerMailInBearbeitungTemplate = informErstellerMailInBearbeitungTemplate;
+	}
+	public SimpleMailMessage getInformErstellerMailAbschlussTemplate() {
+		return informErstellerMailAbschlussTemplate;
+	}
+	public void setInformErstellerMailAbschlussTemplate(
+			SimpleMailMessage informErstellerMailAbschlussTemplate) {
+		this.informErstellerMailAbschlussTemplate = informErstellerMailAbschlussTemplate;
 	}
 
 
