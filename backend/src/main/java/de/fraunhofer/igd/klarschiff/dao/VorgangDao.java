@@ -728,4 +728,24 @@ public class VorgangDao {
 	public String getDelegiertAnForVorgang(Long vorgangId) {
 		return em.createQuery("SELECT vo.delegiertAn FROM Vorgang vo WHERE vo.id=:id", String.class).setParameter("id", vorgangId).getSingleResult();
 	}
+    
+    
+    /**
+	 * Ermittelt alle Vorgänge mit dem Status 'offen', die seit einem bestimmten Zeitpunkt zugewiesen sind, bisher aber nicht akzeptiert wurden.
+	 * @param zeitpunkt Zeitpunkt, seit dem die Vorgänge zugewiesen sind
+	 * @return Liste mit Vorgängen
+	 */
+	@SuppressWarnings("unchecked")
+    public List<Vorgang> findVorgaengeOffenNichtAkzeptiert(Date zeitpunkt) {
+		HqlQueryHelper query = (new HqlQueryHelper()).addSelectAttribute("vo")
+			.addFromTables("Vorgang vo")
+			.addWhereConditions("vo.archiviert!=true");
+			//.addWhereConditions("vo.status='offen'")
+			//.addWhereConditions("vo.zustaendigkeitStatus!='akzeptiert'")
+			//.addWhereConditions("vo.version<=:zeitpunkt").addParameter("zeitpunkt", zeitpunkt)
+            //.orderBy("vo.id");
+		return query.getResultList(em);
+        /*return em.createQuery("SELECT vo FROM Vorgang vo WHERE vo.archiviert IS NOT TRUE", Vorgang.class)
+			.getResultList();*/
+	}
 }

@@ -53,18 +53,6 @@ public class JobsService {
 	ClassificationService classificationService;
 	
 
-	//TEST
-//	@Scheduled(cron="30 * */3 * * *")
-//	public void testLdap() {
-//		try {
-//			securityService.getAllZustaendigkeiten(false);
-//		} catch (Exception e) {
-//			logger.error("ClassificationContext konnte nicht erneuert werden.", e);
-//		}
-//	}
-	//TEST
-	
-	
 	/**
 	 * Der Job archiviert abgeschlossene Vorgänge.
 	 */
@@ -188,7 +176,7 @@ public class JobsService {
 	/**
 	 * Der Job informiert den Ersteller von Vorgängen über deren Abschluß.
 	 */
-	@ScheduledSyncInCluster(cron="0 5 10 * * *", name="Ersteller ueber Vorgangsabschluss informieren")
+	@ScheduledSyncInCluster(cron="0 10 10 * * *", name="Ersteller ueber Vorgangsabschluss informieren")
 	public void informErstellerAbschluss() {
 		Date date = DateUtils.addDays(new Date(), -1);
 		
@@ -199,6 +187,21 @@ public class JobsService {
 		for (Vorgang vorgang : vorgaenge)
 			mailService.sendInformErstellerMailAbschluss(vorgang);
 	}
+    
+    
+    /**
+	 * Der Job informiert die Empfänger redaktioneller E-Mails.
+	 */
+	@ScheduledSyncInCluster(cron="0 15 10 * * *", name="Empfaenger redaktioneller E-Mails informieren")
+	public void informRedaktionEmpfaenger() {
+		Date zeitpunkt = DateUtils.addDays(new Date(), -10);
+		
+		//Finde alle Vorgänge mit dem Status 'offen', die seit mindestens 'tageZugewiesen' Tagen zugewiesen sind, bisher aber nicht akzeptiert wurden
+		List<Vorgang> vorgaenge = vorgangDao.findVorgaengeOffenNichtAkzeptiert(zeitpunkt);
+		
+		//sende eMail
+		mailService.sendInformRedaktionEmpfaengerMail(vorgaenge);
+	}
 
 
 	/**
@@ -208,11 +211,7 @@ public class JobsService {
 	public void notifyAliveServer(){
 		clusterDao.notifyAliveServer();
 	}
-	
-//	@ScheduledSyncInCluster(cron="*/20 * * * * *", name="test")
-//	public void test() {
-//		System.out.println("TestJob wird ausgeführt.");
-//	}
+    
 	
     /* --------------- GET + SET ----------------------------*/
 	

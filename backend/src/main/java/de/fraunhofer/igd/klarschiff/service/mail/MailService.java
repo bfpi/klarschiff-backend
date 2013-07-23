@@ -68,6 +68,7 @@ public class MailService {
 	SimpleMailMessage informExternMailTemplate;
 	SimpleMailMessage informErstellerMailInBearbeitungTemplate;
 	SimpleMailMessage informErstellerMailAbschlussTemplate;
+	SimpleMailMessage informRedaktionEmpfaengerMailTemplate;
 
 	private SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy HH:mm");
 	
@@ -305,7 +306,7 @@ public class MailService {
 	
 	
 	/**
-	 * Sendet E-Mails an die externen Benutzer mit neune Vorgängen.
+	 * Sendet E-Mails an die externen Benutzer mit neuen Vorgängen.
 	 * @param newVorgaenge Liste der Vorgänge, die in der E-Mail dargestellt werden sollen.
 	 * @param to Liste der Empfänger der E-Mail.
 	 */
@@ -389,6 +390,29 @@ public class MailService {
 		msg.setText(mailtext);
 		
 		jobExecutorService.runJob(new MailSenderJob(this, msg));
+	}
+    
+    
+    /**
+	 * Sendet E-Mails an die Empfänger redaktioneller E-Mails.
+	 * @param newVorgaenge Liste der Vorgänge, die in der E-Mail dargestellt werden sollen.
+	 * @param to Liste der Empfänger der E-Mail.
+	 */
+	//public void sendInformRedaktionEmpfaengerMail(List<Vorgang> newVorgaenge, String[] to) {
+	public void sendInformRedaktionEmpfaengerMail(List<Vorgang> newVorgaenge) {
+		if (CollectionUtils.isEmpty(newVorgaenge)) return;
+		
+		SimpleMailMessage msg = new SimpleMailMessage(informRedaktionEmpfaengerMailTemplate);
+		//msg.setTo(to);
+        msg.setTo("sebastian.schwarz@rostock.de");
+		StringBuilder str = new StringBuilder();
+		for(Vorgang vorgang : newVorgaenge) {
+			str.append("Nummer: "+vorgang.getId()+"\n");
+            str.append("************************************\n");
+		}
+		
+		msg.setText(msg.getText().replaceAll("%vorgaenge%", str.toString()));
+		jobExecutorService.runJob(new MailSenderJob(this, msg));	
 	}
 	
 	
@@ -486,6 +510,13 @@ public class MailService {
 	public void setInformErstellerMailAbschlussTemplate(
 			SimpleMailMessage informErstellerMailAbschlussTemplate) {
 		this.informErstellerMailAbschlussTemplate = informErstellerMailAbschlussTemplate;
+	}
+    public SimpleMailMessage getInformRedaktionEmpfaengerMailTemplate() {
+		return informRedaktionEmpfaengerMailTemplate;
+	}
+	public void setInformRedaktionEmpfaengerMailTemplate(
+			SimpleMailMessage informRedaktionEmpfaengerMailTemplate) {
+		this.informRedaktionEmpfaengerMailTemplate = informRedaktionEmpfaengerMailTemplate;
 	}
 
 

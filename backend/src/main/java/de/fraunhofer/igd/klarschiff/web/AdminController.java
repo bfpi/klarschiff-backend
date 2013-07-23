@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import de.fraunhofer.igd.klarschiff.dao.ClusterDao;
 import de.fraunhofer.igd.klarschiff.dao.JobDao;
+import de.fraunhofer.igd.klarschiff.dao.RedaktionEmpfaengerDao;
+import de.fraunhofer.igd.klarschiff.dao.RedaktionKriterienDao;
 import de.fraunhofer.igd.klarschiff.service.cluster.ClusterUtil;
 import de.fraunhofer.igd.klarschiff.service.dbsync.DbSyncService;
 import de.fraunhofer.igd.klarschiff.service.geo.GeoService;
@@ -40,6 +42,12 @@ public class AdminController {
 	
 	@Autowired
 	ClusterDao clusterDao;
+	
+	@Autowired
+	RedaktionEmpfaengerDao redaktionEmpfaengerDao;
+	
+	@Autowired
+	RedaktionKriterienDao redaktionKriterienDao;
 	
 	@Autowired
 	GeoService geoService;
@@ -84,6 +92,21 @@ public class AdminController {
 		model.addAttribute("rollenIntern", securityService.getAllZustaendigkeiten(true));
 		model.addAttribute("rollenExtern", securityService.getAllDelegiertAn());
 		return "admin/rollen";
+	}
+    
+    
+    /**
+	 * Die Methode verarbeitet den GET-Request auf der URL <code>/admin/redaktion</code><br/>
+	 * Seitenbeschreibung: Übersicht über die Redaktion im Adminbereich
+	 * @param model Model in dem ggf. Daten für die View abgelegt werden
+	 * @param request Request
+	 * @return View, die zum Rendern des Request verwendet wird
+	 */
+	@RequestMapping(value="/redaktion", method = RequestMethod.GET)
+	public String redaktion(Model model, HttpServletRequest request) {
+		model.addAttribute("empfaengerList", redaktionEmpfaengerDao.getEmpfaengerList());
+		model.addAttribute("kriterienList", redaktionKriterienDao.getKriterienList());
+		return "admin/redaktion";
 	}
 
 	
@@ -149,6 +172,8 @@ public class AdminController {
 			jobsService.informErstellerInBearbeitung();
 		} else if(action.equalsIgnoreCase("informErstellerAbschluss")) {
 			jobsService.informErstellerAbschluss();
+		} else if(action.equalsIgnoreCase("informRedaktionEmpfaenger")) {
+			jobsService.informRedaktionEmpfaenger();
 		}
 		return "admin/test";
 	}

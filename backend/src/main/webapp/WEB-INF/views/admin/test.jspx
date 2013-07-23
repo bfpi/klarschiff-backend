@@ -126,7 +126,7 @@
 					Ersteller von Vorgängen werden über die Statusänderung der Vorgägnge auf in Bearbeitung informiert. 
 				</p>
 				<ul class="help">
-					<li>Zeit: 5:10 Uhr</li>
+					<li>Zeit: 10:05 Uhr</li>
 					<li>Es werden immer die Vorgänge berücksichtigt, die innerhalb der letzten 24h auf den Status in Bearbeitung gesetzt wurden.</li>
 				</ul>
 				<form method="post">
@@ -139,11 +139,23 @@
 					Ersteller von Vorgängen werden über den Abschluss der Vorgägnge informiert. 
 				</p>
 				<ul class="help">
-					<li>Zeit: 5:10 Uhr</li>
+					<li>Zeit: 10:10 Uhr</li>
 					<li>Es werden immer die Vorgänge berücksichtigt, die innerhalb der letzten 24h abgeschlossen wurden.</li>
 				</ul>
 				<form method="post">
 					<input type="hidden" name="action" value="informErstellerAbschluss"/>
+					<input type="submit" value="Ausführen"/>
+				</form>
+                
+                <div class="subtitle">informRedaktionEmpfaenger</div>
+				<p class="help">
+					Empfänger redaktioneller E-Mails werden informiert. 
+				</p>
+				<ul class="help">
+					<li>Zeit: 10:15 Uhr</li>
+				</ul>
+				<form method="post">
+					<input type="hidden" name="action" value="informRedaktionEmpfaenger"/>
 					<input type="submit" value="Ausführen"/>
 				</form>
 			</div>

@@ -35,6 +35,7 @@
     	p:informExternMailTemplate-ref="informExternMailTemplate"
     	p:informErstellerMailInBearbeitungTemplate-ref="informErstellerMailInBearbeitungTemplate"
     	p:informErstellerMailAbschlussTemplate-ref="informErstellerMailAbschlussTemplate"
+        p:informRedaktionEmpfaengerMailTemplate-ref="informRedaktionEmpfaengerMailTemplate"
     />
 
 	<bean class="org.springframework.mail.SimpleMailMessage" id="vorgangBestaetigungMailTemplate"
@@ -175,6 +176,22 @@ Vielen Dank und mit freundlichen Grüßen
 
 
 Ihr Klarschiff-Demo-Team]]></value></property>
+	</bean>
+	
+	<bean class="org.springframework.mail.SimpleMailMessage" id="informRedaktionEmpfaengerMailTemplate"
+	p:from="${mail.from}" p:subject="Klarschiff.HRO: test informRedaktionEmpfaengerMailTemplate">
+		<property name="text"><value><![CDATA[Sehr geehrte(r) BearbeiterIn in der Klarschiff-Demo,
+		
+test informRedaktionEmpfaengerMailTemplate: 
+
+Vorgänge
+********
+%vorgaenge%
+
+Vielen Dank und mit freundlichen Grüßen
+
+
+Ihr Klarschiff.HRO-Team]]></value></property>
 	</bean>
 	
 </beans>
