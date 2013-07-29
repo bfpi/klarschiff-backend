@@ -731,21 +731,41 @@ public class VorgangDao {
     
     
     /**
-	 * Ermittelt alle Vorgänge mit dem Status 'offen', die seit einem bestimmten Zeitpunkt zugewiesen sind, bisher aber nicht akzeptiert wurden.
-	 * @param zeitpunkt Zeitpunkt, seit dem die Vorgänge zugewiesen sind
+	 * Ermittelt alle Vorgänge mit dem Status 'offen', die seit einem bestimmten Datum einer bestimmten Zuständigkeit zugewiesen sind, bisher aber nicht akzeptiert wurden.
+	 * @param zustaendigkeit Zuständigkeit, der die Vorgänge zugewiesen sind
+	 * @param datum Datum, seit dem die Vorgänge zugewiesen sind
 	 * @return Liste mit Vorgängen
 	 */
 	@SuppressWarnings("unchecked")
-    public List<Vorgang> findVorgaengeOffenNichtAkzeptiert(Date zeitpunkt) {
+    public List<Vorgang> findVorgaengeOffenNichtAkzeptiert(String zustaendigkeit, Date datum) {
 		HqlQueryHelper query = (new HqlQueryHelper()).addSelectAttribute("vo")
 			.addFromTables("Vorgang vo")
-			.addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert = FALSE)");
-			//.addWhereConditions("vo.status='offen'")
-			//.addWhereConditions("vo.zustaendigkeitStatus!='akzeptiert'")
-			//.addWhereConditions("vo.version<=:zeitpunkt").addParameter("zeitpunkt", zeitpunkt)
-            //.orderBy("vo.id");
+			.addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert = FALSE)")
+			.addWhereConditions("vo.status = 'offen'")
+			.addWhereConditions("vo.zustaendigkeitStatus != 'akzeptiert'")
+			.addWhereConditions("vo.zustaendigkeit = :zustaendigkeit").addParameter("zustaendigkeit", zustaendigkeit)
+			.addWhereConditions("vo.version <= :datum").addParameter("datum", datum)
+            .orderBy("vo.id");
 		return query.getResultList(em);
-        /*return em.createQuery("SELECT vo FROM Vorgang vo WHERE vo.archiviert IS NOT TRUE", Vorgang.class)
-			.getResultList();*/
+	}
+    
+    
+    /**
+	 * Ermittelt alle Vorgänge mit dem Status 'in Bearbeitung', die einer bestimmten Zuständigkeit zugewiesen sind und seit einem bestimmten Datum nicht mehr verändert wurden, bisher aber keine Info der Verwaltung aufweisen.
+	 * @param zustaendigkeit Zuständigkeit, der die Vorgänge zugewiesen sind
+	 * @param datum Datum, seit dem die Vorgänge zugewiesen sind
+	 * @return Liste mit Vorgängen
+	 */
+	@SuppressWarnings("unchecked")
+    public List<Vorgang> findVorgaengeInbearbeitungOhneStatusKommentar(String zustaendigkeit, Date datum) {
+		HqlQueryHelper query = (new HqlQueryHelper()).addSelectAttribute("vo")
+			.addFromTables("Vorgang vo")
+			.addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert = FALSE)")
+			.addWhereConditions("vo.status = 'inBearbeitung'")
+			.addWhereConditions("(vo.statusKommentar IS NULL OR vo.statusKommentar = '')")
+			.addWhereConditions("vo.zustaendigkeit = :zustaendigkeit").addParameter("zustaendigkeit", zustaendigkeit)
+			.addWhereConditions("vo.version <= :datum").addParameter("datum", datum)
+            .orderBy("vo.id");
+		return query.getResultList(em);
 	}
 }

@@ -1,5 +1,6 @@
 package de.fraunhofer.igd.klarschiff.service.job;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -12,6 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import de.fraunhofer.igd.klarschiff.dao.ClusterDao;
+import de.fraunhofer.igd.klarschiff.dao.RedaktionEmpfaengerDao;
+import de.fraunhofer.igd.klarschiff.dao.RedaktionKriterienDao;
 import de.fraunhofer.igd.klarschiff.dao.VorgangDao;
 import de.fraunhofer.igd.klarschiff.service.classification.ClassificationService;
 import de.fraunhofer.igd.klarschiff.service.cluster.ScheduledSyncInCluster;
@@ -19,6 +22,8 @@ import de.fraunhofer.igd.klarschiff.service.mail.MailService;
 import de.fraunhofer.igd.klarschiff.service.security.Role;
 import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
 import de.fraunhofer.igd.klarschiff.vo.Missbrauchsmeldung;
+import de.fraunhofer.igd.klarschiff.vo.RedaktionEmpfaenger;
+import de.fraunhofer.igd.klarschiff.vo.RedaktionKriterien;
 import de.fraunhofer.igd.klarschiff.vo.Unterstuetzer;
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
 
@@ -42,6 +47,12 @@ public class JobsService {
 	
 	@Autowired
 	ClusterDao clusterDao;
+    
+    @Autowired
+	RedaktionEmpfaengerDao redaktionEmpfaengerDao;
+    
+    @Autowired
+	RedaktionKriterienDao redaktionKriterienDao;
 	
 	@Autowired
 	SecurityService securityService;
@@ -194,13 +205,61 @@ public class JobsService {
 	 */
 	@ScheduledSyncInCluster(cron="0 15 10 * * *", name="Empfaenger redaktioneller E-Mails informieren")
 	public void informRedaktionEmpfaenger() {
-		Date zeitpunkt = DateUtils.addDays(new Date(), -10);
+    
+        //Liste aller Redaktionskriterien erstellen
+		List<RedaktionKriterien> kriterienAlle = redaktionKriterienDao.getKriterienList();
+        
+        //Liste aller Empfänger redaktioneller E-Mails erstellen
+		List<RedaktionEmpfaenger> empfaengerAlle = redaktionEmpfaengerDao.getEmpfaengerList();
+        
+        //lokale Variablen für die nachfolgende for-Schleife initiieren
+        Date jetzt = new Date();
+        Short tageOffenNichtAkzeptiert = 0;
+        Short tageInbearbeitungOhneStatusKommentar = 0;
+		Date datum;
+        List<Vorgang> vorgaengeOffenNichtAkzeptiert;
+        List<Vorgang> vorgaengeInbearbeitungOhneStatusKommentar;
 		
-		//Finde alle Vorgänge mit dem Status 'offen', die seit mindestens 'tageZugewiesen' Tagen zugewiesen sind, bisher aber nicht akzeptiert wurden
-		List<Vorgang> vorgaenge = vorgangDao.findVorgaengeOffenNichtAkzeptiert(zeitpunkt);
-		
-		//sende eMail
-		mailService.sendInformRedaktionEmpfaengerMail(vorgaenge);
+        //Liste aller Empfänger durchgehen
+        for (RedaktionEmpfaenger empfaenger : empfaengerAlle) {
+            
+            //prüfe Zeitstempel des letzten E-Mail-Versands an aktuellen Empfänger: soll überhaupt eine E-Mail geschickt werden?
+            if ( (empfaenger.getLetzteMail() == null) || (DateUtils.addDays(empfaenger.getLetzteMail(), empfaenger.getTageZwischenMails()).compareTo(jetzt) <= 0) ) {
+        
+                //Liste aller Redaktionskriterien durchgehen
+                for (RedaktionKriterien kriterium : kriterienAlle) {
+                
+                    //alle Redaktionskriterien der Stufe des Empfängers entsprechend zuweisen
+                    if (kriterium.getStufe() == empfaenger.getStufe()) {
+                        tageOffenNichtAkzeptiert = kriterium.getTageOffenNichtAkzeptiert();
+                        tageInbearbeitungOhneStatusKommentar = kriterium.getTageInbearbeitungOhneStatusKommentar();
+                        break;
+                    }
+                }
+                
+                //'datum' berechnen durch Subtrahieren von 'tageOffenNichtAkzeptiert' vom aktuellen Datum
+                datum = DateUtils.addDays(jetzt, -(tageOffenNichtAkzeptiert));
+            
+                //finde alle Vorgänge mit dem Status 'offen' für die Zuständigkeit des aktuellen Empfängers, die seit mindestens 'datum' zugewiesen sind, bisher aber nicht akzeptiert wurden
+                vorgaengeOffenNichtAkzeptiert = vorgangDao.findVorgaengeOffenNichtAkzeptiert(empfaenger.getZustaendigkeit(), datum);
+                
+                //'datum' berechnen durch Subtrahieren von 'tageInbearbeitungOhneStatusKommentar' vom aktuellen Datum
+                datum = DateUtils.addDays(jetzt, -(tageInbearbeitungOhneStatusKommentar));
+            
+                //finde alle Vorgänge mit dem Status 'offen' für die Zuständigkeit des aktuellen Empfängers, die seit mindestens 'datum' zugewiesen sind, bisher aber nicht akzeptiert wurden
+                vorgaengeInbearbeitungOhneStatusKommentar = vorgangDao.findVorgaengeInbearbeitungOhneStatusKommentar(empfaenger.getZustaendigkeit(), datum);
+                
+                //falls Vorgänge existieren...
+                if ( (!vorgaengeOffenNichtAkzeptiert.isEmpty()) || (!vorgaengeInbearbeitungOhneStatusKommentar.isEmpty())) {
+                
+                    //setzte Zeitstempel des letzten E-Mail-Versands an aktuellen Empfänger auf aktuellen Zeitstempel
+                    empfaenger.setLetzteMail(jetzt);
+                    
+                    //sende E-Mail an aktuellen Empfänger
+                    mailService.sendInformRedaktionEmpfaengerMail(tageOffenNichtAkzeptiert, tageInbearbeitungOhneStatusKommentar, vorgaengeOffenNichtAkzeptiert, vorgaengeInbearbeitungOhneStatusKommentar, empfaenger.getEmail());
+                }
+            }
+        }
 	}
 
 

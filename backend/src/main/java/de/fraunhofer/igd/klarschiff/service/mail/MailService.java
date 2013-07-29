@@ -15,6 +15,8 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 
 import de.fraunhofer.igd.klarschiff.dao.KommentarDao;
+import de.fraunhofer.igd.klarschiff.dao.RedaktionEmpfaengerDao;
+import de.fraunhofer.igd.klarschiff.dao.RedaktionKriterienDao;
 import de.fraunhofer.igd.klarschiff.dao.VerlaufDao;
 import de.fraunhofer.igd.klarschiff.dao.VorgangDao;
 import de.fraunhofer.igd.klarschiff.service.geo.GeoService;
@@ -22,6 +24,8 @@ import de.fraunhofer.igd.klarschiff.service.job.JobExecutorService;
 import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
 import de.fraunhofer.igd.klarschiff.vo.Kommentar;
 import de.fraunhofer.igd.klarschiff.vo.Missbrauchsmeldung;
+import de.fraunhofer.igd.klarschiff.vo.RedaktionEmpfaenger;
+import de.fraunhofer.igd.klarschiff.vo.RedaktionKriterien;
 import de.fraunhofer.igd.klarschiff.vo.Unterstuetzer;
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
 
@@ -395,23 +399,46 @@ public class MailService {
     
     /**
 	 * Sendet E-Mails an die Empfänger redaktioneller E-Mails.
-	 * @param newVorgaenge Liste der Vorgänge, die in der E-Mail dargestellt werden sollen.
-	 * @param to Liste der Empfänger der E-Mail.
+	 * @param tageKriterium1 Anzahl der Tage zum Redaktionskriterium 1.
+	 * @param tageKriterium2 Anzahl der Tage zum Redaktionskriterium 2.
+	 * @param vorgaengeKriterium1 Liste der Vorgänge zu Redaktionskriterium 1, die in der E-Mail dargestellt werden sollen.
+	 * @param vorgaengeKriterium2 Liste der Vorgänge zu Redaktionskriterium 2, die in der E-Mail dargestellt werden sollen.
+	 * @param to Empfänger der E-Mail.
 	 */
-	//public void sendInformRedaktionEmpfaengerMail(List<Vorgang> newVorgaenge, String[] to) {
-	public void sendInformRedaktionEmpfaengerMail(List<Vorgang> newVorgaenge) {
-		if (CollectionUtils.isEmpty(newVorgaenge)) return;
+	public void sendInformRedaktionEmpfaengerMail(Short tageKriterium1, Short tageKriterium2, List<Vorgang> vorgaengeKriterium1, List<Vorgang> vorgaengeKriterium2, String to) {
+		if ( (CollectionUtils.isEmpty(vorgaengeKriterium1)) && (CollectionUtils.isEmpty(vorgaengeKriterium2)) ) return;
 		
 		SimpleMailMessage msg = new SimpleMailMessage(informRedaktionEmpfaengerMailTemplate);
-		//msg.setTo(to);
-        msg.setTo("sebastian.schwarz@rostock.de");
-		StringBuilder str = new StringBuilder();
-		for(Vorgang vorgang : newVorgaenge) {
-			str.append("Nummer: "+vorgang.getId()+"\n");
-            str.append("************************************\n");
-		}
-		
-		msg.setText(msg.getText().replaceAll("%vorgaenge%", str.toString()));
+		msg.setTo(to);
+        
+        if (!CollectionUtils.isEmpty(vorgaengeKriterium1)) {
+            StringBuilder str1 = new StringBuilder();
+            for(Vorgang vorgang : vorgaengeKriterium1) {
+                str1.append(String.format("%1$-" + 9 + "s", vorgang.getId()) + String.format("%1$-" + 27 + "s", vorgang.getZustaendigkeit()) + String.format("%1$-" + 10 + "s", vorgang.getTyp()) + formatter.format(vorgang.getVersion()) + "\n");
+            }
+            String textKriterium1 = "folgende Vorgänge mit dem Status 'offen' sind seit mindestens " + tageKriterium1 + " Tagen zugewiesen, wurden aber bisher nicht akzeptiert (also weder einer Erstsichtung unterzogen noch in Bearbeitung genommen):" + "\n\n" + "Nummer   Zuständigkeit              Typ       zugewiesen seit" + "\n" + "******   *************              ***       ***************";
+            msg.setText(msg.getText().replaceAll("%textKriterium1%", textKriterium1));
+            msg.setText(msg.getText().replaceAll("%vorgaengeKriterium1%", str1.toString()));
+        }
+        else {
+            msg.setText(msg.getText().replaceAll("%textKriterium1%\n", ""));
+            msg.setText(msg.getText().replaceAll("%vorgaengeKriterium1%\n\n", ""));
+        }
+        
+        if (!CollectionUtils.isEmpty(vorgaengeKriterium2)) {
+            StringBuilder str2 = new StringBuilder();
+            for(Vorgang vorgang : vorgaengeKriterium2) {
+                str2.append(String.format("%1$-" + 9 + "s", vorgang.getId()) + String.format("%1$-" + 27 + "s", vorgang.getZustaendigkeit()) + String.format("%1$-" + 10 + "s", vorgang.getTyp()) + formatter.format(vorgang.getVersion()) + "\n");
+            }
+            String textKriterium2 = "folgende Vorgänge mit dem Status 'offen' sind seit mindestens " + tageKriterium2 + " Tagen unverändert, weisen aber bisher keine Info der Verwaltung auf (also keinen Kommentar zum Status):" + "\n\n" + "Nummer   Zuständigkeit              Typ       zugewiesen seit" + "\n" + "******   *************              ***       ***************";
+            msg.setText(msg.getText().replaceAll("%textKriterium2%", textKriterium2));
+            msg.setText(msg.getText().replaceAll("%vorgaengeKriterium2%", str2.toString()));
+        }
+        else {
+            msg.setText(msg.getText().replaceAll("%textKriterium2%\n", ""));
+            msg.setText(msg.getText().replaceAll("%vorgaengeKriterium2%\n\n", ""));
+        }
+
 		jobExecutorService.runJob(new MailSenderJob(this, msg));	
 	}
 	

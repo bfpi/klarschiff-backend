@@ -7,10 +7,14 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 /**
- * VO für die Empfänger von redaktionellen E-Mails
+ * VO für die Empfänger redaktioneller E-Mails
  * @author Sebastian Schwarz (Hansestadt Rostock)
  */
 @SuppressWarnings("serial")
@@ -52,7 +56,9 @@ public class RedaktionEmpfaenger implements Serializable {
 	/**
 	 * Zeitpunkt des letzen Versandes einer redaktionellen E-Mail an den Empfänger
 	 */
-	Date letzteMail;
+    @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(style = "S-")
+    Date letzteMail;
 	
 	/* --------------- GET + SET ----------------------------*/
 
