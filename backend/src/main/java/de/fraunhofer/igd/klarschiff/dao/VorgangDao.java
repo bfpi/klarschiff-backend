@@ -739,7 +739,7 @@ public class VorgangDao {
     public List<Vorgang> findVorgaengeOffenNichtAkzeptiert(Date zeitpunkt) {
 		HqlQueryHelper query = (new HqlQueryHelper()).addSelectAttribute("vo")
 			.addFromTables("Vorgang vo")
-			.addWhereConditions("vo.archiviert!=true");
+			.addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert = FALSE)");
 			//.addWhereConditions("vo.status='offen'")
 			//.addWhereConditions("vo.zustaendigkeitStatus!='akzeptiert'")
 			//.addWhereConditions("vo.version<=:zeitpunkt").addParameter("zeitpunkt", zeitpunkt)
