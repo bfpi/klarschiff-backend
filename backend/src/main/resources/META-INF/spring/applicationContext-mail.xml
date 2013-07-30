@@ -35,12 +35,19 @@
     	p:informExternMailTemplate-ref="informExternMailTemplate"
     	p:informErstellerMailInBearbeitungTemplate-ref="informErstellerMailInBearbeitungTemplate"
     	p:informErstellerMailAbschlussTemplate-ref="informErstellerMailAbschlussTemplate"
+    	p:kriteriumOffenNichtAkzeptiertTemplate-ref="kriteriumOffenNichtAkzeptiertTemplate"
+    	p:kriteriumOffenInbearbeitungOhneStatusKommentarTemplate-ref="kriteriumOffenInbearbeitungOhneStatusKommentarTemplate"
+    	p:kriteriumIdeeOffenOhneUnterstuetzungTemplate-ref="kriteriumIdeeOffenOhneUnterstuetzungTemplate"
+    	p:kriteriumWirdnichtbearbeitetOhneStatuskommentarTemplate-ref="kriteriumWirdnichtbearbeitetOhneStatuskommentarTemplate"
+    	p:kriteriumNichtMehrOffenNichtAkzeptiertTemplate-ref="kriteriumNichtMehrOffenNichtAkzeptiertTemplate"
+    	p:kriteriumOhneRedaktionelleFreigabenTemplate-ref="kriteriumOhneRedaktionelleFreigabenTemplate"
+    	p:kriteriumOhneZustaendigkeitTemplate-ref="kriteriumOhneZustaendigkeitTemplate"
         p:informRedaktionEmpfaengerMailTemplate-ref="informRedaktionEmpfaengerMailTemplate"
     />
 
 	<bean class="org.springframework.mail.SimpleMailMessage" id="vorgangBestaetigungMailTemplate"
 	p:from="${mail.from}" p:subject="Klarschiff-Demo: Bestätigung einer Meldung">
-		<property name="text"><value><![CDATA[Sehr geehrte(r) NutzerIn der Klarschiff-Demo,
+		<property name="text"><value><![CDATA[Sehr geehrte(r) Nutzer/-in der Klarschiff-Demo,
 
 vielen Dank für Ihre Meldung. Für die weitere Bearbeitung benötigen wir nochmals eine Bestätigung von Ihnen. Bitte rufen Sie daher innerhalb von 24 Stunden nach Eingang dieser E-Mail einmalig folgende URL auf: %baseUrlFrontend%vorgangBestaetigung/?hash=%hash%
 
@@ -51,8 +58,6 @@ Ihre Meldung direkt aufrufen können Sie nun über folgende URL: %meldungLink%
 Wenn Sie Ihre Meldung löschen möchten, so können Sie dies durch das einmalige Aufrufen folgender URL tun: %baseUrlFrontend%vorgangLoeschen/?hash=%hash%
 
 Bitte beachten Sie: Das Löschen funktioniert nur, solange wir Ihre Meldung noch nicht in Bearbeitung genommen haben, also das Symbol in der Karte noch rot ist.
-
-Beachten Sie bitte ferner: Da es sich bei der Demo von Klarschiff lediglich um eine Anwendung zu Anschauungs- und Testzwecken handelt, werden eingehende Meldungen nicht als reale Fälle angesehen und auch nicht als solche bearbeitet.
  
 Vielen Dank und mit freundlichen Grüßen
 
@@ -62,13 +67,11 @@ Ihr Klarschiff-Demo-Team]]></value></property>
 
 	<bean class="org.springframework.mail.SimpleMailMessage" id="unterstuetzungBestaetigungMailTemplate"
 	p:from="${mail.from}" p:subject="Klarschiff-Demo: Bestätigung einer Unterstützung">
-		<property name="text"><value><![CDATA[Sehr geehrte(r) NutzerIn der Klarschiff-Demo,
+		<property name="text"><value><![CDATA[Sehr geehrte(r) Nutzer/-in der Klarschiff-Demo,
 
 vielen Dank für Ihre Unterstützung einer bestehenden Meldung. Damit die Unterstützung gültig wird, benötigen wir nochmals eine Bestätigung von Ihnen. Bitte rufen Sie daher innerhalb von 24 Stunden nach Eingang dieser E-Mail einmalig folgende URL auf: %baseUrlFrontend%unterstuetzerBestaetigung/?hash=%hash%
 
 Bitte beachten Sie: Falls Sie nicht innerhalb der 24-Stunden-Frist bestätigen, so wird Ihre Unterstützung automatisch hinfällig.
-
-Beachten Sie bitte ferner: Da es sich bei der Demo von Klarschiff lediglich um eine Anwendung zu Anschauungs- und Testzwecken handelt, werden eingehende Meldungen nicht als reale Fälle angesehen und auch nicht als solche bearbeitet.
   
 Vielen Dank und mit freundlichen Grüßen
 
@@ -78,13 +81,11 @@ Ihr Klarschiff-Demo-Team]]></value></property>
 
 	<bean class="org.springframework.mail.SimpleMailMessage" id="missbrauchsmeldungBestaetigungMailTemplate"
 	p:from="${mail.from}" p:subject="Klarschiff-Demo: Bestätigung einer Missbrauchsmeldung">
-		<property name="text"><value><![CDATA[Sehr geehrte(r) NutzerIn der Klarschiff-Demo,
+		<property name="text"><value><![CDATA[Sehr geehrte(r) Nutzer/-in der Klarschiff-Demo,
 
 vielen Dank für Ihre Missbrauchsmeldung zu einer bestehenden Meldung. Damit die Missbrauchsmeldung gültig wird, benötigen wir nochmals eine Bestätigung von Ihnen. Bitte rufen Sie daher innerhalb von 24 Stunden nach Eingang dieser E-Mail einmalig folgende URL auf: %baseUrlFrontend%missbrauchsmeldungBestaetigung/?hash=%hash%
   
 Bitte beachten Sie: Falls Sie nicht innerhalb der 24-Stunden-Frist bestätigen, so wird Ihre Missbrauchsmeldung automatisch hinfällig.
-
-Beachten Sie bitte ferner: Da es sich bei der Demo von Klarschiff lediglich um eine Anwendung zu Anschauungs- und Testzwecken handelt, werden eingehende Meldungen nicht als reale Fälle angesehen und auch nicht als solche bearbeitet.
   
 Vielen Dank und mit freundlichen Grüßen
 
@@ -96,7 +97,7 @@ Ihr Klarschiff-Demo-Team]]></value></property>
 	p:from="${mail.from}" p:subject="Klarschiff-Demo: weitergeleiteter Vorgang">
 		<property name="text"><value><![CDATA[Sehr geehrte Damen und Herren,
 
-der folgende Vorgang wurde durch die/den Klarschiff-Demo-NutzerIn %absender% an Sie weitergeleitet:
+der folgende Vorgang wurde durch die/den Klarschiff-Demo-Nutzer/-in %absender% an Sie weitergeleitet:
 
 Anmerkungen der/des Absenderin/Absenders
 ****************************************
@@ -114,9 +115,9 @@ Ihr Klarschiff-Demo-Team]]></value></property>
 
 	<bean class="org.springframework.mail.SimpleMailMessage" id="informDispatcherMailTemplate"
 	p:from="${mail.from}" p:subject="Klarschiff-Demo: nicht zuordbare Vorgänge">
-		<property name="text"><value><![CDATA[Sehr geehrte(r) NutzerIn der Klarschiff-Demo,
+		<property name="text"><value><![CDATA[Sehr geehrte(r) Dispatcher/-in von Vorgängen in der Klarschiff-Demo,
 
-innerhalb der letzten 24 Stunden wurden Ihnen in Ihrer Funktion als Dispatcher automatisch Vorgänge überantwortet, die auch nach mehrfacher automatischer Zuständigkeitsfindung nicht eindeutig zugewiesen werden konnten. Bitte bearbeiten Sie diese Vorgänge oder weisen Sie Ihnen die jeweils passende Zuständigkeit manuell zu: 
+innerhalb der letzten 24 Stunden wurden Ihnen in Ihrer Funktion als Dispatcher/-in automatisch Vorgänge überantwortet, die auch nach mehrfacher automatischer Zuständigkeitsfindung nicht eindeutig zugewiesen werden konnten. Bitte bearbeiten Sie diese Vorgänge oder weisen Sie Ihnen die jeweils passende Zuständigkeit manuell zu: 
 
 Daten der nicht zuordbaren Vorgänge
 ***********************************
@@ -130,7 +131,7 @@ Ihr Klarschiff-Demo-Team]]></value></property>
 	
 	<bean class="org.springframework.mail.SimpleMailMessage" id="informExternMailTemplate"
 	p:from="${mail.from}" p:subject="Klarschiff-Demo: neue delegierte Vorgänge">
-		<property name="text"><value><![CDATA[Sehr geehrte(r) NutzerIn der Klarschiff-Demo,
+		<property name="text"><value><![CDATA[Sehr geehrte(r) Bearbeiter/-in von Vorgängen in der Klarschiff-Demo,
 		
 innerhalb der letzten 24 Stunden wurden Vorgänge an Sie delegiert. Bitte bearbeiten Sie diese Vorgänge: 
 
@@ -146,7 +147,7 @@ Ihr Klarschiff-Demo-Team]]></value></property>
 
 	<bean class="org.springframework.mail.SimpleMailMessage" id="informErstellerMailInBearbeitungTemplate"
 	p:from="${mail.from}" p:subject="Klarschiff-Demo: Meldung in Bearbeitung">
-		<property name="text"><value><![CDATA[Sehr geehrte(r) NutzerIn der Klarschiff-Demo,
+		<property name="text"><value><![CDATA[Sehr geehrte(r) Nutzer/-in der Klarschiff-Demo,
 		
 hiermit teilen wir Ihnen mit, dass Ihre Meldung vom %datum% nun in Bearbeitung ist.
 
@@ -162,7 +163,7 @@ Ihr Klarschiff-Demo-Team]]></value></property>
 
 	<bean class="org.springframework.mail.SimpleMailMessage" id="informErstellerMailAbschlussTemplate"
 	p:from="${mail.from}" p:subject="Klarschiff-Demo: Bearbeitung einer Meldung ist abgeschlossen">
-		<property name="text"><value><![CDATA[Sehr geehrte(r) NutzerIn der Klarschiff-Demo,
+		<property name="text"><value><![CDATA[Sehr geehrte(r) Nutzer/-in der Klarschiff-Demo,
 		
 hiermit teilen wir Ihnen mit, dass die Bearbeitung Ihrer Meldung vom %datum% abgeschlossen ist, und zwar mit folgendem Status:
 
@@ -178,20 +179,84 @@ Vielen Dank und mit freundlichen Grüßen
 Ihr Klarschiff-Demo-Team]]></value></property>
 	</bean>
 	
-	<bean class="org.springframework.mail.SimpleMailMessage" id="informRedaktionEmpfaengerMailTemplate"
-	p:from="${mail.from}" p:subject="Klarschiff.HRO: test informRedaktionEmpfaengerMailTemplate">
-		<property name="text"><value><![CDATA[Sehr geehrte(r) BearbeiterIn in der Klarschiff-Demo,
-		
-test informRedaktionEmpfaengerMailTemplate: 
+	<bean class="org.springframework.mail.SimpleMailMessage" id="kriteriumOffenNichtAkzeptiertTemplate">
+		<property name="text"><value><![CDATA[folgende Vorgänge mit dem Status 'offen' sind seit mindestens %tage% Tagen zugewiesen, wurden aber bisher nicht akzeptiert (also weder einer Erstsichtung unterzogen noch in Bearbeitung genommen):
 
-Vorgänge
-********
-%vorgaenge%
+Nummer   aktuelle Zuständigkeit     Typ       zugewiesen seit
+******   **********************     ***       ***************
+%vorgaenge%]]></value></property>
+	</bean>
+	
+	<bean class="org.springframework.mail.SimpleMailMessage" id="kriteriumOffenInbearbeitungOhneStatusKommentarTemplate">
+		<property name="text"><value><![CDATA[folgende Vorgänge mit dem Status 'in Bearbeitung' sind seit mindestens %tage% Tagen unverändert, weisen aber bisher keine Info der Verwaltung auf (also keinen Kommentar zum Status):
+
+Nummer   aktuelle Zuständigkeit     Typ       unverändert seit
+******   **********************     ***       ****************
+%vorgaenge%]]></value></property>
+	</bean>
+	
+	<bean class="org.springframework.mail.SimpleMailMessage" id="kriteriumIdeeOffenOhneUnterstuetzungTemplate">
+		<property name="text"><value><![CDATA[folgende Ideen mit dem Status 'offen' haben ihre Erstsichtung seit mindestens %tage% Tagen hinter sich, weisen aber bisher noch nicht die notwendige Anzahl von %unterstuetzungen% Unterstützungen auf:
+
+Nummer   aktuelle Zuständigkeit     Unterstützungen   Erstsichtungszeitpunkt
+******   **********************     ***************   **********************
+%vorgaenge%]]></value></property>
+	</bean>
+	
+	<bean class="org.springframework.mail.SimpleMailMessage" id="kriteriumWirdnichtbearbeitetOhneStatuskommentarTemplate">
+		<property name="text"><value><![CDATA[folgende Vorgänge mit dem Status 'wird nicht bearbeitet' weisen bisher keine Info der Verwaltung auf (also keinen Kommentar zum Status):
+
+Nummer   aktuelle Zuständigkeit     Typ       Status 'wird nicht bearbeitet' seit
+******   **********************     ***       ***********************************
+%vorgaenge%]]></value></property>
+	</bean>
+	
+	<bean class="org.springframework.mail.SimpleMailMessage" id="kriteriumNichtMehrOffenNichtAkzeptiertTemplate">
+		<property name="text"><value><![CDATA[folgende Vorgänge weisen zwar nicht mehr den Status 'offen' auf, wurden bisher aber dennoch nicht akzeptiert:
+
+Nummer   aktuelle Zuständigkeit     Typ       Status                  nicht akzeptiert seit
+******   **********************     ***       ******                  *********************
+%vorgaenge%]]></value></property>
+	</bean>
+	
+	<bean class="org.springframework.mail.SimpleMailMessage" id="kriteriumOhneRedaktionelleFreigabenTemplate">
+		<property name="text"><value><![CDATA[folgende Vorgänge haben zwar ihre Erstsichtung bereits hinter sich, deren Betreff, Details oder Foto wurden bisher aber noch nicht redaktionell freigegeben:
+
+Nummer   aktuelle Zuständigkeit     Typ       Status                  Freigabestatus Betreff   Freigabestatus Details   Freigabestatus Foto
+******   **********************     ***       ******                  **********************   **********************   *******************
+%vorgaenge%]]></value></property>
+	</bean>
+	
+	<bean class="org.springframework.mail.SimpleMailMessage" id="kriteriumOhneZustaendigkeitTemplate">
+		<property name="text"><value><![CDATA[folgende Vorgänge weisen auf Grund von Kommunikationsfehlern im System keine Einträge in den Datenfeldern 'zustaendigkeit' und/oder 'zustaendigkeit_status' auf:
+
+Nummer   Typ       Status
+******   ***       ******
+%vorgaenge%]]></value></property>
+	</bean>
+	
+	<bean class="org.springframework.mail.SimpleMailMessage" id="informRedaktionEmpfaengerMailTemplate"
+	p:from="${mail.from}" p:subject="Klarschiff-Demo: wichtige redaktionelle Hinweise">
+		<property name="text"><value><![CDATA[Sehr geehrte(r) Bearbeiter/-in von Vorgängen in der Klarschiff-Demo,
+		
+%kriteriumOffenNichtAkzeptiert%
+
+%kriteriumOffenInbearbeitungOhneStatusKommentar%
+
+%kriteriumIdeeOffenOhneUnterstuetzung%
+
+%kriteriumWirdnichtbearbeitetOhneStatuskommentar%
+
+%kriteriumNichtMehrOffenNichtAkzeptiert%
+
+%kriteriumOhneRedaktionelleFreigaben%
+
+%kriteriumOhneZustaendigkeit%
 
 Vielen Dank und mit freundlichen Grüßen
 
 
-Ihr Klarschiff.HRO-Team]]></value></property>
+Ihr Klarschiff-Demo-Team]]></value></property>
 	</bean>
 	
 </beans>

@@ -152,7 +152,7 @@
 					Empfänger redaktioneller E-Mails werden informiert. 
 				</p>
 				<ul class="help">
-					<li>Zeit: 10:15 Uhr</li>
+					<li>Zeit: 01:40 Uhr</li>
 				</ul>
 				<form method="post">
 					<input type="hidden" name="action" value="informRedaktionEmpfaenger"/>
