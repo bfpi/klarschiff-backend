@@ -745,7 +745,7 @@ public class VorgangDao {
 			.addWhereConditions("vo.zustaendigkeitStatus != 'akzeptiert'")
 			.addWhereConditions("vo.zustaendigkeit = :zustaendigkeit").addParameter("zustaendigkeit", zustaendigkeit)
 			.addWhereConditions("vo.version <= :datum").addParameter("datum", datum)
-            .orderBy("vo.id");
+            .orderBy("vo.zustaendigkeit, vo.id");
 		return query.getResultList(em);
 	}
     
@@ -765,7 +765,85 @@ public class VorgangDao {
 			.addWhereConditions("(vo.statusKommentar IS NULL OR vo.statusKommentar = '')")
 			.addWhereConditions("vo.zustaendigkeit = :zustaendigkeit").addParameter("zustaendigkeit", zustaendigkeit)
 			.addWhereConditions("vo.version <= :datum").addParameter("datum", datum)
-            .orderBy("vo.id");
+            .orderBy("vo.zustaendigkeit, vo.id");
+		return query.getResultList(em);
+	}
+    
+    
+    /**
+	 * Ermittelt alle Vorgänge des Typs 'idee' mit dem Status 'offen', die ihre Erstsichtung seit einem bestimmten Datum hinter sich haben, bisher aber noch nicht die Zahl der notwendigen Unterstützungen aufweisen.
+	 * @param zustaendigkeit Zuständigkeit, der die Vorgänge zugewiesen sind
+	 * @param datum Datum, seit dem die Erstsichtung abgeschlossen ist
+	 * @return Liste mit Vorgängen
+	 */
+	@SuppressWarnings("unchecked")
+    public List<Vorgang> findVorgaengeIdeeOffenOhneUnterstuetzung(String zustaendigkeit, Date datum) {
+		HqlQueryHelper query = addGroupByVorgang(new HqlQueryHelper())
+			.addFromTables("Vorgang vo JOIN vo.verlauf ve")
+			.addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert = FALSE)")
+			.addWhereConditions("vo.typ = 'idee'")
+			.addWhereConditions("vo.status = 'offen'")
+            .addWhereConditions("vo.erstsichtungErfolgt = TRUE")
+            .addWhereConditions("ve.typ = 'zustaendigkeitAkzeptiert'")
+            .addWhereConditions("ve.datum <= :datum").addParameter("datum", datum)
+            .addWhereConditions("vo.zustaendigkeit = :zustaendigkeit").addParameter("zustaendigkeit", zustaendigkeit)
+            .addWhereConditions("(SELECT COUNT(*) FROM Unterstuetzer un WHERE un.vorgang = vo.id) < :unterstuetzer").addParameter("unterstuetzer", settingsService.getVorgangIdeeUnterstuetzer())
+            .orderBy("vo.zustaendigkeit, vo.id");
+		return query.getResultList(em);
+	}
+    
+    
+    /**
+	 * Ermittelt alle Vorgänge mit dem Status 'wird nicht bearbeitet', die bisher keine Info der Verwaltung aufweisen.
+	 * @param zustaendigkeit Zuständigkeit, der die Vorgänge zugewiesen sind
+	 * @return Liste mit Vorgängen
+	 */
+	@SuppressWarnings("unchecked")
+    public List<Vorgang> findVorgaengeWirdnichtbearbeitetOhneStatuskommentar(String zustaendigkeit) {
+		HqlQueryHelper query = (new HqlQueryHelper()).addSelectAttribute("vo")
+			.addFromTables("Vorgang vo")
+			.addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert = FALSE)")
+			.addWhereConditions("vo.status = 'wirdNichtBearbeitet'")
+			.addWhereConditions("(vo.statusKommentar IS NULL OR vo.statusKommentar = '')")
+			.addWhereConditions("vo.zustaendigkeit = :zustaendigkeit").addParameter("zustaendigkeit", zustaendigkeit)
+            .orderBy("vo.zustaendigkeit, vo.id");
+		return query.getResultList(em);
+	}
+    
+    
+    /**
+	 * Ermittelt alle Vorgänge, die zwar nicht mehr den Status 'offen' aufweisen, bisher aber dennoch nicht akzeptiert wurden.
+	 * @param zustaendigkeit Zuständigkeit, der die Vorgänge zugewiesen sind
+	 * @return Liste mit Vorgängen
+	 */
+	@SuppressWarnings("unchecked")
+    public List<Vorgang> findVorgaengeNichtMehrOffenNichtAkzeptiert(String zustaendigkeit) {
+		HqlQueryHelper query = (new HqlQueryHelper()).addSelectAttribute("vo")
+			.addFromTables("Vorgang vo")
+			.addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert = FALSE)")
+			.addWhereConditions("vo.status NOT IN ('gemeldet','offen')")
+			.addWhereConditions("vo.zustaendigkeitStatus != 'akzeptiert'")
+			.addWhereConditions("vo.zustaendigkeit = :zustaendigkeit").addParameter("zustaendigkeit", zustaendigkeit)
+            .orderBy("vo.zustaendigkeit, vo.id");
+		return query.getResultList(em);
+	}
+    
+    
+    /**
+	 * Ermittelt alle Vorgänge, die ihre Erstsichtung bereits hinter sich haben, deren Betreff, Details oder Foto bisher aber noch nicht freigegeben wurden.
+	 * @param zustaendigkeit Zuständigkeit, der die Vorgänge zugewiesen sind
+	 * @return Liste mit Vorgängen
+	 */
+	@SuppressWarnings("unchecked")
+    public List<Vorgang> findVorgaengeOhneRedaktionelleFreigaben(String zustaendigkeit) {
+		HqlQueryHelper query = (new HqlQueryHelper()).addSelectAttribute("vo")
+			.addFromTables("Vorgang vo")
+			.addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert = FALSE)")
+			.addWhereConditions("vo.status IN ('offen', 'inBearbeitung', 'wirdNichtBearbeitet', 'abgeschlossen')")
+			.addWhereConditions("vo.erstsichtungErfolgt = TRUE")
+			.addWhereConditions("((vo.betreff IS NOT NULL AND vo.betreff != '' AND (betreffFreigabeStatus IS NULL OR betreffFreigabeStatus = 'intern')) OR (vo.details IS NOT NULL AND vo.details != '' AND (detailsFreigabeStatus IS NULL OR detailsFreigabeStatus = 'intern')) OR (length(vo.fotoThumbJpg) IS NOT NULL AND (fotoFreigabeStatus IS NULL OR fotoFreigabeStatus = 'intern')))")
+			.addWhereConditions("vo.zustaendigkeit = :zustaendigkeit").addParameter("zustaendigkeit", zustaendigkeit)
+            .orderBy("vo.zustaendigkeit, vo.id");
 		return query.getResultList(em);
 	}
 }

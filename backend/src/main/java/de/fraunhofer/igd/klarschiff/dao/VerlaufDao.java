@@ -1,5 +1,6 @@
 package de.fraunhofer.igd.klarschiff.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -71,6 +72,10 @@ public class VerlaufDao {
 	}
 
 	public long countVerlauf(Vorgang vorgang) {
-		return em.createQuery("select count(o) from Verlauf o WHERE o.vorgang=:vorgang", Long.class).setParameter("vorgang", vorgang).getSingleResult();
+		return em.createQuery("SELECT count(o) FROM Verlauf o WHERE o.vorgang=:vorgang", Long.class).setParameter("vorgang", vorgang).getSingleResult();
+	}
+    
+    public Date getAktuellstesErstsichtungsdatumZuVorgang(Vorgang vorgang) {
+		return em.createQuery("SELECT MAX(o.datum) FROM Verlauf o WHERE typ='zustaendigkeitAkzeptiert' AND o.vorgang=:vorgang", Date.class).setParameter("vorgang", vorgang).getSingleResult();
 	}
 }
