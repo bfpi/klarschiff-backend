@@ -244,7 +244,13 @@ public class VorgangBearbeitenController {
 		
 		assertNotEmpty(cmd, result, Assert.EvaluateOn.ever, "vorgang.zustaendigkeit", null);
 		assertNotEmpty(cmd, result, Assert.EvaluateOn.ever, "vorgang.status", null);
-		assertMaxLength(cmd, result,  Assert.EvaluateOn.ever, "vorgang.statusKommentar", 500, "Der Statuskommentar ist zu lang");
+        
+        if (StringUtils.equals("wird nicht bearbeitet", cmd.getVorgang().getStatus().getText())) {
+            assertNotEmpty(cmd, result, Assert.EvaluateOn.ever, "vorgang.statusKommentar", "Für den Status „wird nicht bearbeitet“ müssen Sie einen Kommentar angeben!");
+        }
+        
+		assertMaxLength(cmd, result, Assert.EvaluateOn.ever, "vorgang.statusKommentar", 500, "Der Statuskommentar ist zu lang! Erlaubt sind hier maximal 500 Zeichen.");
+        
 		if (result.hasErrors()) {
 			cmd.setVorgang(getVorgang(id));
 			updateKategorieInModel(model, cmd);
@@ -257,9 +263,6 @@ public class VorgangBearbeitenController {
 			cmd.getVorgang().setZustaendigkeitStatus(EnumZustaendigkeitStatus.akzeptiert);
 			vorgangDao.merge(cmd.getVorgang());
 		} else if (action.equals("&uuml;bernehmen und akzeptieren")) {
-//			cmd.getVorgang().setZustaendigkeitStatus(EnumZustaendigkeitStatus.zugewiesen);
-//			vorgangDao.merge(cmd.getVorgang());
-//			cmd.setVorgang(getVorgang(id));
 			cmd.getVorgang().setZustaendigkeitStatus(EnumZustaendigkeitStatus.akzeptiert);
 			vorgangDao.merge(cmd.getVorgang());
 		} else if (action.equals("automatisch neu zuweisen")) {
