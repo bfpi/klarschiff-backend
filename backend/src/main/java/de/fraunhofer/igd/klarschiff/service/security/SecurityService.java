@@ -172,6 +172,13 @@ public class SecurityService {
 		List<User> userList = new ArrayList<User>();
 		for(Iterator<String> iter = userLoginSet.iterator(); iter.hasNext(); )
 			userList.add(getUser(iter.next()));
+        
+        Collections.sort(userList, new Comparator<User>() {
+            public int compare(User u1, User u2) {
+                return u1.getId().compareTo(u2.getId());
+            }
+        });
+        
 		return userList;
 	}
 	
@@ -241,17 +248,9 @@ public class SecurityService {
 			return null;
 		}
 	}
-
-//	public List<Role> getZustaendigkeiten(String login) {
-//		return getZustaendigkeiten(login, false);	
-//	}
-//	
-//	public List<Role> getCurrentZustaendigkeiten() {
-//		return getZustaendigkeiten(SecurityContextHolder.getContext().getAuthentication().getName(), false);
-//	}
-
-	
-	/**
+    
+    
+    /**
 	 * Ermittelt die Liste der Zuständigkeiten für den aktuellen Benutzer.  
 	 * @param inclDispatcher incl. der Dispatcherrolle?
 	 * @return Liste mit den Zuständigkeiten
@@ -301,12 +300,8 @@ public class SecurityService {
 		return isZustaendigForVorgang(SecurityContextHolder.getContext().getAuthentication().getName(), vorgang);
 	}
 	
-//	public List<Role> getAllZustaendigkeiten() {
-//		return getAllZustaendigkeiten(false);
-//	}
-
-	
-	/**
+    
+    /**
 	 * Ermittelt alle im System vorhandenen Zuständigkeiten.
 	 * @param inclDispatcher incl. der Dispatcherrolle?
 	 * @return Liste mit allen Zuständigkeiten
@@ -314,6 +309,13 @@ public class SecurityService {
 	public List<Role> getAllZustaendigkeiten(boolean inclDispatcher) {
 		String dispatcherFilter = inclDispatcher ? "" : "(!("+groupObjectId+"="+groupDispatcher+"))";
 		List <Role> allZustaendigkeiten = securityServiceLdap.getObjectListFromLdap(groupSearchBase, "(&(objectclass="+groupObjectClass+")("+groupRoleAttribute+"="+groupIntern+")"+dispatcherFilter+")", roleContextMapper);
+        
+        Collections.sort(allZustaendigkeiten, new Comparator<Role>() {
+            public int compare(Role r1, Role r2) {
+                return r1.getId().compareTo(r2.getId());
+            }
+        });
+             
 		return allZustaendigkeiten;
 	}
 
@@ -347,6 +349,13 @@ public class SecurityService {
 	 */
 	public List<Role> getAllDelegiertAn() {
 		List <Role> allDelegiertAn = securityServiceLdap.getObjectListFromLdap(groupSearchBase, "(&(objectclass="+groupObjectClass+")("+groupRoleAttribute+"="+groupExtern+"))", roleContextMapper);
+        
+        Collections.sort(allDelegiertAn, new Comparator<Role>() {
+            public int compare(Role r1, Role r2) {
+                return r1.getId().compareTo(r2.getId());
+            }
+        });
+        
 		return allDelegiertAn;
 	}
 

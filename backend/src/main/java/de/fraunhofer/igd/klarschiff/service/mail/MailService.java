@@ -424,7 +424,7 @@ public class MailService {
 	 * @param vorgaengeOhneZustaendigkeit Liste der Vorgänge zu Redaktionskriterium 7, die in der E-Mail dargestellt werden sollen.
 	 * @param to Empfänger der E-Mail.
 	 */
-	public void sendInformRedaktionEmpfaengerMail(Short tageOffenNichtAkzeptiert, Short tageInbearbeitungOhneStatusKommentar, Short tageIdeeOffenOhneUnterstuetzung, List<Vorgang> vorgaengeOffenNichtAkzeptiert, List<Vorgang> vorgaengeInbearbeitungOhneStatusKommentar, List<Vorgang> vorgaengeIdeeOffenOhneUnterstuetzung, List<Vorgang> vorgaengeWirdnichtbearbeitetOhneStatuskommentar, List<Vorgang> vorgaengeNichtMehrOffenNichtAkzeptiert, List<Vorgang> vorgaengeOhneRedaktionelleFreigaben, List<Vorgang> vorgaengeOhneZustaendigkeit, String to) {
+	public void sendInformRedaktionEmpfaengerMail(Short tageOffenNichtAkzeptiert, Short tageInbearbeitungOhneStatusKommentar, Short tageIdeeOffenOhneUnterstuetzung, List<Vorgang> vorgaengeOffenNichtAkzeptiert, List<Vorgang> vorgaengeInbearbeitungOhneStatusKommentar, List<Vorgang> vorgaengeIdeeOffenOhneUnterstuetzung, List<Vorgang> vorgaengeWirdnichtbearbeitetOhneStatuskommentar, List<Vorgang> vorgaengeNichtMehrOffenNichtAkzeptiert, List<Vorgang> vorgaengeOhneRedaktionelleFreigaben, List<Vorgang> vorgaengeOhneZustaendigkeit, String to, String zustaendigkeit) {
         
         //keine E-Mail versenden, falls alle Listen von Vorgängen leer sind
 		if ( (CollectionUtils.isEmpty(vorgaengeOffenNichtAkzeptiert)) && (CollectionUtils.isEmpty(vorgaengeInbearbeitungOhneStatusKommentar)) && (CollectionUtils.isEmpty(vorgaengeIdeeOffenOhneUnterstuetzung)) && (CollectionUtils.isEmpty(vorgaengeWirdnichtbearbeitetOhneStatuskommentar)) && (CollectionUtils.isEmpty(vorgaengeNichtMehrOffenNichtAkzeptiert)) && (CollectionUtils.isEmpty(vorgaengeOhneRedaktionelleFreigaben)) && (CollectionUtils.isEmpty(vorgaengeOhneZustaendigkeit)) ) return;
@@ -441,9 +441,10 @@ public class MailService {
 		SimpleMailMessage textKriteriumOhneRedaktionelleFreigaben = new SimpleMailMessage(kriteriumOhneRedaktionelleFreigabenTemplate);
 		SimpleMailMessage textKriteriumOhneZustaendigkeit = new SimpleMailMessage(kriteriumOhneZustaendigkeitTemplate);
         
-        //Gesamt-E-Mail initiieren und mit Adresse des Empfängers versehen
+        //Gesamt-E-Mail initiieren, mit Adresse des Empfängers versehen und entsprechenden Platzhalter für Zuständigkeit ersetzen
 		SimpleMailMessage msg = new SimpleMailMessage(informRedaktionEmpfaengerMailTemplate);
 		msg.setTo(to);
+        msg.setText(msg.getText().replaceAll("%zustaendigkeit%", zustaendigkeit));
         
         //falls Liste der Vorgänge zu Redaktionskriterium 1 nicht leer ist...
         if (!CollectionUtils.isEmpty(vorgaengeOffenNichtAkzeptiert)) {
