@@ -1,6 +1,7 @@
 package de.fraunhofer.igd.klarschiff.service.job;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -205,15 +206,10 @@ public class JobsService {
 	 */
 	@ScheduledSyncInCluster(cron="0 40 01 * * *", name="Empfaenger redaktioneller E-Mails informieren")
 	public void informRedaktionEmpfaenger() {
+        
         try {
     
-            //Liste aller Redaktionskriterien erstellen
-            List<RedaktionKriterien> kriterienAlle = redaktionKriterienDao.getKriterienList();
-            
-            //Liste aller Empfänger redaktioneller E-Mails erstellen
-            List<RedaktionEmpfaenger> empfaengerAlle = redaktionEmpfaengerDao.getEmpfaengerList();
-            
-            //lokale Variablen für die nachfolgende for-Schleife initiieren
+            //lokale Variablen initiieren
             Boolean administrator = false;
             Date jetzt = new Date();
             Short tageOffenNichtAkzeptiert = 0;
@@ -224,13 +220,19 @@ public class JobsService {
             Boolean sollVorgaengeOhneRedaktionelleFreigaben = false;
             Boolean sollVorgaengeOhneZustaendigkeit = false;
             Date datum = null;
-            List<Vorgang> vorgaengeOffenNichtAkzeptiert = null;
-            List<Vorgang> vorgaengeInbearbeitungOhneStatusKommentar = null;
-            List<Vorgang> vorgaengeIdeeOffenOhneUnterstuetzung = null;
-            List<Vorgang> vorgaengeWirdnichtbearbeitetOhneStatuskommentar = null;
-            List<Vorgang> vorgaengeNichtMehrOffenNichtAkzeptiert = null;
-            List<Vorgang> vorgaengeOhneRedaktionelleFreigaben = null;
-            List<Vorgang> vorgaengeOhneZustaendigkeit = null;
+            List<Vorgang> vorgaengeOffenNichtAkzeptiert = new ArrayList<Vorgang>();
+            List<Vorgang> vorgaengeInbearbeitungOhneStatusKommentar = new ArrayList<Vorgang>();
+            List<Vorgang> vorgaengeIdeeOffenOhneUnterstuetzung = new ArrayList<Vorgang>();
+            List<Vorgang> vorgaengeWirdnichtbearbeitetOhneStatuskommentar = new ArrayList<Vorgang>();
+            List<Vorgang> vorgaengeNichtMehrOffenNichtAkzeptiert = new ArrayList<Vorgang>();
+            List<Vorgang> vorgaengeOhneRedaktionelleFreigaben = new ArrayList<Vorgang>();
+            List<Vorgang> vorgaengeOhneZustaendigkeit = new ArrayList<Vorgang>();
+    
+            //Liste aller Redaktionskriterien erstellen
+            List<RedaktionKriterien> kriterienAlle = redaktionKriterienDao.getKriterienList();
+            
+            //Liste aller Empfänger redaktioneller E-Mails erstellen
+            List<RedaktionEmpfaenger> empfaengerAlle = redaktionEmpfaengerDao.getEmpfaengerList();
             
             //Liste aller Empfänger durchgehen
             for (RedaktionEmpfaenger empfaenger : empfaengerAlle) {
@@ -303,7 +305,7 @@ public class JobsService {
                     }
                     
                     //falls Vorgänge existieren...
-                    if ( (!vorgaengeOffenNichtAkzeptiert.isEmpty()) || (vorgaengeOffenNichtAkzeptiert != null) || (!vorgaengeInbearbeitungOhneStatusKommentar.isEmpty()) || (vorgaengeInbearbeitungOhneStatusKommentar != null) || (!vorgaengeIdeeOffenOhneUnterstuetzung.isEmpty()) || (vorgaengeIdeeOffenOhneUnterstuetzung != null) || (!vorgaengeWirdnichtbearbeitetOhneStatuskommentar.isEmpty()) || (vorgaengeWirdnichtbearbeitetOhneStatuskommentar != null) || (!vorgaengeNichtMehrOffenNichtAkzeptiert.isEmpty()) || (vorgaengeNichtMehrOffenNichtAkzeptiert != null) || (!vorgaengeOhneRedaktionelleFreigaben.isEmpty()) || (vorgaengeOhneRedaktionelleFreigaben != null) || (!vorgaengeOhneZustaendigkeit.isEmpty()) || (vorgaengeOhneZustaendigkeit != null) ) {
+                    if ( (!vorgaengeOffenNichtAkzeptiert.isEmpty()) || (!vorgaengeInbearbeitungOhneStatusKommentar.isEmpty()) || (!vorgaengeIdeeOffenOhneUnterstuetzung.isEmpty()) || (!vorgaengeWirdnichtbearbeitetOhneStatuskommentar.isEmpty()) || (!vorgaengeNichtMehrOffenNichtAkzeptiert.isEmpty()) || (!vorgaengeOhneRedaktionelleFreigaben.isEmpty()) || (!vorgaengeOhneZustaendigkeit.isEmpty()) ) {
                     
                         //setzte Zeitstempel des letzten E-Mail-Versands an aktuellen Empfänger auf aktuellen Zeitstempel
                         empfaenger.setLetzteMail(jetzt);
@@ -314,6 +316,7 @@ public class JobsService {
                 }
             }
         }
+        
         catch (Exception e) {
 			logger.error("Job zum Informieren der Empfaenger redaktioneller E-Mails wurde nicht ausgefuehrt.", e);
 		}
