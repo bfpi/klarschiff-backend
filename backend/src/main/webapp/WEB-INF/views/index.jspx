@@ -19,39 +19,49 @@
 	
 	<!-- CONTENT -->
 	<div id="root_style_content">
-		<table width="100%">
+		<table>
 			<tr>
+                <sec:authorize access="hasRole('ROLE_INTERN') or hasRole('ROLE_ADMIN')">
+                    <c:if test="${not empty statistic.vorgaengeMissbrauchsmeldungen}">
+                        <td valign="top">
+                            <div id="statistic_block_left">
+                                <div class="statistic_block_title">wichtige Hinweise</div>
+                                    <c:if test="${not empty statistic.vorgaengeMissbrauchsmeldungen}">
+                                        <div>
+                                            ${statistic.countMissbrauchsmeldungen}
+                                            <c:choose>
+                                                <c:when test="${statistic.countMissbrauchsmeldungen == 1}">
+                                                    <span class="statistic_missbrauchsmeldung">Missbrauchsmeldung</span> zum Vorgang
+                                                    <c:forEach items="${statistic.vorgaengeMissbrauchsmeldungen}" var="missbrauchvorgang">
+                                                        <c:url value="/vorgang/${missbrauchvorgang.id}/missbrauch" var="url"/>
+                                                        <a href="${url}" title="Missbrauchsmeldung zu Vorgang aufrufen">#${missbrauchvorgang.id}</a>
+                                                    </c:forEach>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <span class="statistic_missbrauchsmeldung">Missbrauchsmeldungen</span> zu den Vorgängen
+                                                    <c:forEach items="${statistic.vorgaengeMissbrauchsmeldungen}" var="missbrauchvorgang" varStatus="loop">
+                                                        <c:url value="/vorgang/${missbrauchvorgang.id}/missbrauch" var="url"/>
+                                                        <c:choose>
+                                                            <c:when test="${!loop.last}">
+                                                                <a href="${url}" title="Missbrauchsmeldung zu Vorgang aufrufen">#${missbrauchvorgang.id}</a>, 
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                <a href="${url}" title="Missbrauchsmeldung zu Vorgang aufrufen">#${missbrauchvorgang.id}</a>
+                                                            </c:otherwise>
+                                                        </c:choose>
+                                                    </c:forEach>
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </div>
+                                    </c:if>
+                            </div>
+                        </td>
+                    </c:if>
+                </sec:authorize>
 				<td valign="top">
-					<div class="statistic_block">
-						<div class="statistic_block_title">Persönliche Statistik (Ihnen zugewiesene Vorgänge)</div>
-						<table width="100%">
-							<tr>
-								<td width="33%" valign="middle">
-									<div class="statistic_count_block">
-										<div class="statistic_count_block_count">${statistic.countNewVorgaenge}</div>
-										<div class="statistic_count_block_title">neue Vorgänge<br/>in der letzten<br/>Woche</div> 
-									</div>
-								</td>
-								<td width="33%" valign="middle">
-									<div class="statistic_count_block">
-										<div class="statistic_count_block_count">${statistic.countFixedVorgaenge}</div>
-										<div class="statistic_count_block_title">abgeschlossene<br/>Vorgänge in der<br/>letzten Woche</div>
-									</div>
-								</td>
-								<td width="33%" valign="middle">
-									<div class="statistic_count_block missbrauchsmeldung">
-										<div class="statistic_count_block_count">${statistic.countMissbrauchsmeldungen}</div>
-										<div class="statistic_count_block_title">Vorgänge mit<br/>Missbrauchs-<br/>meldungen</div>
-									</div>
-								</td>
-							</tr>
-						</table>
-					</div>
-				</td>
-				<td width="45%" valign="top">
 					<c:if test="${not empty statistic.lastVorgaenge}">
-						<div class="statistic_block">
-							<div class="statistic_block_title" style="font-size:0.8em;padding-top:5px">Kürzlich neu gemeldete Vorgänge</div>
+						<div>
+							<div class="statistic_block_title">neueste aktive Vorgänge</div>
 							<ul class="statistic_vorgaenge">
 								<c:forEach items="${statistic.lastVorgaenge}" var="vorgang">
 									<li>
@@ -62,13 +72,10 @@
 											<c:url value="/vorgang/${vorgang.id}/uebersicht" var="url"/>	
 										</sec:authorize>
 						        			<c:url value="/images/${vorgang.typ}_${vorgang.status}_15.png" var="imgurl"/>
-						        			<c:if test="${vorgang.betreffFreigabeStatus!='geloescht'}">
-						        				<c:set value="${fx:abbreviate(vorgang.betreff,60)}" var="betreff"/>
-						        			</c:if>
-											<a href="${url}">
-												<img alt="${vorgang.typ.text}" src="${imgurl}" height="15" width="15"  title="Typ: ${vorgang.typ.text}"/>
-												<div class="statistic_vorgaenge_kategorie">${vorgang.kategorie.name}</div>
-												<div class="statistic_vorgaenge_betreff" style="font-size:85%"><fmt:formatDate value="${vorgang.datum}" pattern="dd.MM.yyyy HH:mm"/></div>
+											<a href="${url}" title="Vorgangsübersicht aufrufen">
+												<img alt="${vorgang.typ.text}" src="${imgurl}" height="15" width="15"/>
+												<div>${vorgang.kategorie.name}</div>
+												<div class="statistic_vorgaenge_infos">#${vorgang.id} – <fmt:formatDate value="${vorgang.datum}" pattern="dd.MM.yyyy, HH:mm"/> Uhr</div>
 											</a>
 									</li>							
 								</c:forEach>
@@ -78,9 +85,10 @@
 				</td>
 			</tr>
 		</table>
-
+        
 		<c:if test="${not empty statistic.statusVerteilung}">
 			<div class="statistic_verteilung">
+				<div class="statistic_block_title">alle aktiven Vorgänge auf einen Blick</div>
 				<table>
 					<tr>
 						<c:forEach items="${statistic.statusVerteilung}" var="entry">
@@ -93,24 +101,6 @@
 				</table>
 			</div>
 		</c:if>
-
-
-		<c:if test="${not empty statistic.allStatusVerteilung}">
-			<div class="statistic_verteilung" style="margin-top:30px;">
-				<div class="statistic_block_title">Gesamtstatistik (alle Vorgänge in Klarschiff)</div>
-				<table>
-					<tr>
-						<c:forEach items="${statistic.allStatusVerteilung}" var="entry">
-							<td width="${entry.ratio}%" class="${entry.status}" title="${entry.status.text}">
-								<div class="statistic_verteilung_count">${entry.count}</div>
-								<div class="statistic_verteilung_text">${entry.status.text}</div>
-							</td>
-						</c:forEach>
-					</tr>
-				</table>
-			</div>
-		</c:if>
-		
 
 	</div>
 	

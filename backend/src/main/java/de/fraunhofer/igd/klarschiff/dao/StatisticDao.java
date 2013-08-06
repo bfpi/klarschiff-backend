@@ -38,56 +38,37 @@ public class StatisticDao {
 	@Autowired
 	SettingsService settingsService;
 	
-	public Long countNewVorgaenge(Date datumVon, boolean onlyCurrentZustaendigkeitDelegiertAn) {
-		HqlQueryHelper query = new HqlQueryHelper()
-			.addFromTables("Vorgang vo LEFT JOIN vo.missbrauchsmeldungen mi WITH mi.datumBestaetigung IS NOT NULL AND mi.datumAbarbeitung IS NULL")
-			.addSelectAttribute("COUNT(DISTINCT vo.id)")
-			.addWhereConditions("vo.datum>=:datumVon")
-			.addParameter("datumVon", datumVon);
-		if (onlyCurrentZustaendigkeitDelegiertAn) processZustaendigkeitDelegiertAn(query);
-		return (Long)query.getSingleResult(entityManager);
-	}
-	
-	public Long countFixedVorgaenge(Date datumVon, boolean onlyCurrentZustaendigkeitDelegiertAn) {
-		HqlQueryHelper query = new HqlQueryHelper()
-			.addFromTables("Vorgang vo JOIN vo.verlauf ve WITH ve.datum>=:datumVon AND ve.typ=:verlaufTyp")
-			.addSelectAttribute("COUNT(DISTINCT vo.id)")
-			.addParameter("datumVon", datumVon)
-			.addParameter("verlaufTyp", EnumVerlaufTyp.status)
-			.addWhereConditions("vo.status IN (:status)")
-			.addParameter("status", Arrays.asList(EnumVorgangStatus.closedVorgangStatus()));
-		if (onlyCurrentZustaendigkeitDelegiertAn) processZustaendigkeitDelegiertAn(query);
-		return (Long)query.getSingleResult(entityManager);
-	}
-
 	public Long countMissbrauchsmeldungen(boolean onlyCurrentZustaendigkeitDelegiertAn) {
 		HqlQueryHelper query = new HqlQueryHelper()
 			.addFromTables("Vorgang vo JOIN vo.missbrauchsmeldungen mi WITH mi.datumBestaetigung IS NOT NULL AND mi.datumAbarbeitung IS NULL")
-			.addSelectAttribute("COUNT(DISTINCT vo.id)");
+			.addSelectAttribute("COUNT(DISTINCT vo.id)")
+            .addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert = FALSE)");
 		if (onlyCurrentZustaendigkeitDelegiertAn) processZustaendigkeitDelegiertAn(query);
 		return (Long)query.getSingleResult(entityManager);
+	}
+    
+    @SuppressWarnings("unchecked")
+	public List<Vorgang> findVorgaengeMissbrauchsmeldungen() {
+		HqlQueryHelper query = new HqlQueryHelper()
+			.addFromTables("Vorgang vo JOIN vo.missbrauchsmeldungen mi WITH mi.datumBestaetigung IS NOT NULL AND mi.datumAbarbeitung IS NULL")
+            .addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert = FALSE)")
+            .orderBy("vo.id");
+        vorgangDao.addGroupByVorgang(query, true);
+		processZustaendigkeitDelegiertAn(query);
+		return query.getResultList(entityManager);
 	}
 
 	@SuppressWarnings("unchecked")
 	public List<Vorgang> findLastVorgaenge(int maxResult) {
 		HqlQueryHelper query = new HqlQueryHelper()
-			.addFromTables("Vorgang vo LEFT JOIN vo.unterstuetzer un WITH un.datumBestaetigung IS NOT NULL ");
-		vorgangDao.addGroupByVorgang(query, true);
-		//Ideen mit zu wenig Unterstützern herausfiltern
-		query.addHavingConditions("(vo.typ=:unTyp OR vo.status=:unStatus OR COUNT(DISTINCT un.id)>=:unterstuetzer) ")
-			.addParameter("unTyp", EnumVorgangTyp.problem)
-			.addParameter("unStatus", EnumVorgangStatus.offen)
-			.addParameter("unterstuetzer", settingsService.getVorgangIdeeUnterstuetzer());
-		//Zuständigkeit & DelegiertAn
-		processZustaendigkeitDelegiertAn(query);
-		//Sortierung
-		query.orderBy("vo.datum DESC");
-		//maxResult
+			.addFromTables("Vorgang vo")
+            .addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert = FALSE)")
+            .orderBy("vo.datum DESC");
 		query.maxResults(maxResult);
-		
+        vorgangDao.addGroupByVorgang(query, true);
+		processZustaendigkeitDelegiertAn(query);
 		return query.getResultList(entityManager);
 	}
-	
 	
 	@SuppressWarnings("unchecked")
 	public List<Object[]> getStatusVerteilung(boolean onlyCurrentZustaendigkeitDelegiertAn)
@@ -96,8 +77,7 @@ public class StatisticDao {
 			.addFromTables("Vorgang vo")
 			.addSelectAttribute("vo.status")
 			.addSelectAttribute("COUNT(vo.id)")
-			.addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert=:archiviert)")
-			.addParameter("archiviert", Boolean.FALSE)
+			.addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert = FALSE)")
 			.addGroupByAttribute("vo.status")
 			.addGroupByAttribute("vo.statusOrdinal")
 			.orderBy("vo.statusOrdinal");

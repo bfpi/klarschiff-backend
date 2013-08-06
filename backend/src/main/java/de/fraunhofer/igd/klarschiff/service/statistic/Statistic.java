@@ -9,30 +9,12 @@ import de.fraunhofer.igd.klarschiff.vo.Vorgang;
  * @author Stefan Audersch (Fraunhofer IGD)
  */
 public class Statistic {
-	Long countNewVorgaenge;
-	Long countFixedVorgaenge;
 	Long countMissbrauchsmeldungen;
+	List<Vorgang> vorgaengeMissbrauchsmeldungen;
 	List<Vorgang> lastVorgaenge;
 	List<StatusVerteilungEntry> statusVerteilung;
-	List<StatusVerteilungEntry> allStatusVerteilung;
 	
 	/* --------------- GET + SET ----------------------------*/
-
-	public Long getCountNewVorgaenge() {
-		return countNewVorgaenge;
-	}
-
-	public void setCountNewVorgaenge(Long countNewVorgaenge) {
-		this.countNewVorgaenge = countNewVorgaenge;
-	}
-
-	public Long getCountFixedVorgaenge() {
-		return countFixedVorgaenge;
-	}
-
-	public void setCountFixedVorgaenge(Long countFixedVorgaenge) {
-		this.countFixedVorgaenge = countFixedVorgaenge;
-	}
 
 	public Long getCountMissbrauchsmeldungen() {
 		return countMissbrauchsmeldungen;
@@ -40,6 +22,14 @@ public class Statistic {
 
 	public void setCountMissbrauchsmeldungen(Long countMissbrauchsmeldungen) {
 		this.countMissbrauchsmeldungen = countMissbrauchsmeldungen;
+	}
+    
+    public List<Vorgang> getVorgaengeMissbrauchsmeldungen() {
+		return vorgaengeMissbrauchsmeldungen;
+	}
+
+	public void setVorgaengeMissbrauchsmeldungen(List<Vorgang> vorgaengeMissbrauchsmeldungen) {
+		this.vorgaengeMissbrauchsmeldungen = vorgaengeMissbrauchsmeldungen;
 	}
 
 	public List<Vorgang> getLastVorgaenge() {
@@ -57,14 +47,5 @@ public class Statistic {
 	public void setStatusVerteilung(List<StatusVerteilungEntry> statusVerteilung) {
 		this.statusVerteilung = statusVerteilung;
 	}
-
-	public List<StatusVerteilungEntry> getAllStatusVerteilung() {
-		return allStatusVerteilung;
-	}
-
-	public void setAllStatusVerteilung(List<StatusVerteilungEntry> allStatusVerteilung) {
-		this.allStatusVerteilung = allStatusVerteilung;
-	}
-	
 	
 }

@@ -32,15 +32,13 @@ public class StatisticService {
 	public Statistic getStatistic() {
 		Statistic statistic = new Statistic();
 		Date date = DateUtils.addDays(DateUtils.truncate(new Date(), Calendar.DAY_OF_MONTH), -7);
-		//neue Vorgänge
-		statistic.setCountNewVorgaenge(statisticDao.countNewVorgaenge(date, true));
-		//Abgeschlossenen Vorgänge
-		statistic.setCountFixedVorgaenge(statisticDao.countFixedVorgaenge(date, true));
-		//Missbrauchsmeldungen
+		// Anzahl der Missbrauchsmeldungen
 		statistic.setCountMissbrauchsmeldungen(statisticDao.countMissbrauchsmeldungen(true));
-		//neue Vorgänge
+        // Vorgänge mit Missbrauchsmeldungen
+		statistic.setVorgaengeMissbrauchsmeldungen(statisticDao.findVorgaengeMissbrauchsmeldungen());
+		// neue Vorgänge
 		statistic.setLastVorgaenge(statisticDao.findLastVorgaenge(5));
-		//StatusVerteilung
+		// StatusVerteilung
 		statistic.setStatusVerteilung(new ArrayList<StatusVerteilungEntry>());
 		long countOverall = 0;
 		for(Object[] o : statisticDao.getStatusVerteilung(true)) {
@@ -49,15 +47,6 @@ public class StatisticService {
 			statistic.getStatusVerteilung().add(entry);
 		}
 		for(StatusVerteilungEntry entry : statistic.getStatusVerteilung()) entry.setCountOverall(countOverall);
-
-		statistic.setAllStatusVerteilung(new ArrayList<StatusVerteilungEntry>());
-		countOverall = 0;
-		for(Object[] o : statisticDao.getStatusVerteilung(false)) {
-			StatusVerteilungEntry entry = new StatusVerteilungEntry(o);
-			countOverall = countOverall + entry.getCount();
-			statistic.getAllStatusVerteilung().add(entry);
-		}
-		for(StatusVerteilungEntry entry : statistic.getAllStatusVerteilung()) entry.setCountOverall(countOverall);
 		
 		return statistic;
 	}
