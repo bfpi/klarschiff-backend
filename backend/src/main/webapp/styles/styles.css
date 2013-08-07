@@ -933,12 +933,19 @@ span.statistic_important {
     font-weight: bold;
 }
 
+hr.statistic_ruler {
+    border: 0;
+    height: 2px;
+    background: #737373;
+}
+
 div.statistic_vorgaenge_infos {
     font-size: 90%;
 }
 
 img.statistic_icon {
     vertical-align: middle;
+    padding-bottom: 3px;
 }
 
 span.statistic_accepted {
