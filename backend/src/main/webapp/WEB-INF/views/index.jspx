@@ -96,12 +96,12 @@
                                                     <c:if test="${not empty statistic.vorgaengeNichtMehrOffenNichtAkzeptiert}">
                                                         <c:url value="/vorgang/${statistic.vorgaengeNichtMehrOffenNichtAkzeptiert[0].id}/uebersicht" var="url"/>
                                                         <c:url value="/images/" var="urlStaticIcon"/>
-                                                        <a href="${url}" title="Übersicht zu Vorgang #${statistic.vorgaengeNichtMehrOffenNichtAkzeptiert[0].id} aufrufen">#${statistic.vorgaengeNichtMehrOffenNichtAkzeptiert[0].id}</a> (zwar nicht mehr <img alt="offen" src="${urlStaticIcon}status_offen_15.png" height="15" width="15" title="offen" class="statistic_icon"/>, aber dennoch nicht <span class="statistic_accepted" title="akzeptiert">✔</span>)
+                                                        <a href="${url}" title="Übersicht zu Vorgang #${statistic.vorgaengeNichtMehrOffenNichtAkzeptiert[0].id} aufrufen">#${statistic.vorgaengeNichtMehrOffenNichtAkzeptiert[0].id}</a> (zwar schon <img alt="in Bearbeitung" src="${urlStaticIcon}status_inBearbeitung_15.png" height="15" width="15" title="in Bearbeitung" class="statistic_icon"/>, aber noch nicht <span class="statistic_accepted" title="akzeptiert">✔</span>)
                                                     </c:if>
                                                     <c:if test="${not empty statistic.vorgaengeOhneRedaktionelleFreigaben}">
                                                         <c:url value="/vorgang/${statistic.vorgaengeOhneRedaktionelleFreigaben[0].id}/uebersicht" var="url"/>
                                                         <c:url value="/images/" var="urlStaticIcon"/>
-                                                        <a href="${url}" title="Übersicht zu Vorgang #${statistic.vorgaengeOhneRedaktionelleFreigaben[0].id} aufrufen">#${statistic.vorgaengeOhneRedaktionelleFreigaben[0].id}</a> (Betreff, Details und/oder Foto noch nicht redaktionell <img alt="freigegeben" src="${urlStaticIcon}freigabeStatus_extern.png" height="15" width="15" title="freigegeben" class="statistic_icon"/>)
+                                                        <a href="${url}" title="Übersicht zu Vorgang #${statistic.vorgaengeOhneRedaktionelleFreigaben[0].id} aufrufen">#${statistic.vorgaengeOhneRedaktionelleFreigaben[0].id}</a> (Betreff, Details und/oder Foto noch nicht freigegeben für <img alt="extern" src="${urlStaticIcon}freigabeStatus_extern.png" height="15" width="15" title="extern" class="statistic_icon"/>)
                                                     </c:if>
                                                 </div>
                                                 <util:ddpanel name="hinweis"/>
@@ -184,7 +184,7 @@
                                                             <c:choose>
                                                                 <c:when test="${loop.last}">
                                                                     <c:url value="/images/" var="urlStaticIcon"/>
-                                                                    <a href="${url}" title="Übersicht zu Vorgang #${nichtMehrOffenNichtAkzeptiert.id} aufrufen">#${nichtMehrOffenNichtAkzeptiert.id}</a> (zwar nicht mehr <img alt="offen" src="${urlStaticIcon}status_offen_15.png" height="15" width="15" title="offen" class="statistic_icon"/>, aber dennoch nicht <span class="statistic_accepted" title="akzeptiert">✔</span>)
+                                                                    <a href="${url}" title="Übersicht zu Vorgang #${nichtMehrOffenNichtAkzeptiert.id} aufrufen">#${nichtMehrOffenNichtAkzeptiert.id}</a> (zwar schon <img alt="in Bearbeitung" src="${urlStaticIcon}status_inBearbeitung_15.png" height="15" width="15" title="in Bearbeitung" class="statistic_icon"/>, aber noch nicht <span class="statistic_accepted" title="akzeptiert">✔</span>)
                                                                     <c:if test="${not empty statistic.vorgaengeOhneRedaktionelleFreigaben}">
                                                                         <br/><br/>
                                                                     </c:if>
@@ -201,7 +201,7 @@
                                                             <c:choose>
                                                                 <c:when test="${loop.last}">
                                                                     <c:url value="/images/" var="urlStaticIcon"/>
-                                                                    <a href="${url}" title="Übersicht zu Vorgang #${ohneRedaktionelleFreigaben.id} aufrufen">#${ohneRedaktionelleFreigaben.id}</a> (Betreff, Details und/oder Foto noch nicht redaktionell <img alt="freigegeben" src="${urlStaticIcon}freigabeStatus_extern.png" height="15" width="15" title="freigegeben" class="statistic_icon"/>)
+                                                                    <a href="${url}" title="Übersicht zu Vorgang #${ohneRedaktionelleFreigaben.id} aufrufen">#${ohneRedaktionelleFreigaben.id}</a> (Betreff, Details und/oder Foto noch nicht freigegeben für <img alt="extern" src="${urlStaticIcon}freigabeStatus_extern.png" height="15" width="15" title="extern" class="statistic_icon"/>)
                                                                 </c:when>
                                                                 <c:otherwise>
                                                                     <a href="${url}" title="Übersicht zu Vorgang #${ohneRedaktionelleFreigaben.id} aufrufen">#${ohneRedaktionelleFreigaben.id}</a>, 
