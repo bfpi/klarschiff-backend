@@ -38,16 +38,7 @@ public class StatisticDao {
 	@Autowired
 	SettingsService settingsService;
 	
-	public Long countMissbrauchsmeldungen(boolean onlyCurrentZustaendigkeitDelegiertAn) {
-		HqlQueryHelper query = new HqlQueryHelper()
-			.addFromTables("Vorgang vo JOIN vo.missbrauchsmeldungen mi WITH mi.datumBestaetigung IS NOT NULL AND mi.datumAbarbeitung IS NULL")
-			.addSelectAttribute("COUNT(DISTINCT vo.id)")
-            .addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert = FALSE)");
-		if (onlyCurrentZustaendigkeitDelegiertAn) processZustaendigkeitDelegiertAn(query);
-		return (Long)query.getSingleResult(entityManager);
-	}
-    
-    @SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked")
 	public List<Vorgang> findVorgaengeMissbrauchsmeldungen() {
 		HqlQueryHelper query = new HqlQueryHelper()
 			.addFromTables("Vorgang vo JOIN vo.missbrauchsmeldungen mi WITH mi.datumBestaetigung IS NOT NULL AND mi.datumAbarbeitung IS NULL")
@@ -67,6 +58,85 @@ public class StatisticDao {
 		query.maxResults(maxResult);
         vorgangDao.addGroupByVorgang(query, true);
 		processZustaendigkeitDelegiertAn(query);
+		return query.getResultList(entityManager);
+	}
+    
+	@SuppressWarnings("unchecked")
+    public List<Vorgang> findVorgaengeOffenNichtAkzeptiert(Date datum) {
+		HqlQueryHelper query = (new HqlQueryHelper()).addSelectAttribute("vo")
+			.addFromTables("Vorgang vo")
+			.addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert = FALSE)")
+			.addWhereConditions("vo.status = 'offen'")
+			.addWhereConditions("vo.zustaendigkeitStatus != 'akzeptiert'")
+            .addWhereConditions("vo.version <= :datum").addParameter("datum", datum)
+            .orderBy("vo.id");
+        processZustaendigkeitDelegiertAn(query);
+		return query.getResultList(entityManager);
+	}
+    
+    @SuppressWarnings("unchecked")
+    public List<Vorgang> findVorgaengeInbearbeitungOhneStatusKommentar(Date datum) {
+		HqlQueryHelper query = (new HqlQueryHelper()).addSelectAttribute("vo")
+			.addFromTables("Vorgang vo")
+			.addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert = FALSE)")
+			.addWhereConditions("vo.status = 'inBearbeitung'")
+			.addWhereConditions("(vo.statusKommentar IS NULL OR vo.statusKommentar = '')")
+            .addWhereConditions("vo.version <= :datum").addParameter("datum", datum)
+            .orderBy("vo.id");
+        processZustaendigkeitDelegiertAn(query);
+		return query.getResultList(entityManager);
+	}
+    
+    @SuppressWarnings("unchecked")
+    public List<Vorgang> findVorgaengeIdeeOffenOhneUnterstuetzung(Date datum) {
+		HqlQueryHelper query = (new HqlQueryHelper()).addSelectAttribute("vo")
+			.addFromTables("Vorgang vo JOIN vo.verlauf ve")
+			.addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert = FALSE)")
+			.addWhereConditions("vo.typ = 'idee'")
+			.addWhereConditions("vo.status = 'offen'")
+            .addWhereConditions("vo.erstsichtungErfolgt = TRUE")
+            .addWhereConditions("ve.typ = 'zustaendigkeitAkzeptiert'")
+            .addWhereConditions("ve.datum <= :datum").addParameter("datum", datum)
+            .addWhereConditions("(SELECT COUNT(*) FROM Unterstuetzer un WHERE un.vorgang = vo.id) < :unterstuetzer").addParameter("unterstuetzer", settingsService.getVorgangIdeeUnterstuetzer())
+            .orderBy("vo.id");
+        processZustaendigkeitDelegiertAn(query);
+		return query.getResultList(entityManager);
+	}
+    
+	@SuppressWarnings("unchecked")
+    public List<Vorgang> findVorgaengeWirdnichtbearbeitetOhneStatuskommentar() {
+		HqlQueryHelper query = (new HqlQueryHelper()).addSelectAttribute("vo")
+			.addFromTables("Vorgang vo")
+			.addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert = FALSE)")
+			.addWhereConditions("vo.status = 'wirdNichtBearbeitet'")
+			.addWhereConditions("(vo.statusKommentar IS NULL OR vo.statusKommentar = '')")
+            .orderBy("vo.id");
+        processZustaendigkeitDelegiertAn(query);
+		return query.getResultList(entityManager);
+	}
+    
+	@SuppressWarnings("unchecked")
+    public List<Vorgang> findVorgaengeNichtMehrOffenNichtAkzeptiert() {
+		HqlQueryHelper query = (new HqlQueryHelper()).addSelectAttribute("vo")
+			.addFromTables("Vorgang vo")
+			.addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert = FALSE)")
+			.addWhereConditions("vo.status NOT IN ('gemeldet','offen')")
+			.addWhereConditions("vo.zustaendigkeitStatus != 'akzeptiert'")
+            .orderBy("vo.id");
+        processZustaendigkeitDelegiertAn(query);
+		return query.getResultList(entityManager);
+	}
+    
+	@SuppressWarnings("unchecked")
+    public List<Vorgang> findVorgaengeOhneRedaktionelleFreigaben() {
+		HqlQueryHelper query = (new HqlQueryHelper()).addSelectAttribute("vo")
+			.addFromTables("Vorgang vo")
+			.addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert = FALSE)")
+			.addWhereConditions("vo.status IN ('offen', 'inBearbeitung', 'wirdNichtBearbeitet', 'abgeschlossen')")
+			.addWhereConditions("vo.erstsichtungErfolgt = TRUE")
+			.addWhereConditions("((vo.betreff IS NOT NULL AND vo.betreff != '' AND (betreffFreigabeStatus IS NULL OR betreffFreigabeStatus = 'intern')) OR (vo.details IS NOT NULL AND vo.details != '' AND (detailsFreigabeStatus IS NULL OR detailsFreigabeStatus = 'intern')) OR (length(vo.fotoThumbJpg) IS NOT NULL AND (fotoFreigabeStatus IS NULL OR fotoFreigabeStatus = 'intern')))")
+            .orderBy("vo.id");
+        processZustaendigkeitDelegiertAn(query);
 		return query.getResultList(entityManager);
 	}
 	

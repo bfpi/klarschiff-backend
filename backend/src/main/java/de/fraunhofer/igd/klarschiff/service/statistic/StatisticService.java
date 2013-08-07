@@ -31,14 +31,36 @@ public class StatisticService {
 	 */
 	public Statistic getStatistic() {
 		Statistic statistic = new Statistic();
-		Date date = DateUtils.addDays(DateUtils.truncate(new Date(), Calendar.DAY_OF_MONTH), -7);
-		// Anzahl der Missbrauchsmeldungen
-		statistic.setCountMissbrauchsmeldungen(statisticDao.countMissbrauchsmeldungen(true));
-        // Vorgänge mit Missbrauchsmeldungen
+        Date jetzt = new Date();
+        
+		// aktive Vorgänge mit Missbrauchsmeldungen
 		statistic.setVorgaengeMissbrauchsmeldungen(statisticDao.findVorgaengeMissbrauchsmeldungen());
-		// neue Vorgänge
+        
+		// neueste aktive Vorgänge
 		statistic.setLastVorgaenge(statisticDao.findLastVorgaenge(5));
-		// StatusVerteilung
+        
+        // Vorgänge mit dem Status 'offen', die seit einem bestimmten Datum zugewiesen sind, bisher aber nicht akzeptiert wurden
+        Date datum = DateUtils.addDays(jetzt, -3);
+		statistic.setVorgaengeOffenNichtAkzeptiert(statisticDao.findVorgaengeOffenNichtAkzeptiert(datum));
+        
+        // Vorgänge mit dem Status 'in Bearbeitung', die seit einem bestimmten Datum nicht mehr verändert wurden, bisher aber keine Info der Verwaltung aufweisen
+        datum = DateUtils.addDays(jetzt, -30);
+		statistic.setVorgaengeInbearbeitungOhneStatusKommentar(statisticDao.findVorgaengeInbearbeitungOhneStatusKommentar(datum));
+        
+        // Vorgänge des Typs 'idee' mit dem Status 'offen', die ihre Erstsichtung seit einem bestimmten Datum hinter sich haben, bisher aber noch nicht die Zahl der notwendigen Unterstützungen aufweisen
+        datum = DateUtils.addDays(jetzt, -60);
+		statistic.setVorgaengeIdeeOffenOhneUnterstuetzung(statisticDao.findVorgaengeIdeeOffenOhneUnterstuetzung(datum));
+        
+        // Vorgänge mit dem Status 'wird nicht bearbeitet', die bisher keine Info der Verwaltung aufweisen
+		statistic.setVorgaengeWirdnichtbearbeitetOhneStatuskommentar(statisticDao.findVorgaengeWirdnichtbearbeitetOhneStatuskommentar());
+        
+        // Vorgänge, die zwar nicht mehr den Status 'offen' aufweisen, bisher aber dennoch nicht akzeptiert wurden
+		statistic.setVorgaengeNichtMehrOffenNichtAkzeptiert(statisticDao.findVorgaengeNichtMehrOffenNichtAkzeptiert());
+        
+        // Vorgänge, die ihre Erstsichtung bereits hinter sich haben, deren Betreff, Details oder Foto bisher aber noch nicht freigegeben wurden
+		statistic.setVorgaengeOhneRedaktionelleFreigaben(statisticDao.findVorgaengeOhneRedaktionelleFreigaben());
+        
+		// aktive Vorgänge und deren Statusverteilung
 		statistic.setStatusVerteilung(new ArrayList<StatusVerteilungEntry>());
 		long countOverall = 0;
 		for(Object[] o : statisticDao.getStatusVerteilung(true)) {

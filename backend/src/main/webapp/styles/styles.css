@@ -908,24 +908,43 @@ div#md .md-button { font-family:Verdana, sans-serif; }
 }
 
 /* ######################### Statistic ######################### */
-div.statistic_block_title {
+div.statistic_blocktitle {
 	font-size: 12px;
 	font-weight: bold;
 	color: #737373;
 	padding-bottom: 10px;
 }
 
-div#statistic_block_left {
-	margin-right:80px;
+div.statistic_fieldset_header {
+    height: 16px;
+    line-height: 16px;
 }
 
-span.statistic_missbrauchsmeldung {
+div#statistic_fieldset_missbrauch{
+    width: 90%;
+    margin-bottom: 10px;
+}
+
+div#statistic_fieldset_hinweise {
+    width: 90%;
+}
+
+span.statistic_important {
     font-weight: bold;
-    color: #FF3700;
 }
 
 div.statistic_vorgaenge_infos {
     font-size: 90%;
+}
+
+img.statistic_icon {
+    vertical-align: middle;
+}
+
+span.statistic_accepted {
+    color: #50c80f;
+    font-weight: bold;
+    width: 15px;
 }
 
 div.statistic_verteilung {
