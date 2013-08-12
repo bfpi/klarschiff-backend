@@ -13,6 +13,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import org.joda.time.*;
+
 import de.fraunhofer.igd.klarschiff.dao.ClusterDao;
 import de.fraunhofer.igd.klarschiff.dao.RedaktionEmpfaengerDao;
 import de.fraunhofer.igd.klarschiff.dao.RedaktionKriterienDao;
@@ -242,9 +244,9 @@ public class JobsService {
                     administrator = true;
                 else
                     administrator = false;
-                
+                    
                 //prüfe Zeitstempel des letzten E-Mail-Versands an aktuellen Empfänger: soll überhaupt eine E-Mail geschickt werden?
-                if ( (empfaenger.getLetzteMail() == null) || (DateUtils.addDays(empfaenger.getLetzteMail(), empfaenger.getTageZwischenMails()).compareTo(jetzt) <= 0) ) {
+                if ( (empfaenger.getLetzteMail() == null) || (Days.daysBetween(new DateTime(empfaenger.getLetzteMail()), new DateTime(jetzt)).getDays() >= empfaenger.getTageZwischenMails()) ) {
             
                     //Liste aller Redaktionskriterien durchgehen
                     for (RedaktionKriterien kriterium : kriterienAlle) {
