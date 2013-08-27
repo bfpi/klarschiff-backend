@@ -149,6 +149,9 @@ public class VorgangFeedController {
             str.append("<b>Adresse: </b>");
         	str.append(vorgang.getAdresse());
         	str.append("<br/>");
+            str.append("<b>Flurstückseigentum: </b>");
+        	str.append(vorgang.getFlurstueckseigentum());
+        	str.append("<br/>");
         	str.append("<b>Unterstützungen:</b> ");
         	str.append(unterstuetzer);
         	str.append("<br/>");

@@ -391,12 +391,11 @@ div.olMapViewport div.olControlMousePosition {
 label {
 	width: 100px;
 	float: left;
-	d_isplay: inline;
-	vertical-align: middle;
 	font-size: 0.8em;
 	display: block;
 	color: #666;
 	padding-bottom: 2px;
+	padding-top: 5px;
 }
 
 .label {

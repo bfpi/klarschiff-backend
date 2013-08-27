@@ -371,6 +371,10 @@
 					        	<form:label path="vorgang.adresse">Adresse</form:label>
 					            <form:input path="vorgang.adresse" cssClass="inputtext" cssStyle="width:351px;"/>
 				       		</div>
+                            <div>
+					        	<form:label path="vorgang.flurstueckseigentum">Flurstückseigent.</form:label>
+					            <form:input path="vorgang.flurstueckseigentum" cssClass="inputtext" cssStyle="width:351px;"/>
+				       		</div>
 					        
 							<input type="submit" value="Vorgangsdaten &#228;ndern" name="action"/>
 						</form:form>

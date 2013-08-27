@@ -32,7 +32,8 @@ public enum EnumVerlaufTyp implements EnumText{
     vorgangBestaetigung,
     unterstuetzerEmail,
     unterstuetzerBestaetigung,
-    weiterleitenEmail;
+    weiterleitenEmail,
+    flurstueckseigentum;
 
     @Override
 	public String getText() {

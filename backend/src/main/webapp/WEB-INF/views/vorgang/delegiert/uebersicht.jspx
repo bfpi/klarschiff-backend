@@ -68,7 +68,7 @@
 					<td class="label">Betreff</td>									
 					<td colspan="3">					
 						<util:freigabestatus status="${vorgang.betreffFreigabeStatus}" cssStyle="float:left;"/>					
-						<div class="result" style="width:643px;margin-left:20px;">						
+						<div class="result" style="width:668px;margin-left:20px;">						
 						${vorgang.betreff}
 						</div>						
 					</td>								
@@ -78,20 +78,29 @@
 					<td class="label">Details</td>					
 					<td colspan="3">
 						<util:freigabestatus status="${vorgang.detailsFreigabeStatus}" cssStyle="float:left;"/>					
-						<div class="result" style="width:643px;margin-left:20px;">						
+						<div class="result" style="width:668px;margin-left:20px;">						
 						${fx:toHtml(vorgang.details)}
 						</div>						
 					</td> 						
 				</tr></c:if>
-                <c:if test="${not empty vorgang.adresse}">
-	  			 <tr>
+                <tr>
+                    <c:if test="${not empty vorgang.adresse}">
 					<td class="label">Adresse</td>
 						<td>
 						<div class="result"> 
 						${vorgang.adresse}
 						</div>
 					</td>
-				</tr></c:if>
+                    </c:if>
+                    <c:if test="${not empty vorgang.flurstueckseigentum}">
+					<td class="label">Flurstückseigentum</td>
+						<td>
+						<div class="result" style="width:350px"> 
+						${vorgang.flurstueckseigentum}
+						</div>
+					</td>
+                    </c:if>
+				</tr>
 				<tr>
 					<td class="label">Erstellung</td>
 					<td>

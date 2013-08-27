@@ -987,24 +987,11 @@ CREATE TRIGGER klarschiff_trigger_vorgang
   ON klarschiff_vorgang
   FOR EACH ROW EXECUTE PROCEDURE klarschiff_triggerfunction_vorgang();
 
--- Test
--- INSERT INTO klarschiff_vorgang (adresse, archiviert, autor_email, betreff, betreff_freigabe_status, datum, delegiert_an, details, 
---  details_freigabe_status, erstsichtung_erfolgt, foto_freigabe_status, foto_normal_jpg, foto_thumb_jpg, hash, kategorie, ovi, prioritaet, 
---  prioritaet_ordinal, status, status_kommentar, status_ordinal, typ, version, zustaendigkeit, zustaendigkeit_status, id) 
---  VALUES (NULL, NULL, 'fasdfsda@example.com', 'test1''test11', 'intern', '2013-05-21 17:16:13.919000 +02:00:00', NULL, 'test2''test22',
---  'intern', '0', 'intern', NULL, NULL, '3r13f3lool196c096g5ugeftc4', '17', 'SRID=25833;POINT(308399.3246514606 6003650.909966981)', 
---  'mittel', '1', 'gemeldet', NULL, '0', 'problem', '2013-05-21 17:16:13.934000 +02:00:00', NULL, NULL, '40');
--- UPDATE klarschiff_vorgang SET betreff = 'test''test', betreff_freigabe_status = 'extern' WHERE id = 41;
--- DELETE FROM klarschiff_vorgang_features WHERE vorgang IN (40, 41);
--- DELETE FROM klarschiff_verlauf WHERE vorgang IN (40, 41);
--- DELETE FROM klarschiff_vorgang_history_classes_history_classes WHERE vorgang_history_classes IN (40, 41);
--- DELETE FROM klarschiff_vorgang_history_classes WHERE vorgang IN (40, 41);
--- DELETE FROM klarschiff_vorgang WHERE id IN (40, 41);
-
 
 -- #######################################################################################
 -- # automatische Zuordnung einer Adresse für einen Vorgang                              #
 -- #######################################################################################
+
 -- Triggerfunktion erzeugen
 CREATE OR REPLACE FUNCTION klarschiff_triggerfunction_adresse()
 RETURNS trigger AS $BODY$
@@ -1071,3 +1058,63 @@ CREATE TRIGGER klarschiff_trigger_adresse
   BEFORE INSERT OR UPDATE
   ON klarschiff_vorgang
   FOR EACH ROW EXECUTE PROCEDURE klarschiff_triggerfunction_adresse();
+  
+
+
+-- #####################################################################################################
+-- # automatische Zuordnung der Information über das Eigentum des Flürstücks, in dem ein Vorgang liegt #
+-- #####################################################################################################
+
+-- Triggerfunktion erzeugen
+CREATE OR REPLACE FUNCTION klarschiff_triggerfunction_flurstueckseigentum()
+RETURNS trigger AS $BODY$
+DECLARE
+  ergebnis record;
+
+BEGIN
+  -- nur ausführen bei einem neuen Vorgang oder beim Aktualisieren eines Vorgangs (hier 
+  -- aber nur, wenn sich die Geometrie ändert oder wenn im Flurstückseigentumsfeld nix drinsteht!)
+  IF (TG_OP = 'INSERT' OR (TG_OP = 'UPDATE' AND (NEW.flurstueckseigentum IS NULL OR NEW.flurstueckseigentum = ''))
+    OR (TG_OP = 'UPDATE' AND (encode(NEW.ovi, 'base64') <> encode(OLD.ovi, 'base64'))))
+  THEN
+    -- Verbindung zur Flurstückseigentumstabelle aufbauen
+    PERFORM dblink_connect('flurstueckseigentum_verbindung','hostaddr=${f_host} port=${f_port} ' ||
+      'dbname=standortsuche user=standortsuche password=standortsuche');
+
+    -- räumliche Abfrage durchführen, die genau einen Datensatz (oder NULL) als Ergebnis 
+    -- liefert, der auch gleich in die oben deklarierte Variable geschrieben wird
+    SELECT eigentuemer.eigentum AS eigentum
+    INTO ergebnis
+    FROM klarschiff_vorgang, 
+      dblink('flurstueckseigentum_verbindung', 'SELECT eigentuemer, geom FROM flurstuecke_eigentuemer') AS eigentuemer(eigentum varchar, geom geometry)
+    WHERE ST_Covers(geom, NEW.ovi) LIMIT 1;
+
+    -- Verbindung zur Flurstückseigentumstabelle wieder schließen
+    PERFORM dblink_disconnect('flurstueckseigentum_verbindung');
+
+    -- wenn das Ergebnis nicht NULL ist: Information über das Eigentum des Flürstücks zuweisen
+    IF ergebnis.eigentum IS NOT NULL THEN
+      NEW.flurstueckseigentum := ergebnis.eigentum;
+      -- ansonsten: "nicht zuordenbar" zuweisen
+    ELSE
+      NEW.flurstueckseigentum := 'nicht zuordenbar';
+    END IF;
+  END IF;
+  RETURN NEW;
+
+EXCEPTION WHEN others THEN
+  RAISE;
+END;
+$BODY$ LANGUAGE plpgsql VOLATILE COST 100;
+
+-- Owner fuer die Triggerfunktion setzen
+ALTER FUNCTION klarschiff_triggerfunction_flurstueckseigentum() OWNER TO ${b_username};
+
+-- ggf. alten Trigger loeschen
+DROP TRIGGER IF EXISTS klarschiff_trigger_flurstueckseigentum ON klarschiff_vorgang CASCADE;
+
+-- Trigger erzeugen
+CREATE TRIGGER klarschiff_trigger_flurstueckseigentum
+  BEFORE INSERT OR UPDATE
+  ON klarschiff_vorgang
+  FOR EACH ROW EXECUTE PROCEDURE klarschiff_triggerfunction_flurstueckseigentum();

@@ -230,6 +230,12 @@ public class MailService {
 				str.append(vorgang.getAdresse());
 				str.append("\n");
 			}
+            
+            if(vorgang.getFlurstueckseigentum().isEmpty() == false){
+				str.append("Flurstückseigentum: ");
+				str.append(vorgang.getFlurstueckseigentum());
+				str.append("\n");
+			}
 			
 			str.append("Erstellung: " );
 			str.append(formatter.format(vorgang.getDatum()));

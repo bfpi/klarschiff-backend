@@ -85,10 +85,17 @@ public class Vorgang implements Serializable {
 	@Size(max = 300)
     private String betreff;
 	
-
+    /**
+	 * Adresse
+	 */
 	@Size(max = 300)
     private String adresse;
-
+    
+    /**
+	 * Information über das Eigentum des Flürstücks, in dem der Vorgang liegt
+	 */
+	@Size(max = 300)
+    private String flurstueckseigentum;
 
 	/**
 	 * Freigabestatus des Betreffs
@@ -313,6 +320,14 @@ public class Vorgang implements Serializable {
 
 	public void setAdresse(String adresse) {
 		this.adresse = adresse;
+	}
+    
+    public String getFlurstueckseigentum() {
+		return flurstueckseigentum;
+	}
+
+	public void setFlurstueckseigentum(String flurstueckseigentum) {
+		this.flurstueckseigentum = flurstueckseigentum;
 	}
 
 	public String getDetails() {

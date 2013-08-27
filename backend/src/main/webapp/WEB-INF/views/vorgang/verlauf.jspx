@@ -94,6 +94,12 @@
 									<c:otherwise>Adresse gelöscht.</c:otherwise>
 								</c:choose>
 							</c:when>
+                            <c:when test="${verlaufItem.typ=='flurstueckseigentum'}">
+								<c:choose>
+									<c:when test="${not empty verlaufItem.wertNeu}">Flurstückseigentum geändert in: ${verlaufItem.wertNeu}</c:when>
+									<c:otherwise>Flurstückseigentum gelöscht.</c:otherwise>
+								</c:choose>
+							</c:when>
 							<c:when test="${verlaufItem.typ=='detail'}">
 								<c:choose>
 									<c:when test="${not empty verlaufItem.wertNeu}">Details geändert in: ${fx:toHtml(verlaufItem.wertNeu)}</c:when>

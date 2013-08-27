@@ -128,6 +128,8 @@ public class VorgangDao {
 			if (!StringUtils.equals(vorgangOld.getDetails(), vorgang.getDetails())) verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.detail, StringUtils.abbreviate(vorgangOld.getDetails(), 100), StringUtils.abbreviate(vorgang.getDetails(), 100));
 			//Adresse
 			if (!StringUtils.equals(vorgangOld.getAdresse(), vorgang.getAdresse())) verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.adresse, StringUtils.abbreviate(vorgangOld.getAdresse(), 100), StringUtils.abbreviate(vorgang.getAdresse(), 100));
+            //Flurstückseigentum
+			if (!StringUtils.equals(vorgangOld.getFlurstueckseigentum(), vorgang.getFlurstueckseigentum())) verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.flurstueckseigentum, StringUtils.abbreviate(vorgangOld.getFlurstueckseigentum(), 100), StringUtils.abbreviate(vorgang.getFlurstueckseigentum(), 100));
 			//Delegieren
 			if (!StringUtils.equals(vorgangOld.getDelegiertAn(), vorgang.getDelegiertAn())) verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.delegiertAn, vorgangOld.getDelegiertAn(), vorgang.getDelegiertAn());
 			//Priorität
@@ -382,6 +384,7 @@ public class VorgangDao {
 			.addGroupByAttribute("vo.ovi")
 			.addGroupByAttribute("vo.autorEmail")
 			.addGroupByAttribute("vo.adresse")
+			.addGroupByAttribute("vo.flurstueckseigentum")
 			.addGroupByAttribute("vo.hash")
 			.addGroupByAttribute("vo.status")
 			.addGroupByAttribute("vo.statusOrdinal")

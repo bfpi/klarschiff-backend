@@ -91,6 +91,15 @@
 						</div>
 					</td>
 				</tr></c:if>
+                
+                <c:if test="${not empty vorgang.flurstueckseigentum}"><tr>
+					<td class="label">Flurstückseigentum</td>
+					<td colspan="10">
+						<div class="result" style="width:663px;">
+						${vorgang.flurstueckseigentum}
+						</div>
+					</td>
+				</tr></c:if>
 				
 				<tr>
 					<td class="label">Erstellung</td>
