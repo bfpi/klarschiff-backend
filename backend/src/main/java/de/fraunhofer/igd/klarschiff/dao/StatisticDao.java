@@ -54,6 +54,7 @@ public class StatisticDao {
 		HqlQueryHelper query = new HqlQueryHelper()
 			.addFromTables("Vorgang vo")
             .addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert = FALSE)")
+            .addWhereConditions("NOT (vo.typ = 'idee' AND vo.erstsichtungErfolgt = TRUE AND vo.status = 'offen' AND (SELECT count(*) FROM Unterstuetzer un WHERE un.vorgang = vo.id) < :unterstuetzer)").addParameter("unterstuetzer", settingsService.getVorgangIdeeUnterstuetzer())
             .orderBy("vo.datum DESC");
 		query.maxResults(maxResult);
         vorgangDao.addGroupByVorgang(query, true);

@@ -29,6 +29,8 @@
         <secure:intercept-url pattern="/service/**" access="permitAll" />
         <secure:intercept-url pattern="/fehler/**" access="permitAll" />
         <secure:intercept-url pattern="/impressum/**" access="permitAll" />
+        <secure:intercept-url pattern="/benutzer/**" access="hasRole('ROLE_INTERN') or hasRole('ROLE_ADMIN')" />
+        <secure:intercept-url pattern="/rollen/**" access="hasRole('ROLE_INTERN') or hasRole('ROLE_ADMIN')" />
         <secure:intercept-url pattern="/login/**" access="permitAll" />
         <secure:intercept-url pattern="/xmlfeeds/**" access="permitAll" />
         <secure:intercept-url pattern="/foto/**" access="hasRole('ROLE_EXTERN') or hasRole('ROLE_INTERN') or hasRole('ROLE_ADMIN')" />

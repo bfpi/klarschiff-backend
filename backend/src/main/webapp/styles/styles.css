@@ -275,6 +275,11 @@ div.olControlEditingToolbar {
 
 div.olMapViewport div.olControlMousePosition {
     font-family: Verdana,sans-serif;
+    margin:0 5px 7px 0;
+    padding:3px 5px 5px 3px;
+    background-color:rgba(255,255,255,.7);
+    border-radius:2px;
+    -webkit-border-radius:2px;
 }
 
 /* ######################### Selector ######################### */
@@ -547,7 +552,8 @@ table.resulttable th {
 }
 
 table.resulttable th.sortable {
-	_padding-right: 15px;
+	padding-right: 12px;
+	padding-left: 12px;
 	cursor: pointer;
 	border-right: 5px;
 	background-repeat: no-repeat;

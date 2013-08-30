@@ -126,7 +126,7 @@ public class VorgangDelegiertBearbeitenController {
 	 * Funktionsbeschreibung: 
 	 * <br/>Die Wahl des <code>action</code> Parameters erlaubt folgende Funktionalitäten:
 	 * <ul>
-	 * <li><code>Status setzen</code></li>
+	 * <li><code>&Auml;nderungen &uuml;bernehmen</code></li>
 	 * <li><code>zur&uuml;ckweisen</code></li>
 	 * <li><code>Kommentar speichern</code></li>
 	 * </ul>
@@ -158,11 +158,12 @@ public class VorgangDelegiertBearbeitenController {
 			return "vorgang/delegiert/bearbeiten";
 		}			
 		
-		if (action.equals("Status setzen")) {
+		if (action.equals("&Auml;nderungen &uuml;bernehmen")) {
 			vorgangDao.merge(cmd.getVorgang());
 		}  else if (action.equals("zur&uuml;ckweisen")) {
 			cmd.getVorgang().setDelegiertAn(null);
 			vorgangDao.merge(cmd.getVorgang());
+            return "redirect:/vorgang/delegiert/suchen";
 		}  else if (action.equals("Kommentar speichern")) {
 			if (!StringUtils.isBlank(cmd.getKommentar())) {		
 				Kommentar kommentar = new Kommentar();

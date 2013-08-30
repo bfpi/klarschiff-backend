@@ -69,7 +69,7 @@
 					<td class="label">Betreff</td>									
 					<td colspan="3">
 						<util:freigabestatus status="${vorgang.betreffFreigabeStatus}" cssStyle="float:left;"/>					
-						<div class="result" style="width:668px;margin-left:20px;">						
+						<div class="result" style="width:654px;margin-left:20px;">						
 						${vorgang.betreff}
 						</div>						
 					</td>								
@@ -79,7 +79,7 @@
 					<td class="label">Details</td>					
 					<td colspan="3">
 						<util:freigabestatus status="${vorgang.detailsFreigabeStatus}" cssStyle="float:left;"/>					
-						<div class="result" style="width:668px;margin-left:20px;">						
+						<div class="result" style="width:654px;margin-left:20px;">						
 						${fx:toHtml(vorgang.details)}
 						</div>						
 					</td> 						
@@ -119,6 +119,7 @@
 					</c:if>
 				</tr>
 			</table>
+            <div style="padding-left:3px;width:762px;text-align:justify"><span class="label">Hinweis: Adresse und Flurstückseigentum werden anhand der Position des Vorgangs auf der Karte automatisch durch das System bestimmt. Diese beiden Angaben stammen also <span style="font-weight:bold">nicht</span> vom Autor des Vorgangs.</span></div>
 		</div>
 
 		<!-- Status -->

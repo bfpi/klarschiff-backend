@@ -27,7 +27,7 @@ public class VorgangSuchenCommand implements Serializable {
 	/* --------------- Attribute ----------------------------*/
 	
 	public enum Suchtyp { einfach, erweitert }; 
-	public enum EinfacheSuche { offene, abgeschlossene };
+	public enum EinfacheSuche { offene, offeneIdeen, abgeschlossene };
 	
 	Integer page;
 	Integer size;

@@ -32,6 +32,7 @@ import de.fraunhofer.igd.klarschiff.dao.VorgangDao;
 import de.fraunhofer.igd.klarschiff.service.classification.ClassificationService;
 import de.fraunhofer.igd.klarschiff.service.security.Role;
 import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
+import de.fraunhofer.igd.klarschiff.service.settings.SettingsService;
 import de.fraunhofer.igd.klarschiff.vo.EnumFreigabeStatus;
 import de.fraunhofer.igd.klarschiff.vo.EnumPrioritaet;
 import de.fraunhofer.igd.klarschiff.vo.EnumVorgangStatus;
@@ -68,6 +69,18 @@ public class VorgangBearbeitenController {
 	@Autowired
 	SecurityService securityService;
 	
+	@Autowired
+	SettingsService settingsService;
+    
+    /**
+	 * Liefert (in Systemkonfiguration festgelegte) Anzahl an Unterstützungen, die benötigt werden damit Idee Relevanz erlangt (z.B. in der Vorgangssuche
+	 * automatisch erscheint). 
+	 */
+	@ModelAttribute("vorgangIdeenUnterstuetzer")
+    public Long vorgangIdeenUnterstuetzer() {
+        return settingsService.getVorgangIdeeUnterstuetzer();
+    }
+	
 	/**
 	 * Liefert alle vorhandenen Zuständigkeiten des aktuellen Benutzers
 	 */
@@ -100,6 +113,16 @@ public class VorgangBearbeitenController {
 		EnumVorgangStatus[] allVorgangStatus = EnumVorgangStatus.values();
 		allVorgangStatus = (EnumVorgangStatus[])ArrayUtils.removeElement(ArrayUtils.removeElement(allVorgangStatus, EnumVorgangStatus.gemeldet), EnumVorgangStatus.offen);
         return allVorgangStatus;
+    }
+    
+    /**
+	 * Liefert alle möglichen Ausprägungen für Vorgangs-Status-Typen (mit offenen!)
+	 */
+	@ModelAttribute("allVorgangStatusMitOffenen")
+    public EnumVorgangStatus[] allVorgangStatusMitOffenen() {
+		EnumVorgangStatus[] allVorgangStatusMitOffenen = EnumVorgangStatus.values();
+		allVorgangStatusMitOffenen = (EnumVorgangStatus[])ArrayUtils.removeElement(allVorgangStatusMitOffenen, EnumVorgangStatus.gemeldet);
+        return allVorgangStatusMitOffenen;
     }
 
 	/**
@@ -207,12 +230,12 @@ public class VorgangBearbeitenController {
 	 * <li><code>&uuml;bernehmen und akzeptieren</code></li>
 	 * <li><code>automatisch neu zuweisen</code></li>
 	 * <li><code>zuweisen</code></li>
-	 * <li><code>Status setzen</code></li>
+	 * <li><code>&Auml;nderungen &uuml;bernehmen</code></li>
 	 * <li><code>freigabeStatus_Betreff_extern</code></li>
 	 * <li><code>freigabeStatus_Betreff_intern</code></li>
 	 * <li><code>freigabeStatus_Details_extern</code></li>
 	 * <li><code>freigabeStatus_Details_intern</code></li>
-	 * <li><code>Vorgangsdaten &auml;ndern</code></li>
+	 * <li><code>&Auml;nderungen &uuml;bernehmen </code></li>
 	 * <li><code>Kommentar speichern</code></li>
 	 * <li><code>delegieren</code></li>
 	 * <li><code>archivieren</code></li>
@@ -272,7 +295,7 @@ public class VorgangBearbeitenController {
 		} else if (action.equals("zuweisen")) {
 			cmd.getVorgang().setZustaendigkeitStatus(EnumZustaendigkeitStatus.zugewiesen);
 			vorgangDao.merge(cmd.getVorgang());
-		} else if (action.equals("Status setzen")) {
+		} else if (action.equals("&Auml;nderungen &uuml;bernehmen")) {
 			assertNotEmpty(cmd, result, Assert.EvaluateOn.ever, "vorgang.status", null);
 			if (result.hasErrors()) {
 				cmd.setVorgang(getVorgang(id));
@@ -294,7 +317,7 @@ public class VorgangBearbeitenController {
 		} else if (action.equals("freigabeStatus_Details_intern")) {
 			cmd.getVorgang().setDetailsFreigabeStatus(EnumFreigabeStatus.intern);
 			vorgangDao.merge(cmd.getVorgang());
-		} else if (action.equals("Vorgangsdaten &auml;ndern")) {
+		} else if (action.equals("&Auml;nderungen &uuml;bernehmen ")) {
 			assertNotEmpty(cmd, result, Assert.EvaluateOn.ever, "vorgang.typ", null);
 			assertNotEmpty(cmd, result, Assert.EvaluateOn.ever, "kategorie", null);
 			assertNotEmpty(cmd, result, Assert.EvaluateOn.ever, "vorgang.kategorie", null);

@@ -219,12 +219,7 @@ public class VorgangDao {
 			unStatus.add(EnumVorgangStatus.inBearbeitung);
 			query.addWhereConditions("vo.zustaendigkeit IN(:zustaendigkeit)")
 				.addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert=:archiviert)")
-				.addParameter("archiviert", Boolean.FALSE)
-				.addHavingConditions("(vo.typ!=:unTyp OR vo.status IN (:unStatus) OR COUNT(DISTINCT un.id)>=:unterstuetzer OR vo.erstsichtungErfolgt=:erstsichtungErfolgt OR COUNT(DISTINCT mi.id)>0) ")
-				.addParameter("unTyp", EnumVorgangTyp.idee)
-				.addParameter("unStatus", unStatus)
-				.addParameter("erstsichtungErfolgt", false)
-				.addParameter("unterstuetzer", settingsService.getVorgangIdeeUnterstuetzer());
+				.addParameter("archiviert", Boolean.FALSE);
 			if (cmd instanceof VorgangFeedCommand) {
 				query.addParameter("zustaendigkeit", Role.toString(((VorgangFeedCommand)cmd).getZustaendigkeiten()));
 			} else {
@@ -234,11 +229,24 @@ public class VorgangDao {
 			case offene:
 				query.addWhereConditions("(vo.status=:status1 OR vo.status=:status2)")
 					.addParameter("status1", EnumVorgangStatus.offen)
-					.addParameter("status2", EnumVorgangStatus.inBearbeitung);
+					.addParameter("status2", EnumVorgangStatus.inBearbeitung)
+                    .addHavingConditions("(vo.typ!=:unTyp OR vo.status IN (:unStatus) OR COUNT(DISTINCT un.id)>=:unterstuetzer OR vo.erstsichtungErfolgt=:erstsichtungErfolgt OR COUNT(DISTINCT mi.id)>0) ")
+                    .addParameter("unTyp", EnumVorgangTyp.idee)
+                    .addParameter("unStatus", unStatus)
+                    .addParameter("erstsichtungErfolgt", false)
+                    .addParameter("unterstuetzer", settingsService.getVorgangIdeeUnterstuetzer());
+				break;
+            case offeneIdeen:
+				query.addWhereConditions("(vo.status=:status)")
+					.addParameter("status", EnumVorgangStatus.offen)
+                    .addHavingConditions("(vo.typ=:unTyp AND vo.erstsichtungErfolgt=:erstsichtungErfolgt AND COUNT(DISTINCT un.id)<:unterstuetzer) ")
+                    .addParameter("unTyp", EnumVorgangTyp.idee)
+                    .addParameter("erstsichtungErfolgt", true)
+                    .addParameter("unterstuetzer", settingsService.getVorgangIdeeUnterstuetzer());
 				break;
 			case abgeschlossene:
 				query.addWhereConditions("(vo.status IN (:status))")
-					.addParameter("status", Arrays.asList(EnumVorgangStatus.closedVorgangStatus()));
+                    .addParameter("status", Arrays.asList(EnumVorgangStatus.closedVorgangStatus()));
 				break;
 			}
 			break;

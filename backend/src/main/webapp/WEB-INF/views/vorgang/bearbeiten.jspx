@@ -192,8 +192,15 @@
 									<form:label path="status" cssErrorClass="error">Status</form:label>
 									<form:select path="status" cssErrorClass="error">
 						            	<form:option value="" label="Status wählen" cssClass="info"/>
-						            	<form:options items="${allVorgangStatus}" itemLabel="text" htmlEscape="false"/>
-									</form:select> 
+                                        <c:if test="${cmd.vorgang.typ == 'idee'}">
+                                            <c:if test="${!(cmd.vorgang.unterstuetzer.size() >= vorgangIdeenUnterstuetzer)}">
+                                                <form:options items="${allVorgangStatusMitOffenen}" itemLabel="text" htmlEscape="false"/>
+                                            </c:if>
+                                        </c:if>
+                                        <c:if test="${cmd.vorgang.typ != 'idee' or cmd.vorgang.unterstuetzer.size() >= vorgangIdeenUnterstuetzer}">
+                                            <form:options items="${allVorgangStatus}" itemLabel="text" htmlEscape="false"/>
+                                        </c:if>
+									</form:select>
 								</div>
 								<div>
 									<table width="100%" cellpadding="0" cellspacing="0">
@@ -224,7 +231,7 @@
 										</form:errors>
 									</table>
 								</div>
-								<input type="submit" value="Status setzen" name="action"/>
+								<input type="submit" value="Änderungen übernehmen" name="action"/>
 							</form:form>
 						</div>
 					</div>
@@ -372,11 +379,11 @@
 					            <form:input path="vorgang.adresse" cssClass="inputtext" cssStyle="width:351px;"/>
 				       		</div>
                             <div>
-					        	<form:label path="vorgang.flurstueckseigentum">Flurstückseigent.</form:label>
+					        	<form:label path="vorgang.flurstueckseigentum">Flurstückseigentum</form:label>
 					            <form:input path="vorgang.flurstueckseigentum" cssClass="inputtext" cssStyle="width:351px;"/>
 				       		</div>
 					        
-							<input type="submit" value="Vorgangsdaten &#228;ndern" name="action"/>
+							<input type="submit" value="Änderungen übernehmen " name="action"/>
 						</form:form>
 					</div>
 				</div>

@@ -227,7 +227,7 @@ public class VorgangSuchenController {
 			
 			List<Object[]> vorgaenge = vorgangDao.listVorgang(cmd2);
 			
-			HSSFWorkbook workbook = poiService.createScheet(PoiService.Template.vorgangListe, vorgaenge);
+			HSSFWorkbook workbook = poiService.createSheet(PoiService.Template.vorgangListe, vorgaenge);
 			
 			response.setHeader("Content-Type", "application/ms-excel");
 			workbook.write(response.getOutputStream());

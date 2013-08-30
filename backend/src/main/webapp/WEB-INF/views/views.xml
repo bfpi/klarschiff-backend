@@ -26,6 +26,18 @@
 		<put-attribute name="body" value="/WEB-INF/views/index.jspx"/>
 		<put-attribute name="menu_item" type="string" value="menu.home"/>
 	</definition>
+    
+    <!-- BENUTZER -->
+	<definition extends="default" name="benutzer">
+		<put-attribute name="body" value="/WEB-INF/views/benutzer.jspx"/>
+		<put-attribute name="menu_item" type="string" value="menu.benutzer"/>
+	</definition>
+    
+    <!-- ROLLEN -->
+	<definition extends="default" name="rollen">
+		<put-attribute name="body" value="/WEB-INF/views/rollen.jspx"/>
+		<put-attribute name="menu_item" type="string" value="menu.rollen"/>
+	</definition>
 
 	<!-- DOKUMENTATION -->
 	<definition extends="default" name="dokumentation/*">

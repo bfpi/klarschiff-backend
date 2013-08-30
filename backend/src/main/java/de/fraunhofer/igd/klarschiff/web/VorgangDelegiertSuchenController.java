@@ -134,7 +134,7 @@ public class VorgangDelegiertSuchenController {
 			
 			List<Vorgang> vorgaenge = vorgangDao.listVorgang(cmd2);
 			
-			HSSFWorkbook workbook = poiService.createScheet(PoiService.Template.vorgangDelegiertListe, vorgaenge);
+			HSSFWorkbook workbook = poiService.createSheet(PoiService.Template.vorgangDelegiertListe, vorgaenge);
 			
 			response.setHeader("Content-Type", "application/ms-excel");
 			workbook.write(response.getOutputStream());
@@ -144,29 +144,4 @@ public class VorgangDelegiertSuchenController {
 			throw new RuntimeException(e);
 		}
 	}
-	
-//	@RequestMapping(value="/vorgaenge.xls", method = RequestMethod.GET)
-//    @ResponseBody
-//	public void excel(
-//    		@ModelAttribute(value = "cmdvorgangdelegiertsuchen") VorgangDelegiertSuchenCommand cmd,
-//			HttpServletRequest request,
-//			HttpServletResponse response) {
-//		try {
-//			VorgangDelegiertSuchenCommand cmd2 = (VorgangDelegiertSuchenCommand)BeanUtils.cloneBean(cmd);
-//			cmd2.setPage(null);
-//			cmd2.setSize(null);
-//			
-//			List<Vorgang> vorgaenge = vorgangDao.listVorgang(cmd2);
-//			
-//			HSSFWorkbook workbook = poiService.createScheet(PoiService.Template.vorgangListe, vorgaenge);
-//			
-//			response.setHeader("Content-Type", "application/ms-excel");
-//			workbook.write(response.getOutputStream());
-//			response.setStatus(HttpServletResponse.SC_OK);
-//		} catch (Exception e) {
-//			logger.error(e);
-//			throw new RuntimeException(e);
-//		}
-//	
-//	}
 }

@@ -45,7 +45,7 @@
 					            	<form:options items="${allVorgangStatus}" itemLabel="text" htmlEscape="false"/>
 								</form:select> 
 							</div>
-							<input type="submit" value="Status setzen" name="action"/>
+							<input type="submit" value="Änderungen übernehmen" name="action"/>
 						</form:form>
 					</div>
 				</div>

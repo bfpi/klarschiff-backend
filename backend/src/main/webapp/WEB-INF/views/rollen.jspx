@@ -1,0 +1,70 @@
+<jsp:root 
+	xmlns:c="http://java.sun.com/jsp/jstl/core" 
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions" 
+	xmlns:spring="http://www.springframework.org/tags" 
+	xmlns:jsp="http://java.sun.com/JSP/Page" 
+	xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu"
+	xmlns:tiles="http://tiles.apache.org/tags-tiles" 
+	xmlns:fx="http://igd.fraunhofer.de/tags/elfunctions" 
+	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+	version="2.0"
+	>
+	<jsp:directive.page contentType="text/html;charset=UTF-8"/>
+
+	<!-- CONTENTTITLE -->
+	<div id="root_style_content_title">
+		Rollenübersicht
+	</div>
+	
+	<!-- CONTENT -->
+	<div id="root_style_content">
+
+		<div class="fieldset">
+			<div class="fieldsettitle">interne Rollen</div>
+			<table class="resulttable">
+				<thead>
+					<tr>
+						<th>Rolle</th>
+						<th>Beschreibung</th>
+					</tr>
+				</thead>
+				<tbody>
+					<c:forEach items="${rollenIntern}" var="role" varStatus="rowCounter">
+						<tr class="${(rowCounter.count%2==0)? 'odd' : 'even'}">
+							<td>${role.id}</td>
+							<td>${role.description}</td>
+						</tr>
+					</c:forEach>
+				</tbody>
+			</table>			
+		</div>
+
+		<div class="fieldset">
+			<div class="fieldsettitle">externe Rollen (delegieren)</div>
+			<table class="resulttable">
+				<thead>
+					<tr>
+						<th>Rolle</th>
+						<th>Beschreibung</th>
+					</tr>
+				</thead>
+				<tbody>
+					<c:forEach items="${rollenExtern}" var="role" varStatus="rowCounter">
+						<tr align="left" class="${(rowCounter.count%2==0)? 'odd' : 'even'}">
+							<td>${role.id}</td>
+							<td>${role.description}</td>
+						</tr>
+					</c:forEach>
+				</tbody>
+			</table>	
+		</div>
+	</div>
+	
+	<!-- HELP -->
+	<div id="root_style_help">
+		<p>
+			Hier finden Sie eine Übersicht über alle im System verfügbaren <util:help anchor="Benutzerrollen">Rollen</util:help>.  
+		</p>
+	</div>
+
+</jsp:root>

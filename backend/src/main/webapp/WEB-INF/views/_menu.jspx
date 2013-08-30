@@ -55,6 +55,10 @@
 				<sec:authorize access="hasRole('ROLE_ADMIN')">
 					<menu:item label="Administration" url="/admin/uebersicht" id="menu.admin" currentId="${menu_item}"/>
 				</sec:authorize>
+                <sec:authorize access="hasRole('ROLE_INTERN') and not hasRole('ROLE_ADMIN')">	
+					<menu:item label="Benutzerübersicht" url="/benutzer" id="menu.benutzer" currentId="${menu_item}"/>
+					<menu:item label="Rollenübersicht" url="/rollen" id="menu.rollen" currentId="${menu_item}"/>
+				</sec:authorize>
 		
 				<menu:item label="Dokumentation" url="/dokumentation/index" id="menu.dokumentation" currentId="${menu_item}"/>
 				<menu:item label="Service" url="/service" id="menu.service" currentId="${menu_item}"/>
