@@ -31,6 +31,7 @@
 		<div class="fieldset">
 			<div class="fieldsettitle">Verlauf</div>
 	  		<c:forEach items="${verlauf}" var="verlaufItem">
+                <c:if test="${verlaufItem.wertNeu!=verlaufItem.wertAlt or verlaufItem.wertNeu==null or verlaufItem.wertAlt==null}">
 	  			<div class="verlauf">
 	  				<div class="verlaufHeader">
 		       			<span style="margin-right:10px;padding:0px;">
@@ -113,7 +114,7 @@
                                 <c:set value="${verlaufItem.wertNeu.toLowerCase()}_15.png" var="altNeu"/>
 								Typ geändert: <img style="vertical-align:middle" alt="${altAlt}" src="${url}${altAlt}" height="15" width="15"  title="${verlaufItem.wertAlt}"/> ➔ <img style="vertical-align:middle" alt="${altNeu}" src="${url}${altNeu}" height="15" width="15"  title="${verlaufItem.wertNeu}"/>
 							</c:when>
-							<c:when test="${verlaufItem.typ=='kategorie'}">
+							<c:when test="${verlaufItem.typ=='kategorie' and verlaufItem.wertNeu!=verlaufItem.wertAlt}">
 								Kategorie geändert: ${verlaufItem.wertAlt} ➔ ${verlaufItem.wertNeu}
 							</c:when>
 							<c:when test="${verlaufItem.typ=='archiv' and verlaufItem.wertNeu=='true'}">
@@ -170,17 +171,10 @@
 							<c:when test="${verlaufItem.typ=='vorgangBestaetigung'}">
 								Vorgang von externem Autor bestätigt
 							</c:when>
-							
-							<c:otherwise>
-								<div class="dev">
-									Typ: ${verlaufItem.typ}<br/>
-			        				alt: ${verlaufItem.wertAlt}<br/>
-			        				neu: ${verlaufItem.wertNeu}
-								</div>
-							</c:otherwise>
 						</c:choose>
 					</div>
 	  			</div>
+            </c:if>
 			</c:forEach>
             <c:if test="${not empty maxPages and not empty verlauf}">
 	            <util:pagination maxPages="${maxPages}" page="${page}" size="${size}"/>
