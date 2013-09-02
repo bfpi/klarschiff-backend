@@ -113,6 +113,7 @@ public class VorgangErstsichtungController {
 	 * <li>zugewiesene Zuständigkeit akzeptieren (<code>akzeptieren</code>)</li>
 	 * <li>Zuständigkeit selbst übernehmen und akzeptieren (<code>&uuml;bernehmen und akzeptieren</code>)</li>
 	 * <li>Erstprüfung abschließen (<code>Pr&uuml;fung abschlie&szlig;en</code>)</li>
+	 * <li>Rotiertes Foto speichern (<code>fotoRotate</code>)</li>
 	 * <li>Bearbeitetes (zensiertes) Foto speichern (<code>fotoSave</code>)</li>
 	 * <li>Freigabestatus von Betreff, Details oder Foto ändern (<code>freigabeStatus_Betreff; freigabeStatus_Details; freigabeStatus_Foto;</code>)</li>
 	 * </ul>
@@ -213,6 +214,12 @@ public class VorgangErstsichtungController {
 			for (@SuppressWarnings("unused") Verlauf verlauf : cmd.getVorgang().getVerlauf());
 			return "vorgang/erstsichtung/pruefen";
 			
+		} else if (action.equals("fotoRotate")) {
+			imageService.rotateImageForVorgang(cmd.getVorgang());
+			vorgangDao.merge(cmd.getVorgang());
+            cmd.setVorgang(vorgangDao.findVorgang(id));
+			for (@SuppressWarnings("unused") Verlauf verlauf : cmd.getVorgang().getVerlauf());
+			return "vorgang/erstsichtung/pruefen";
 		} else if (action!=null && action.startsWith("freigabeStatus")) {
 			String str[] = action.split("_");
 			EnumFreigabeStatus freigabeStatus = EnumFreigabeStatus.valueOf(str[2]);

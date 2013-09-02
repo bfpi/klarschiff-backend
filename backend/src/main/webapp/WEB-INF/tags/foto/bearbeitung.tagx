@@ -25,6 +25,11 @@
 		<!-- crazy fix - confusing -->
 	</script>
 	
+    <button id="rotateAnchor" type="button" name="action" value="fotoRotate" title="Foto um 90° im Uhrzeigersinn rotieren">
+		<c:url value="/images/foto_edit_rotate.png" var="url"/>
+ 		<img src="${url}" alt=""/>
+	</button>
+    
  	<button id="editEnableAnchor" type="button" name="editEnable" value="editEnable" title="Foto bearbeiten">
 		<c:url value="/images/foto_edit_enable.png" var="url"/>
  		<img src="${url}" alt=""/>
@@ -45,25 +50,6 @@
 		<c:url value="/images/foto_edit_save.png" var="url"/>
  		<img src="${url}" alt=""/>
 	</button>
-<!-- 	<a href="javascript:$.md('The operation failed.');">Test Code</a> -->
-	
-
-<!-- 	
-	<button id="undoAnchor" type="button" name="undo" value="undo" title="Rückgängig">
-		<c:url value="/images/zensur-edit-undo.png" var="url"/>
- 		<img src="${url}" alt=""/>
-	</button>
-	<button id="redoAnchor" type="button" name="redo" value="redo" title="Wiederholen">
-		<c:url value="/images/zensur-edit-redo.png" var="url"/>
- 		<img src="${url}" alt=""/>
-	</button>
-	<button id="clearAnchor" type="button" name="clear" value="clear" title="Alles entfernen">
-		<c:url value="/images/zensur-edit-clear.png" var="url"/>
- 		<img src="${url}" alt=""/>
-	</button>
-	<button id="submitAnchor" type="button" name="submit" title="Zensur Bestätigen">
-		<p>Bearbeitung Bestätigen</p>
-	</button>-->
 	<div id="recStack"><!--&nbsp;--></div>
 
 </jsp:root>

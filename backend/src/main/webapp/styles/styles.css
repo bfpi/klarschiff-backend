@@ -754,7 +754,7 @@ div.pagination span.nav.enabled {
 	cursor: pointer;
 }
 
-button#editEnableAnchor, button#editDisabledAnchor, button#undoAnchor, button#redoAnchor, button#submitAnchor{
+button#rotateAnchor, button#editEnableAnchor, button#editDisabledAnchor, button#undoAnchor, button#redoAnchor, button#submitAnchor{
 	height: 26px;
 }
 

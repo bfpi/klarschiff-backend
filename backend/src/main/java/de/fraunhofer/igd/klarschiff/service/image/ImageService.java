@@ -88,6 +88,25 @@ public class ImageService {
 			throw new RuntimeException(e);
 		}
 	}
+    
+    public void rotateImageForVorgang(Vorgang vorgang)
+	{
+		try {
+            BufferedImage oldImage = ImageIO.read(new ByteArrayInputStream(vorgang.getFotoNormalJpg()));
+            BufferedImage newImage = new BufferedImage(oldImage.getHeight(), oldImage.getWidth(), oldImage.getType());
+            
+            Graphics2D graphics2D = (Graphics2D) newImage.getGraphics();
+            graphics2D.rotate(Math.toRadians(90), newImage.getWidth() / 2, newImage.getHeight() / 2);
+            graphics2D.translate((newImage.getWidth() - oldImage.getWidth()) / 2, (newImage.getHeight() - oldImage.getHeight()) / 2);
+            graphics2D.drawImage(oldImage, 0, 0, oldImage.getWidth(), oldImage.getHeight(), null);
+
+            vorgang.setFotoNormalJpg(imageToByteArray(newImage));
+	    	vorgang.setFotoThumbJpg(scaleImage(vorgang.getFotoNormalJpg(), fotoThumbWidth, fotoThumbHeight, scaleTyp));
+            
+        } catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 
 
 	/**
