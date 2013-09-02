@@ -85,7 +85,7 @@ public class VorgangDao {
 	@Transactional
 	public void remove(Object o) {
 		em.remove(o);
-		//em.flush();
+		em.flush();
 	}
 	
 
