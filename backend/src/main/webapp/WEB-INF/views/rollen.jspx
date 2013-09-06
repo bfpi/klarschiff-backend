@@ -26,6 +26,7 @@
 					<tr>
 						<th>Rolle</th>
 						<th>Beschreibung</th>
+						<th>Benutzer (Logins)</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -33,6 +34,7 @@
 						<tr class="${(rowCounter.count%2==0)? 'odd' : 'even'}">
 							<td>${role.id}</td>
 							<td>${role.description}</td>
+                            <td><ul><c:forEach items="${role.usersRole}" var="user"><li><span>${user.getName()} (${user.getId()})</span></li></c:forEach></ul></td>
 						</tr>
 					</c:forEach>
 				</tbody>
@@ -46,13 +48,15 @@
 					<tr>
 						<th>Rolle</th>
 						<th>Beschreibung</th>
+						<th>Benutzer (Logins)</th>
 					</tr>
 				</thead>
 				<tbody>
 					<c:forEach items="${rollenExtern}" var="role" varStatus="rowCounter">
-						<tr align="left" class="${(rowCounter.count%2==0)? 'odd' : 'even'}">
+						<tr class="${(rowCounter.count%2==0)? 'odd' : 'even'}">
 							<td>${role.id}</td>
 							<td>${role.description}</td>
+                            <td><ul><c:forEach items="${role.usersRole}" var="user"><li><span>${user.getName()} (${user.getId()})</span></li></c:forEach></ul></td>
 						</tr>
 					</c:forEach>
 				</tbody>

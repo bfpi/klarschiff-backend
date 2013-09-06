@@ -23,10 +23,11 @@ public class RedaktionEmpfaengerDao {
 	EntityManager em;
 
 	/**
-	 * gibt eine Liste mit den in der DB gelisteten Empfängern von redaktionellen E-Mails zurück
+	 * gibt eine Liste mit den in der Datenbank gelisteten Empfängern von redaktionellen E-Mails zurück
 	 */
 	@SuppressWarnings("unchecked")
 	public List<RedaktionEmpfaenger> getEmpfaengerList() {
 		return (List<RedaktionEmpfaenger>)em.createQuery("SELECT v FROM RedaktionEmpfaenger v ORDER BY v.zustaendigkeit, v.email").getResultList();
 	}
+
 }

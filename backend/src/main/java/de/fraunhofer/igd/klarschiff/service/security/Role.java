@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import de.fraunhofer.igd.klarschiff.context.AppContext;
+
 import org.apache.commons.lang.StringUtils;
 
 /**
@@ -27,6 +29,14 @@ public class Role {
 		if (o!=null && o instanceof Role)
 			return StringUtils.equals(id, ((Role)o).getId());
 		else return super.equals(o);
+	}
+    
+    /**
+	 * Ermittelt die Benutzer der Rolle.
+	 * @return Benutzer der Rolle
+	 */
+	public List<User> getUsersRole() {
+		return AppContext.getApplicationContext().getBean(SecurityService.class).getAllUserForRole(id);
 	}
 
     /* --------------- GET + SET ----------------------------*/

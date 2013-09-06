@@ -51,6 +51,15 @@ public class User {
 	public boolean getUserIntern() {
 		return AppContext.getApplicationContext().getBean(SecurityService.class).isUserIntern(id);
 	}
+    
+    /**
+	 * Ermittelt, ob der Benutzer ein Admin ist.
+	 * @return <code>true</code> - Admins
+	 */
+	public boolean getUserAdmin() {
+		return AppContext.getApplicationContext().getBean(SecurityService.class).isUserAdmin(id);
+	}
+    
 	
     /* --------------- GET + SET ----------------------------*/
 

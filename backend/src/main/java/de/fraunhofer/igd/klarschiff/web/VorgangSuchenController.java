@@ -142,7 +142,6 @@ public class VorgangSuchenController {
     	//Initiale erweiterte Suche
     	cmd.setErweitertArchiviert(false);
     	cmd.setErweitertZustaendigkeit("#mir zugewiesen#");
-    	cmd.setErweitertUnterstuetzerAb(settingsService.getVorgangIdeeUnterstuetzer());
     	cmd.setErweitertVorgangStatus((EnumVorgangStatus[])ArrayUtils.removeElement(ArrayUtils.removeElement(EnumVorgangStatus.values(), EnumVorgangStatus.gemeldet), EnumVorgangStatus.geloescht));
         return cmd;
     }

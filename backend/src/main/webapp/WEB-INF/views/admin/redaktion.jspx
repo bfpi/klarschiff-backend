@@ -56,16 +56,16 @@
 			</table>	
 		</div>
         
-		<div class="fieldset">
+        <div class="fieldset">
 			<div class="fieldsettitle">Empfänger redaktioneller E-Mails</div>
 			<table class="resulttable" width="100%">
 				<thead>
 					<tr>
-						<th>Zuständigkeit</th>
-						<th>E-Mail-Adresse</th>
-						<th>Stufe</th>
-						<th>alle n Tage</th>
-						<th>letzte E-Mail</th>
+                        <th>Zuständigkeit</th>
+                        <th>E-Mail-Adresse</th>
+                        <th>Stufe</th>
+                        <th>alle n Tage</th>
+                        <th>letzte E-Mail</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -79,6 +79,15 @@
 						</tr>
 					</c:forEach>
 				</tbody>
+                <tfoot>
+                    <tr class="footer">
+                        <td colspan="10">
+                            <c:if test="${not empty maxPages}">
+                                <util:pagination maxPages="${maxPages}" page="${cmdredaktionempfaengerlistung.page}" size="${cmdredaktionempfaengerlistung.size}"/>
+                            </c:if>
+                        </td>
+                    </tr>
+                </tfoot>
 			</table>			
 		</div>
 	</div>

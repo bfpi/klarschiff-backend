@@ -61,12 +61,14 @@
 					<c:set value="${fx:countMissbrauchsmeldungen(vorgang)}" var="countMissbrauchsmeldungen"/>
 					<c:if test="${countMissbrauchsmeldungen==1}">
 						<td valign="middle" >		
-							<div class="missbrauchsmeldungLegende" title="Es liegt ${countMissbrauchsmeldungen} Missbrauchsmeldung vor!" style="font-weight:bold;height:15px;line-height:15px;padding:0 4px 0 4px;">M</div>
+							<c:url value="/images/missbrauchsmeldung.png" var="url"/>
+                            <img alt="Missbrauchsmeldungen" style="vertical-align:top" src="${url}" title="Es liegt ${countMissbrauchsmeldungen} Missbrauchsmeldung vor!"/>
 						</td>
 					</c:if>
                     <c:if test="${countMissbrauchsmeldungen>1}">
 						<td valign="middle" >		
-							<div class="missbrauchsmeldungLegende" title="Es liegen ${countMissbrauchsmeldungen} Missbrauchsmeldungen vor!" style="font-weight:bold;height:15px;line-height:15px;padding:0 4px 0 4px;">M</div>
+							<c:url value="/images/missbrauchsmeldung.png" var="url"/>
+                            <img alt="Missbrauchsmeldungen" style="vertical-align:top" src="${url}" title="Es liegen ${countMissbrauchsmeldungen} Missbrauchsmeldungen vor!"/>
 						</td>
 					</c:if>	                    
 				</c:if>

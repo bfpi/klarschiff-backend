@@ -104,8 +104,8 @@
 						<tr>
 							<td colspan="2">
 								<div>
-									<form:label path="erweitertFulltext" title="Die folgenden Felder werden durchsucht: Betreff, Details, Kategorie, Kommentare, Missbrauchsmeldungen, Statuskommentar">Freitext</form:label>
-									<form:input path="erweitertFulltext" cssClass="inputtext" cssStyle="width:526px;"/>
+									<form:label path="erweitertFulltext" title="Die folgenden Felder werden durchsucht: Hauptkategorie, Unterkategorie, Betreff, Details, interne Kommentare, Statuskommentare und Missbrauchsmeldungen.">Freitext</form:label>
+									<form:input path="erweitertFulltext" cssClass="inputtext" cssStyle="width:526px;" title="Die folgenden Felder werden durchsucht: Hauptkategorie, Unterkategorie, Betreff, Details, interne Kommentare, Statuskommentare und Missbrauchsmeldungen."/>
 								</div>
 							</td>
 						</tr>
@@ -115,7 +115,7 @@
 									<div>
 										<form:label path="erweitertZustaendigkeit">Zuständigkeit</form:label>
 										<form:select path="erweitertZustaendigkeit">
-							            	<form:option value="" label="egal" cssClass="info"/>
+							            	<form:option value="" label="alle Zuständigkeiten" cssClass="info"/>
 							            	<form:option value="#mir zugewiesen#" label="mir zugewiesen"/>
 							            	<role:options roles="${allZustaendigkeiten}" role="${cmdvorgangsuchen.erweitertZustaendigkeit}"/>
 										</form:select>
@@ -125,7 +125,7 @@
 								<div> 
 									<form:label path="erweitertDelegiertAn">delegiert an</form:label>
 									<form:select path="erweitertDelegiertAn">
-						            	<form:option value="" label="egal" cssClass="info"/>
+						            	<form:option value="" label="" cssClass="info"/>
 						            	<role:options roles="${allDelegiertAn}" role="${cmdvorgangsuchen.erweitertDelegiertAn}"/>
 									</form:select>
 								</div>
@@ -162,7 +162,7 @@
 								<div>
 									<form:label path="erweitertArchiviert">archiviert</form:label>
 									<form:select path="erweitertArchiviert" onchange="updateArchiviert(this)" id="erweitertArchiviert">
-						            	<form:option value="" label="egal" cssClass="info"/>
+						            	<form:option value="" label="" cssClass="info"/>
 						            	<form:option value="true" label="ja"/>
 						            	<form:option value="false" label="nein"/>
 									</form:select>
@@ -189,7 +189,7 @@
 								<div>
 						        	<form:label path="erweitertVorgangTyp">Typ</form:label>
 						            <form:select path="erweitertVorgangTyp" id="typ" onchange="updateHauptkategorie()">
-						            	<form:option value="" label="egal" cssClass="info"/>
+						            	<form:option value="" label="alle Typen" cssClass="info"/>
 						            	<c:forEach items="${vorgangtypen}" var="vorgangtyp">
 						            		<c:url value="/images/${vorgangtyp}_15.png" var="url"/>
 						            		<form:option value="${vorgangtyp}" label="${vorgangtyp.text}" cssStyle="background-image:url(${url});" cssClass="suffixiconsmall"/>
@@ -200,7 +200,7 @@
 						        <div>
 						        	<form:label path="erweitertHauptkategorie">Hauptkategorie</form:label>
 						            <form:select path="erweitertHauptkategorie" id="hauptkategorie" disabled="true" onchange="updateUnterkategorie()">
-						            	<form:option value="" label="egal" cssClass="info"/>
+						            	<form:option value="" label="alle Hauptkategorien" cssClass="info"/>
 										<form:options items="${hauptkategorien}" itemValue="id" itemLabel="name"/>
 						            </form:select>
 						        </div>
@@ -208,7 +208,7 @@
 						        <div>
 						        	<form:label path="erweitertKategorie">Unterkategorie</form:label>
 						            <form:select path="erweitertKategorie" id="unterkategorie" disabled="true" onchange="updateInfo()">
-						            	<form:option value="" label="egal" cssClass="info"/>
+						            	<form:option value="" label="alle Unterkategorien" cssClass="info"/>
 										<form:options items="${unterkategorien}" itemValue="id" itemLabel="name"/>
 						            </form:select>
 						        </div>
@@ -222,7 +222,7 @@
 								function updateHauptkategorie()
 								{
 									var items = [];	  
-									items.push('<option value="" class="info">egal</option>');
+									items.push('<option value="" class="info">alle Hauptkategorien</option>');
 								
 									var value = $('select#typ')[0].value;
 									var node = $('select#hauptkategorie');
@@ -247,7 +247,7 @@
 								{
 									var value = $('select#hauptkategorie')[0].value;
 									var items = [];	  
-									items.push('<option value="" class="info">egal</option>');
+									items.push('<option value="" class="info">alle Unterkategorien</option>');
 								
 									var node = $('select#unterkategorie');
 									node.empty();
@@ -315,9 +315,9 @@
 								</div>
 							
 								<div style="padding-top: 20px;">
-									<form:label path="erweitertUnterstuetzerAb">Unterstützungen</form:label>
-									<form:select path="erweitertUnterstuetzerAb">
-						            	<form:option value="" label="egal" cssClass="info"/>
+									<form:label path="erweitertUnterstuetzerAb" title="Wenn Sie die Unterstützungen als Filterkriterium verwenden, wird dieses nur auf noch offene Ideen angewendet. Ideen anderer Status werden dann in jedem Fall auch gefunden.">Unterstützungen</form:label>
+									<form:select path="erweitertUnterstuetzerAb" title="Wenn Sie die Unterstützungen als Filterkriterium verwenden, wird dieses nur auf noch offene Ideen angewendet. Ideen anderer Status werden dann in jedem Fall auch gefunden.">
+						            	<form:option value="" label="" cssClass="info"/>
 										<form:option value="${vorgangIdeenUnterstuetzer}" label="mindestens ${vorgangIdeenUnterstuetzer}"/>
 									</form:select>
 								</div>
@@ -325,7 +325,7 @@
 								<div style="padding-top: 20px;">
 									<form:label path="erweitertPrioritaet">Priorität</form:label>
 									<form:select path="erweitertPrioritaet">
-						            	<form:option value="" label="egal" cssClass="info"/>
+						            	<form:option value="" label="" cssClass="info"/>
 										<form:options items="${allPrioritaeten}" itemValue="text"/>
 									</form:select>
 								</div>
@@ -333,7 +333,7 @@
 								<div style="padding-top: 10px;">
 									<form:label path="erweitertStadtteilgrenze">Ortsteil</form:label>
 									<form:select path="erweitertStadtteilgrenze">
-						            	<form:option value="" label="egal" cssClass="info"/>
+						            	<form:option value="" label="alle Ortsteile" cssClass="info"/>
 						            	<c:forEach items="${allStadtteile}" var="stadtteil">
 							            	<form:option value="${stadtteil[0]}" label="${stadtteil[1]}"/>
 						            	</c:forEach>
@@ -363,7 +363,7 @@
 		                	<util:sortedtableheadercolumn name="Erstellung" id="2" currentOrderId="${cmdvorgangsuchen.order}" currentOrderDirection="${cmdvorgangsuchen.orderDirection}"/>
 		                	<util:sortedtableheadercolumn name="Haupt- und Unterkategorie" id="3" colspan="2" currentOrderId="${cmdvorgangsuchen.order}" currentOrderDirection="${cmdvorgangsuchen.orderDirection}"/>
 		                	<util:sortedtableheadercolumn name="Status" id="4" currentOrderId="${cmdvorgangsuchen.order}" currentOrderDirection="${cmdvorgangsuchen.orderDirection}"/>
-                            <util:sortedtableheadercolumn name="Adresse" id="5" currentOrderId="${cmdvorgangdelegiertsuchen.order}" currentOrderDirection="${cmdvorgangdelegiertsuchen.orderDirection}"/>
+                            <util:sortedtableheadercolumn name="Adresse" id="5" currentOrderId="${cmdvorgangsuchen.order}" currentOrderDirection="${cmdvorgangsuchen.orderDirection}"/>
 		                	<util:sortedtableheadercolumn name="Unterstützer" id="6" currentOrderId="${cmdvorgangsuchen.order}" currentOrderDirection="${cmdvorgangsuchen.orderDirection}"/>
 		                	<util:sortedtableheadercolumn name="Zuständigkeit" id="7" currentOrderId="${cmdvorgangsuchen.order}" currentOrderDirection="${cmdvorgangsuchen.orderDirection}"/>
 		                </tr>

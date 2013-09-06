@@ -27,8 +27,9 @@
 			<table class="resulttable">
 				<thead>
 					<tr>
-						<th>Benutzername</th>
+						<th>Login</th>
 						<th>Benutzer</th>
+						<th>Administrator</th>
  						<th>intern</th>
 						<th>extern</th>
 						<th>interne Rollen</th>
@@ -40,10 +41,11 @@
 						<tr class="${(rowCounter.count%2==0)? 'odd' : 'even'}">
 							<td>${user.id}</td>
 							<td>${user.name}</td>					
- 							<td align="center"><c:if test="${user.userIntern}">&#x2714;</c:if></td>
-							<td align="center"><c:if test="${user.userExtern}">&#x2714;</c:if></td>
-							<td><ul><c:forEach items="${user.zustaendigkeiten}"  var="role"><li><span>${role.id}</span></li></c:forEach></ul></td>	
-							<td><ul><c:forEach items="${user.delegiertAn}"  var="role"><li><span>${role.id}</span></li></c:forEach></ul></td>	
+ 							<td align="center"><c:if test="${user.userAdmin}">&#x2714;</c:if></td>
+ 							<td align="center"><c:if test="${!user.userAdmin and user.userIntern}">&#x2714;</c:if></td>
+							<td align="center"><c:if test="${!user.userAdmin and user.userExtern}">&#x2714;</c:if></td>
+							<c:choose><c:when test="${user.userAdmin}"><td align="center">alle</td></c:when><c:otherwise><td><ul><c:forEach items="${user.zustaendigkeiten}"  var="role"><li><span>${role.id}</span></li></c:forEach></ul></td></c:otherwise></c:choose>	
+							<c:choose><c:when test="${user.userAdmin}"><td align="center">alle</td></c:when><c:otherwise><td><ul><c:forEach items="${user.delegiertAn}"  var="role"><li><span>${role.id}</span></li></c:forEach></ul></td></c:otherwise></c:choose>
 						</tr>
 					</c:forEach>
 				</tbody>

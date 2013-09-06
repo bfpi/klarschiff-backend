@@ -60,7 +60,7 @@
 				Dieses ist eine Übersicht der Benutzer im lokalem LDAP, welche zum Testen verwendet werden können:
 	       		<table>
 	       			<thead>
-	       				<tr style="font-weight:bold;"><td>Login</td><td>Password</td><td>Gruppen/Rollen</td></tr>
+	       				<tr style="font-weight:bold;"><td>Login</td><td>Password</td><td>Rollen</td></tr>
 	       			</thead>
 	       			<tbody>
 	       				<tr><td>u1</td><td>u1</td><td>i1</td></tr>
@@ -81,7 +81,7 @@
 			Klarschiff ist ein Bürgerbeteiligungsportal, genauer gesagt eine Onlineplattform zum Melden und Bearbeiten von Problemen und Ideen, die sich auf den öffentlichen Raum einer Kommune beziehen.
 		</p>
 		<p>
-            Sie befinden sich im sogenannten Backend von Klarschiff, in dem von Bürgerinnen und Bürgern gemeldete Probleme und Ideen als Vorgänge bearbeitet oder selbst neue Vorgänge erstellen werden können, von denen zuvor beispielsweise via Brief oder Telefon Kenntnis erlangt wurde. Um mit dem Backend arbeiten zu können, müssen Sie einer Bearbeitungsgruppe zugeordnet sein und sich mit Ihrem Benutzernamen und Ihrem Passwort anmelden. 
+            Sie befinden sich im sogenannten Backend von Klarschiff, in dem von Bürgerinnen und Bürgern gemeldete Probleme und Ideen als Vorgänge bearbeitet oder selbst neue Vorgänge erstellen werden können, von denen zuvor beispielsweise via Brief oder Telefon Kenntnis erlangt wurde. Um mit dem Backend arbeiten zu können, müssen Sie einer Bearbeitungsrolle zugeordnet sein und sich mit Ihrem Benutzernamen und Ihrem Passwort anmelden. 
 		</p>
 	</div>
 
