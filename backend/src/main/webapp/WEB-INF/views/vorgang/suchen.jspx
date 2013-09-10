@@ -78,8 +78,16 @@
 			</util:button>
 			
 			<c:if test="${cmdvorgangsuchen.einfacheSuche=='offene' and missbrauchsmeldungenAbgeschlossenenVorgaenge gt 0}">
+                <c:url value="/images/missbrauchsmeldung.png" var="url"/>
 				<div style="padding-top:10px;font-size:10px;color:#D81922">
-					Wichtiger Hinweis: Es liegen Missbrauchsmeldungen (${missbrauchsmeldungenAbgeschlossenenVorgaenge}) für abgeschlossene Vorgänge vor!
+                    <c:if test="${missbrauchsmeldungenAbgeschlossenenVorgaenge==1}">
+                        <img alt="Missbrauchsmeldung" style="vertical-align:middle" src="${url}" title="Missbrauchsmeldung für abgeschlossenen Vorgang"/>
+                        Es liegt ${missbrauchsmeldungenAbgeschlossenenVorgaenge} Missbrauchsmeldung für einen abgeschlossenen Vorgang vor!
+                    </c:if>
+                    <c:if test="${missbrauchsmeldungenAbgeschlossenenVorgaenge gt 1}">
+                        <img alt="Missbrauchsmeldungen" style="vertical-align:middle" src="${url}" title="Missbrauchsmeldungen für abgeschlossene Vorgänge"/>
+                        Es liegen ${missbrauchsmeldungenAbgeschlossenenVorgaenge} Missbrauchsmeldungen für abgeschlossene Vorgänge vor!
+                    </c:if>
 				</div>
 			</c:if>
 

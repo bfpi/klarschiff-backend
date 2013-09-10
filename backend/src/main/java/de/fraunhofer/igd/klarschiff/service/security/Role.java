@@ -17,6 +17,7 @@ public class Role {
 	String id;
 	String description;
 	String dn;
+	String locality;
 	
 	public static List<String> toString(Collection<Role> roles) {
 		List<String> _roles = new ArrayList<String>();
@@ -58,5 +59,11 @@ public class Role {
 	}
 	public void setDn(String dn) {
 		this.dn = dn;
+	}
+    public String getLocality() {
+		return locality;
+	}
+	public void setLocality(String locality) {
+		this.locality = locality;
 	}
 }

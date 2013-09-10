@@ -253,6 +253,18 @@
 					<label for="typ">hash</label><input type="text" name="hash" value=""/><br/>
 					<input type="submit" value="Ausführen"/>
 				</form>
+                
+                <div class="subtitle">Lob, Hinweise oder Kritik zu einem Vorgang</div>
+				<p class="help">
+					Lob, Hinweise oder Kritik zu einem Vorgang werden angelegt.
+				</p>
+				<c:url value="/service/lobHinweiseKritik" var="url"/>	
+				<form action="${url}" target="_blank" method="post">
+					<label for="typ">vorgang</label><input type="text" name="vorgang" value="1"/><br/>
+					<label for="typ">email</label><input type="text" name="email" value="test@test.de"/><br/>
+					<label for="typ">freitext</label><input type="text" name="freitext" value="1"/><br/>
+					<input type="submit" value="Ausführen"/>
+				</form>
 	
 				<div class="subtitle">GeoRss anlegen</div>
 				<p class="help">

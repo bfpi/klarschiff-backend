@@ -29,5 +29,13 @@ public class RedaktionEmpfaengerDao {
 	public List<RedaktionEmpfaenger> getEmpfaengerList() {
 		return (List<RedaktionEmpfaenger>)em.createQuery("SELECT v FROM RedaktionEmpfaenger v ORDER BY v.zustaendigkeit, v.email").getResultList();
 	}
+    
+    /**
+	 * gibt eine Liste mit den in der Datenbank gelisteten Empfängern von E-Mails mit Lob, Kritik und Hinweisen für eine Zuständigkeit zurück
+	 */
+	@SuppressWarnings("unchecked")
+	public List<RedaktionEmpfaenger> getEmpfaengerListLobHinweiseKritikForZustaendigkeit(String zustaendigkeit) {
+		return (List<RedaktionEmpfaenger>)em.createQuery("SELECT v FROM RedaktionEmpfaenger v WHERE v.empfaengerLobHinweiseKritik = true AND v.zustaendigkeit=:zustaendigkeit").setParameter("zustaendigkeit", zustaendigkeit).getResultList();
+	}
 
 }

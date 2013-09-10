@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import de.fraunhofer.igd.klarschiff.dao.KategorieDao;
 import de.fraunhofer.igd.klarschiff.dao.KommentarDao;
+import de.fraunhofer.igd.klarschiff.dao.LobHinweiseKritikDao;
 import de.fraunhofer.igd.klarschiff.dao.VorgangDao;
 import de.fraunhofer.igd.klarschiff.service.classification.ClassificationService;
 import de.fraunhofer.igd.klarschiff.service.security.Role;
@@ -39,6 +40,7 @@ import de.fraunhofer.igd.klarschiff.vo.EnumVorgangStatus;
 import de.fraunhofer.igd.klarschiff.vo.EnumVorgangTyp;
 import de.fraunhofer.igd.klarschiff.vo.EnumZustaendigkeitStatus;
 import de.fraunhofer.igd.klarschiff.vo.Kommentar;
+import de.fraunhofer.igd.klarschiff.vo.LobHinweiseKritik;
 import de.fraunhofer.igd.klarschiff.vo.StatusKommentarVorlage;
 import de.fraunhofer.igd.klarschiff.vo.Verlauf;
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
@@ -62,6 +64,9 @@ public class VorgangBearbeitenController {
 	
 	@Autowired
 	KategorieDao kategorieDao;
+	
+	@Autowired
+	LobHinweiseKritikDao lobHinweiseKritikDao;
 	
 	@Autowired
 	ClassificationService classificationService;
@@ -164,14 +169,27 @@ public class VorgangBearbeitenController {
 	}
 	
 	/**
-	 * Aktualisiert Kategorien in übergebenem Model mit Daten aus übergebenem Commandobjekt 
+	 * Aktualisiert interne Kommentare in übergebenem Model mit Daten aus übergebenem Commandobjekt 
 	 * @param model Model
 	 * @param cmd Command
 	 */
 	private void updateKommentarInModel(ModelMap model, VorgangBearbeitenCommand cmd) {
 		try {
 			model.addAttribute("kommentare", kommentarDao.findKommentareForVorgang(cmd.getVorgang(), cmd.getPage(), cmd.getSize()));
-	    	model.put("maxPages", calculateMaxPages(cmd.getSize(), kommentarDao.countKommentare(cmd.getVorgang())));
+	    	model.put("maxPagesKommentare", calculateMaxPages(cmd.getSize(), kommentarDao.countKommentare(cmd.getVorgang())));
+
+		}catch (Exception e) {}
+	}
+	
+	/**
+	 * Aktualisiert Lob, Hinweise oder Kritik in übergebenem Model mit Daten aus übergebenem Commandobjekt 
+	 * @param model Model
+	 * @param cmd Command
+	 */
+	private void updateLobHinweiseKritikInModel(ModelMap model, VorgangBearbeitenCommand cmd) {
+		try {
+			model.addAttribute("allelobhinweisekritik", lobHinweiseKritikDao.findLobHinweiseKritikForVorgang(cmd.getVorgang(), cmd.getPage(), cmd.getSize()));
+	    	model.put("maxPagesLobHinweiseKritik", calculateMaxPages(cmd.getSize(), lobHinweiseKritikDao.countLobHinweiseKritik(cmd.getVorgang())));
 
 		}catch (Exception e) {}
 	}
@@ -205,6 +223,7 @@ public class VorgangBearbeitenController {
 		model.put("cmd", cmd);
 		updateKategorieInModel(model, cmd);
 		updateKommentarInModel(model, cmd);
+		updateLobHinweiseKritikInModel(model, cmd);
 		updateZustaendigkeitStatusInModel(model, cmd);
 		
 		return (cmd.getVorgang().getStatus()==EnumVorgangStatus.gemeldet) ? "vorgang/bearbeitenDisabled" : "vorgang/bearbeiten";
@@ -278,6 +297,7 @@ public class VorgangBearbeitenController {
 			cmd.setVorgang(getVorgang(id));
 			updateKategorieInModel(model, cmd);
 			updateKommentarInModel(model, cmd);
+            updateLobHinweiseKritikInModel(model, cmd);
 			updateZustaendigkeitStatusInModel(model, cmd);
 			return "vorgang/bearbeiten";
 		}			
@@ -287,13 +307,16 @@ public class VorgangBearbeitenController {
 			vorgangDao.merge(cmd.getVorgang());
 		} else if (action.equals("&uuml;bernehmen und akzeptieren")) {
 			cmd.getVorgang().setZustaendigkeitStatus(EnumZustaendigkeitStatus.akzeptiert);
+            cmd.getVorgang().setZustaendigkeitFrontend(securityService.getZustaendigkeit(cmd.getVorgang().getZustaendigkeit()).getLocality());
 			vorgangDao.merge(cmd.getVorgang());
 		} else if (action.equals("automatisch neu zuweisen")) {
 			cmd.getVorgang().setZustaendigkeit(classificationService.calculateZustaendigkeitforVorgang(cmd.getVorgang()).getId());
+			cmd.getVorgang().setZustaendigkeitFrontend(securityService.getZustaendigkeit(cmd.getVorgang().getZustaendigkeit()).getLocality());
 			cmd.getVorgang().setZustaendigkeitStatus(EnumZustaendigkeitStatus.zugewiesen);
 			vorgangDao.merge(cmd.getVorgang());
 		} else if (action.equals("zuweisen")) {
 			cmd.getVorgang().setZustaendigkeitStatus(EnumZustaendigkeitStatus.zugewiesen);
+            cmd.getVorgang().setZustaendigkeitFrontend(securityService.getZustaendigkeit(cmd.getVorgang().getZustaendigkeit()).getLocality());
 			vorgangDao.merge(cmd.getVorgang());
 		} else if (action.equals("&Auml;nderungen &uuml;bernehmen")) {
 			assertNotEmpty(cmd, result, Assert.EvaluateOn.ever, "vorgang.status", null);
@@ -301,6 +324,7 @@ public class VorgangBearbeitenController {
 				cmd.setVorgang(getVorgang(id));
 				updateKategorieInModel(model, cmd);
 				updateKommentarInModel(model, cmd);
+                updateLobHinweiseKritikInModel(model, cmd);
 				updateZustaendigkeitStatusInModel(model, cmd);
 				return "vorgang/bearbeiten";
 			}			
@@ -325,6 +349,7 @@ public class VorgangBearbeitenController {
 				cmd.setVorgang(getVorgang(id));
 				updateKategorieInModel(model, cmd);
 				updateKommentarInModel(model, cmd);
+                updateLobHinweiseKritikInModel(model, cmd);
 				updateZustaendigkeitStatusInModel(model, cmd);
 				return "vorgang/bearbeiten";
 			}			
@@ -339,6 +364,10 @@ public class VorgangBearbeitenController {
 				cmd.setKommentar(null);
 			}
 		} else if (action.equals("delegieren")) {
+            /*if (cmd.getVorgang().getDelegiertAn()!=null && !cmd.getVorgang().getDelegiertAn().isEmpty()) 
+                cmd.getVorgang().setZustaendigkeitFrontend(securityService.getZustaendigkeit(cmd.getVorgang().getDelegiertAn()).getLocality());
+            else
+                cmd.getVorgang().setZustaendigkeitFrontend(securityService.getZustaendigkeit(cmd.getVorgang().getZustaendigkeit()).getLocality());*/
 			vorgangDao.merge(cmd.getVorgang());
 		} else if (action.equals("archivieren")) {
 			cmd.getVorgang().setArchiviert(true);
@@ -357,6 +386,7 @@ public class VorgangBearbeitenController {
 		cmd.setVorgang(getVorgang(id));
 		updateKategorieInModel(model, cmd);
 		updateKommentarInModel(model, cmd);
+        updateLobHinweiseKritikInModel(model, cmd);
 		updateZustaendigkeitStatusInModel(model, cmd);
 		return "vorgang/bearbeiten";
 	}

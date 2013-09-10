@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
+import de.fraunhofer.igd.klarschiff.service.security.User;
 import de.fraunhofer.igd.klarschiff.vo.EnumVerlaufTyp;
 import de.fraunhofer.igd.klarschiff.vo.Verlauf;
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
@@ -70,10 +71,27 @@ public class VerlaufDao {
 
 		return query.getResultList();
 	}
+	
+    
+	/**
+	 * Findet denjenigen Benutzernamen aus einer gegebenen Liste von Benutzernamen, der gemäß dem Verlauf die letzte Bearbeitung am gegebenen Vorgang durchgeführt hat.
+	 * @param vorgang Vorgang
+	 * @param userNames Liste von Benutzernamen
+	 * @return Nutzername als String
+	 */
+    public String findLastUserForVorgangAndZustaendigkeit(Vorgang vorgang, List<String> userNames) {
+        try {
+            return em.createQuery("SELECT o.nutzer FROM Verlauf o WHERE o.nutzer IS NOT NULL AND o.vorgang=:vorgang AND o.nutzer IN(:userNames) ORDER BY o.datum DESC", String.class).setParameter("vorgang", vorgang).setParameter("userNames", userNames).setMaxResults(1).getSingleResult();
+        } catch (Exception e) {
+            return null;
+        }
+	}
 
+    
 	public long countVerlauf(Vorgang vorgang) {
 		return em.createQuery("SELECT count(o) FROM Verlauf o WHERE o.vorgang=:vorgang", Long.class).setParameter("vorgang", vorgang).getSingleResult();
 	}
+    
     
     public Date getAktuellstesErstsichtungsdatumZuVorgang(Vorgang vorgang) {
 		return em.createQuery("SELECT MAX(o.datum) FROM Verlauf o WHERE typ='zustaendigkeitAkzeptiert' AND o.vorgang=:vorgang", Date.class).setParameter("vorgang", vorgang).getSingleResult();

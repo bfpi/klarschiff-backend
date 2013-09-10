@@ -18,68 +18,54 @@ import org.hibernate.annotations.Type;
 import org.springframework.format.annotation.DateTimeFormat;
 
 /**
- * VO zum Abbilden von Missbrauchsmeldungen.
- * @author Stefan Audersch (Fraunhofer IGD)
+ * VO zum Abbilden von Lob, Hinweisen oder Kritik zu einem Vorgang.
+ * @author Sebastian Schwarz (Hansestadt Rostock)
  */
 @SuppressWarnings("serial")
 @Entity
-public class Missbrauchsmeldung implements Serializable {
+public class LobHinweiseKritik implements Serializable {
 
 	/* --------------- Attribute ----------------------------*/
 
 	/**
-	 * Id der Missbrauchsmeldung
+	 * Id
 	 */
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 
 	/**
-	 * Vorgang zu dem die Missbrauchsmeldung gehört
+	 * Vorgang, zu dem Lob, Hinweise oder Kritik gehören
 	 */
 	@ManyToOne
     private Vorgang vorgang;
-	
-	/**
-	 * Hash zum Bestätigen der Missbrauchsmeldung
-	 */
-	@Size(max = 32)
-    private String hash;
-    
-	/**
-	 * Text der Missbrauchsmeldung
-	 */
-    @Lob
-    @Type(type="org.hibernate.type.TextType")
-	private String text;
-	
-    /**
-     * Erstellungszeit der Missbrauchsmeldung
-     */
-    @NotNull
-    @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(style = "S-")
-    private Date datum;
-
-    /**
-     * Zeitpunkt der Bestätigung der Missbrauchsmeldung
-     */
-    @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(style = "S-")
-    private Date datumBestaetigung;
-
-    /**
-     * Zeitpunkt der Abbarbeitung der Missbrauchsmeldung
-     */
-    @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(style = "S-")
-    private Date datumAbarbeitung;
     
     /**
      * E-Mail-Adresse des Senders
      */
     @Size(max = 300)
     private String autorEmail;
+    
+    /**
+     * E-Mail-Adresse des Empfängers
+     */
+    @Size(max = 300)
+    private String empfaengerEmail;
+	
+	/**
+	 * Freitext
+	 */
+    @Lob
+    @Type(type="org.hibernate.type.TextType")
+	private String freitext;
+	
+    /**
+     * Erstellungszeit
+     */
+    @NotNull
+    @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(style = "S-")
+    private Date datum;
 
 	/* --------------- GET + SET ----------------------------*/
     
@@ -91,14 +77,6 @@ public class Missbrauchsmeldung implements Serializable {
 		this.vorgang = vorgang;
 	}
 
-	public String getHash() {
-		return hash;
-	}
-
-	public void setHash(String hash) {
-		this.hash = hash;
-	}
-
 	public Date getDatum() {
 		return datum;
 	}
@@ -107,36 +85,16 @@ public class Missbrauchsmeldung implements Serializable {
 		this.datum = datum;
 	}
 
-	public Date getDatumBestaetigung() {
-		return datumBestaetigung;
-	}
-
-	public void setDatumBestaetigung(Date datumBestaetigung) {
-		this.datumBestaetigung = datumBestaetigung;
-	}
-
 	public Long getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public String getFreitext() {
+		return freitext;
 	}
 
-	public Date getDatumAbarbeitung() {
-		return datumAbarbeitung;
-	}
-
-	public void setDatumAbarbeitung(Date datumAbarbeitung) {
-		this.datumAbarbeitung = datumAbarbeitung;
-	}
-
-	public String getText() {
-		return text;
-	}
-
-	public void setText(String text) {
-		this.text = text;
+	public void setFreitext(String freitext) {
+		this.freitext = freitext;
 	}
     
     public String getAutorEmail() {
@@ -145,5 +103,13 @@ public class Missbrauchsmeldung implements Serializable {
 
 	public void setAutorEmail(String autorEmail) {
         this.autorEmail = autorEmail;
+    }
+    
+    public String getEmpfaengerEmail() {
+        return this.empfaengerEmail;
+    }
+
+	public void setEmpfaengerEmail(String empfaengerEmail) {
+        this.empfaengerEmail = empfaengerEmail;
     }
 }

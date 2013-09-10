@@ -190,6 +190,11 @@ public class Vorgang implements Serializable {
      */
 	@Enumerated(EnumType.STRING)
     EnumZustaendigkeitStatus zustaendigkeitStatus;
+    
+    /**
+     * Zuständigkeit für Frontend (also ausführlicher Standort bzw. Name des Amtes; Locality der Rolle) für den Vorgang
+     */
+    String zustaendigkeitFrontend;
 
 	/**
 	 * Delegiert an (Id der Rolle)
@@ -424,6 +429,14 @@ public class Vorgang implements Serializable {
 
 	public void setZustaendigkeit(String zustaendigkeit) {
 		this.zustaendigkeit = zustaendigkeit;
+	}
+    
+    public String getZustaendigkeitFrontend() {
+		return zustaendigkeitFrontend;
+	}
+
+	public void setZustaendigkeitFrontend(String zustaendigkeitFrontend) {
+		this.zustaendigkeitFrontend = zustaendigkeitFrontend;
 	}
 
 	public void setZustaendigkeitStatus(EnumZustaendigkeitStatus zustaendigkeitStatus) {

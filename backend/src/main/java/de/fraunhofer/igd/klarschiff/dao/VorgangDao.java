@@ -136,8 +136,6 @@ public class VorgangDao {
 			if (vorgangOld.getPrioritaet()!=vorgang.getPrioritaet()) verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.prioritaet, vorgangOld.getPrioritaet().getText(), vorgang.getPrioritaet().getText());
 			//Archiv
 			if (vorgangOld.getArchiviert() != vorgang.getArchiviert()) verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.archiv, vorgangOld.getArchiviert()+"", vorgang.getArchiviert()+"");
-			//Missbrauchsmeldung?
-			//Unterstützer?
 		}
 	}
 	

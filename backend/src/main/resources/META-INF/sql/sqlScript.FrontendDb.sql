@@ -167,6 +167,7 @@ CREATE TABLE klarschiff_vorgang (
     details_vorhanden boolean,
     details_freigegeben boolean,
     archiviert boolean,
+    zustaendigkeit character varying(255),
     CONSTRAINT enforce_dims_the_geom CHECK ((ndims(the_geom) = 2)),
     CONSTRAINT enforce_geotype_the_geom CHECK (((geometrytype(the_geom) = 'POINT'::text) OR (the_geom IS NULL))),
     CONSTRAINT enforce_srid_the_geom CHECK ((srid(the_geom) = 25833))
@@ -396,7 +397,8 @@ CREATE OR REPLACE VIEW klarschiff_wfs AS
         v.betreff_vorhanden,
         v.betreff_freigegeben,
         v.details_vorhanden,
-        v.details_freigegeben
+        v.details_freigegeben,
+        v.zustaendigkeit
 	FROM 
 		klarschiff_vorgang v, 
 		klarschiff_kategorie k
@@ -438,7 +440,8 @@ CREATE VIEW klarschiff_wfs_tmpl AS
         v.betreff_vorhanden,
         v.betreff_freigegeben,
         v.details_vorhanden,
-        v.details_freigegeben
+        v.details_freigegeben,
+        v.zustaendigkeit
     FROM 
     	klarschiff_wfs v,
     	klarschiff_status s,

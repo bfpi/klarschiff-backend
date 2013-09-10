@@ -866,13 +866,20 @@ BEGIN
           new.archiviert
          ELSE
           'FALSE'
+        END || ', ' ||
+      --zustaendigkeit
+      'zustaendigkeit = ' || CASE 
+          WHEN new.zustaendigkeit_frontend IS NOT NULL AND new.zustaendigkeit_frontend <> '' THEN
+            quote_literal(new.zustaendigkeit_frontend)
+          ELSE
+            'NULL'
         END || ' ' ||
       'WHERE id = ' || new.id
     WHEN 'INSERT' THEN
       'INSERT INTO ${f_schema}.klarschiff_vorgang (id, datum, vorgangstyp, ' ||
         'the_geom, status, kategorieid, titel, details, bemerkung, foto_normal_jpg, ' ||
         'foto_thumb_jpg, foto_vorhanden, foto_freigegeben, betreff_vorhanden, ' ||
-        'betreff_freigegeben, details_vorhanden, details_freigegeben, archiviert) ' ||
+        'betreff_freigegeben, details_vorhanden, details_freigegeben, archiviert, zustaendigkeit) ' ||
       'VALUES (' || new.id ||', ' || quote_literal(new.datum::varchar(50)) || ', ' ||
         quote_literal(new.typ) || ', ' || quote_literal(new.ovi::text) || ', ' ||
         quote_literal(new.status) || ', ' || new.kategorie || ', ' ||
@@ -953,6 +960,13 @@ BEGIN
             new.archiviert
           ELSE
             'FALSE'
+        END || ', ' ||
+        --zustaendigkeit
+        CASE 
+          WHEN new.zustaendigkeit_frontend IS NOT NULL AND new.zustaendigkeit_frontend <> '' THEN
+            quote_literal(new.zustaendigkeit_frontend)
+          ELSE
+            'NULL'
         END || ')'
     ELSE
       'SELECT 1'
@@ -1079,14 +1093,14 @@ BEGIN
   THEN
     -- Verbindung zur Flurstückseigentumstabelle aufbauen
     PERFORM dblink_connect('flurstueckseigentum_verbindung','hostaddr=${f_host} port=${f_port} ' ||
-      'dbname=standortsuche user=standortsuche password=standortsuche');
+      'dbname=daten_privat user=lesen password=selen');
 
     -- räumliche Abfrage durchführen, die genau einen Datensatz (oder NULL) als Ergebnis 
     -- liefert, der auch gleich in die oben deklarierte Variable geschrieben wird
     SELECT eigentuemer.eigentum AS eigentum
     INTO ergebnis
     FROM klarschiff_vorgang, 
-      dblink('flurstueckseigentum_verbindung', 'SELECT eigentuemer, geom FROM flurstuecke_eigentuemer') AS eigentuemer(eigentum varchar, geom geometry)
+      dblink('flurstueckseigentum_verbindung', 'SELECT eigentuemer, geom FROM alk.eigentuemer_klarschiff') AS eigentuemer(eigentum varchar, geom geometry)
     WHERE ST_Covers(geom, NEW.ovi) LIMIT 1;
 
     -- Verbindung zur Flurstückseigentumstabelle wieder schließen

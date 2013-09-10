@@ -148,10 +148,12 @@ public class VorgangErstsichtungController {
 			assertNotEmpty(cmd, result, Assert.EvaluateOn.ever, "vorgang.zustaendigkeit", null);
 			if (result.hasErrors()) {
 				cmd.getVorgang().setZustaendigkeit(vorgangDao.findVorgang(id).getZustaendigkeit());
+				cmd.getVorgang().setZustaendigkeitFrontend(vorgangDao.findVorgang(id).getZustaendigkeitFrontend());
 				model.put("mapExternUrl", geoService.getMapExternUrl(cmd.getVorgang()));
 	            return "vorgang/erstsichtung/zustaendigkeit";
 	        }
-
+            cmd.getVorgang().setZustaendigkeitFrontend(securityService.getZustaendigkeit(cmd.getVorgang().getZustaendigkeit()).getLocality());
+                
 			//verlaufDao.addVerlaufToVorgang(cmd.getVorgang(), EnumVerlaufTyp.zustaendigkeit, vorgangDao.findVorgang(id).getZustaendigkeit(), cmd.getVorgang().getZustaendigkeit());
 			vorgangDao.merge(cmd.getVorgang());
 			
@@ -160,6 +162,7 @@ public class VorgangErstsichtungController {
 		} else if (action.equals("neu zuweisen")) {
 			
 			cmd.getVorgang().setZustaendigkeit(classificationService.calculateZustaendigkeitforVorgang(cmd.getVorgang()).getId());
+			cmd.getVorgang().setZustaendigkeitFrontend(securityService.getZustaendigkeit(cmd.getVorgang().getZustaendigkeit()).getLocality());
 
 			//verlaufDao.addVerlaufToVorgang(cmd.getVorgang(), EnumVerlaufTyp.zustaendigkeit, vorgangDao.findVorgang(id).getZustaendigkeit(), cmd.getVorgang().getZustaendigkeit());
 
@@ -180,9 +183,11 @@ public class VorgangErstsichtungController {
 			assertNotEmpty(cmd, result, Assert.EvaluateOn.ever, "vorgang.zustaendigkeit", null);
 			if (result.hasErrors()) {
 				cmd.getVorgang().setZustaendigkeit(vorgangDao.findVorgang(id).getZustaendigkeit());
+                cmd.getVorgang().setZustaendigkeitFrontend(securityService.getZustaendigkeit(vorgangDao.findVorgang(id).getZustaendigkeit()).getLocality());
 				model.put("mapExternUrl", geoService.getMapExternUrl(cmd.getVorgang()));
 	            return "vorgang/erstsichtung/zustaendigkeit";
 	        }
+            cmd.getVorgang().setZustaendigkeitFrontend(securityService.getZustaendigkeit(cmd.getVorgang().getZustaendigkeit()).getLocality());
 			cmd.getVorgang().setZustaendigkeitStatus(EnumZustaendigkeitStatus.akzeptiert);
 			
 			//verlaufDao.addVerlaufToVorgang(cmd.getVorgang(), EnumVerlaufTyp.zustaendigkeit, vorgangDao.findVorgang(id).getZustaendigkeit(), cmd.getVorgang().getZustaendigkeit());

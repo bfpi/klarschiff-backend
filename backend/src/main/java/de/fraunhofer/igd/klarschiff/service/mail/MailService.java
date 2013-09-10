@@ -88,6 +88,24 @@ public class MailService {
 	SimpleMailMessage informRedaktionEmpfaengerMailTemplate;
 
 	private SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+    
+    
+    /**
+	 * Versendet eine E-Mail mit Lob, Hiweisen oder Kritik zu einem Vorgang.
+	 * @param vorgang Vorgang, zu dem eine bestätigungsmail versendet werden soll.
+	 */
+	public void sendLobHinweiseKritikMail(Vorgang vorgang, String absender, String empfaenger, String freitext) {
+		try {
+			MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mailSender.createMimeMessage(), true);
+			mimeMessageHelper.setSubject("Klarschiff: Lob, Hinweise oder Kritik von Bürger/-innen zu Vorgang " + vorgang.getId());
+			mimeMessageHelper.setFrom(absender);
+			mimeMessageHelper.setTo(empfaenger);
+            mimeMessageHelper.setText(freitext);
+			jobExecutorService.runJob(new MailSenderJob(this, mimeMessageHelper.getMimeMessage()));
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 	
 	
 	/**

@@ -194,8 +194,7 @@
 		  			<div class="kommentar ${(s.index%2==0) ? 'odd' : 'even'}">
 		  				<div class="kommentarHeader">
 		  					<span style="margin-right:10px;padding:0px;">${kommentar.nutzer}</span>
-			       			<fmt:formatDate value="${kommentar.datum}" pattern="dd.MM.yyyy"/><![CDATA[&nbsp;&nbsp;]]>
-			       			<span style="font-size:0.8em; color:#666;"><fmt:formatDate value="${kommentar.datum}" pattern="HH:mm"/></span>
+			       			<fmt:formatDate value="${kommentar.datum}" pattern="dd.MM.yyyy, HH:mm"/> Uhr
 		  				</div>
 						<div class="kommentarText" >
 			        		${fx:toHtml(kommentar.text)}

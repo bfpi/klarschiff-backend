@@ -35,7 +35,7 @@
 	  			<div class="verlauf">
 	  				<div class="verlaufHeader">
 		       			<span style="margin-right:10px;padding:0px;">
-                            <c:if test="${verlaufItem.typ!='vorgangBestaetigung' or verlaufItem.typ!='missbrauchsmeldungBestaetigung' or verlaufItem.typ!='unterstuetzerBestaetigung'}">
+                            <c:if test="${verlaufItem.typ!='vorgangBestaetigung' or verlaufItem.typ!='missbrauchsmeldungBestaetigung' or verlaufItem.typ!='unterstuetzerBestaetigung' or verlaufItem.typ!='lobHinweiseKritik'}">
                                 <c:if test="${verlaufItem.nutzer!=null}">
                                     ${verlaufItem.nutzer}
                                 </c:if>
@@ -167,6 +167,9 @@
 							</c:when>
 							<c:when test="${verlaufItem.typ=='unterstuetzerBestaetigung'}">
 								Unterstützung von externem Autor erzeugt und bestätigt
+							</c:when>
+                            <c:when test="${verlaufItem.typ=='lobHinweiseKritik'}">
+								Lob, Hinweise oder Kritik von externem Autor hinzugefügt
 							</c:when>
 							<c:when test="${verlaufItem.typ=='vorgangBestaetigung'}">
 								Vorgang von externem Autor bestätigt

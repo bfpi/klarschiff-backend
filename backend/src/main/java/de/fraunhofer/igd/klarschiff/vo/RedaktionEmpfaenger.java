@@ -60,6 +60,11 @@ public class RedaktionEmpfaenger implements Serializable {
     @DateTimeFormat(style = "S-")
     Date letzteMail;
 	
+	/**
+	 * Soll Empfänger auch E-Mails mit Lob, Kritik und Hinweisen empfangen?
+	 */
+    Boolean empfaengerLobHinweiseKritik;
+	
 	/* --------------- GET + SET ----------------------------*/
 
 	public Integer getId() {
@@ -102,5 +107,12 @@ public class RedaktionEmpfaenger implements Serializable {
 	}
 	public void setLetzteMail(Date letzteMail) {
 		this.letzteMail = letzteMail;
+	}
+    
+    public Boolean getEmpfaengerLobHinweiseKritik() {
+		return empfaengerLobHinweiseKritik;
+	}
+	public void setEmpfaengerLobHinweiseKritik(Boolean empfaengerLobHinweiseKritik) {
+		this.empfaengerLobHinweiseKritik = empfaengerLobHinweiseKritik;
 	}
 }

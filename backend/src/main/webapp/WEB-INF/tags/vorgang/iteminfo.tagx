@@ -62,7 +62,7 @@
 					<c:if test="${countMissbrauchsmeldungen==1}">
 						<td valign="middle" >		
 							<c:url value="/images/missbrauchsmeldung.png" var="url"/>
-                            <img alt="Missbrauchsmeldungen" style="vertical-align:top" src="${url}" title="Es liegt ${countMissbrauchsmeldungen} Missbrauchsmeldung vor!"/>
+                            <img alt="Missbrauchsmeldung" style="vertical-align:top" src="${url}" title="Es liegt ${countMissbrauchsmeldungen} Missbrauchsmeldung vor!"/>
 						</td>
 					</c:if>
                     <c:if test="${countMissbrauchsmeldungen>1}">

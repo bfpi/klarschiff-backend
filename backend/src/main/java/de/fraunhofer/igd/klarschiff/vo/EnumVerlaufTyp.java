@@ -21,6 +21,7 @@ public enum EnumVerlaufTyp implements EnumText{
     archiv,
     zustaendigkeitAkzeptiert,
     zustaendigkeit,
+    lobHinweiseKritik,
     delegiertAn,
     kommentar,
     prioritaet,
