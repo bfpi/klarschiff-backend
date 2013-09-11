@@ -28,7 +28,6 @@
         <table class="resulttable">
             <thead>
                 <tr>
-                    <util:sortedtableheadercolumn name="#" id="0" currentOrderId="${cmd.order}" currentOrderDirection="${cmd.orderDirection}"/>
                     <util:sortedtableheadercolumn name="Vorgang" id="1" currentOrderId="${cmd.order}" currentOrderDirection="${cmd.orderDirection}"/>
                     <util:sortedtableheadercolumn name="Datum" id="2" currentOrderId="${cmd.order}" currentOrderDirection="${cmd.orderDirection}"/>
                     <util:sortedtableheadercolumn name="Autor" id="3" currentOrderId="${cmd.order}" currentOrderDirection="${cmd.orderDirection}"/>
@@ -40,7 +39,6 @@
                 <c:forEach items="${alleLobHinweiseKritik}" var="lobHinweisKritik" varStatus="rowCounter">
                     <c:url value="/vorgang/${lobHinweisKritik.vorgang.getId()}/uebersicht" var="url"/>
                     <tr class="${(rowCounter.count%2==0)? 'odd' : 'even'}" onClick="location.href='${url}'" style="cursor:pointer;">
-                        <td>${lobHinweisKritik.id}</td>
                         <td>${lobHinweisKritik.vorgang.getId()}</td>
                         <td style="text-align: center;"><fmt:formatDate value="${lobHinweisKritik.datum}" pattern="dd.MM.yyyy"/></td>
                         <td>${lobHinweisKritik.autorEmail}</td>
@@ -51,7 +49,7 @@
             </tbody>
             <tfoot>
                 <tr class="footer">
-                    <td colspan="6">
+                    <td colspan="5">
                         <c:if test="${not empty maxPages}">
                             <util:pagination maxPages="${maxPages}" page="${cmd.page}" size="${cmd.size}"/>
                         </c:if>
