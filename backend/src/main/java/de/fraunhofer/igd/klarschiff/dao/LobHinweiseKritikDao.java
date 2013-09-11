@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import de.fraunhofer.igd.klarschiff.vo.LobHinweiseKritik;
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
+import de.fraunhofer.igd.klarschiff.web.AdminLobHinweiseKritikCommand;
 
 /**
  * Die Dao-Klasse ermöglicht den Zugriff auf Lob, Hinweise oder Kritik zu einem Vorgang
@@ -43,8 +44,28 @@ public class LobHinweiseKritikDao {
 
 		return query.getResultList();
 	}
-	
-	public long countLobHinweiseKritik(Vorgang vorgang) {
+
+	@SuppressWarnings("unchecked")
+	public List<LobHinweiseKritik> findLobHinweiseKritik(AdminLobHinweiseKritikCommand cmd) {
+		HqlQueryHelper query = (new HqlQueryHelper()).addSelectAttribute("o")
+			.addFromTables("LobHinweiseKritik o");
+
+		if (cmd.getPage()!=null && cmd.getSize()!=null)
+			query.firstResult((cmd.getPage()-1)*cmd.getSize());
+		if (cmd.getSize()!=null)
+			query.maxResults(cmd.getSize());
+		
+		for(String field : cmd.getOrderString().split(","))
+			query.orderBy(field.trim()+" "+cmd.getOrderDirectionString());
+		
+		return query.getResultList(em);
+	}
+    
+    public long countLobHinweiseKritik(Vorgang vorgang) {
 		return em.createQuery("SELECT COUNT(o) FROM LobHinweiseKritik o WHERE o.vorgang=:vorgang", Long.class).setParameter("vorgang", vorgang).getSingleResult();
+	}
+    
+    public long countLobHinweiseKritik() {
+		return em.createQuery("SELECT COUNT(o) FROM LobHinweiseKritik o", Long.class).getSingleResult();
 	}
 }

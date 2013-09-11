@@ -366,6 +366,9 @@ public class BackendController {
             // aktuelle Zuständigkeit des Vorgangs bestimmen
             String zustaendigkeit = lobHinweiseKritik.getVorgang().getZustaendigkeit();
             
+            // Empfänger gefunden?
+            Boolean empfaengerGefunden = false;
+            
             // falls aktuelle Zuständigkeit des Vorgangs nicht NULL oder leer ist und gleichzeitig akzeptiert ist
             if (zustaendigkeit != null && zustaendigkeit != "" && lobHinweiseKritik.getVorgang().getZustaendigkeitStatus() == EnumZustaendigkeitStatus.akzeptiert) {
 
@@ -379,6 +382,7 @@ public class BackendController {
                 
                 // falls dieser gefunden wurde
                 if (empfaenger != null && empfaenger != "") {
+                    empfaengerGefunden = true;
                     
                     // String mit dessen E-Mail-Adresse belegen
                     empfaengerEmail = securityService.getUserEmailForRoleByName(empfaenger, zustaendigkeit);
@@ -395,8 +399,8 @@ public class BackendController {
                 }
             }
             
-            // ansonsten: falls aktuelle Zuständigkeit des Vorgangs nicht NULL oder leer ist, aber eben auch nicht akzeptiert ist
-            else if (zustaendigkeit != null && zustaendigkeit != "") {
+            // ansonsten: falls Empfänger zuvor nicht gefunden wurde und aktuelle Zuständigkeit des Vorgangs nicht NULL oder leer ist, aber eben auch nicht akzeptiert ist
+            else if (empfaengerGefunden == false && zustaendigkeit != null && zustaendigkeit != "") {
 
                 String empfaengerEmail = new String();
                 Short zaehler = 0;
@@ -406,6 +410,7 @@ public class BackendController {
                 
                 // falls diese gefunden wurden
                 if (allEmpfaengerLobHinweiseKritikForZustaendigkeit.size() > 0 && !allEmpfaengerLobHinweiseKritikForZustaendigkeit.isEmpty()) {
+                    empfaengerGefunden = true;
                 
                     // diese durchlaufen
                     for (RedaktionEmpfaenger empfaengerLobHinweiseKritikForZustaendigkeit : allEmpfaengerLobHinweiseKritikForZustaendigkeit) {

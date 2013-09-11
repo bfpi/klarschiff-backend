@@ -422,7 +422,7 @@
 		
 			        <tfoot>
 		                <tr class="footer">
-		                    <td colspan="10">
+		                    <td colspan="9">
 		                        <c:if test="${not empty maxPages}">
 		                            <util:pagination maxPages="${maxPages}" page="${cmdvorgangsuchen.page}" size="${cmdvorgangsuchen.size}"/>
 		                        </c:if>

@@ -108,9 +108,9 @@ public class AdminController {
 		model.addAttribute("kriterienList", redaktionKriterienDao.getKriterienList());
 		return "admin/redaktion";
 	}
-
-	
-	/**
+    
+    
+    /**
 	 * Die Methode verarbeitet den GET-Request auf der URL <code>/admin/status</code><br/>
 	 * Seitenbeschreibung: Übersicht zum Status des Servers im Adminbereich
 	 * @param model Model in dem ggf. Daten für die View abgelegt werden
