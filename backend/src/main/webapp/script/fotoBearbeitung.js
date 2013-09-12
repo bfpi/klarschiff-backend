@@ -218,7 +218,7 @@ $(function () {
 		$("#submitAnchor").parent().append("<input type='hidden' name='censoringHeight' value='"+h+"'/>");
 		$("#submitAnchor").parent().append("<input type='hidden' name='action' value='fotoSave'/>");
 		
-		$("form").submit();
+		$("#fotoEditForm").submit();
 		$.md.hide();
 	}	
 });

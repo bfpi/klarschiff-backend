@@ -50,6 +50,4 @@
 		<c:url value="/images/foto_edit_save.png" var="url"/>
  		<img src="${url}" alt=""/>
 	</button>
-	<div id="recStack"><!--&nbsp;--></div>
-
 </jsp:root>

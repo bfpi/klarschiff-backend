@@ -22,6 +22,8 @@ import de.fraunhofer.igd.klarschiff.vo.EnumFreigabeStatus;
 import de.fraunhofer.igd.klarschiff.vo.EnumVerlaufTyp;
 import de.fraunhofer.igd.klarschiff.vo.Verlauf;
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
+import org.springframework.security.core.codec.Base64;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 /**
  * Controller für die Vorgangsübersicht und Detailansichten
@@ -166,7 +168,9 @@ public class VorgangController {
 			@RequestParam(value="censorRectangles", required=false) String censorRectangleString,
 			@RequestParam(value="censoringWidth", required=false) Integer censoringWidth,
 			@RequestParam(value="censoringHeight", required=false) Integer censoringHeight,
-			ModelMap model, HttpServletRequest request) {
+			@RequestParam(value="foto", required=false) CommonsMultipartFile foto,
+			ModelMap model, HttpServletRequest request, Object command) 
+	throws Exception {
 		Vorgang vorgang = vorgangDao.findVorgang(id);
 		for (@SuppressWarnings("unused") Verlauf verlauf : vorgang.getVerlauf());
 
@@ -184,6 +188,10 @@ public class VorgangController {
 			verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.fotoFreigabeStatus, vorgang.getFotoFreigabeStatus().getText(), freigabeStatus.getText());
 			vorgang.setFotoFreigabeStatus(freigabeStatus);
 			vorgangDao.merge(vorgang, false);
+		} else if (action.equals("upload") && !foto.isEmpty()) {
+			try {
+				imageService.setImageForVorgang(foto.getBytes(), vorgang);
+			} catch(Exception e) {}
 		}
 		model.put("vorgang", vorgang);
 		return "vorgang/foto";
