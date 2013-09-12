@@ -23,6 +23,7 @@ import de.fraunhofer.igd.klarschiff.service.classification.ClassificationService
 import de.fraunhofer.igd.klarschiff.service.image.ImageService;
 import de.fraunhofer.igd.klarschiff.service.mail.MailService;
 import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
+import de.fraunhofer.igd.klarschiff.service.settings.SettingsService;
 import de.fraunhofer.igd.klarschiff.service.security.User;
 import de.fraunhofer.igd.klarschiff.vo.EnumPrioritaet;
 import de.fraunhofer.igd.klarschiff.vo.EnumVerlaufTyp;
@@ -69,6 +70,9 @@ public class BackendController {
 	
 	@Autowired
 	MailService mailService;
+
+	@Autowired
+	SettingsService settingsService;
 	
 
 	/**
@@ -151,6 +155,90 @@ public class BackendController {
 		}
 	}
 
+	/**
+	 * Die Methode verarbeitet den POST-Request auf der URL <code>/service/vorgangKOD</code><br/>
+	 * Beschreibung: erstellt einen neuen Vorgang des kommunalen Ordnungsdienstes,
+	 * im Gegensatz zum "normalen" Erstellen eines Vorgangs wird der Status
+	 * direkt auf offen gesetzt, damit ist keine Bestätigungs E-Mail notwendig.
+	 * @param typ Vorgangstyp
+	 * @param kategorie Kategorie
+	 * @param oviWkt Position als WKT
+	 * @param autorEmail E-Mail-Adresse des Erstellers
+	 * @param betreff Betreff
+	 * @param details Details
+	 * @param bild Foto base64 kodiert
+	 * @param response Response in das das Ergebnis direkt geschrieben wird
+	 */
+	@RequestMapping(value="/vorgangKOD", method = RequestMethod.POST)
+	@ResponseBody
+	public void vorgangKOD(
+			@RequestParam(value = "typ", required = false) String typ, 
+			@RequestParam(value = "kategorie", required = false) Long kategorie,
+			@RequestParam(value = "oviWkt", required = false) String oviWkt,
+			@RequestParam(value = "autorEmail", required = false) String autorEmail,
+			@RequestParam(value = "betreff", required = false) String betreff,
+			@RequestParam(value = "details", required = false) String details,
+			@RequestParam(value = "bild", required = false) String bild,
+			@RequestParam(value = "authCode", required = false) String authCode,
+			HttpServletResponse response) {
+		try {
+      logger.info("kod.auth_code" + settingsService.getPropertyValue("kod.auth_code"));
+      logger.info("param authCode" + authCode);
+      if (!settingsService.getPropertyValue("kod.auth_code").equals(authCode)) {
+        throw new BackendControllerException(12, "[authCode] nicht korrekt", "Falscher AuthCode");
+      }
+			Vorgang vorgang = new Vorgang();
+			
+			if (StringUtils.isBlank(typ)) throw new BackendControllerException(1, "[typ] fehlt", "Der Typ ist nicht angegeben.");
+			vorgang.setTyp(EnumVorgangTyp.valueOf(typ));
+			if (vorgang.getTyp()==null) throw new BackendControllerException(2, "[typ] nicht korrekt", "Der Typ ist nicht korrekt.");
+			
+			if (kategorie==null) throw new BackendControllerException(3, "[kategorie] fehlt", "Die Angaben zur Kategorie fehlen.");
+			vorgang.setKategorie(kategorieDao.findKategorie(kategorie));
+			if (vorgang.getKategorie()==null 
+					|| vorgang.getKategorie().getParent()==null
+					|| vorgang.getKategorie().getParent().getTyp()!=vorgang.getTyp()) throw new BackendControllerException(4, "[kategorie] nicht korrekt", "Die Kategorie ist nicht gültig.");
+			
+			if (oviWkt==null) throw new BackendControllerException(5, "[oviWkt] fehlt", "Die Orstangabe fehlt.");
+			try {
+				vorgang.setOviWkt(oviWkt);
+			}catch (Exception e) {
+				throw new BackendControllerException(6, "[oviWkt] nicht korrekt", "Die Ortsangabe ist nicht korrekt.", e);
+			}
+
+			if (StringUtils.isBlank(autorEmail)) throw new BackendControllerException(7, "[autorEmail] fehlt", "Die E-Mail-Adresse fehlt.");
+			if (!isMaxLength(autorEmail, 300)) throw new BackendControllerException(8, "[autorEmail] zu lang", "Die E-Mail-Adresse ist zu lang.");
+			if (!isEmail(autorEmail)) throw new BackendControllerException(9, "[autorEmail] nicht korrekt", "Die E-Mail-Adresse ist nicht gültig.");
+			vorgang.setAutorEmail(autorEmail);
+			
+			if (!isMaxLength(betreff, 300)) throw new BackendControllerException(10, "[betreff] zu lang", "Der Betreff ist zu lang. Es sind maximal 300 Zeichen erlaubt.");
+			vorgang.setBetreff(betreff);
+			
+			vorgang.setDetails(details);
+			
+			if (bild!=null)
+				try {
+					imageService.setImageForVorgang(Base64.decode(bild.getBytes()), vorgang);
+				} catch (Exception e) {
+					throw new BackendControllerException(11, "[bild] nicht korrekt", "Das Bild ist fehlerhaft und kann nicht verarbeitewt werden.");
+				}
+			
+			vorgang.setDatum(new Date());
+			vorgang.setStatus(EnumVorgangStatus.offen);
+			vorgang.setPrioritaet(EnumPrioritaet.mittel);
+						
+			vorgangDao.persist(vorgang);
+
+			vorgang.setZustaendigkeit(classificationService.calculateZustaendigkeitforVorgang(vorgang).getId());
+			vorgang.setZustaendigkeitStatus(EnumZustaendigkeitStatus.zugewiesen);
+			vorgangDao.merge(vorgang);
+
+			sendOk(response, vorgang.getId().toString());
+		} catch (Exception e) {
+			logger.warn(e);
+			sendError(response, e);
+		}
+	}
 
 	/**
 	 * Prüft ob der String eine gültige E-Mail-Adresse ist

@@ -6,7 +6,7 @@
 	<artifactId>backend</artifactId>
 	<packaging>war</packaging>
 	<version>0.1.0.BUILD-SNAPSHOT</version>
-	<name>backend</name>
+	<name>Klarschiff-Backend</name>
 
 
 	<properties>
@@ -26,6 +26,7 @@
 		<postgis.version>[1.1.6,)</postgis.version>
 		<poi.version>3.7</poi.version>
 		<project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
+	 <netbeans.hint.deploy.server>Tomcat</netbeans.hint.deploy.server>
 	</properties>
 
 	<repositories>
@@ -640,7 +641,7 @@
 				<artifactId>maven-resources-plugin</artifactId>
 				<version>2.4.2</version>
 				<configuration>
-					<encoding>UTF-8</encoding>
+					<encoding>${project.build.sourceEncoding}</encoding>
 				</configuration>
 			</plugin>
 			<plugin>
