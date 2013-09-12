@@ -27,7 +27,7 @@ public class VorgangSuchenCommand implements Serializable {
 	/* --------------- Attribute ----------------------------*/
 	
 	public enum Suchtyp { einfach, erweitert }; 
-	public enum EinfacheSuche { offene, abgeschlossene };
+	public enum EinfacheSuche { offene, offeneIdeen, abgeschlossene };
 	
 	Integer page;
 	Integer size;
@@ -63,12 +63,11 @@ public class VorgangSuchenCommand implements Serializable {
 			case 0: return "vo.id";
 			case 1: return "vo.typ";
 			case 2: return "vo.datum";
-			case 3: return "MAX(ve.datum)";
-			case 4: return "vo.kategorie.parent.name,vo.kategorie.name";
-			case 5: return "vo.statusOrdinal";
+			case 3: return "vo.kategorie.parent.name,vo.kategorie.name";
+			case 4: return "vo.statusOrdinal";
+			case 5: return "vo.adresse";
 			case 6: return "COUNT(DISTINCT un.hash)";
 			case 7: return "vo.zustaendigkeit";
-			case 8: return "vo.prioritaetOrdinal";
 			default: return "";
 		}
 	}

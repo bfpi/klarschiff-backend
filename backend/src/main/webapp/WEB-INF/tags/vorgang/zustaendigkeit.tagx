@@ -20,19 +20,19 @@
 		</c:if>
 
 		<c:set value="${fx:role(vorgang.zustaendigkeit)}" var="zustaendigkeit"/>
-		<span title="${zustaendigkeit.description}">${zustaendigkeit.id}</span>
+		<span title="aktuell bei: ${zustaendigkeit.description}">${zustaendigkeit.id}</span>
 		<c:if test="${statusAlignRight}">
-			<c:if test="${vorgang.zustaendigkeitStatus == 'zugewiesen'}"><span style="color:#FFB900;float:right;font-weight:bold;width:15px;text-align:center;padding-left:10px;"  title="zugewiesen">?</span></c:if>
+			<c:if test="${vorgang.zustaendigkeitStatus == 'zugewiesen'}"><span style="color:#FF8800;float:right;font-weight:bold;width:15px;text-align:center;padding-left:10px;"  title="noch nicht akzeptiert">&#x2715;</span></c:if>
 			<c:if test="${vorgang.zustaendigkeitStatus == 'akzeptiert'}"><span style="color:#50c80f;float:right;font-weight:bold;width:15px;text-align:center;padding-left:10px;" title="akzeptiert">&#x2714;</span></c:if>		
 		</c:if>
 		<c:if test="${not statusAlignRight}">
-			<c:if test="${vorgang.zustaendigkeitStatus == 'zugewiesen'}"><span style="color:#FFB900;font-weight:bold;width:15px;padding-left:10px;" title="zugewiesen">?</span></c:if>
+			<c:if test="${vorgang.zustaendigkeitStatus == 'zugewiesen'}"><span style="color:#FF8800;font-weight:bold;width:15px;padding-left:10px;" title="noch nicht akzeptiert">&#x2715;</span></c:if>
 			<c:if test="${vorgang.zustaendigkeitStatus == 'akzeptiert'}"><span style="color:#50c80f;font-weight:bold;width:15px;padding-left:10px;" title="akzeptiert">&#x2714;</span></c:if>		
 		</c:if>
 		<c:if test="${not empty vorgang.delegiertAn}">
 			<![CDATA[&nbsp;]]>
 			<c:set value="${fx:role(vorgang.delegiertAn)}" var="delegiertAn"/>
-			<span title="${delegiertAn.description}">(${delegiertAn.id})</span>
+			<span title="delegiert an: ${delegiertAn.description}">(&#x2794; ${delegiertAn.id})</span>
 		</c:if>
 	</c:if>
 </jsp:root>

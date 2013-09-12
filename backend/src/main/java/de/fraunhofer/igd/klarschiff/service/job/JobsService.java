@@ -1,5 +1,7 @@
 package de.fraunhofer.igd.klarschiff.service.job;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -11,7 +13,11 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import org.joda.time.*;
+
 import de.fraunhofer.igd.klarschiff.dao.ClusterDao;
+import de.fraunhofer.igd.klarschiff.dao.RedaktionEmpfaengerDao;
+import de.fraunhofer.igd.klarschiff.dao.RedaktionKriterienDao;
 import de.fraunhofer.igd.klarschiff.dao.VorgangDao;
 import de.fraunhofer.igd.klarschiff.service.classification.ClassificationService;
 import de.fraunhofer.igd.klarschiff.service.cluster.ScheduledSyncInCluster;
@@ -19,6 +25,8 @@ import de.fraunhofer.igd.klarschiff.service.mail.MailService;
 import de.fraunhofer.igd.klarschiff.service.security.Role;
 import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
 import de.fraunhofer.igd.klarschiff.vo.Missbrauchsmeldung;
+import de.fraunhofer.igd.klarschiff.vo.RedaktionEmpfaenger;
+import de.fraunhofer.igd.klarschiff.vo.RedaktionKriterien;
 import de.fraunhofer.igd.klarschiff.vo.Unterstuetzer;
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
 
@@ -42,6 +50,12 @@ public class JobsService {
 	
 	@Autowired
 	ClusterDao clusterDao;
+    
+    @Autowired
+	RedaktionEmpfaengerDao redaktionEmpfaengerDao;
+    
+    @Autowired
+	RedaktionKriterienDao redaktionKriterienDao;
 	
 	@Autowired
 	SecurityService securityService;
@@ -53,18 +67,6 @@ public class JobsService {
 	ClassificationService classificationService;
 	
 
-	//TEST
-//	@Scheduled(cron="30 * */3 * * *")
-//	public void testLdap() {
-//		try {
-//			securityService.getAllZustaendigkeiten(false);
-//		} catch (Exception e) {
-//			logger.error("ClassificationContext konnte nicht erneuert werden.", e);
-//		}
-//	}
-	//TEST
-	
-	
 	/**
 	 * Der Job archiviert abgeschlossene Vorgänge.
 	 */
@@ -168,13 +170,28 @@ public class JobsService {
 		//sende eMail
 		mailService.sendInformDispatcherMail(vorgaenge, securityService.getAllUserEmailsForRole(securityService.getDispatcherZustaendigkeitId()));
 	}
+    
+    /**
+	 * Der Job informiert den Ersteller von Vorgängen über deren Übergang in den Status "in Bearbeitung".
+	 */
+	@ScheduledSyncInCluster(cron="0 5 10 * * *", name="Ersteller ueber Statusaenderung nach in Bearbeitung informieren")
+	public void informErstellerInBearbeitung() {
+		Date date = DateUtils.addDays(new Date(), -1);
+		
+		//Finde alle Vorgänge, deren Status sich in den letzten 24h auf "in Bearbeitung" geändert hat und eine autorEmail haben
+		List<Vorgang> vorgaenge = vorgangDao.findInProgressVorgaenge(date);
+		
+		//sende eMail
+		for (Vorgang vorgang : vorgaenge)
+			mailService.sendInformErstellerMailInBearbeitung(vorgang);
+	}
 
 	
 	/**
 	 * Der Job informiert den Ersteller von Vorgängen über deren Abschluß.
 	 */
-	@ScheduledSyncInCluster(cron="0 5 10 * * *", name="Ersteller ueber Vorgangsabschluss informieren")
-	public void informErsteller() {
+	@ScheduledSyncInCluster(cron="0 10 10 * * *", name="Ersteller ueber Vorgangsabschluss informieren")
+	public void informErstellerAbschluss() {
 		Date date = DateUtils.addDays(new Date(), -1);
 		
 		//Finde alle Vorgänge, die in den letzten 24h abgeschlossen wurden und eine autorEmail haben
@@ -182,7 +199,129 @@ public class JobsService {
 		
 		//sende eMail
 		for (Vorgang vorgang : vorgaenge)
-			mailService.sendInformErstellerMail(vorgang);
+			mailService.sendInformErstellerMailAbschluss(vorgang);
+	}
+    
+    
+    /**
+	 * Der Job informiert die Empfänger redaktioneller E-Mails.
+	 */
+	@ScheduledSyncInCluster(cron="0 40 01 * * *", name="Empfaenger redaktioneller E-Mails informieren")
+	public void informRedaktionEmpfaenger() {
+        
+        try {
+    
+            //lokale Variablen initiieren
+            Boolean administrator = false;
+            Date jetzt = new Date();
+            Short tageOffenNichtAkzeptiert = 0;
+            Short tageInbearbeitungOhneStatusKommentar = 0;
+            Short tageIdeeOffenOhneUnterstuetzung = 0;
+            Boolean sollVorgaengeWirdnichtbearbeitetOhneStatuskommentar = false;
+            Boolean sollVorgaengeNichtMehrOffenNichtAkzeptiert = false;
+            Boolean sollVorgaengeOhneRedaktionelleFreigaben = false;
+            Boolean sollVorgaengeOhneZustaendigkeit = false;
+            Date datum = null;
+            List<Vorgang> vorgaengeOffenNichtAkzeptiert = new ArrayList<Vorgang>();
+            List<Vorgang> vorgaengeInbearbeitungOhneStatusKommentar = new ArrayList<Vorgang>();
+            List<Vorgang> vorgaengeIdeeOffenOhneUnterstuetzung = new ArrayList<Vorgang>();
+            List<Vorgang> vorgaengeWirdnichtbearbeitetOhneStatuskommentar = new ArrayList<Vorgang>();
+            List<Vorgang> vorgaengeNichtMehrOffenNichtAkzeptiert = new ArrayList<Vorgang>();
+            List<Vorgang> vorgaengeOhneRedaktionelleFreigaben = new ArrayList<Vorgang>();
+            List<Vorgang> vorgaengeOhneZustaendigkeit = new ArrayList<Vorgang>();
+    
+            //Liste aller Redaktionskriterien erstellen
+            List<RedaktionKriterien> kriterienAlle = redaktionKriterienDao.getKriterienList();
+            
+            //Liste aller Empfänger redaktioneller E-Mails erstellen
+            List<RedaktionEmpfaenger> empfaengerAlle = redaktionEmpfaengerDao.getEmpfaengerList();
+            
+            //Liste aller Empfänger durchgehen
+            for (RedaktionEmpfaenger empfaenger : empfaengerAlle) {
+                
+                //Ist der aktuelle Empfänger als Admininstrator definiert?
+                if (empfaenger.getZustaendigkeit().toLowerCase().contains("admin".toLowerCase()))
+                    administrator = true;
+                else
+                    administrator = false;
+                    
+                //prüfe Zeitstempel des letzten E-Mail-Versands an aktuellen Empfänger: soll überhaupt eine E-Mail geschickt werden?
+                if ( (empfaenger.getLetzteMail() == null) || (Days.daysBetween(new DateTime(empfaenger.getLetzteMail()), new DateTime(jetzt)).getDays() >= empfaenger.getTageZwischenMails()) ) {
+            
+                    //Liste aller Redaktionskriterien durchgehen
+                    for (RedaktionKriterien kriterium : kriterienAlle) {
+                    
+                        //alle Redaktionskriterien der Stufe des Empfängers entsprechend zuweisen
+                        if (kriterium.getStufe() == empfaenger.getStufe()) {
+                            tageOffenNichtAkzeptiert = kriterium.getTageOffenNichtAkzeptiert();
+                            tageInbearbeitungOhneStatusKommentar = kriterium.getTageInbearbeitungOhneStatusKommentar();
+                            tageIdeeOffenOhneUnterstuetzung = kriterium.getTageIdeeOffenOhneUnterstuetzung();
+                            sollVorgaengeWirdnichtbearbeitetOhneStatuskommentar = kriterium.getWirdnichtbearbeitetOhneStatuskommentar();
+                            sollVorgaengeNichtMehrOffenNichtAkzeptiert = kriterium.getNichtMehrOffenNichtAkzeptiert();
+                            sollVorgaengeOhneRedaktionelleFreigaben = kriterium.getOhneRedaktionelleFreigaben();
+                            sollVorgaengeOhneZustaendigkeit = kriterium.getOhneZustaendigkeit();
+                            break;
+                        }
+                    }
+                    
+                    //'datum' berechnen durch Subtrahieren von 'tageOffenNichtAkzeptiert' vom aktuellen Datum
+                    datum = DateUtils.addDays(jetzt, -(tageOffenNichtAkzeptiert));
+                
+                    //finde alle Vorgänge mit dem Status 'offen' für die Zuständigkeit des aktuellen Empfängers, die seit mindestens 'datum' zugewiesen sind, bisher aber nicht akzeptiert wurden
+                    vorgaengeOffenNichtAkzeptiert = vorgangDao.findVorgaengeOffenNichtAkzeptiert(administrator, empfaenger.getZustaendigkeit(), datum);
+                    
+                    //'datum' berechnen durch Subtrahieren von 'tageInbearbeitungOhneStatusKommentar' vom aktuellen Datum
+                    datum = DateUtils.addDays(jetzt, -(tageInbearbeitungOhneStatusKommentar));
+                
+                    //finde alle Vorgänge mit dem Status 'offen' für die Zuständigkeit des aktuellen Empfängers, die seit mindestens 'datum' zugewiesen sind, bisher aber nicht akzeptiert wurden
+                    vorgaengeInbearbeitungOhneStatusKommentar = vorgangDao.findVorgaengeInbearbeitungOhneStatusKommentar(administrator, empfaenger.getZustaendigkeit(), datum);
+                    
+                    //'datum' berechnen durch Subtrahieren von 'tageIdeeOffenOhneUnterstuetzung' vom aktuellen Datum
+                    datum = DateUtils.addDays(jetzt, -(tageIdeeOffenOhneUnterstuetzung));
+                
+                    //finde alle Vorgänge des Typs 'idee' mit dem Status 'offen', die ihre Erstsichtung seit mindestens 'datum' hinter sich haben, bisher aber noch nicht die Zahl der notwendigen Unterstützungen aufweisen
+                    vorgaengeIdeeOffenOhneUnterstuetzung = vorgangDao.findVorgaengeIdeeOffenOhneUnterstuetzung(administrator, empfaenger.getZustaendigkeit(), datum);
+                    
+                    //falls dies gemacht werden soll...
+                    if ( sollVorgaengeWirdnichtbearbeitetOhneStatuskommentar == true ) {
+                        //finde alle Vorgänge mit dem Status 'wird nicht bearbeitet', die bisher keine Info der Verwaltung aufweisen
+                        vorgaengeWirdnichtbearbeitetOhneStatuskommentar = vorgangDao.findVorgaengeWirdnichtbearbeitetOhneStatuskommentar(administrator, empfaenger.getZustaendigkeit());
+                    }
+                     
+                    //falls dies gemacht werden soll...
+                    if ( sollVorgaengeNichtMehrOffenNichtAkzeptiert == true ) {
+                        //finde alle Vorgänge, die zwar nicht mehr den Status 'offen' aufweisen, bisher aber dennoch nicht akzeptiert wurden
+                        vorgaengeNichtMehrOffenNichtAkzeptiert = vorgangDao.findVorgaengeNichtMehrOffenNichtAkzeptiert(administrator, empfaenger.getZustaendigkeit());
+                    }
+                    
+                    //falls dies gemacht werden soll...
+                    if ( sollVorgaengeOhneRedaktionelleFreigaben == true ) {
+                        //finde alle Vorgänge, die ihre Erstsichtung bereits hinter sich haben, deren Betreff, Details oder Foto bisher aber noch nicht freigegeben wurden
+                        vorgaengeOhneRedaktionelleFreigaben = vorgangDao.findVorgaengeOhneRedaktionelleFreigaben(administrator, empfaenger.getZustaendigkeit());
+                    }
+                    
+                    //falls dies gemacht werden soll...
+                    if ( sollVorgaengeOhneZustaendigkeit == true ) {
+                        //finde alle Vorgänge, die auf Grund von Kommunikationsfehlern im System keine Einträge in den Datenfeldern 'zustaendigkeit' und/oder 'zustaendigkeit_status' aufweisen
+                        vorgaengeOhneZustaendigkeit = vorgangDao.findVorgaengeOhneZustaendigkeit(administrator);
+                    }
+                    
+                    //falls Vorgänge existieren...
+                    if ( (!vorgaengeOffenNichtAkzeptiert.isEmpty()) || (!vorgaengeInbearbeitungOhneStatusKommentar.isEmpty()) || (!vorgaengeIdeeOffenOhneUnterstuetzung.isEmpty()) || (!vorgaengeWirdnichtbearbeitetOhneStatuskommentar.isEmpty()) || (!vorgaengeNichtMehrOffenNichtAkzeptiert.isEmpty()) || (!vorgaengeOhneRedaktionelleFreigaben.isEmpty()) || (!vorgaengeOhneZustaendigkeit.isEmpty()) ) {
+                    
+                        //setzte Zeitstempel des letzten E-Mail-Versands an aktuellen Empfänger auf aktuellen Zeitstempel
+                        empfaenger.setLetzteMail(jetzt);
+                        
+                        //sende E-Mail an aktuellen Empfänger
+                        mailService.sendInformRedaktionEmpfaengerMail(tageOffenNichtAkzeptiert, tageInbearbeitungOhneStatusKommentar, tageIdeeOffenOhneUnterstuetzung, vorgaengeOffenNichtAkzeptiert, vorgaengeInbearbeitungOhneStatusKommentar, vorgaengeIdeeOffenOhneUnterstuetzung, vorgaengeWirdnichtbearbeitetOhneStatuskommentar, vorgaengeNichtMehrOffenNichtAkzeptiert, vorgaengeOhneRedaktionelleFreigaben, vorgaengeOhneZustaendigkeit, empfaenger.getEmail(), empfaenger.getZustaendigkeit());
+                    }
+                }
+            }
+        }
+        
+        catch (Exception e) {
+			logger.error("Job zum Informieren der Empfaenger redaktioneller E-Mails wurde nicht ausgefuehrt.", e);
+		}
 	}
 
 
@@ -193,11 +332,7 @@ public class JobsService {
 	public void notifyAliveServer(){
 		clusterDao.notifyAliveServer();
 	}
-	
-//	@ScheduledSyncInCluster(cron="*/20 * * * * *", name="test")
-//	public void test() {
-//		System.out.println("TestJob wird ausgeführt.");
-//	}
+    
 	
     /* --------------- GET + SET ----------------------------*/
 	

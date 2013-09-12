@@ -701,29 +701,23 @@ BEGIN
   PERFORM dblink_connect('hostaddr=${f_host} port=${f_port} dbname=${f_dbname} ' ||
     'user=${f_username} password=${f_password}');
 
-  query := 'UPDATE ${f_schema}.klarschiff_vorgang SET datum_abgeschlossen = ' || CASE
+  query := 'UPDATE ${f_schema}.klarschiff_vorgang SET datum_statusaenderung = ' || CASE
     WHEN TG_OP = 'DELETE' THEN
-      CASE WHEN old.typ = 'status' AND 
-        old.wert_neu IN ('abgeschlossen', 'wird nicht bearbeitet')
+      CASE WHEN old.typ = 'status' OR old.typ = 'erzeugt'
       THEN
         'NULL'
       ELSE
-        'datum_abgeschlossen'
+        'datum_statusaenderung'
       END ||
       ' WHERE id = ' || old.vorgang
     WHEN TG_OP IN ('INSERT', 'UPDATE') THEN
-      CASE WHEN new.typ = 'status' THEN
-        CASE
-        WHEN new.wert_neu IN ('abgeschlossen', 'wird nicht bearbeitet') THEN
-          quote_literal(new.datum)
-        ELSE
-          'NULL'
-        END
+      CASE WHEN new.typ = 'status' OR new.typ = 'erzeugt' THEN
+        quote_literal(new.datum)
       ELSE
-        'datum_abgeschlossen'
+        'datum_statusaenderung'
       END || ' WHERE id = ' || new.vorgang
     ELSE
-      'datum_abgeschlossen WHERE id IS NULL'
+      'datum_statusaenderung WHERE id IS NULL'
     END;
 
   RAISE DEBUG 'Query : %', query;
@@ -872,13 +866,20 @@ BEGIN
           new.archiviert
          ELSE
           'FALSE'
+        END || ', ' ||
+      --zustaendigkeit
+      'zustaendigkeit = ' || CASE 
+          WHEN new.zustaendigkeit_frontend IS NOT NULL AND new.zustaendigkeit_frontend <> '' THEN
+            quote_literal(new.zustaendigkeit_frontend)
+          ELSE
+            'NULL'
         END || ' ' ||
       'WHERE id = ' || new.id
     WHEN 'INSERT' THEN
       'INSERT INTO ${f_schema}.klarschiff_vorgang (id, datum, vorgangstyp, ' ||
         'the_geom, status, kategorieid, titel, details, bemerkung, foto_normal_jpg, ' ||
         'foto_thumb_jpg, foto_vorhanden, foto_freigegeben, betreff_vorhanden, ' ||
-        'betreff_freigegeben, details_vorhanden, details_freigegeben, archiviert) ' ||
+        'betreff_freigegeben, details_vorhanden, details_freigegeben, archiviert, zustaendigkeit) ' ||
       'VALUES (' || new.id ||', ' || quote_literal(new.datum::varchar(50)) || ', ' ||
         quote_literal(new.typ) || ', ' || quote_literal(new.ovi::text) || ', ' ||
         quote_literal(new.status) || ', ' || new.kategorie || ', ' ||
@@ -959,6 +960,13 @@ BEGIN
             new.archiviert
           ELSE
             'FALSE'
+        END || ', ' ||
+        --zustaendigkeit
+        CASE 
+          WHEN new.zustaendigkeit_frontend IS NOT NULL AND new.zustaendigkeit_frontend <> '' THEN
+            quote_literal(new.zustaendigkeit_frontend)
+          ELSE
+            'NULL'
         END || ')'
     ELSE
       'SELECT 1'
@@ -993,24 +1001,11 @@ CREATE TRIGGER klarschiff_trigger_vorgang
   ON klarschiff_vorgang
   FOR EACH ROW EXECUTE PROCEDURE klarschiff_triggerfunction_vorgang();
 
--- Test
--- INSERT INTO klarschiff_vorgang (adresse, archiviert, autor_email, betreff, betreff_freigabe_status, datum, delegiert_an, details, 
---  details_freigabe_status, erstsichtung_erfolgt, foto_freigabe_status, foto_normal_jpg, foto_thumb_jpg, hash, kategorie, ovi, prioritaet, 
---  prioritaet_ordinal, status, status_kommentar, status_ordinal, typ, version, zustaendigkeit, zustaendigkeit_status, id) 
---  VALUES (NULL, NULL, 'fasdfsda@example.com', 'test1''test11', 'intern', '2013-05-21 17:16:13.919000 +02:00:00', NULL, 'test2''test22',
---  'intern', '0', 'intern', NULL, NULL, '3r13f3lool196c096g5ugeftc4', '17', 'SRID=25833;POINT(308399.3246514606 6003650.909966981)', 
---  'mittel', '1', 'gemeldet', NULL, '0', 'problem', '2013-05-21 17:16:13.934000 +02:00:00', NULL, NULL, '40');
--- UPDATE klarschiff_vorgang SET betreff = 'test''test', betreff_freigabe_status = 'extern' WHERE id = 41;
--- DELETE FROM klarschiff_vorgang_features WHERE vorgang IN (40, 41);
--- DELETE FROM klarschiff_verlauf WHERE vorgang IN (40, 41);
--- DELETE FROM klarschiff_vorgang_history_classes_history_classes WHERE vorgang_history_classes IN (40, 41);
--- DELETE FROM klarschiff_vorgang_history_classes WHERE vorgang IN (40, 41);
--- DELETE FROM klarschiff_vorgang WHERE id IN (40, 41);
-
 
 -- #######################################################################################
 -- # automatische Zuordnung einer Adresse für einen Vorgang                              #
 -- #######################################################################################
+
 -- Triggerfunktion erzeugen
 CREATE OR REPLACE FUNCTION klarschiff_triggerfunction_adresse()
 RETURNS trigger AS $BODY$
@@ -1077,3 +1072,63 @@ CREATE TRIGGER klarschiff_trigger_adresse
   BEFORE INSERT OR UPDATE
   ON klarschiff_vorgang
   FOR EACH ROW EXECUTE PROCEDURE klarschiff_triggerfunction_adresse();
+  
+
+
+-- #####################################################################################################
+-- # automatische Zuordnung der Information über das Eigentum des Flürstücks, in dem ein Vorgang liegt #
+-- #####################################################################################################
+
+-- Triggerfunktion erzeugen
+CREATE OR REPLACE FUNCTION klarschiff_triggerfunction_flurstueckseigentum()
+RETURNS trigger AS $BODY$
+DECLARE
+  ergebnis record;
+
+BEGIN
+  -- nur ausführen bei einem neuen Vorgang oder beim Aktualisieren eines Vorgangs (hier 
+  -- aber nur, wenn sich die Geometrie ändert oder wenn im Flurstückseigentumsfeld nix drinsteht!)
+  IF (TG_OP = 'INSERT' OR (TG_OP = 'UPDATE' AND (NEW.flurstueckseigentum IS NULL OR NEW.flurstueckseigentum = ''))
+    OR (TG_OP = 'UPDATE' AND (encode(NEW.ovi, 'base64') <> encode(OLD.ovi, 'base64'))))
+  THEN
+    -- Verbindung zur Flurstückseigentumstabelle aufbauen
+    PERFORM dblink_connect('flurstueckseigentum_verbindung','hostaddr=${f_host} port=${f_port} ' ||
+      'dbname=daten_privat user=lesen password=selen');
+
+    -- räumliche Abfrage durchführen, die genau einen Datensatz (oder NULL) als Ergebnis 
+    -- liefert, der auch gleich in die oben deklarierte Variable geschrieben wird
+    SELECT eigentuemer.eigentum AS eigentum
+    INTO ergebnis
+    FROM klarschiff_vorgang, 
+      dblink('flurstueckseigentum_verbindung', 'SELECT eigentuemer, geom FROM alk.eigentuemer_klarschiff') AS eigentuemer(eigentum varchar, geom geometry)
+    WHERE ST_Covers(geom, NEW.ovi) LIMIT 1;
+
+    -- Verbindung zur Flurstückseigentumstabelle wieder schließen
+    PERFORM dblink_disconnect('flurstueckseigentum_verbindung');
+
+    -- wenn das Ergebnis nicht NULL ist: Information über das Eigentum des Flürstücks zuweisen
+    IF ergebnis.eigentum IS NOT NULL THEN
+      NEW.flurstueckseigentum := ergebnis.eigentum;
+      -- ansonsten: "nicht zuordenbar" zuweisen
+    ELSE
+      NEW.flurstueckseigentum := 'nicht zuordenbar';
+    END IF;
+  END IF;
+  RETURN NEW;
+
+EXCEPTION WHEN others THEN
+  RAISE;
+END;
+$BODY$ LANGUAGE plpgsql VOLATILE COST 100;
+
+-- Owner fuer die Triggerfunktion setzen
+ALTER FUNCTION klarschiff_triggerfunction_flurstueckseigentum() OWNER TO ${b_username};
+
+-- ggf. alten Trigger loeschen
+DROP TRIGGER IF EXISTS klarschiff_trigger_flurstueckseigentum ON klarschiff_vorgang CASCADE;
+
+-- Trigger erzeugen
+CREATE TRIGGER klarschiff_trigger_flurstueckseigentum
+  BEFORE INSERT OR UPDATE
+  ON klarschiff_vorgang
+  FOR EACH ROW EXECUTE PROCEDURE klarschiff_triggerfunction_flurstueckseigentum();

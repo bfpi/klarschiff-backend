@@ -108,9 +108,10 @@ public class FeatureService {
 		
 		try {
 			VorgangFeatures vorgangFeatures = vorgangDao.findVorgangFeatures(vorgang);
-			vorgangDao.remove(vorgangFeatures);
+            if (vorgangFeatures != null)
+                vorgangDao.remove(vorgangFeatures);
 		} catch (Exception e) {
-			// TODO: handle exception
+			logger.error("Entfernen eines nicht änderbaren Features aus der Datenbank fehlgeschlagen.", e);
 		}
 	}
 	

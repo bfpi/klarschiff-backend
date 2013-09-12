@@ -85,10 +85,17 @@ public class Vorgang implements Serializable {
 	@Size(max = 300)
     private String betreff;
 	
-
+    /**
+	 * Adresse
+	 */
 	@Size(max = 300)
     private String adresse;
-
+    
+    /**
+	 * Information über das Eigentum des Flürstücks, in dem der Vorgang liegt
+	 */
+	@Size(max = 300)
+    private String flurstueckseigentum;
 
 	/**
 	 * Freigabestatus des Betreffs
@@ -183,6 +190,11 @@ public class Vorgang implements Serializable {
      */
 	@Enumerated(EnumType.STRING)
     EnumZustaendigkeitStatus zustaendigkeitStatus;
+    
+    /**
+     * Zuständigkeit für Frontend (also ausführlicher Standort bzw. Name des Amtes; Locality der Rolle) für den Vorgang
+     */
+    String zustaendigkeitFrontend;
 
 	/**
 	 * Delegiert an (Id der Rolle)
@@ -314,6 +326,14 @@ public class Vorgang implements Serializable {
 	public void setAdresse(String adresse) {
 		this.adresse = adresse;
 	}
+    
+    public String getFlurstueckseigentum() {
+		return flurstueckseigentum;
+	}
+
+	public void setFlurstueckseigentum(String flurstueckseigentum) {
+		this.flurstueckseigentum = flurstueckseigentum;
+	}
 
 	public String getDetails() {
         return this.details;
@@ -409,6 +429,14 @@ public class Vorgang implements Serializable {
 
 	public void setZustaendigkeit(String zustaendigkeit) {
 		this.zustaendigkeit = zustaendigkeit;
+	}
+    
+    public String getZustaendigkeitFrontend() {
+		return zustaendigkeitFrontend;
+	}
+
+	public void setZustaendigkeitFrontend(String zustaendigkeitFrontend) {
+		this.zustaendigkeitFrontend = zustaendigkeitFrontend;
 	}
 
 	public void setZustaendigkeitStatus(EnumZustaendigkeitStatus zustaendigkeitStatus) {

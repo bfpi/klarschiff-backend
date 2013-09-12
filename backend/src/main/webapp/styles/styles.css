@@ -275,6 +275,11 @@ div.olControlEditingToolbar {
 
 div.olMapViewport div.olControlMousePosition {
     font-family: Verdana,sans-serif;
+    margin:0 5px 7px 0;
+    padding:3px 5px 5px 3px;
+    background-color:rgba(255,255,255,.7);
+    border-radius:2px;
+    -webkit-border-radius:2px;
 }
 
 /* ######################### Selector ######################### */
@@ -391,12 +396,11 @@ div.olMapViewport div.olControlMousePosition {
 label {
 	width: 100px;
 	float: left;
-	d_isplay: inline;
-	vertical-align: middle;
 	font-size: 0.8em;
 	display: block;
 	color: #666;
 	padding-bottom: 2px;
+	padding-top: 5px;
 }
 
 .label {
@@ -548,7 +552,8 @@ table.resulttable th {
 }
 
 table.resulttable th.sortable {
-	_padding-right: 15px;
+	padding-right: 12px;
+	padding-left: 12px;
 	cursor: pointer;
 	border-right: 5px;
 	background-repeat: no-repeat;
@@ -749,7 +754,7 @@ div.pagination span.nav.enabled {
 	cursor: pointer;
 }
 
-button#editEnableAnchor, button#editDisabledAnchor, button#undoAnchor, button#redoAnchor, button#submitAnchor{
+button#rotateAnchor, button#editEnableAnchor, button#editDisabledAnchor, button#undoAnchor, button#redoAnchor, button#submitAnchor{
 	height: 26px;
 }
 
@@ -906,60 +911,61 @@ div#md .md-button { font-family:Verdana, sans-serif; }
 	width: 15px;
 	height: 15px;
 }
+
 /* ######################### Statistic ######################### */
-.statistic_block_title {
+div.statistic_blocktitle {
 	font-size: 12px;
 	font-weight: bold;
 	color: #737373;
 	padding-bottom: 10px;
 }
 
-.statistic_count_block {
-	width: 125px;
-	height: 125px;
-	background-image: url("../images/statistic_circle_gray.png");
-	background-repeat: no-repeat;
-	background-position: 50% 50%;
-	margin-bottom: 10px;
-	padding: 10px;
-	text-align: center;
+div.statistic_fieldset_header {
+    height: 16px;
+    line-height: 16px;
 }
 
-.statistic_count_block.missbrauchsmeldung {
-	background-image: url("../images/statistic_circle_yellow.png");
+div#statistic_fieldset_missbrauch{
+    width: 90%;
+    margin-bottom: 10px;
 }
 
-.statistic_count_block_count {
-	font-size: 24px;
-	font-weight: bold;
-	height: 24px;
-	padding-top: 18px;
-	color: #ffffff;
+div#statistic_fieldset_hinweise {
+    width: 90%;
 }
 
-.statistic_count_block_title {
-	padding: 2px 2px 2px 4px;
-	margin: 6px -10px 0px -10px;
-	font-size: 10px;
-	font-weight: bold;
-	height: 40px;
-	color: #ffffff;
+span.statistic_important {
+    font-weight: bold;
 }
 
-.missbrauchsmeldung .statistic_count_block_count,.missbrauchsmeldung .statistic_count_block_title
-	{
-	color: #000000;
+hr.statistic_ruler {
+    border: 0;
+    height: 2px;
+    background: #737373;
+}
+
+div.statistic_vorgaenge_infos {
+    font-size: 90%;
+}
+
+img.statistic_icon {
+    vertical-align: middle;
+    padding-bottom: 3px;
+}
+
+span.statistic_accepted {
+    color: #50c80f;
+    font-weight: bold;
+    width: 15px;
 }
 
 div.statistic_verteilung {
 	margin-left: 5px;
 	margin-right: 5px;
-	margin-bottom: 10px;
-	margin-top: 10px;
+	margin-top: 30px;
 }
 
 div.statistic_verteilung table {
-	height: 16px;
 	width: 100%;
 	border: 1px solid #737373;
 	/* abgerundete Ecken */
@@ -972,7 +978,6 @@ div.statistic_verteilung table {
 }
 
 div.statistic_verteilung table td {
-	height: 16px;
 	background-color: #fff;
 	padding: 0px 3px;
 	text-align: center;
@@ -1007,37 +1012,41 @@ div.statistic_verteilung table td.geloescht {
 	background-color: #000000;
 }
 
-div.statistic_verteilung table td.wirdNichtBearbeitet .statistic_verteilung_count,div.statistic_verteilung table td.wirdNichtBearbeitet .statistic_verteilung_text,div.statistic_verteilung table td.duplikat .statistic_verteilung_count,div.statistic_verteilung table td.duplikat .statistic_verteilung_text,div.statistic_verteilung table td.abgeschlossen .statistic_verteilung_count,div.statistic_verteilung table td.abgeschlossen .statistic_verteilung_text,div.statistic_verteilung table td.geloescht .statistic_verteilung_count,div.statistic_verteilung table td.geloescht .statistic_verteilung_text
+div.statistic_verteilung table td.geloescht .statistic_verteilung_count,div.statistic_verteilung table td.geloescht .statistic_verteilung_text
 	{
 	color: #fff;
 }
 
 .statistic_verteilung_count {
-	font-size: 14px;
-	margin-top: -1px;
+	font-size: 17px;
 	font-weight: bold;
 }
 
 .statistic_verteilung_text {
 	padding-top: 1px;
 	padding-bottom: 2px;
-	font-size: 9px;
+	font-size: 11px;
 	font-weight: bold;
 }
 
+ul.statistic_vorgaenge {
+	margin-top:-5px;
+}
+
 ul.statistic_vorgaenge img {
-	padding-top: 2px;
+	padding-top: 5px;
 	float: left;
 	border: none;
+    margin-left:-38px;
 }
 
 ul.statistic_vorgaenge div {
-	padding-left: 20px;
+	margin-left:-12px;
 }
 
 ul.statistic_vorgaenge li {
 	list-style-type: none;
-	padding: 5px 0px;
+	padding-top: 5px;
 }
 
 .statistic_link {

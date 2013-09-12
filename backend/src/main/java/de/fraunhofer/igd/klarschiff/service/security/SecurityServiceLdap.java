@@ -40,34 +40,10 @@ public class SecurityServiceLdap {
 			}
 		)
 	)
-	public <T> List<T>  getObjectListFromLdap(String path, String filter, IContextMapper<T> contextMapper) {
+	public <T>List<T> getObjectListFromLdap(String path, String filter, IContextMapper<T> contextMapper) {
 			
 		if (path==null) return ldapTemplate.search(DistinguishedName.EMPTY_PATH, filter, contextMapper);
 		return ldapTemplate.search(path, filter, contextMapper);
-		
-//		//bei Fehlern wiederholt Versuche starten
-//		List<T> list = null;
-//		int tryCount = 0;
-//		int maxTryCount = 10;
-//		
-//		while(list==null && tryCount<=maxTryCount)
-//		{
-//			tryCount++;
-//			try{
-//				if (path==null) list = ldapTemplate.search(DistinguishedName.EMPTY_PATH, filter, contextMapper);
-//				else list = ldapTemplate.search(path, filter, contextMapper);
-//			} catch (Exception e) {
-//				if (tryCount==maxTryCount) {
-//					logger.error("fehlerhafter LdapSearch (try:"+tryCount+"): path:"+path+" filter:"+filter+" ContextMapper:"+contextMapper, e);
-//					e.printStackTrace();
-//					throw new RuntimeException(e);
-//				} else {
-//					logger.warn("fehlerhafter LdapSearch (try:"+tryCount+"): path:"+path+" filter:"+filter+" ContextMapper:"+contextMapper);
-//				}
-//			}
-//		}
-//		if (list==null) throw new RuntimeException("Implementierungsfehler: List ist null");
-//		else return list;
 	}
 
 

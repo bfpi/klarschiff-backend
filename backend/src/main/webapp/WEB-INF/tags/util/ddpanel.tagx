@@ -13,13 +13,6 @@
 
 	<script type="text/javascript">
 		$.dropDownPanel("${name}panel", "${name}content", "${name}tab");
-//		var ${name}panel=new ddpanel({
-//			ids: ["${name}panel", "${name}content", "${name}tab"], // id of main panel DIV, content DIV, and tab DIV
-//			stateconfig: {initial: "0px", persiststate: true}, // initial: initial reveal amount in pixels (ie: 5px)
-//			animate: {enabled: true, steps: 3}, //steps: number of animation steps. Int between 1-20. Smaller=faster.
-//			pointerimage: {enabled: false, src: ["arrow-down.gif", "arrow-up.gif"]},
-//			closepanelonclick: {enabled: true} // close panel when links or elements with CSS class="closepanel" within container is clicked on?
-//		});
 		$('#${name}tab').attr('title', 'Klicken Sie hier, um den Inhaltsblock ein- oder auszuklappen.');
 		$('#${name}tab').append('<div class="icon"></div>');
 	</script>

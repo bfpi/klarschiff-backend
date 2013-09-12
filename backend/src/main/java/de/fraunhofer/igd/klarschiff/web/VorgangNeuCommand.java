@@ -26,6 +26,7 @@ public class VorgangNeuCommand implements Serializable {
 	MultipartFile foto;
 	String fotoName;
 	String zustaendigkeit;
+	String zustaendigkeitFrontend;
 	/**
 	 * Methode zum prüfen eines neuen Vorganges auf Vollständigkeit benötigter Attribute sowie Validität der 
 	 * E-Mail-Adresse<br/>
@@ -93,9 +94,14 @@ public class VorgangNeuCommand implements Serializable {
 	public String getZustaendigkeit() {
 		return zustaendigkeit;
 	}
-
-
 	public void setZustaendigkeit(String zustaendigkeit) {
 		this.zustaendigkeit = zustaendigkeit;
+	}
+    
+    public String getZustaendigkeitFrontend() {
+		return zustaendigkeitFrontend;
+	}
+	public void setZustaendigkeitFrontend(String zustaendigkeitFrontend) {
+		this.zustaendigkeitFrontend = zustaendigkeitFrontend;
 	}
 }

@@ -154,6 +154,12 @@ $(function () {
 		}
 		currStackItem.domObj.fadeIn("slow");
 	});
+    
+    // Rotate
+	$("#rotateAnchor").click(function() {
+        $("#submitAnchor").parent().append("<input type='hidden' name='action' value='fotoRotate'/>");
+        $("form").submit();
+	});
 	
 	// Clear
 	$("#editDisabledAnchor").click(function() {

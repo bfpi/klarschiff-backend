@@ -55,14 +55,14 @@ public class PoiService {
 	 * @throws Exception
 	 */
 	@SuppressWarnings("unchecked")
-	public HSSFWorkbook createScheet(Template template, List data) throws Exception {
+	public HSSFWorkbook createSheet(Template template, List data) throws Exception {
 		HSSFWorkbook workbook = readTemplate(template);
 		
 		switch (template) {
 		case vorgangListe:
 			{
 				Sheet sheet = workbook.getSheetAt(0);			
-				int r = 3;
+				int r = 1;
 				for(Object[] vorgangData : (List<Object[]>)data)
 				{
 					Vorgang vorgang = (Vorgang)vorgangData[0];
@@ -75,12 +75,13 @@ public class PoiService {
 					row.createCell(3).setCellValue(aenderungsdatum);
 					row.createCell(4).setCellValue(vorgang.getKategorie().getParent().getName());
 					row.createCell(5).setCellValue(vorgang.getKategorie().getName());
-					row.createCell(6).setCellValue(vorgang.getStatus().getText());								
-					row.createCell(7).setCellValue(unterstuetzer);	
-					row.createCell(8).setCellValue(vorgang.getZustaendigkeit());
-					row.createCell(9).setCellValue(vorgang.getZustaendigkeitStatus().getText());
-					row.createCell(10).setCellValue(vorgang.getDelegiertAn());
-					row.createCell(11).setCellValue(vorgang.getPrioritaet().getText());
+					row.createCell(6).setCellValue(vorgang.getStatus().getText());
+                    row.createCell(7).setCellValue(vorgang.getAdresse());                    
+					row.createCell(8).setCellValue(unterstuetzer);	
+					row.createCell(9).setCellValue(vorgang.getZustaendigkeit());
+					row.createCell(10).setCellValue(vorgang.getZustaendigkeitStatus().getText());
+					row.createCell(11).setCellValue(vorgang.getDelegiertAn());
+					row.createCell(12).setCellValue(vorgang.getPrioritaet().getText());
 					r++;
 				}
 			}
@@ -88,7 +89,7 @@ public class PoiService {
 		case vorgangDelegiertListe:
 			{
 				Sheet sheet = workbook.getSheetAt(0);			
-				int r = 3;
+				int r = 1;
 				for(Vorgang vorgang : (List<Vorgang>)data)
 				{
 					Row row = sheet.createRow(r);
@@ -97,19 +98,16 @@ public class PoiService {
 					row.createCell(2).setCellValue(vorgang.getDatum());
 					row.createCell(3).setCellValue(vorgang.getKategorie().getParent().getName());
 					row.createCell(4).setCellValue(vorgang.getKategorie().getName());
-					row.createCell(5).setCellValue(vorgang.getStatus().getText());								
-					//row.createCell(6).setCellValue(vorgang.getZustaendigkeit());
-					//row.createCell(7).setCellValue(vorgang.getZustaendigkeitStatus().getText());
+					row.createCell(5).setCellValue(vorgang.getStatus().getText());
 					row.createCell(6).setCellValue(vorgang.getAdresse());
-					//row.createCell(8).setCellValue(vorgang.getDelegiertAn());
-					row.createCell(9).setCellValue(vorgang.getPrioritaet().getText());
+					row.createCell(7).setCellValue(vorgang.getPrioritaet().getText());
 					r++;
 				}
 			}
 			break;
 
 		default:
-			throw new RuntimeException("Template wird nicht unterstützt");
+			throw new RuntimeException("Das Template wird nicht unterstützt.");
 		}
 		
 		return workbook;

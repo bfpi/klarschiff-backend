@@ -113,6 +113,7 @@ public class VorgangErstsichtungController {
 	 * <li>zugewiesene Zuständigkeit akzeptieren (<code>akzeptieren</code>)</li>
 	 * <li>Zuständigkeit selbst übernehmen und akzeptieren (<code>&uuml;bernehmen und akzeptieren</code>)</li>
 	 * <li>Erstprüfung abschließen (<code>Pr&uuml;fung abschlie&szlig;en</code>)</li>
+	 * <li>Rotiertes Foto speichern (<code>fotoRotate</code>)</li>
 	 * <li>Bearbeitetes (zensiertes) Foto speichern (<code>fotoSave</code>)</li>
 	 * <li>Freigabestatus von Betreff, Details oder Foto ändern (<code>freigabeStatus_Betreff; freigabeStatus_Details; freigabeStatus_Foto;</code>)</li>
 	 * </ul>
@@ -147,10 +148,12 @@ public class VorgangErstsichtungController {
 			assertNotEmpty(cmd, result, Assert.EvaluateOn.ever, "vorgang.zustaendigkeit", null);
 			if (result.hasErrors()) {
 				cmd.getVorgang().setZustaendigkeit(vorgangDao.findVorgang(id).getZustaendigkeit());
+				cmd.getVorgang().setZustaendigkeitFrontend(vorgangDao.findVorgang(id).getZustaendigkeitFrontend());
 				model.put("mapExternUrl", geoService.getMapExternUrl(cmd.getVorgang()));
 	            return "vorgang/erstsichtung/zustaendigkeit";
 	        }
-
+            cmd.getVorgang().setZustaendigkeitFrontend(securityService.getZustaendigkeit(cmd.getVorgang().getZustaendigkeit()).getLocality());
+                
 			//verlaufDao.addVerlaufToVorgang(cmd.getVorgang(), EnumVerlaufTyp.zustaendigkeit, vorgangDao.findVorgang(id).getZustaendigkeit(), cmd.getVorgang().getZustaendigkeit());
 			vorgangDao.merge(cmd.getVorgang());
 			
@@ -159,6 +162,7 @@ public class VorgangErstsichtungController {
 		} else if (action.equals("neu zuweisen")) {
 			
 			cmd.getVorgang().setZustaendigkeit(classificationService.calculateZustaendigkeitforVorgang(cmd.getVorgang()).getId());
+			cmd.getVorgang().setZustaendigkeitFrontend(securityService.getZustaendigkeit(cmd.getVorgang().getZustaendigkeit()).getLocality());
 
 			//verlaufDao.addVerlaufToVorgang(cmd.getVorgang(), EnumVerlaufTyp.zustaendigkeit, vorgangDao.findVorgang(id).getZustaendigkeit(), cmd.getVorgang().getZustaendigkeit());
 
@@ -179,9 +183,11 @@ public class VorgangErstsichtungController {
 			assertNotEmpty(cmd, result, Assert.EvaluateOn.ever, "vorgang.zustaendigkeit", null);
 			if (result.hasErrors()) {
 				cmd.getVorgang().setZustaendigkeit(vorgangDao.findVorgang(id).getZustaendigkeit());
+                cmd.getVorgang().setZustaendigkeitFrontend(securityService.getZustaendigkeit(vorgangDao.findVorgang(id).getZustaendigkeit()).getLocality());
 				model.put("mapExternUrl", geoService.getMapExternUrl(cmd.getVorgang()));
 	            return "vorgang/erstsichtung/zustaendigkeit";
 	        }
+            cmd.getVorgang().setZustaendigkeitFrontend(securityService.getZustaendigkeit(cmd.getVorgang().getZustaendigkeit()).getLocality());
 			cmd.getVorgang().setZustaendigkeitStatus(EnumZustaendigkeitStatus.akzeptiert);
 			
 			//verlaufDao.addVerlaufToVorgang(cmd.getVorgang(), EnumVerlaufTyp.zustaendigkeit, vorgangDao.findVorgang(id).getZustaendigkeit(), cmd.getVorgang().getZustaendigkeit());
@@ -213,6 +219,12 @@ public class VorgangErstsichtungController {
 			for (@SuppressWarnings("unused") Verlauf verlauf : cmd.getVorgang().getVerlauf());
 			return "vorgang/erstsichtung/pruefen";
 			
+		} else if (action.equals("fotoRotate")) {
+			imageService.rotateImageForVorgang(cmd.getVorgang());
+			vorgangDao.merge(cmd.getVorgang());
+            cmd.setVorgang(vorgangDao.findVorgang(id));
+			for (@SuppressWarnings("unused") Verlauf verlauf : cmd.getVorgang().getVerlauf());
+			return "vorgang/erstsichtung/pruefen";
 		} else if (action!=null && action.startsWith("freigabeStatus")) {
 			String str[] = action.split("_");
 			EnumFreigabeStatus freigabeStatus = EnumFreigabeStatus.valueOf(str[2]);

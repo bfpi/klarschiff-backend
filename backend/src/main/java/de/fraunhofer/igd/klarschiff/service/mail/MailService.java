@@ -1,6 +1,7 @@
 package de.fraunhofer.igd.klarschiff.service.mail;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.ServletContext;
@@ -15,14 +16,20 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 
 import de.fraunhofer.igd.klarschiff.dao.KommentarDao;
+import de.fraunhofer.igd.klarschiff.dao.RedaktionEmpfaengerDao;
+import de.fraunhofer.igd.klarschiff.dao.RedaktionKriterienDao;
 import de.fraunhofer.igd.klarschiff.dao.VerlaufDao;
 import de.fraunhofer.igd.klarschiff.dao.VorgangDao;
 import de.fraunhofer.igd.klarschiff.service.geo.GeoService;
 import de.fraunhofer.igd.klarschiff.service.job.JobExecutorService;
 import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
+import de.fraunhofer.igd.klarschiff.service.settings.SettingsService;
 import de.fraunhofer.igd.klarschiff.vo.Kommentar;
 import de.fraunhofer.igd.klarschiff.vo.Missbrauchsmeldung;
+import de.fraunhofer.igd.klarschiff.vo.RedaktionEmpfaenger;
+import de.fraunhofer.igd.klarschiff.vo.RedaktionKriterien;
 import de.fraunhofer.igd.klarschiff.vo.Unterstuetzer;
+import de.fraunhofer.igd.klarschiff.vo.Verlauf;
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
 
 /**
@@ -51,6 +58,9 @@ public class MailService {
 	
 	@Autowired
 	VerlaufDao verlaufDao;
+    
+    @Autowired
+	SettingsService settingsService;
 
 	JavaMailSender mailSender;
 	String serverBaseUrlBackend;
@@ -66,9 +76,36 @@ public class MailService {
 	SimpleMailMessage vorgangWeiterleitenMailTemplate;
 	SimpleMailMessage informDispatcherMailTemplate;
 	SimpleMailMessage informExternMailTemplate;
-	SimpleMailMessage informErstellerMailTemplate;
+	SimpleMailMessage informErstellerMailInBearbeitungTemplate;
+	SimpleMailMessage informErstellerMailAbschlussTemplate;
+	SimpleMailMessage kriteriumOffenNichtAkzeptiertTemplate;
+	SimpleMailMessage kriteriumOffenInbearbeitungOhneStatusKommentarTemplate;
+	SimpleMailMessage kriteriumIdeeOffenOhneUnterstuetzungTemplate;
+	SimpleMailMessage kriteriumWirdnichtbearbeitetOhneStatuskommentarTemplate;
+	SimpleMailMessage kriteriumNichtMehrOffenNichtAkzeptiertTemplate;
+	SimpleMailMessage kriteriumOhneRedaktionelleFreigabenTemplate;
+	SimpleMailMessage kriteriumOhneZustaendigkeitTemplate;
+	SimpleMailMessage informRedaktionEmpfaengerMailTemplate;
 
 	private SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+    
+    
+    /**
+	 * Versendet eine E-Mail mit Lob, Hiweisen oder Kritik zu einem Vorgang.
+	 * @param vorgang Vorgang, zu dem eine bestätigungsmail versendet werden soll.
+	 */
+	public void sendLobHinweiseKritikMail(Vorgang vorgang, String absender, String empfaenger, String freitext) {
+		try {
+			MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mailSender.createMimeMessage(), true);
+			mimeMessageHelper.setSubject("Klarschiff: Lob, Hinweise oder Kritik von Bürger/-innen zu Vorgang " + vorgang.getId());
+			mimeMessageHelper.setFrom(absender);
+			mimeMessageHelper.setTo(empfaenger);
+            mimeMessageHelper.setText(freitext);
+			jobExecutorService.runJob(new MailSenderJob(this, mimeMessageHelper.getMimeMessage()));
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 	
 	
 	/**
@@ -211,6 +248,12 @@ public class MailService {
 				str.append(vorgang.getAdresse());
 				str.append("\n");
 			}
+            
+            if(vorgang.getFlurstueckseigentum().isEmpty() == false){
+				str.append("Flurstückseigentum: ");
+				str.append(vorgang.getFlurstueckseigentum());
+				str.append("\n");
+			}
 			
 			str.append("Erstellung: " );
 			str.append(formatter.format(vorgang.getDatum()));
@@ -291,7 +334,7 @@ public class MailService {
 		msg.setTo(to);
 		StringBuilder str = new StringBuilder();
 		for(Vorgang vorgang : newVorgaenge) {
-			str.append("ID            : "+vorgang.getId()+"\n");
+			str.append("Nummer        : "+vorgang.getId()+"\n");
 			str.append("Hauptkategorie: "+vorgang.getKategorie().getParent().getName()+"\n");
 			str.append("Unterkategorie: "+vorgang.getKategorie().getName()+"\n");
 			str.append("URL           : "+getServerBaseUrlBackend()+"vorgang/"+vorgang.getId()+"/uebersicht\n");
@@ -304,7 +347,7 @@ public class MailService {
 	
 	
 	/**
-	 * Sendet E-Mails an die externen Benutzer mit neune Vorgängen.
+	 * Sendet E-Mails an die externen Benutzer mit neuen Vorgängen.
 	 * @param newVorgaenge Liste der Vorgänge, die in der E-Mail dargestellt werden sollen.
 	 * @param to Liste der Empfänger der E-Mail.
 	 */
@@ -315,7 +358,7 @@ public class MailService {
 		msg.setTo(to);
 		StringBuilder str = new StringBuilder();
 		for(Vorgang vorgang : newVorgaenge) {
-			str.append("ID            : "+vorgang.getId()+"\n");
+			str.append("Nummer        : "+vorgang.getId()+"\n");
 			str.append("Hauptkategorie: "+vorgang.getKategorie().getParent().getName()+"\n");
 			str.append("Unterkategorie: "+vorgang.getKategorie().getName()+"\n");
 			str.append("URL           : "+getServerBaseUrlBackend()+"vorgang/delegiert/"+vorgang.getId()+"/uebersicht\n");
@@ -325,20 +368,20 @@ public class MailService {
 		msg.setText(msg.getText().replaceAll("%vorgaenge%", str.toString()));
 		jobExecutorService.runJob(new MailSenderJob(this, msg));
 	}
-
-	
-	/**
+    
+    
+    /**
 	 * Sendet eine E-Mail an den Ersteller eines Vorganges mit den Daten über den aktuellen Status des Vorganges.
 	 * @param vorgang Vorgang zu dem der Ersteller informiert werden sollen.
 	 */
-	public void sendInformErstellerMail(Vorgang vorgang) {
-		SimpleMailMessage msg = new SimpleMailMessage(informErstellerMailTemplate);
+	public void sendInformErstellerMailInBearbeitung(Vorgang vorgang) {
+		SimpleMailMessage msg = new SimpleMailMessage(informErstellerMailInBearbeitungTemplate);
 		msg.setTo(vorgang.getAutorEmail());
 
 		String mailtext = msg.getText();
 		StringBuilder str = new StringBuilder();
 		//Vorgang
-		str.append("ID            : "+vorgang.getId()+"\n");
+		str.append("Nummer        : "+vorgang.getId()+"\n");
 		str.append("Typ           : "+vorgang.getTyp().getText()+"\n");
 		str.append("Hauptkategorie: "+vorgang.getKategorie().getParent().getName()+"\n");
 		str.append("Unterkategorie: "+vorgang.getKategorie().getName()+"\n\n\n");
@@ -356,6 +399,209 @@ public class MailService {
 		msg.setText(mailtext);
 		
 		jobExecutorService.runJob(new MailSenderJob(this, msg));
+	}
+
+	
+	/**
+	 * Sendet eine E-Mail an den Ersteller eines Vorganges mit den Daten über den aktuellen Status des Vorganges.
+	 * @param vorgang Vorgang zu dem der Ersteller informiert werden sollen.
+	 */
+	public void sendInformErstellerMailAbschluss(Vorgang vorgang) {
+		SimpleMailMessage msg = new SimpleMailMessage(informErstellerMailAbschlussTemplate);
+		msg.setTo(vorgang.getAutorEmail());
+
+		String mailtext = msg.getText();
+		StringBuilder str = new StringBuilder();
+		//Vorgang
+		str.append("Nummer        : "+vorgang.getId()+"\n");
+		str.append("Typ           : "+vorgang.getTyp().getText()+"\n");
+		str.append("Hauptkategorie: "+vorgang.getKategorie().getParent().getName()+"\n");
+		str.append("Unterkategorie: "+vorgang.getKategorie().getName()+"\n\n\n");
+		str.append(geoService.getMapExternExternUrl(vorgang)+"\n");
+		mailtext = mailtext.replaceAll("%vorgang%", str.toString());
+		//Datum
+		mailtext = mailtext.replaceAll("%datum%", formatter.format(vorgang.getDatum()));
+		//Status
+		str = new StringBuilder();
+		str.append(vorgang.getStatus().getText());
+		if (!StringUtils.isBlank(vorgang.getStatusKommentar()))
+			str.append(" (Info der Verwaltung: "+vorgang.getStatusKommentar()+")\n");
+		mailtext = mailtext.replaceAll("%status%", str.toString());
+		
+		msg.setText(mailtext);
+		
+		jobExecutorService.runJob(new MailSenderJob(this, msg));
+	}
+    
+    
+    /**
+	 * Sendet E-Mails an die Empfänger redaktioneller E-Mails.
+	 * @param tageOffenNichtAkzeptiert Anzahl der Tage zum Redaktionskriterium 1.
+	 * @param tageInbearbeitungOhneStatusKommentar Anzahl der Tage zum Redaktionskriterium 2.
+	 * @param tageIdeeOffenOhneUnterstuetzung Anzahl der Tage zum Redaktionskriterium 2.
+	 * @param vorgaengeOffenNichtAkzeptiert Liste der Vorgänge zu Redaktionskriterium 1, die in der E-Mail dargestellt werden sollen.
+	 * @param vorgaengeInbearbeitungOhneStatusKommentar Liste der Vorgänge zu Redaktionskriterium 2, die in der E-Mail dargestellt werden sollen.
+	 * @param vorgaengeIdeeOffenOhneUnterstuetzung Liste der Vorgänge zu Redaktionskriterium 3, die in der E-Mail dargestellt werden sollen.
+	 * @param vorgaengeWirdnichtbearbeitetOhneStatuskommentar Liste der Vorgänge zu Redaktionskriterium 4, die in der E-Mail dargestellt werden sollen.
+	 * @param vorgaengeNichtMehrOffenNichtAkzeptiert Liste der Vorgänge zu Redaktionskriterium 5, die in der E-Mail dargestellt werden sollen.
+	 * @param vorgaengeOhneRedaktionelleFreigaben Liste der Vorgänge zu Redaktionskriterium 6, die in der E-Mail dargestellt werden sollen.
+	 * @param vorgaengeOhneZustaendigkeit Liste der Vorgänge zu Redaktionskriterium 7, die in der E-Mail dargestellt werden sollen.
+	 * @param to Empfänger der E-Mail.
+	 */
+	public void sendInformRedaktionEmpfaengerMail(Short tageOffenNichtAkzeptiert, Short tageInbearbeitungOhneStatusKommentar, Short tageIdeeOffenOhneUnterstuetzung, List<Vorgang> vorgaengeOffenNichtAkzeptiert, List<Vorgang> vorgaengeInbearbeitungOhneStatusKommentar, List<Vorgang> vorgaengeIdeeOffenOhneUnterstuetzung, List<Vorgang> vorgaengeWirdnichtbearbeitetOhneStatuskommentar, List<Vorgang> vorgaengeNichtMehrOffenNichtAkzeptiert, List<Vorgang> vorgaengeOhneRedaktionelleFreigaben, List<Vorgang> vorgaengeOhneZustaendigkeit, String to, String zustaendigkeit) {
+        
+        //keine E-Mail versenden, falls alle Listen von Vorgängen leer sind
+		if ( (CollectionUtils.isEmpty(vorgaengeOffenNichtAkzeptiert)) && (CollectionUtils.isEmpty(vorgaengeInbearbeitungOhneStatusKommentar)) && (CollectionUtils.isEmpty(vorgaengeIdeeOffenOhneUnterstuetzung)) && (CollectionUtils.isEmpty(vorgaengeWirdnichtbearbeitetOhneStatuskommentar)) && (CollectionUtils.isEmpty(vorgaengeNichtMehrOffenNichtAkzeptiert)) && (CollectionUtils.isEmpty(vorgaengeOhneRedaktionelleFreigaben)) && (CollectionUtils.isEmpty(vorgaengeOhneZustaendigkeit)) ) return;
+        
+        //lokale Variablen initiieren
+        Date jetzt = new Date();
+		
+        //Teiltexte für die einzelnen Redaktionskriterien initiieren
+		SimpleMailMessage textKriteriumOffenNichtAkzeptiert = new SimpleMailMessage(kriteriumOffenNichtAkzeptiertTemplate);
+		SimpleMailMessage textKriteriumOffenInbearbeitungOhneStatusKommentar = new SimpleMailMessage(kriteriumOffenInbearbeitungOhneStatusKommentarTemplate);
+		SimpleMailMessage textKriteriumIdeeOffenOhneUnterstuetzung = new SimpleMailMessage(kriteriumIdeeOffenOhneUnterstuetzungTemplate);
+		SimpleMailMessage textKriteriumWirdnichtbearbeitetOhneStatuskommentar = new SimpleMailMessage(kriteriumWirdnichtbearbeitetOhneStatuskommentarTemplate);
+		SimpleMailMessage textKriteriumNichtMehrOffenNichtAkzeptiert = new SimpleMailMessage(kriteriumNichtMehrOffenNichtAkzeptiertTemplate);
+		SimpleMailMessage textKriteriumOhneRedaktionelleFreigaben = new SimpleMailMessage(kriteriumOhneRedaktionelleFreigabenTemplate);
+		SimpleMailMessage textKriteriumOhneZustaendigkeit = new SimpleMailMessage(kriteriumOhneZustaendigkeitTemplate);
+        
+        //Gesamt-E-Mail initiieren, mit Adresse des Empfängers versehen und entsprechenden Platzhalter für Zuständigkeit ersetzen
+		SimpleMailMessage msg = new SimpleMailMessage(informRedaktionEmpfaengerMailTemplate);
+		msg.setTo(to);
+        msg.setText(msg.getText().replaceAll("%zustaendigkeit%", zustaendigkeit));
+        
+        //falls Liste der Vorgänge zu Redaktionskriterium 1 nicht leer ist...
+        if (!CollectionUtils.isEmpty(vorgaengeOffenNichtAkzeptiert)) {
+        
+            //Liste der Vorgänge auslesen und zu String zusammenbauen
+            StringBuilder str = new StringBuilder();
+            for (Vorgang vorgang : vorgaengeOffenNichtAkzeptiert) {
+                str.append(String.format("%1$-" + 9 + "s", vorgang.getId()) + String.format("%1$-" + 27 + "s", vorgang.getZustaendigkeit()) + String.format("%1$-" + 10 + "s", vorgang.getTyp().getText()) + formatter.format(vorgang.getVersion()) + " (vor " + ((jetzt.getTime() - vorgang.getVersion().getTime()) / (24 * 60 * 60 * 1000)) + " Tagen)\n");
+            }
+            
+            //Platzhalter für Teiltexte ersetzen und Teiltexte in Gesamt-E-Mail einfügen
+            textKriteriumOffenNichtAkzeptiert.setText(textKriteriumOffenNichtAkzeptiert.getText().replaceAll("%tage%", tageOffenNichtAkzeptiert.toString()));
+            textKriteriumOffenNichtAkzeptiert.setText(textKriteriumOffenNichtAkzeptiert.getText().replaceAll("%vorgaenge%", str.toString()));
+            msg.setText(msg.getText().replaceAll("%kriteriumOffenNichtAkzeptiert%", textKriteriumOffenNichtAkzeptiert.getText()));
+        }
+        //ansonsten Platzhalter für Teiltexte des Redaktionskriteriums 1 (plus nachfolgende Linebreaks) aus Gesamt-E-Mail entfernen
+        else {
+            msg.setText(msg.getText().replaceAll("%kriteriumOffenNichtAkzeptiert%\n\n", ""));
+        }
+        
+        //falls Liste der Vorgänge zu Redaktionskriterium 2 nicht leer ist...
+        if (!CollectionUtils.isEmpty(vorgaengeInbearbeitungOhneStatusKommentar)) {
+        
+            //Liste der Vorgänge auslesen und zu String zusammenbauen
+            StringBuilder str = new StringBuilder();
+            for (Vorgang vorgang : vorgaengeInbearbeitungOhneStatusKommentar) {
+                str.append(String.format("%1$-" + 9 + "s", vorgang.getId()) + String.format("%1$-" + 27 + "s", vorgang.getZustaendigkeit()) + String.format("%1$-" + 10 + "s", vorgang.getTyp().getText()) + formatter.format(vorgang.getVersion()) + " (vor " + ((jetzt.getTime() - vorgang.getVersion().getTime()) / (24 * 60 * 60 * 1000)) + " Tagen)\n");
+            }
+            
+            //Platzhalter für Teiltexte ersetzen und Teiltexte in Gesamt-E-Mail einfügen
+            textKriteriumOffenInbearbeitungOhneStatusKommentar.setText(textKriteriumOffenInbearbeitungOhneStatusKommentar.getText().replaceAll("%tage%", tageInbearbeitungOhneStatusKommentar.toString()));
+            textKriteriumOffenInbearbeitungOhneStatusKommentar.setText(textKriteriumOffenInbearbeitungOhneStatusKommentar.getText().replaceAll("%vorgaenge%", str.toString()));
+            msg.setText(msg.getText().replaceAll("%kriteriumOffenInbearbeitungOhneStatusKommentar%", textKriteriumOffenInbearbeitungOhneStatusKommentar.getText()));
+        }
+        //ansonsten Platzhalter für Teiltexte des Redaktionskriteriums 2 (plus nachfolgende Linebreaks) aus Gesamt-E-Mail entfernen
+        else {
+            msg.setText(msg.getText().replaceAll("%kriteriumOffenInbearbeitungOhneStatusKommentar%\n\n", ""));
+        }
+        
+        //falls Liste der Vorgänge zu Redaktionskriterium 3 nicht leer ist...
+        if (!CollectionUtils.isEmpty(vorgaengeIdeeOffenOhneUnterstuetzung)) {
+        
+            //Liste der Vorgänge auslesen und zu String zusammenbauen
+            StringBuilder str = new StringBuilder();
+            for (Vorgang vorgang : vorgaengeIdeeOffenOhneUnterstuetzung) {
+                str.append(String.format("%1$-" + 9 + "s", vorgang.getId()) + String.format("%1$-" + 27 + "s", vorgang.getZustaendigkeit()) + String.format("%1$-" + 18 + "s", vorgangDao.countUnterstuetzerByVorgang(vorgang)) + formatter.format(verlaufDao.getAktuellstesErstsichtungsdatumZuVorgang(vorgang)) + " (vor " + ((jetzt.getTime() - verlaufDao.getAktuellstesErstsichtungsdatumZuVorgang(vorgang).getTime()) / (24 * 60 * 60 * 1000)) + " Tagen)\n");
+            }
+            
+            //Platzhalter für Teiltexte ersetzen und Teiltexte in Gesamt-E-Mail einfügen
+            textKriteriumIdeeOffenOhneUnterstuetzung.setText(textKriteriumIdeeOffenOhneUnterstuetzung.getText().replaceAll("%tage%", tageIdeeOffenOhneUnterstuetzung.toString()));
+            textKriteriumIdeeOffenOhneUnterstuetzung.setText(textKriteriumIdeeOffenOhneUnterstuetzung.getText().replaceAll("%unterstuetzungen%", settingsService.getVorgangIdeeUnterstuetzer().toString()));
+            textKriteriumIdeeOffenOhneUnterstuetzung.setText(textKriteriumIdeeOffenOhneUnterstuetzung.getText().replaceAll("%vorgaenge%", str.toString()));
+            msg.setText(msg.getText().replaceAll("%kriteriumIdeeOffenOhneUnterstuetzung%", textKriteriumIdeeOffenOhneUnterstuetzung.getText()));
+        }
+        //ansonsten Platzhalter für Teiltexte des Redaktionskriteriums 3 (plus nachfolgende Linebreaks) aus Gesamt-E-Mail entfernen
+        else {
+            msg.setText(msg.getText().replaceAll("%kriteriumIdeeOffenOhneUnterstuetzung%\n\n", ""));
+        }
+        
+        //falls Liste der Vorgänge zu Redaktionskriterium 4 nicht leer ist...
+        if (!CollectionUtils.isEmpty(vorgaengeWirdnichtbearbeitetOhneStatuskommentar)) {
+        
+            //Liste der Vorgänge auslesen und zu String zusammenbauen
+            StringBuilder str = new StringBuilder();
+            for (Vorgang vorgang : vorgaengeWirdnichtbearbeitetOhneStatuskommentar) {
+                str.append(String.format("%1$-" + 9 + "s", vorgang.getId()) + String.format("%1$-" + 27 + "s", vorgang.getZustaendigkeit()) + String.format("%1$-" + 10 + "s", vorgang.getTyp().getText()) + formatter.format(vorgang.getVersion()) + " (vor " + ((jetzt.getTime() - vorgang.getVersion().getTime()) / (24 * 60 * 60 * 1000)) + " Tagen)\n");
+            }
+            
+            //Platzhalter für Teiltexte ersetzen und Teiltexte in Gesamt-E-Mail einfügen
+            textKriteriumWirdnichtbearbeitetOhneStatuskommentar.setText(textKriteriumWirdnichtbearbeitetOhneStatuskommentar.getText().replaceAll("%vorgaenge%", str.toString()));
+            msg.setText(msg.getText().replaceAll("%kriteriumWirdnichtbearbeitetOhneStatuskommentar%", textKriteriumWirdnichtbearbeitetOhneStatuskommentar.getText()));
+        }
+        //ansonsten Platzhalter für Teiltexte des Redaktionskriteriums 4 (plus nachfolgende Linebreaks) aus Gesamt-E-Mail entfernen
+        else {
+            msg.setText(msg.getText().replaceAll("%kriteriumWirdnichtbearbeitetOhneStatuskommentar%\n\n", ""));
+        }
+        
+        //falls Liste der Vorgänge zu Redaktionskriterium 5 nicht leer ist...
+        if (!CollectionUtils.isEmpty(vorgaengeNichtMehrOffenNichtAkzeptiert)) {
+        
+            //Liste der Vorgänge auslesen und zu String zusammenbauen
+            StringBuilder str = new StringBuilder();
+            for (Vorgang vorgang : vorgaengeNichtMehrOffenNichtAkzeptiert) {
+                str.append(String.format("%1$-" + 9 + "s", vorgang.getId()) + String.format("%1$-" + 27 + "s", vorgang.getZustaendigkeit()) + String.format("%1$-" + 10 + "s", vorgang.getTyp().getText()) + String.format("%1$-" + 24 + "s", vorgang.getStatus().getText()) + formatter.format(vorgang.getVersion()) + " (vor " + ((jetzt.getTime() - vorgang.getVersion().getTime()) / (24 * 60 * 60 * 1000)) + " Tagen)\n");
+            }
+            
+            //Platzhalter für Teiltexte ersetzen und Teiltexte in Gesamt-E-Mail einfügen
+            textKriteriumNichtMehrOffenNichtAkzeptiert.setText(textKriteriumNichtMehrOffenNichtAkzeptiert.getText().replaceAll("%vorgaenge%", str.toString()));
+            msg.setText(msg.getText().replaceAll("%kriteriumNichtMehrOffenNichtAkzeptiert%", textKriteriumNichtMehrOffenNichtAkzeptiert.getText()));
+        }
+        //ansonsten Platzhalter für Teiltexte des Redaktionskriteriums 5 (plus nachfolgende Linebreaks) aus Gesamt-E-Mail entfernen
+        else {
+            msg.setText(msg.getText().replaceAll("%kriteriumNichtMehrOffenNichtAkzeptiert%\n\n", ""));
+        }
+        
+        //falls Liste der Vorgänge zu Redaktionskriterium 6 nicht leer ist...
+        if (!CollectionUtils.isEmpty(vorgaengeOhneRedaktionelleFreigaben)) {
+        
+            //Liste der Vorgänge auslesen und zu String zusammenbauen
+            StringBuilder str = new StringBuilder();
+            for (Vorgang vorgang : vorgaengeOhneRedaktionelleFreigaben) {
+                str.append(String.format("%1$-" + 9 + "s", vorgang.getId()) + String.format("%1$-" + 27 + "s", vorgang.getZustaendigkeit()) + String.format("%1$-" + 10 + "s", vorgang.getTyp().getText()) + String.format("%1$-" + 24 + "s", vorgang.getStatus().getText()) + String.format("%1$-" + 25 + "s", vorgang.getBetreffFreigabeStatus()) + String.format("%1$-" + 25 + "s", vorgang.getDetailsFreigabeStatus()) + vorgang.getFotoFreigabeStatus() + "\n");
+            }
+            
+            //Platzhalter für Teiltexte ersetzen und Teiltexte in Gesamt-E-Mail einfügen
+            textKriteriumOhneRedaktionelleFreigaben.setText(textKriteriumOhneRedaktionelleFreigaben.getText().replaceAll("%vorgaenge%", str.toString()));
+            msg.setText(msg.getText().replaceAll("%kriteriumOhneRedaktionelleFreigaben%", textKriteriumOhneRedaktionelleFreigaben.getText()));
+        }
+        //ansonsten Platzhalter für Teiltexte des Redaktionskriteriums 6 (plus nachfolgende Linebreaks) aus Gesamt-E-Mail entfernen
+        else {
+            msg.setText(msg.getText().replaceAll("%kriteriumOhneRedaktionelleFreigaben%\n\n", ""));
+        }
+        
+        //falls Liste der Vorgänge zu Redaktionskriterium 7 nicht leer ist...
+        if (!CollectionUtils.isEmpty(vorgaengeOhneZustaendigkeit)) {
+        
+            //Liste der Vorgänge auslesen und zu String zusammenbauen
+            StringBuilder str = new StringBuilder();
+            for (Vorgang vorgang : vorgaengeOhneZustaendigkeit) {
+                str.append(String.format("%1$-" + 9 + "s", vorgang.getId()) + String.format("%1$-" + 10 + "s", vorgang.getTyp().getText()) + vorgang.getStatus().getText() + "\n");
+            }
+            
+            //Platzhalter für Teiltexte ersetzen und Teiltexte in Gesamt-E-Mail einfügen
+            textKriteriumOhneZustaendigkeit.setText(textKriteriumOhneZustaendigkeit.getText().replaceAll("%vorgaenge%", str.toString()));
+            msg.setText(msg.getText().replaceAll("%kriteriumOhneZustaendigkeit%", textKriteriumOhneZustaendigkeit.getText()));
+        }
+        //ansonsten Platzhalter für Teiltexte des Redaktionskriteriums 7 (plus nachfolgende Linebreaks) aus Gesamt-E-Mail entfernen
+        else {
+            msg.setText(msg.getText().replaceAll("%kriteriumOhneZustaendigkeit%\n\n", ""));
+        }
+
+        //Job ausführen
+		jobExecutorService.runJob(new MailSenderJob(this, msg));	
 	}
 	
 	
@@ -440,12 +686,75 @@ public class MailService {
 	public void setServerBaseUrlFrontend(String serverBaseUrlFrontend) {
 		this.serverBaseUrlFrontend = serverBaseUrlFrontend;
 	}
-	public SimpleMailMessage getInformErstellerMailTemplate() {
-		return informErstellerMailTemplate;
+    public SimpleMailMessage getInformErstellerMailInBearbeitungTemplate() {
+		return informErstellerMailInBearbeitungTemplate;
 	}
-	public void setInformErstellerMailTemplate(
-			SimpleMailMessage informErstellerMailTemplate) {
-		this.informErstellerMailTemplate = informErstellerMailTemplate;
+	public void setInformErstellerMailInBearbeitungTemplate(
+			SimpleMailMessage informErstellerMailInBearbeitungTemplate) {
+		this.informErstellerMailInBearbeitungTemplate = informErstellerMailInBearbeitungTemplate;
+	}
+	public SimpleMailMessage getInformErstellerMailAbschlussTemplate() {
+		return informErstellerMailAbschlussTemplate;
+	}
+	public void setInformErstellerMailAbschlussTemplate(
+			SimpleMailMessage informErstellerMailAbschlussTemplate) {
+		this.informErstellerMailAbschlussTemplate = informErstellerMailAbschlussTemplate;
+	}
+    public SimpleMailMessage getKriteriumOffenNichtAkzeptiertTemplate() {
+		return kriteriumOffenNichtAkzeptiertTemplate;
+	}
+	public void setKriteriumOffenNichtAkzeptiertTemplate(
+			SimpleMailMessage kriteriumOffenNichtAkzeptiertTemplate) {
+		this.kriteriumOffenNichtAkzeptiertTemplate = kriteriumOffenNichtAkzeptiertTemplate;
+	}
+    public SimpleMailMessage getKriteriumOffenInbearbeitungOhneStatusKommentarTemplate() {
+		return kriteriumOffenInbearbeitungOhneStatusKommentarTemplate;
+	}
+	public void setKriteriumOffenInbearbeitungOhneStatusKommentarTemplate(
+			SimpleMailMessage kriteriumOffenInbearbeitungOhneStatusKommentarTemplate) {
+		this.kriteriumOffenInbearbeitungOhneStatusKommentarTemplate = kriteriumOffenInbearbeitungOhneStatusKommentarTemplate;
+	}
+    public SimpleMailMessage getKriteriumIdeeOffenOhneUnterstuetzungTemplate() {
+		return kriteriumIdeeOffenOhneUnterstuetzungTemplate;
+	}
+	public void setKriteriumIdeeOffenOhneUnterstuetzungTemplate(
+			SimpleMailMessage kriteriumIdeeOffenOhneUnterstuetzungTemplate) {
+		this.kriteriumIdeeOffenOhneUnterstuetzungTemplate = kriteriumIdeeOffenOhneUnterstuetzungTemplate;
+	}
+    public SimpleMailMessage getKriteriumWirdnichtbearbeitetOhneStatuskommentarTemplate() {
+		return kriteriumWirdnichtbearbeitetOhneStatuskommentarTemplate;
+	}
+	public void setKriteriumWirdnichtbearbeitetOhneStatuskommentarTemplate(
+			SimpleMailMessage kriteriumWirdnichtbearbeitetOhneStatuskommentarTemplate) {
+		this.kriteriumWirdnichtbearbeitetOhneStatuskommentarTemplate = kriteriumWirdnichtbearbeitetOhneStatuskommentarTemplate;
+	}
+    public SimpleMailMessage getKriteriumNichtMehrOffenNichtAkzeptiertTemplate() {
+		return kriteriumNichtMehrOffenNichtAkzeptiertTemplate;
+	}
+	public void setKriteriumNichtMehrOffenNichtAkzeptiertTemplate(
+			SimpleMailMessage kriteriumNichtMehrOffenNichtAkzeptiertTemplate) {
+		this.kriteriumNichtMehrOffenNichtAkzeptiertTemplate = kriteriumNichtMehrOffenNichtAkzeptiertTemplate;
+	}
+    public SimpleMailMessage getKriteriumOhneRedaktionelleFreigabenTemplate() {
+		return kriteriumOhneRedaktionelleFreigabenTemplate;
+	}
+	public void setKriteriumOhneRedaktionelleFreigabenTemplate(
+			SimpleMailMessage kriteriumOhneRedaktionelleFreigabenTemplate) {
+		this.kriteriumOhneRedaktionelleFreigabenTemplate = kriteriumOhneRedaktionelleFreigabenTemplate;
+	}
+    public SimpleMailMessage getKriteriumOhneZustaendigkeitTemplate() {
+		return kriteriumOhneZustaendigkeitTemplate;
+	}
+	public void setKriteriumOhneZustaendigkeitTemplate(
+			SimpleMailMessage kriteriumOhneZustaendigkeitTemplate) {
+		this.kriteriumOhneZustaendigkeitTemplate = kriteriumOhneZustaendigkeitTemplate;
+	}
+    public SimpleMailMessage getInformRedaktionEmpfaengerMailTemplate() {
+		return informRedaktionEmpfaengerMailTemplate;
+	}
+	public void setInformRedaktionEmpfaengerMailTemplate(
+			SimpleMailMessage informRedaktionEmpfaengerMailTemplate) {
+		this.informRedaktionEmpfaengerMailTemplate = informRedaktionEmpfaengerMailTemplate;
 	}
 
 

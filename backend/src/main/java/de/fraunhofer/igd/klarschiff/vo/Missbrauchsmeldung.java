@@ -74,6 +74,12 @@ public class Missbrauchsmeldung implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(style = "S-")
     private Date datumAbarbeitung;
+    
+    /**
+     * E-Mail-Adresse des Senders
+     */
+    @Size(max = 300)
+    private String autorEmail;
 
 	/* --------------- GET + SET ----------------------------*/
     
@@ -132,4 +138,12 @@ public class Missbrauchsmeldung implements Serializable {
 	public void setText(String text) {
 		this.text = text;
 	}
+    
+    public String getAutorEmail() {
+        return this.autorEmail;
+    }
+
+	public void setAutorEmail(String autorEmail) {
+        this.autorEmail = autorEmail;
+    }
 }

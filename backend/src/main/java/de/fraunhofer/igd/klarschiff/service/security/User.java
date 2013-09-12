@@ -1,5 +1,7 @@
 package de.fraunhofer.igd.klarschiff.service.security;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import de.fraunhofer.igd.klarschiff.context.AppContext;
@@ -51,6 +53,21 @@ public class User {
 	public boolean getUserIntern() {
 		return AppContext.getApplicationContext().getBean(SecurityService.class).isUserIntern(id);
 	}
+    
+    /**
+	 * Ermittelt, ob der Benutzer ein Admin ist.
+	 * @return <code>true</code> - Admins
+	 */
+	public boolean getUserAdmin() {
+		return AppContext.getApplicationContext().getBean(SecurityService.class).isUserAdmin(id);
+	}
+    
+    public static List<String> toString(Collection<User> users) {
+		List<String> _users = new ArrayList<String>();
+		for (User user : users) _users.add(user.getName());
+		return _users;
+	}
+    
 	
     /* --------------- GET + SET ----------------------------*/
 

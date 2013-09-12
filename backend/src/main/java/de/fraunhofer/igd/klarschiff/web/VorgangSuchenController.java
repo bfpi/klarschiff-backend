@@ -142,7 +142,6 @@ public class VorgangSuchenController {
     	//Initiale erweiterte Suche
     	cmd.setErweitertArchiviert(false);
     	cmd.setErweitertZustaendigkeit("#mir zugewiesen#");
-    	cmd.setErweitertUnterstuetzerAb(settingsService.getVorgangIdeeUnterstuetzer());
     	cmd.setErweitertVorgangStatus((EnumVorgangStatus[])ArrayUtils.removeElement(ArrayUtils.removeElement(EnumVorgangStatus.values(), EnumVorgangStatus.gemeldet), EnumVorgangStatus.geloescht));
         return cmd;
     }
@@ -227,7 +226,7 @@ public class VorgangSuchenController {
 			
 			List<Object[]> vorgaenge = vorgangDao.listVorgang(cmd2);
 			
-			HSSFWorkbook workbook = poiService.createScheet(PoiService.Template.vorgangListe, vorgaenge);
+			HSSFWorkbook workbook = poiService.createSheet(PoiService.Template.vorgangListe, vorgaenge);
 			
 			response.setHeader("Content-Type", "application/ms-excel");
 			workbook.write(response.getOutputStream());

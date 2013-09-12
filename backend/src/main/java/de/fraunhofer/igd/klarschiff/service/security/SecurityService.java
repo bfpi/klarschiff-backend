@@ -155,6 +155,28 @@ public class SecurityService {
 			return null;
 		}
 	}
+
+	
+	/**
+	 * Ermittelt die Benutzer-E-Mail-Adresse für einen Benutzer in einer gegebenen Rolle anhand des Benutzernamens.
+	 * @param userName Benutzername, für den die Benutzer-E-Mail-Adresse ermittelt werden soll
+	 * @param roleId Rolle, auf die die Suche beschränkt werden soll
+	 * @return Benutzer-E-Mail-Adresse; <code>null</code> wenn die Benutzer-E-Mail-Adresse nicht ermittelt werden konnte
+	 */
+	public String getUserEmailForRoleByName(String userName, String roleId) {
+		String userEmail = new String();
+		List<User> allUsersForRole = getAllUserForRole(roleId);
+        
+        for (User user : allUsersForRole) {
+            if (user.getName().equals(userName))
+                userEmail = user.getEmail();
+        }
+        
+        if (userEmail != null || userEmail != "")
+            return userEmail;
+        else
+            return null;
+	}
 	
 	
 	/**
@@ -172,12 +194,19 @@ public class SecurityService {
 		List<User> userList = new ArrayList<User>();
 		for(Iterator<String> iter = userLoginSet.iterator(); iter.hasNext(); )
 			userList.add(getUser(iter.next()));
+        
+        Collections.sort(userList, new Comparator<User>() {
+            public int compare(User u1, User u2) {
+                return u1.getId().compareTo(u2.getId());
+            }
+        });
+        
 		return userList;
 	}
 	
 	
 	/**
-	 * Ermittelt alle Benutzer für eine gegebnen Rolle.
+	 * Ermittelt alle Benutzer für eine gegebene Rolle.
 	 * @param roleId Rolle, für die die Benutzer ermittelt werden sollen
 	 * @return Liste von Benutzern
 	 */
@@ -193,6 +222,26 @@ public class SecurityService {
 		for(Iterator<String> iter = userLoginSet.iterator(); iter.hasNext(); )
 			userList.add(getUser(iter.next()));
 		return userList;
+	}
+	
+	
+	/**
+	 * Ermittelt alle Benutzernamen für eine gegebene Rolle.
+	 * @param roleId Rolle, für die die Benutzer ermittelt werden sollen
+	 * @return Liste von Benutzernamen
+	 */
+	public List<String> getAllUserNamesForRole(String roleId){
+		//alle UserLogins in den Rollen ermitteln
+		List<List<String>> usersLoginList = securityServiceLdap.getObjectListFromLdap(groupSearchBase, "(&(objectclass="+groupObjectClass+")("+groupObjectId+"="+roleId+"))", userLoginContextMapper);
+		//Set
+		Set<String> userLoginSet = new HashSet<String>();
+		for(List<String> list : usersLoginList)
+			userLoginSet.addAll(list);
+		//User ermitteln
+		List<String> userNameList = new ArrayList<String>();
+		for(Iterator<String> iter = userLoginSet.iterator(); iter.hasNext(); )
+			userNameList.add(getUser(iter.next()).getName());
+		return userNameList;
 	}
 
 	
@@ -241,17 +290,9 @@ public class SecurityService {
 			return null;
 		}
 	}
-
-//	public List<Role> getZustaendigkeiten(String login) {
-//		return getZustaendigkeiten(login, false);	
-//	}
-//	
-//	public List<Role> getCurrentZustaendigkeiten() {
-//		return getZustaendigkeiten(SecurityContextHolder.getContext().getAuthentication().getName(), false);
-//	}
-
-	
-	/**
+    
+    
+    /**
 	 * Ermittelt die Liste der Zuständigkeiten für den aktuellen Benutzer.  
 	 * @param inclDispatcher incl. der Dispatcherrolle?
 	 * @return Liste mit den Zuständigkeiten
@@ -301,12 +342,8 @@ public class SecurityService {
 		return isZustaendigForVorgang(SecurityContextHolder.getContext().getAuthentication().getName(), vorgang);
 	}
 	
-//	public List<Role> getAllZustaendigkeiten() {
-//		return getAllZustaendigkeiten(false);
-//	}
-
-	
-	/**
+    
+    /**
 	 * Ermittelt alle im System vorhandenen Zuständigkeiten.
 	 * @param inclDispatcher incl. der Dispatcherrolle?
 	 * @return Liste mit allen Zuständigkeiten
@@ -314,6 +351,13 @@ public class SecurityService {
 	public List<Role> getAllZustaendigkeiten(boolean inclDispatcher) {
 		String dispatcherFilter = inclDispatcher ? "" : "(!("+groupObjectId+"="+groupDispatcher+"))";
 		List <Role> allZustaendigkeiten = securityServiceLdap.getObjectListFromLdap(groupSearchBase, "(&(objectclass="+groupObjectClass+")("+groupRoleAttribute+"="+groupIntern+")"+dispatcherFilter+")", roleContextMapper);
+        
+        Collections.sort(allZustaendigkeiten, new Comparator<Role>() {
+            public int compare(Role r1, Role r2) {
+                return r1.getId().compareTo(r2.getId());
+            }
+        });
+             
 		return allZustaendigkeiten;
 	}
 
@@ -347,6 +391,13 @@ public class SecurityService {
 	 */
 	public List<Role> getAllDelegiertAn() {
 		List <Role> allDelegiertAn = securityServiceLdap.getObjectListFromLdap(groupSearchBase, "(&(objectclass="+groupObjectClass+")("+groupRoleAttribute+"="+groupExtern+"))", roleContextMapper);
+        
+        Collections.sort(allDelegiertAn, new Comparator<Role>() {
+            public int compare(Role r1, Role r2) {
+                return r1.getId().compareTo(r2.getId());
+            }
+        });
+        
 		return allDelegiertAn;
 	}
 

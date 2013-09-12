@@ -152,7 +152,7 @@ public class VorgangController {
 	/**
 	 * Die Methode verarbeitet den POST-Request auf der URL <code>/vorgang/{id}/foto</code><br/>
 	 * Funktionsbeschreibung: Dient in Abhängigkeit vom <code>action</code> Parameter der Annahme
-	 * der Fotobearbeitung (<code>action=fotoSave</code>) oder der Freigabestatusänderung
+	 * der Fotodrehung (<code>action=fotoRotate</code>), der Fotobearbeitung (<code>action=fotoSave</code>) oder der Freigabestatusänderung
 	 * (<code>action.startsWith("freigabeStatus_Foto")</code>.
 	 * @param id Vorgangs-ID
 	 * @param model Model in dem ggf. Daten für die View abgelegt werden
@@ -175,6 +175,9 @@ public class VorgangController {
 			imageService.censorImageForVorgang(vorgang, censorRectangleString, censoringWidth, censoringHeight);
 			vorgangDao.merge(vorgang);
 		
+		} else if (action.equals("fotoRotate")) {
+			imageService.rotateImageForVorgang(vorgang);
+			vorgangDao.merge(vorgang);
 		} else if (action!=null && action.startsWith("freigabeStatus_Foto")) {
 			String str[] = action.split("_");
 			EnumFreigabeStatus freigabeStatus = EnumFreigabeStatus.valueOf(str[2]);

@@ -192,8 +192,15 @@
 									<form:label path="status" cssErrorClass="error">Status</form:label>
 									<form:select path="status" cssErrorClass="error">
 						            	<form:option value="" label="Status wählen" cssClass="info"/>
-						            	<form:options items="${allVorgangStatus}" itemLabel="text" htmlEscape="false"/>
-									</form:select> 
+                                        <c:if test="${cmd.vorgang.typ == 'idee'}">
+                                            <c:if test="${!(cmd.vorgang.unterstuetzer.size() >= vorgangIdeenUnterstuetzer)}">
+                                                <form:options items="${allVorgangStatusMitOffenen}" itemLabel="text" htmlEscape="false"/>
+                                            </c:if>
+                                        </c:if>
+                                        <c:if test="${cmd.vorgang.typ != 'idee' or cmd.vorgang.unterstuetzer.size() >= vorgangIdeenUnterstuetzer}">
+                                            <form:options items="${allVorgangStatus}" itemLabel="text" htmlEscape="false"/>
+                                        </c:if>
+									</form:select>
 								</div>
 								<div>
 									<table width="100%" cellpadding="0" cellspacing="0">
@@ -224,7 +231,7 @@
 										</form:errors>
 									</table>
 								</div>
-								<input type="submit" value="Status setzen" name="action"/>
+								<input type="submit" value="Änderungen übernehmen" name="action"/>
 							</form:form>
 						</div>
 					</div>
@@ -371,8 +378,12 @@
 					        	<form:label path="vorgang.adresse">Adresse</form:label>
 					            <form:input path="vorgang.adresse" cssClass="inputtext" cssStyle="width:351px;"/>
 				       		</div>
+                            <div>
+					        	<form:label path="vorgang.flurstueckseigentum">Flurstückseigentum</form:label>
+					            <form:input path="vorgang.flurstueckseigentum" cssClass="inputtext" cssStyle="width:351px;"/>
+				       		</div>
 					        
-							<input type="submit" value="Vorgangsdaten &#228;ndern" name="action"/>
+							<input type="submit" value="Änderungen übernehmen " name="action"/>
 						</form:form>
 					</div>
 				</div>
@@ -405,21 +416,52 @@
 				  			<div class="kommentar ${(s.index%2==0) ? 'odd' : 'even'}">
 				  				<div class="kommentarHeader">
 				  					<span style="margin-right:10px;padding:0px;">${kommentar.nutzer}</span>
-					       			<fmt:formatDate value="${kommentar.datum}" pattern="dd.MM.yyyy"/><![CDATA[&nbsp;&nbsp;]]>
-					       			<span style="font-size:0.8em; color:#666;"><fmt:formatDate value="${kommentar.datum}" pattern="HH:mm"/></span>
+					       			<fmt:formatDate value="${kommentar.datum}" pattern="dd.MM.yyyy, HH:mm"/> Uhr
 				  				</div>
 								<div class="kommentarText" >
 					        		${fx:toHtml(kommentar.text)}
 								</div>	
 				  			</div>
 						</c:forEach>
-			            <c:if test="${not empty maxPages and not empty kommentare}">
-				            <util:pagination maxPages="${maxPages}" page="${cmd.page}" size="${cmd.size}" post="true"/>
+			            <c:if test="${not empty maxPagesKommentare and not empty kommentare}">
+				            <util:pagination maxPages="${maxPagesKommentare}" page="${cmd.page}" size="${cmd.size}" post="true"/>
 				            <br/>
 			            </c:if>
 					</div>	
 				</div>
 				<util:ddpanel name="kommentar"/>
+                
+                
+                <c:if test="${not empty allelobhinweisekritik}">
+                    <!-- Lob, Hinweise oder Kritik -->
+                    <div class="fieldset" id="lobhinweisekritikpanel">
+                        <div class="fieldsettitle closepanel " id="lobhinweisekritiktab"><div style="width:100%; height:15px;">Lob, Hinweise oder Kritik von Bürger/-innen</div></div>
+                        <div id="lobhinweisekritikcontent">
+            
+                            <c:forEach items="${allelobhinweisekritik}" var="einlobhinweisekritik" varStatus="t">
+                                <div class="kommentar ${(t.index%2==0) ? 'odd' : 'even'}">
+                                    <div class="kommentarHeader">
+                                        <c:if test="${einlobhinweisekritik.empfaengerEmail != null}">
+                                            <span style="margin-right:10px;padding:0px;">${einlobhinweisekritik.autorEmail} &#x2794; ${einlobhinweisekritik.empfaengerEmail}</span>
+                                        </c:if>
+                                        <c:if test="${einlobhinweisekritik.empfaengerEmail == null}">
+                                            <span style="margin-right:10px;padding:0px;">${einlobhinweisekritik.autorEmail}</span>
+                                        </c:if>
+                                        <fmt:formatDate value="${einlobhinweisekritik.datum}" pattern="dd.MM.yyyy, HH:mm"/> Uhr
+                                    </div>
+                                    <div class="kommentarText" >
+                                        ${fx:toHtml(einlobhinweisekritik.freitext)}
+                                    </div>	
+                                </div>
+                            </c:forEach>
+                            <c:if test="${not empty maxPagesLobHinweiseKritik and not empty allelobhinweisekritik}">
+                                <util:pagination maxPages="${maxPagesLobHinweiseKritik}" page="${cmd.page}" size="${cmd.size}" post="true"/>
+                                <br/>
+                            </c:if>
+                        </div>	
+                    </div>
+                    <util:ddpanel name="lobhinweisekritik"/>
+                </c:if>
 
 
 				<!-- Delegieren -->

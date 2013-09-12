@@ -35,6 +35,6 @@ public class BackendControllerException extends Exception {
 	
 	@Override
 	public String getMessage() {
-		return new DecimalFormat("000").format(code)+"#"+StringEscapeUtils.escapeHtml(super.getMessage())+"#"+StringEscapeUtils.escapeHtml(message)+" (Fehler "+new DecimalFormat("000").format(code)+")";
+		return new DecimalFormat("000").format(code)+"#"+StringEscapeUtils.escapeHtml(super.getMessage())+"#"+StringEscapeUtils.escapeHtml(message);
 	}
 }

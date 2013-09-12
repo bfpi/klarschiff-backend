@@ -150,7 +150,7 @@ ALTER TABLE klarschiff_unterstuetzer OWNER TO ${f_username};
 CREATE TABLE klarschiff_vorgang (
     id bigint NOT NULL,
     datum timestamp without time zone,
-    datum_abgeschlossen timestamp without time zone,
+    datum_statusaenderung timestamp without time zone,
     details text,
     kategorieid bigint,
     the_geom geometry,
@@ -167,6 +167,7 @@ CREATE TABLE klarschiff_vorgang (
     details_vorhanden boolean,
     details_freigegeben boolean,
     archiviert boolean,
+    zustaendigkeit character varying(255),
     CONSTRAINT enforce_dims_the_geom CHECK ((ndims(the_geom) = 2)),
     CONSTRAINT enforce_geotype_the_geom CHECK (((geometrytype(the_geom) = 'POINT'::text) OR (the_geom IS NULL))),
     CONSTRAINT enforce_srid_the_geom CHECK ((srid(the_geom) = 25833))
@@ -374,7 +375,8 @@ CREATE OR REPLACE VIEW klarschiff_wfs AS
 	SELECT 
 		v.id, 
 		v.datum, 
-		to_char(v.datum_abgeschlossen, 'DD.MM.YYYY'::text)::character varying AS datum_abgeschlossen, 
+		to_char(v.datum, 'DD.MM.YYYY'::text)::character varying AS datum_erstellt, 
+		to_char(v.datum_statusaenderung, 'DD.MM.YYYY'::text)::character varying AS datum_statusaenderung, 
 		v.details, 
 		v.bemerkung, 
 		v.kategorieid,
@@ -395,7 +397,8 @@ CREATE OR REPLACE VIEW klarschiff_wfs AS
         v.betreff_vorhanden,
         v.betreff_freigegeben,
         v.details_vorhanden,
-        v.details_freigegeben
+        v.details_freigegeben,
+        v.zustaendigkeit
 	FROM 
 		klarschiff_vorgang v, 
 		klarschiff_kategorie k
@@ -437,7 +440,8 @@ CREATE VIEW klarschiff_wfs_tmpl AS
         v.betreff_vorhanden,
         v.betreff_freigegeben,
         v.details_vorhanden,
-        v.details_freigegeben
+        v.details_freigegeben,
+        v.zustaendigkeit
     FROM 
     	klarschiff_wfs v,
     	klarschiff_status s,

@@ -1,0 +1,104 @@
+<jsp:root 
+	xmlns:c="http://java.sun.com/jsp/jstl/core" 
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:spring="http://www.springframework.org/tags" 
+	xmlns:jsp="http://java.sun.com/JSP/Page" 
+	xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu"
+	xmlns:tiles="http://tiles.apache.org/tags-tiles" 
+	xmlns:fx="http://igd.fraunhofer.de/tags/elfunctions" 
+	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+	version="2.0"
+	>
+	<jsp:directive.page contentType="text/html;charset=UTF-8"/>
+
+	<!-- CONTENTTITLE -->
+	<div id="root_style_content_title">
+		Redaktion
+	</div>
+	
+	<!-- TABMENU -->
+	<tiles:importAttribute name="tabmenu_item" ignore="true" toName="tabmenu_item"/>
+	<menu:tabmenuadmin currentId="${tabmenu_item}"/>
+	
+	<!-- CONTENT -->
+	<div id="root_style_content">
+
+        <div class="fieldset">
+			<div class="fieldsettitle">Redaktionskriterien</div>	
+            <table class="resulttable" width="100%">
+				<thead>
+					<tr>
+						<th>Stufe</th>
+						<th>n Tage offen, aber nicht akzeptiert</th>
+						<th>n Tage in Bearbeitung, aber ohne Info der Verwaltung</th>
+						<th>Idee n Tage offen, aber ohne notwendige Zahl an Unterstützungen</th>
+						<th>wird nicht bearbeitet, aber ohne Info der Verwaltung</th>
+						<th>nicht mehr offen, aber nicht akzeptiert</th>
+						<th>nicht mehr offen, aber ohne redaktionelle Freigaben</th>
+						<th>ohne Zuständigkeit</th>
+					</tr>
+				</thead>
+				<tbody>
+					<c:forEach items="${kriterienList}" var="kriterien" varStatus="rowCounter">
+						<tr class="${(rowCounter.count%2==0)? 'odd' : 'even'}">
+                            <td align="center">${kriterien.stufe}</td>
+							<td align="center">${kriterien.tageOffenNichtAkzeptiert}</td>
+							<td align="center">${kriterien.tageInbearbeitungOhneStatusKommentar}</td>
+							<td align="center">${kriterien.tageIdeeOffenOhneUnterstuetzung}</td>
+                            <td align="center"><c:if test="${kriterien.wirdnichtbearbeitetOhneStatuskommentar}">&#x2714;</c:if></td>
+                            <td align="center"><c:if test="${kriterien.nichtMehrOffenNichtAkzeptiert}">&#x2714;</c:if></td>
+                            <td align="center"><c:if test="${kriterien.ohneRedaktionelleFreigaben}">&#x2714;</c:if></td>
+                            <td align="center"><c:if test="${kriterien.ohneZustaendigkeit}">&#x2714;</c:if></td>
+						</tr>
+					</c:forEach>
+				</tbody>
+			</table>	
+		</div>
+        
+        <div class="fieldset">
+			<div class="fieldsettitle">Empfänger redaktioneller E-Mails</div>
+			<table class="resulttable" width="100%">
+				<thead>
+					<tr>
+                        <th>Zuständigkeit</th>
+                        <th>E-Mail-Adresse</th>
+                        <th>Stufe</th>
+                        <th>alle n Tage</th>
+                        <th>letzte E-Mail</th>
+                        <th>empfängt Lob, Hinweise oder Kritik</th>
+					</tr>
+				</thead>
+				<tbody>
+					<c:forEach items="${empfaengerList}" var="empfaenger" varStatus="rowCounter">
+						<tr class="${(rowCounter.count%2==0)? 'odd' : 'even'}">
+							<td>${empfaenger.zustaendigkeit}</td>
+							<td>${empfaenger.email}</td>
+                            <td align="center">${empfaenger.stufe}</td>
+                            <td align="center">${empfaenger.tageZwischenMails}</td>
+                            <td align="center"><fmt:formatDate value="${empfaenger.letzteMail}" pattern="dd.MM.yyyy HH:mm:ss"/></td>
+                            <td align="center"><c:if test="${empfaenger.empfaengerLobHinweiseKritik}">&#x2714;</c:if></td>
+						</tr>
+					</c:forEach>
+				</tbody>
+                <tfoot>
+                    <tr class="footer">
+                        <td colspan="10">
+                            <c:if test="${not empty maxPages}">
+                                <util:pagination maxPages="${maxPages}" page="${cmdredaktionempfaengerlistung.page}" size="${cmdredaktionempfaengerlistung.size}"/>
+                            </c:if>
+                        </td>
+                    </tr>
+                </tfoot>
+			</table>			
+		</div>
+	</div>
+	
+	<!-- HELP -->
+	<div id="root_style_help">
+		<p>
+			Hier finden Sie eine Übersicht über die im System verfügbaren Redaktionskriterien sowie über die Empfänger redaktioneller E-Mails.  
+		</p>
+	</div>
+
+</jsp:root>

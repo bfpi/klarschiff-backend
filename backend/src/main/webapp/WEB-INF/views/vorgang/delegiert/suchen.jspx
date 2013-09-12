@@ -52,10 +52,9 @@
 		                	<util:sortedtableheadercolumn name="#" id="0" currentOrderId="${cmdvorgangdelegiertsuchen.order}" currentOrderDirection="${cmdvorgangdelegiertsuchen.orderDirection}"/>
 		                	<util:sortedtableheadercolumn name="Typ" id="1" currentOrderId="${cmdvorgangdelegiertsuchen.order}" currentOrderDirection="${cmdvorgangdelegiertsuchen.orderDirection}"/>
 		                	<util:sortedtableheadercolumn name="Erstellung" id="2" currentOrderId="${cmdvorgangdelegiertsuchen.order}" currentOrderDirection="${cmdvorgangdelegiertsuchen.orderDirection}"/>
-		                	<util:sortedtableheadercolumn name="Kategorie" id="3" colspan="2" currentOrderId="${cmdvorgangdelegiertsuchen.order}" currentOrderDirection="${cmdvorgangdelegiertsuchen.orderDirection}"/>
+		                	<util:sortedtableheadercolumn name="Haupt- und Unterkategorie" id="3" colspan="2" currentOrderId="${cmdvorgangdelegiertsuchen.order}" currentOrderDirection="${cmdvorgangdelegiertsuchen.orderDirection}"/>
 		                	<util:sortedtableheadercolumn name="Status" id="4" currentOrderId="${cmdvorgangdelegiertsuchen.order}" currentOrderDirection="${cmdvorgangdelegiertsuchen.orderDirection}"/>
 		                	<util:sortedtableheadercolumn name="Adresse" id="5" currentOrderId="${cmdvorgangdelegiertsuchen.order}" currentOrderDirection="${cmdvorgangdelegiertsuchen.orderDirection}"/>
-                            <util:sortedtableheadercolumn name="Priorität" id="6" currentOrderId="${cmdvorgangdelegiertsuchen.order}" currentOrderDirection="${cmdvorgangdelegiertsuchen.orderDirection}"/>
 		                </tr>
 		            </thead>
 			        <tbody>
@@ -71,8 +70,7 @@
 									<img alt="${vorgang.typ.text}" src="${url}" height="15" width="15"  title="Typ: ${vorgang.typ.text}"/>
 								</td>
 				        		<td style="text-align: center;">
-				        			<fmt:formatDate value="${vorgang.datum}" pattern="dd.MM.yyyy"/><![CDATA[&nbsp;&nbsp;]]>
-				        			<span class="time"><fmt:formatDate value="${vorgang.datum}" pattern="HH:mm"/></span>
+				        			<fmt:formatDate value="${vorgang.datum}" pattern="dd.MM.yyyy"/>
 								</td>
 				        		<td>
 									${vorgang.kategorie.parent.name}
@@ -86,9 +84,6 @@
 								</td>
 								<td style="text-align: center;">
 									${vorgang.adresse}
-								</td>
-                                <td style="text-align: center;">
-									${vorgang.prioritaet}
 								</td>
 				        	</tr>
 						</c:forEach>
@@ -154,7 +149,7 @@
 			        Suchergebnis 
 			        <c:url value="/images/csv.png" var="img"/>
 			        <c:url value="/vorgang/delegiert/suchen/vorgaenge.xls" var="url"/>
-			        <util:button cssStyle="margin-right:10px;" url="${url}" img="${img}">als XLS exportieren</util:button>
+			        <util:button cssStyle="margin-right:10px;" url="${url}" img="${img}">als Excel-Tabelle exportieren</util:button>
 			       
 			       	<c:url value="/images/freigabeStatus_extern.png" var="img"/>
 			        <c:url value="/vorgang/delegiert/suchen/karte" var="url"/>

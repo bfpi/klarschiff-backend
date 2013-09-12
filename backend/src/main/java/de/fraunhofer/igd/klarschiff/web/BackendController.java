@@ -1,6 +1,7 @@
 package de.fraunhofer.igd.klarschiff.web;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import de.fraunhofer.igd.klarschiff.dao.KategorieDao;
+import de.fraunhofer.igd.klarschiff.dao.RedaktionEmpfaengerDao;
 import de.fraunhofer.igd.klarschiff.dao.VerlaufDao;
 import de.fraunhofer.igd.klarschiff.dao.VorgangDao;
 import de.fraunhofer.igd.klarschiff.service.classification.ClassificationService;
@@ -22,13 +24,16 @@ import de.fraunhofer.igd.klarschiff.service.image.ImageService;
 import de.fraunhofer.igd.klarschiff.service.mail.MailService;
 import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
 import de.fraunhofer.igd.klarschiff.service.settings.SettingsService;
+import de.fraunhofer.igd.klarschiff.service.security.User;
 import de.fraunhofer.igd.klarschiff.vo.EnumPrioritaet;
 import de.fraunhofer.igd.klarschiff.vo.EnumVerlaufTyp;
 import de.fraunhofer.igd.klarschiff.vo.EnumVorgangStatus;
 import de.fraunhofer.igd.klarschiff.vo.EnumVorgangTyp;
 import de.fraunhofer.igd.klarschiff.vo.EnumZustaendigkeitStatus;
 import de.fraunhofer.igd.klarschiff.vo.GeoRss;
+import de.fraunhofer.igd.klarschiff.vo.LobHinweiseKritik;
 import de.fraunhofer.igd.klarschiff.vo.Missbrauchsmeldung;
+import de.fraunhofer.igd.klarschiff.vo.RedaktionEmpfaenger;
 import de.fraunhofer.igd.klarschiff.vo.Unterstuetzer;
 import de.fraunhofer.igd.klarschiff.vo.Verlauf;
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
@@ -44,6 +49,9 @@ public class BackendController {
 	
 	@Autowired
 	KategorieDao kategorieDao;
+	
+	@Autowired
+	RedaktionEmpfaengerDao redaktionEmpfaengerDao;
 	
 	@Autowired
 	VorgangDao vorgangDao;
@@ -281,6 +289,7 @@ public class BackendController {
 			vorgangDao.merge(vorgang);
 
 			vorgang.setZustaendigkeit(classificationService.calculateZustaendigkeitforVorgang(vorgang).getId());
+			vorgang.setZustaendigkeitFrontend(securityService.getZustaendigkeit(vorgang.getZustaendigkeit()).getLocality());
 			vorgang.setZustaendigkeitStatus(EnumZustaendigkeitStatus.zugewiesen);
 			
 			vorgangDao.merge(vorgang);
@@ -370,7 +379,7 @@ public class BackendController {
 	
 	/**
 	 * Die Methode verarbeitet den POST-Request auf der URL <code>/service/missbrauchsmeldung</code><br/>
-	 * Beschreibung: erstellt eine Missbrauchsmeldung für ein Vorgang
+	 * Beschreibung: erstellt eine Missbrauchsmeldung für einen Vorgang
 	 * @param vorgang Vorgang
 	 * @param text Text der Missbrauchsmeldung
 	 * @param email E-Mail-Adresse des Erstellers
@@ -398,6 +407,7 @@ public class BackendController {
 			if (StringUtils.isBlank(email)) throw new BackendControllerException(404, "[email] fehlt", "Die E-Mail-Adresse fehlt.");
 			if (!isMaxLength(email, 300)) throw new BackendControllerException(405, "[email] zu lang", "Die E-Mail-Adresse ist zu lang.");
 			if (!isEmail(email)) throw new BackendControllerException(406, "[email] nicht korrekt", "Die E-Mail-Adresse ist nicht gültig.");
+            missbrauchsmeldung.setAutorEmail(email);
 			missbrauchsmeldung.setHash(securityService.createHash(missbrauchsmeldung.getVorgang().getId()+email+System.currentTimeMillis()));
 			
 			missbrauchsmeldung.setDatum(new Date());
@@ -408,6 +418,125 @@ public class BackendController {
 
 			if (resultHashOnSubmit==true) sendOk(response, missbrauchsmeldung.getHash());
 			else sendOk(response);
+		} catch (Exception e) {
+			logger.warn(e);
+			sendError(response, e);
+		}
+	}
+
+	
+	/**
+	 * Die Methode verarbeitet den POST-Request auf der URL <code>/service/lobHinweiseKritik</code><br/>
+	 * Beschreibung: erstellt Lob, Hinweise oder Kritik zu einem Vorgang
+	 * @param vorgang Vorgang
+	 * @param email E-Mail-Adresse des Erstellers
+     * @param freitext Freitext
+	 * @param response Response in das das Ergebnis direkt geschrieben wird
+	 */
+	@RequestMapping(value="/lobHinweiseKritik", method = RequestMethod.POST)
+	@ResponseBody
+	public void lobHinweiseKritik(
+			@RequestParam(value = "vorgang", required = false) Long vorgang,
+			@RequestParam(value = "email", required = false) String email, 
+			@RequestParam(value = "freitext", required = false) String freitext, 
+			HttpServletResponse response) {
+		try {
+			LobHinweiseKritik lobHinweiseKritik = new LobHinweiseKritik();
+			if (vorgang==null) throw new BackendControllerException(401, "[vorgang] fehlt", "Lob, Hinweise oder Kritik kann/können keiner Meldung zugeordnet werden.");
+			lobHinweiseKritik.setVorgang(vorgangDao.findVorgang(vorgang));
+			if (lobHinweiseKritik.getVorgang()==null) throw new BackendControllerException(402, "[vorgang] nicht korrekt", "Lob, Hinweise oder Kritik kann/können keiner Meldung zugeordnet werden.");
+
+			if (StringUtils.isBlank(email)) throw new BackendControllerException(404, "[email] fehlt", "Die E-Mail-Adresse fehlt.");
+			if (!isMaxLength(email, 300)) throw new BackendControllerException(405, "[email] zu lang", "Die E-Mail-Adresse ist zu lang.");
+			if (!isEmail(email)) throw new BackendControllerException(406, "[email] nicht korrekt", "Die E-Mail-Adresse ist nicht gültig.");
+            lobHinweiseKritik.setAutorEmail(email);
+            
+            // aktuelle Zuständigkeit des Vorgangs bestimmen
+            String zustaendigkeit = lobHinweiseKritik.getVorgang().getZustaendigkeit();
+            
+            // Empfänger gefunden?
+            Boolean empfaengerGefunden = false;
+            
+            // falls aktuelle Zuständigkeit des Vorgangs nicht NULL oder leer ist und gleichzeitig akzeptiert ist
+            if (zustaendigkeit != null && zustaendigkeit != "" && lobHinweiseKritik.getVorgang().getZustaendigkeitStatus() == EnumZustaendigkeitStatus.akzeptiert) {
+
+                String empfaengerEmail = new String();
+                
+                // alle Nutzernamen dieser Zuständigkeit bestimmen
+                List<String> allUserNamesForRole = securityService.getAllUserNamesForRole(zustaendigkeit);
+                
+                // denjenigen Nutzernamen aus dieser Zuständigkeit bestimmen, der gemäß dem Verlauf die letzte Bearbeitung am Vorgang durchgeführt hat
+                String empfaenger = verlaufDao.findLastUserForVorgangAndZustaendigkeit(lobHinweiseKritik.getVorgang(), allUserNamesForRole);
+                
+                // falls dieser gefunden wurde
+                if (empfaenger != null && empfaenger != "") {
+                    empfaengerGefunden = true;
+                    
+                    // String mit dessen E-Mail-Adresse belegen
+                    empfaengerEmail = securityService.getUserEmailForRoleByName(empfaenger, zustaendigkeit);
+                    
+                    // falls der String mit dessen E-Mail-Adresse nicht NULL ist
+                    if (empfaengerEmail != null && empfaengerEmail != "") {
+                    
+                        // Empfänger-E-Mail-Adresse für Lob, Hinweise oder Kritik auf zuvor gefüllten String setzen
+                        lobHinweiseKritik.setEmpfaengerEmail(empfaengerEmail);
+                    
+                        // Lob, Hinweise oder Kritik als E-Mail versenden
+                        mailService.sendLobHinweiseKritikMail(lobHinweiseKritik.getVorgang(), email, empfaengerEmail, freitext);
+                    }
+                }
+            }
+            
+            // ansonsten: falls Empfänger zuvor nicht gefunden wurde und aktuelle Zuständigkeit des Vorgangs nicht NULL oder leer ist, aber eben auch nicht akzeptiert ist
+            else if (empfaengerGefunden == false && zustaendigkeit != null && zustaendigkeit != "") {
+
+                String empfaengerEmail = new String();
+                Short zaehler = 0;
+                
+                // alle Empfänger redaktioneller E-Mails dieser Zuständigkeit bestimmen, die zugleich auch Lob, Hinweise oder Kritik als E-Mail empfangen sollen
+                List<RedaktionEmpfaenger> allEmpfaengerLobHinweiseKritikForZustaendigkeit = redaktionEmpfaengerDao.getEmpfaengerListLobHinweiseKritikForZustaendigkeit(lobHinweiseKritik.getVorgang().getZustaendigkeit());
+                
+                // falls diese gefunden wurden
+                if (allEmpfaengerLobHinweiseKritikForZustaendigkeit.size() > 0 && !allEmpfaengerLobHinweiseKritikForZustaendigkeit.isEmpty()) {
+                    empfaengerGefunden = true;
+                
+                    // diese durchlaufen
+                    for (RedaktionEmpfaenger empfaengerLobHinweiseKritikForZustaendigkeit : allEmpfaengerLobHinweiseKritikForZustaendigkeit) {
+                        
+                        // falls es nur einer ist
+                        if (allEmpfaengerLobHinweiseKritikForZustaendigkeit.size() == 1 || zaehler == 0) {
+                        
+                            // String mit dessen E-Mail-Adresse belegen
+                            empfaengerEmail = empfaengerLobHinweiseKritikForZustaendigkeit.getEmail();
+                        }
+                        
+                        // ansonsten
+                        else {
+                            
+                            // kommaseparierten String mit der aktuellen E-Mail-Adresse fortführen
+                            empfaengerEmail = empfaengerEmail + ", " + empfaengerLobHinweiseKritikForZustaendigkeit.getEmail();
+                        }
+                        zaehler++;
+                        
+                        // Lob, Hinweise oder Kritik als E-Mail(s) versenden
+                        mailService.sendLobHinweiseKritikMail(lobHinweiseKritik.getVorgang(), email, empfaengerLobHinweiseKritikForZustaendigkeit.getEmail(), freitext);
+                    }
+                    
+                    // Empfänger-E-Mail-Adresse für Lob, Hinweise oder Kritik auf in vorhergehender Schleife gefüllten String setzen
+                    lobHinweiseKritik.setEmpfaengerEmail(empfaengerEmail);
+                }
+            }
+            
+            if (StringUtils.isBlank(freitext)) throw new BackendControllerException(403, "[freitext] fehlt", "Der Freitext fehlt.");
+			lobHinweiseKritik.setFreitext(freitext);
+            
+			lobHinweiseKritik.setDatum(new Date());
+            
+            verlaufDao.addVerlaufToVorgang(lobHinweiseKritik.getVorgang(), EnumVerlaufTyp.lobHinweiseKritik, null, null);
+
+			vorgangDao.persist(lobHinweiseKritik);
+
+			sendOk(response);
 		} catch (Exception e) {
 			logger.warn(e);
 			sendError(response, e);

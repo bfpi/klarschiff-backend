@@ -9,37 +9,24 @@ import de.fraunhofer.igd.klarschiff.vo.Vorgang;
  * @author Stefan Audersch (Fraunhofer IGD)
  */
 public class Statistic {
-	Long countNewVorgaenge;
-	Long countFixedVorgaenge;
-	Long countMissbrauchsmeldungen;
+	List<Vorgang> vorgaengeMissbrauchsmeldungen;
 	List<Vorgang> lastVorgaenge;
+	List<Vorgang> vorgaengeOffenNichtAkzeptiert;
+	List<Vorgang> vorgaengeInbearbeitungOhneStatusKommentar;
+	List<Vorgang> vorgaengeIdeeOffenOhneUnterstuetzung;
+	List<Vorgang> vorgaengeWirdnichtbearbeitetOhneStatuskommentar;
+	List<Vorgang> vorgaengeNichtMehrOffenNichtAkzeptiert;
+	List<Vorgang> vorgaengeOhneRedaktionelleFreigaben;
 	List<StatusVerteilungEntry> statusVerteilung;
-	List<StatusVerteilungEntry> allStatusVerteilung;
 	
 	/* --------------- GET + SET ----------------------------*/
 
-	public Long getCountNewVorgaenge() {
-		return countNewVorgaenge;
+	public List<Vorgang> getVorgaengeMissbrauchsmeldungen() {
+		return vorgaengeMissbrauchsmeldungen;
 	}
 
-	public void setCountNewVorgaenge(Long countNewVorgaenge) {
-		this.countNewVorgaenge = countNewVorgaenge;
-	}
-
-	public Long getCountFixedVorgaenge() {
-		return countFixedVorgaenge;
-	}
-
-	public void setCountFixedVorgaenge(Long countFixedVorgaenge) {
-		this.countFixedVorgaenge = countFixedVorgaenge;
-	}
-
-	public Long getCountMissbrauchsmeldungen() {
-		return countMissbrauchsmeldungen;
-	}
-
-	public void setCountMissbrauchsmeldungen(Long countMissbrauchsmeldungen) {
-		this.countMissbrauchsmeldungen = countMissbrauchsmeldungen;
+	public void setVorgaengeMissbrauchsmeldungen(List<Vorgang> vorgaengeMissbrauchsmeldungen) {
+		this.vorgaengeMissbrauchsmeldungen = vorgaengeMissbrauchsmeldungen;
 	}
 
 	public List<Vorgang> getLastVorgaenge() {
@@ -49,22 +36,61 @@ public class Statistic {
 	public void setLastVorgaenge(List<Vorgang> lastVorgaenge) {
 		this.lastVorgaenge = lastVorgaenge;
 	}
+    
+    public List<Vorgang> getVorgaengeOffenNichtAkzeptiert() {
+		return vorgaengeOffenNichtAkzeptiert;
+	}
 
-	public List<StatusVerteilungEntry> getStatusVerteilung() {
+	public void setVorgaengeOffenNichtAkzeptiert(List<Vorgang> vorgaengeOffenNichtAkzeptiert) {
+		this.vorgaengeOffenNichtAkzeptiert = vorgaengeOffenNichtAkzeptiert;
+	}
+    
+    public List<Vorgang> getVorgaengeInbearbeitungOhneStatusKommentar() {
+		return vorgaengeInbearbeitungOhneStatusKommentar;
+	}
+
+	public void setVorgaengeInbearbeitungOhneStatusKommentar(List<Vorgang> vorgaengeInbearbeitungOhneStatusKommentar) {
+		this.vorgaengeInbearbeitungOhneStatusKommentar = vorgaengeInbearbeitungOhneStatusKommentar;
+	}
+    
+    public List<Vorgang> getVorgaengeIdeeOffenOhneUnterstuetzung() {
+		return vorgaengeIdeeOffenOhneUnterstuetzung;
+	}
+
+	public void setVorgaengeIdeeOffenOhneUnterstuetzung(List<Vorgang> vorgaengeIdeeOffenOhneUnterstuetzung) {
+		this.vorgaengeIdeeOffenOhneUnterstuetzung = vorgaengeIdeeOffenOhneUnterstuetzung;
+	}
+    
+    public List<Vorgang> getVorgaengeWirdnichtbearbeitetOhneStatuskommentar() {
+		return vorgaengeWirdnichtbearbeitetOhneStatuskommentar;
+	}
+
+	public void setVorgaengeWirdnichtbearbeitetOhneStatuskommentar(List<Vorgang> vorgaengeWirdnichtbearbeitetOhneStatuskommentar) {
+		this.vorgaengeWirdnichtbearbeitetOhneStatuskommentar = vorgaengeWirdnichtbearbeitetOhneStatuskommentar;
+	}
+    
+    public List<Vorgang> getVorgaengeNichtMehrOffenNichtAkzeptiert() {
+		return vorgaengeNichtMehrOffenNichtAkzeptiert;
+	}
+
+	public void setVorgaengeNichtMehrOffenNichtAkzeptiert(List<Vorgang> vorgaengeNichtMehrOffenNichtAkzeptiert) {
+		this.vorgaengeNichtMehrOffenNichtAkzeptiert = vorgaengeNichtMehrOffenNichtAkzeptiert;
+	}
+    
+    public List<Vorgang> getVorgaengeOhneRedaktionelleFreigaben() {
+		return vorgaengeOhneRedaktionelleFreigaben;
+	}
+
+	public void setVorgaengeOhneRedaktionelleFreigaben(List<Vorgang> vorgaengeOhneRedaktionelleFreigaben) {
+		this.vorgaengeOhneRedaktionelleFreigaben = vorgaengeOhneRedaktionelleFreigaben;
+	}
+    
+    public List<StatusVerteilungEntry> getStatusVerteilung() {
 		return statusVerteilung;
 	}
 
 	public void setStatusVerteilung(List<StatusVerteilungEntry> statusVerteilung) {
 		this.statusVerteilung = statusVerteilung;
 	}
-
-	public List<StatusVerteilungEntry> getAllStatusVerteilung() {
-		return allStatusVerteilung;
-	}
-
-	public void setAllStatusVerteilung(List<StatusVerteilungEntry> allStatusVerteilung) {
-		this.allStatusVerteilung = allStatusVerteilung;
-	}
-	
 	
 }

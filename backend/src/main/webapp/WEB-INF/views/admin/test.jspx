@@ -121,16 +121,41 @@
 					<input type="submit" value="Ausführen"/>
 				</form>
 	
-				<div class="subtitle">informErsteller</div>
+				<div class="subtitle">informErstellerInBearbeitung</div>
+				<p class="help">
+					Ersteller von Vorgängen werden über die Statusänderung der Vorgägnge auf in Bearbeitung informiert. 
+				</p>
+				<ul class="help">
+					<li>Zeit: 10:05 Uhr</li>
+					<li>Es werden immer die Vorgänge berücksichtigt, die innerhalb der letzten 24h auf den Status in Bearbeitung gesetzt wurden.</li>
+				</ul>
+				<form method="post">
+					<input type="hidden" name="action" value="informErstellerInBearbeitung"/>
+					<input type="submit" value="Ausführen"/>
+				</form>
+	
+				<div class="subtitle">informErstellerAbschluss</div>
 				<p class="help">
 					Ersteller von Vorgängen werden über den Abschluss der Vorgägnge informiert. 
 				</p>
 				<ul class="help">
-					<li>Zeit: 5:10 Uhr</li>
+					<li>Zeit: 10:10 Uhr</li>
 					<li>Es werden immer die Vorgänge berücksichtigt, die innerhalb der letzten 24h abgeschlossen wurden.</li>
 				</ul>
 				<form method="post">
-					<input type="hidden" name="action" value="informErsteller"/>
+					<input type="hidden" name="action" value="informErstellerAbschluss"/>
+					<input type="submit" value="Ausführen"/>
+				</form>
+                
+                <div class="subtitle">informRedaktionEmpfaenger</div>
+				<p class="help">
+					Empfänger redaktioneller E-Mails werden informiert. 
+				</p>
+				<ul class="help">
+					<li>Zeit: 01:40 Uhr</li>
+				</ul>
+				<form method="post">
+					<input type="hidden" name="action" value="informRedaktionEmpfaenger"/>
 					<input type="submit" value="Ausführen"/>
 				</form>
 			</div>
@@ -226,6 +251,18 @@
 				<c:url value="/service/missbrauchsmeldungBestaetigung" var="url"/>	
 				<form action="${url}" target="_blank" method="get">
 					<label for="typ">hash</label><input type="text" name="hash" value=""/><br/>
+					<input type="submit" value="Ausführen"/>
+				</form>
+                
+                <div class="subtitle">Lob, Hinweise oder Kritik zu einem Vorgang</div>
+				<p class="help">
+					Lob, Hinweise oder Kritik zu einem Vorgang werden angelegt.
+				</p>
+				<c:url value="/service/lobHinweiseKritik" var="url"/>	
+				<form action="${url}" target="_blank" method="post">
+					<label for="typ">vorgang</label><input type="text" name="vorgang" value="1"/><br/>
+					<label for="typ">email</label><input type="text" name="email" value="test@test.de"/><br/>
+					<label for="typ">freitext</label><input type="text" name="freitext" value="1"/><br/>
 					<input type="submit" value="Ausführen"/>
 				</form>
 	

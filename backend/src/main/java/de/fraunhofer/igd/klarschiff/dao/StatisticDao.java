@@ -38,56 +38,108 @@ public class StatisticDao {
 	@Autowired
 	SettingsService settingsService;
 	
-	public Long countNewVorgaenge(Date datumVon, boolean onlyCurrentZustaendigkeitDelegiertAn) {
-		HqlQueryHelper query = new HqlQueryHelper()
-			.addFromTables("Vorgang vo LEFT JOIN vo.missbrauchsmeldungen mi WITH mi.datumBestaetigung IS NOT NULL AND mi.datumAbarbeitung IS NULL")
-			.addSelectAttribute("COUNT(DISTINCT vo.id)")
-			.addWhereConditions("vo.datum>=:datumVon")
-			.addParameter("datumVon", datumVon);
-		if (onlyCurrentZustaendigkeitDelegiertAn) processZustaendigkeitDelegiertAn(query);
-		return (Long)query.getSingleResult(entityManager);
-	}
-	
-	public Long countFixedVorgaenge(Date datumVon, boolean onlyCurrentZustaendigkeitDelegiertAn) {
-		HqlQueryHelper query = new HqlQueryHelper()
-			.addFromTables("Vorgang vo JOIN vo.verlauf ve WITH ve.datum>=:datumVon AND ve.typ=:verlaufTyp")
-			.addSelectAttribute("COUNT(DISTINCT vo.id)")
-			.addParameter("datumVon", datumVon)
-			.addParameter("verlaufTyp", EnumVerlaufTyp.status)
-			.addWhereConditions("vo.status IN (:status)")
-			.addParameter("status", Arrays.asList(EnumVorgangStatus.closedVorgangStatus()));
-		if (onlyCurrentZustaendigkeitDelegiertAn) processZustaendigkeitDelegiertAn(query);
-		return (Long)query.getSingleResult(entityManager);
-	}
-
-	public Long countMissbrauchsmeldungen(boolean onlyCurrentZustaendigkeitDelegiertAn) {
+	@SuppressWarnings("unchecked")
+	public List<Vorgang> findVorgaengeMissbrauchsmeldungen() {
 		HqlQueryHelper query = new HqlQueryHelper()
 			.addFromTables("Vorgang vo JOIN vo.missbrauchsmeldungen mi WITH mi.datumBestaetigung IS NOT NULL AND mi.datumAbarbeitung IS NULL")
-			.addSelectAttribute("COUNT(DISTINCT vo.id)");
-		if (onlyCurrentZustaendigkeitDelegiertAn) processZustaendigkeitDelegiertAn(query);
-		return (Long)query.getSingleResult(entityManager);
+            .addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert = FALSE)")
+            .orderBy("vo.id");
+        vorgangDao.addGroupByVorgang(query, true);
+		processZustaendigkeitDelegiertAn(query);
+		return query.getResultList(entityManager);
 	}
 
 	@SuppressWarnings("unchecked")
 	public List<Vorgang> findLastVorgaenge(int maxResult) {
 		HqlQueryHelper query = new HqlQueryHelper()
-			.addFromTables("Vorgang vo LEFT JOIN vo.unterstuetzer un WITH un.datumBestaetigung IS NOT NULL ");
-		vorgangDao.addGroupByVorgang(query, true);
-		//Ideen mit zu wenig Unterstützern herausfiltern
-		query.addHavingConditions("(vo.typ=:unTyp OR vo.status=:unStatus OR COUNT(DISTINCT un.id)>=:unterstuetzer) ")
-			.addParameter("unTyp", EnumVorgangTyp.problem)
-			.addParameter("unStatus", EnumVorgangStatus.offen)
-			.addParameter("unterstuetzer", settingsService.getVorgangIdeeUnterstuetzer());
-		//Zuständigkeit & DelegiertAn
-		processZustaendigkeitDelegiertAn(query);
-		//Sortierung
-		query.orderBy("vo.datum DESC");
-		//maxResult
+			.addFromTables("Vorgang vo")
+            .addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert = FALSE)")
+            .addWhereConditions("NOT (vo.typ = 'idee' AND vo.erstsichtungErfolgt = TRUE AND vo.status = 'offen' AND (SELECT count(*) FROM Unterstuetzer un WHERE un.vorgang = vo.id) < :unterstuetzer)").addParameter("unterstuetzer", settingsService.getVorgangIdeeUnterstuetzer())
+            .orderBy("vo.datum DESC");
 		query.maxResults(maxResult);
-		
+        vorgangDao.addGroupByVorgang(query, true);
+		processZustaendigkeitDelegiertAn(query);
 		return query.getResultList(entityManager);
 	}
-	
+    
+	@SuppressWarnings("unchecked")
+    public List<Vorgang> findVorgaengeOffenNichtAkzeptiert(Date datum) {
+		HqlQueryHelper query = (new HqlQueryHelper()).addSelectAttribute("vo")
+			.addFromTables("Vorgang vo")
+			.addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert = FALSE)")
+			.addWhereConditions("vo.status = 'offen'")
+			.addWhereConditions("vo.zustaendigkeitStatus != 'akzeptiert'")
+            .addWhereConditions("vo.version <= :datum").addParameter("datum", datum)
+            .orderBy("vo.id");
+        processZustaendigkeitDelegiertAn(query);
+		return query.getResultList(entityManager);
+	}
+    
+    @SuppressWarnings("unchecked")
+    public List<Vorgang> findVorgaengeInbearbeitungOhneStatusKommentar(Date datum) {
+		HqlQueryHelper query = (new HqlQueryHelper()).addSelectAttribute("vo")
+			.addFromTables("Vorgang vo")
+			.addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert = FALSE)")
+			.addWhereConditions("vo.status = 'inBearbeitung'")
+			.addWhereConditions("(vo.statusKommentar IS NULL OR vo.statusKommentar = '')")
+            .addWhereConditions("vo.version <= :datum").addParameter("datum", datum)
+            .orderBy("vo.id");
+        processZustaendigkeitDelegiertAn(query);
+		return query.getResultList(entityManager);
+	}
+    
+    @SuppressWarnings("unchecked")
+    public List<Vorgang> findVorgaengeIdeeOffenOhneUnterstuetzung(Date datum) {
+		HqlQueryHelper query = (new HqlQueryHelper()).addSelectAttribute("vo")
+			.addFromTables("Vorgang vo JOIN vo.verlauf ve")
+			.addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert = FALSE)")
+			.addWhereConditions("vo.typ = 'idee'")
+			.addWhereConditions("vo.status = 'offen'")
+            .addWhereConditions("vo.erstsichtungErfolgt = TRUE")
+            .addWhereConditions("ve.typ = 'zustaendigkeitAkzeptiert'")
+            .addWhereConditions("ve.datum <= :datum").addParameter("datum", datum)
+            .addWhereConditions("(SELECT COUNT(*) FROM Unterstuetzer un WHERE un.vorgang = vo.id) < :unterstuetzer").addParameter("unterstuetzer", settingsService.getVorgangIdeeUnterstuetzer())
+            .orderBy("vo.id");
+        processZustaendigkeitDelegiertAn(query);
+		return query.getResultList(entityManager);
+	}
+    
+	@SuppressWarnings("unchecked")
+    public List<Vorgang> findVorgaengeWirdnichtbearbeitetOhneStatuskommentar() {
+		HqlQueryHelper query = (new HqlQueryHelper()).addSelectAttribute("vo")
+			.addFromTables("Vorgang vo")
+			.addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert = FALSE)")
+			.addWhereConditions("vo.status = 'wirdNichtBearbeitet'")
+			.addWhereConditions("(vo.statusKommentar IS NULL OR vo.statusKommentar = '')")
+            .orderBy("vo.id");
+        processZustaendigkeitDelegiertAn(query);
+		return query.getResultList(entityManager);
+	}
+    
+	@SuppressWarnings("unchecked")
+    public List<Vorgang> findVorgaengeNichtMehrOffenNichtAkzeptiert() {
+		HqlQueryHelper query = (new HqlQueryHelper()).addSelectAttribute("vo")
+			.addFromTables("Vorgang vo")
+			.addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert = FALSE)")
+			.addWhereConditions("vo.status NOT IN ('gemeldet','offen')")
+			.addWhereConditions("vo.zustaendigkeitStatus != 'akzeptiert'")
+            .orderBy("vo.id");
+        processZustaendigkeitDelegiertAn(query);
+		return query.getResultList(entityManager);
+	}
+    
+	@SuppressWarnings("unchecked")
+    public List<Vorgang> findVorgaengeOhneRedaktionelleFreigaben() {
+		HqlQueryHelper query = (new HqlQueryHelper()).addSelectAttribute("vo")
+			.addFromTables("Vorgang vo")
+			.addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert = FALSE)")
+			.addWhereConditions("vo.status IN ('offen', 'inBearbeitung', 'wirdNichtBearbeitet', 'abgeschlossen')")
+			.addWhereConditions("vo.erstsichtungErfolgt = TRUE")
+			.addWhereConditions("((vo.betreff IS NOT NULL AND vo.betreff != '' AND (betreffFreigabeStatus IS NULL OR betreffFreigabeStatus = 'intern')) OR (vo.details IS NOT NULL AND vo.details != '' AND (detailsFreigabeStatus IS NULL OR detailsFreigabeStatus = 'intern')) OR (length(vo.fotoThumbJpg) IS NOT NULL AND (fotoFreigabeStatus IS NULL OR fotoFreigabeStatus = 'intern')))")
+            .orderBy("vo.id");
+        processZustaendigkeitDelegiertAn(query);
+		return query.getResultList(entityManager);
+	}
 	
 	@SuppressWarnings("unchecked")
 	public List<Object[]> getStatusVerteilung(boolean onlyCurrentZustaendigkeitDelegiertAn)
@@ -96,8 +148,7 @@ public class StatisticDao {
 			.addFromTables("Vorgang vo")
 			.addSelectAttribute("vo.status")
 			.addSelectAttribute("COUNT(vo.id)")
-			.addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert=:archiviert)")
-			.addParameter("archiviert", Boolean.FALSE)
+			.addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert = FALSE)")
 			.addGroupByAttribute("vo.status")
 			.addGroupByAttribute("vo.statusOrdinal")
 			.orderBy("vo.statusOrdinal");

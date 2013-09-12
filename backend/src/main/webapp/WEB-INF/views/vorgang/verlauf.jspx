@@ -31,110 +31,153 @@
 		<div class="fieldset">
 			<div class="fieldsettitle">Verlauf</div>
 	  		<c:forEach items="${verlauf}" var="verlaufItem">
+                <c:if test="${verlaufItem.wertNeu!=verlaufItem.wertAlt or verlaufItem.wertNeu==null or verlaufItem.wertAlt==null}">
 	  			<div class="verlauf">
 	  				<div class="verlaufHeader">
-		       			<span style="margin-right:10px;padding:0px;">${verlaufItem.nutzer}</span>
-		       			<fmt:formatDate value="${verlaufItem.datum}" pattern="dd.MM.yyyy"/><![CDATA[&nbsp;&nbsp;]]>
-		       			<span style="font-size:0.8em; color:#666;"><fmt:formatDate value="${verlaufItem.datum}" pattern="HH:mm"/></span>
+		       			<span style="margin-right:10px;padding:0px;">
+                            <c:if test="${verlaufItem.typ!='vorgangBestaetigung' or verlaufItem.typ!='missbrauchsmeldungBestaetigung' or verlaufItem.typ!='unterstuetzerBestaetigung' or verlaufItem.typ!='lobHinweiseKritik'}">
+                                <c:if test="${verlaufItem.nutzer!=null}">
+                                    ${verlaufItem.nutzer}
+                                </c:if>
+							</c:if>
+                            <fmt:formatDate value="${verlaufItem.datum}" pattern="dd.MM.yyyy"/>,
+                            <fmt:formatDate value="${verlaufItem.datum}" pattern="HH:mm"/> Uhr
+                        </span>
 	  				</div>
 	  				
 					<div class="verlaufText" >
-						<c:choose>
+                        <c:url value="/images/" var="url"/>
+                        <c:choose>
 							<c:when test="${verlaufItem.typ=='status'}">
-								Status geändert: ${verlaufItem.wertAlt} → ${verlaufItem.wertNeu}
+                                <c:choose>
+									<c:when test="${verlaufItem.wertAlt=='wird nicht bearbeitet'}">
+                                        <c:set value="status_wirdNichtBearbeitet_15.png" var="altAlt"/>
+                                    </c:when>
+                                    <c:when test="${verlaufItem.wertAlt=='Duplikat'}">
+                                        <c:set value="status_duplikat_15.png" var="altAlt"/>
+                                    </c:when>
+									<c:otherwise>
+                                        <c:set value="status_${verlaufItem.wertAlt.replaceAll('\\s([a-zA-Z])','$1').replaceAll('ö','oe')}_15.png" var="altAlt"/>
+                                    </c:otherwise>
+								</c:choose>
+                                <c:choose>
+									<c:when test="${verlaufItem.wertNeu=='wird nicht bearbeitet'}">
+                                        <c:set value="status_wirdNichtBearbeitet_15.png" var="altNeu"/>
+                                    </c:when>
+                                    <c:when test="${verlaufItem.wertNeu=='Duplikat'}">
+                                        <c:set value="status_duplikat_15.png" var="altNeu"/>
+                                    </c:when>
+									<c:otherwise>
+                                        <c:set value="status_${verlaufItem.wertNeu.replaceAll('\\s([a-zA-Z])','$1').replaceAll('ö','oe')}_15.png" var="altNeu"/>
+                                    </c:otherwise>
+								</c:choose>
+								Status geändert: <img style="vertical-align:middle" alt="${altAlt}" src="${url}${altAlt}" height="15" width="15"  title="${verlaufItem.wertAlt}"/> ➔ <img style="vertical-align:middle" alt="${altNeu}" src="${url}${altNeu}" height="15" width="15"  title="${verlaufItem.wertNeu}"/>
 							</c:when>
 							<c:when test="${verlaufItem.typ=='statusKommentar'}">
 								<c:choose>
-									<c:when test="${not empty verlaufItem.wertNeu}">Statuskommentar geändert.</c:when>
-									<c:otherwise>Statuskommentar gelöscht.</c:otherwise>
+									<c:when test="${not empty verlaufItem.wertNeu}">Statuskommentar geändert</c:when>
+									<c:otherwise>Statuskommentar gelöscht</c:otherwise>
 								</c:choose>
 							</c:when>
 							<c:when test="${verlaufItem.typ=='zustaendigkeitAkzeptiert'}">
-								<c:choose>
-									<c:when test="${verlaufItem.wertNeu eq 'akzeptiert'}">Zuständigkeit akzeptiert.</c:when>
-									<c:otherwise>Zuständigkeit zugewiesen.</c:otherwise>
+                                <c:choose>
+									<c:when test="${verlaufItem.wertNeu == 'akzeptiert'}">Zuständigkeit akzeptiert <span style="color:#50C80F;font-weight:bold">&#x2714;</span></c:when>
+									<c:otherwise>Zuständigkeit zugewiesen <span style="color:#FF8800;font-weight:bold">&#x2715;</span></c:otherwise>
 								</c:choose>
 							</c:when>
 							<c:when test="${verlaufItem.typ=='zustaendigkeit'}">
-								Zuständigkeit geändert: ${verlaufItem.wertAlt} → ${verlaufItem.wertNeu}
+								Zuständigkeit geändert: ${verlaufItem.wertAlt} ➔ ${verlaufItem.wertNeu}
 							</c:when>
 							<c:when test="${verlaufItem.typ=='erzeugt'}">
-								Vorgang erzeugt.
+                                <c:choose>
+									<c:when test="${verlaufItem.nutzer!=null}">Vorgang erzeugt</c:when>
+									<c:otherwise>Vorgang von externem Autor erzeugt</c:otherwise>
+								</c:choose>
 							</c:when>
 							<c:when test="${verlaufItem.typ=='betreffFreigabeStatus'}">
-								Freigabestatus des Betreffs geändert: ${verlaufItem.wertAlt} → ${verlaufItem.wertNeu}
+                                <c:set value="freigabeStatus_${verlaufItem.wertAlt}.png" var="altAlt"/>
+                                <c:set value="freigabeStatus_${verlaufItem.wertNeu}.png" var="altNeu"/>
+								Freigabestatus des Betreffs geändert: <img style="vertical-align:middle" alt="${altAlt}" src="${url}${altAlt}" height="15" width="15"  title="${verlaufItem.wertAlt}"/> ➔ <img style="vertical-align:middle" alt="${altNeu}" src="${url}${altNeu}" height="15" width="15"  title="${verlaufItem.wertNeu}"/>
 							</c:when>
 							<c:when test="${verlaufItem.typ=='detailsFreigabeStatus'}">
-								Freigabestatus der Details geändert: ${verlaufItem.wertAlt} → ${verlaufItem.wertNeu}
+                                <c:set value="freigabeStatus_${verlaufItem.wertAlt}.png" var="altAlt"/>
+                                <c:set value="freigabeStatus_${verlaufItem.wertNeu}.png" var="altNeu"/>
+								Freigabestatus der Details geändert: <img style="vertical-align:middle" alt="${altAlt}" src="${url}${altAlt}" height="15" width="15"  title="${verlaufItem.wertAlt}"/> ➔ <img style="vertical-align:middle" alt="${altNeu}" src="${url}${altNeu}" height="15" width="15"  title="${verlaufItem.wertNeu}"/>
 							</c:when>
 							<c:when test="${verlaufItem.typ=='fotoFreigabeStatus'}">
-								Freigabestatus des Fotos geändert: ${verlaufItem.wertAlt} → ${verlaufItem.wertNeu}
+                                <c:set value="freigabeStatus_${verlaufItem.wertAlt}.png" var="altAlt"/>
+                                <c:set value="freigabeStatus_${verlaufItem.wertNeu}.png" var="altNeu"/>
+								Freigabestatus des Fotos geändert: <img style="vertical-align:middle" alt="${altAlt}" src="${url}${altAlt}" height="15" width="15"  title="${verlaufItem.wertAlt}"/> ➔ <img style="vertical-align:middle" alt="${altNeu}" src="${url}${altNeu}" height="15" width="15"  title="${verlaufItem.wertNeu}"/>
 							</c:when>
 							<c:when test="${verlaufItem.typ=='typ'}">
-								Typ geändert: ${verlaufItem.wertAlt} → ${verlaufItem.wertNeu}
+                                <c:set value="${verlaufItem.wertAlt.toLowerCase()}_15.png" var="altAlt"/>
+                                <c:set value="${verlaufItem.wertNeu.toLowerCase()}_15.png" var="altNeu"/>
+								Typ geändert: <img style="vertical-align:middle" alt="${altAlt}" src="${url}${altAlt}" height="15" width="15"  title="${verlaufItem.wertAlt}"/> ➔ <img style="vertical-align:middle" alt="${altNeu}" src="${url}${altNeu}" height="15" width="15"  title="${verlaufItem.wertNeu}"/>
 							</c:when>
-							<c:when test="${verlaufItem.typ=='kategorie'}">
-								Kategorie geändert: ${verlaufItem.wertAlt} → ${verlaufItem.wertNeu}
+							<c:when test="${verlaufItem.typ=='kategorie' and verlaufItem.wertNeu!=verlaufItem.wertAlt}">
+								Kategorie geändert: ${verlaufItem.wertAlt} ➔ ${verlaufItem.wertNeu}
 							</c:when>
 							<c:when test="${verlaufItem.typ=='archiv' and verlaufItem.wertNeu=='true'}">
-								Vorgang archiviert.
+								Vorgang archiviert <img style="vertical-align:middle" alt="archiviert" src="${url}archiviert_15.png" height="15" width="15"  title="archiviert"/>
 							</c:when>
 							<c:when test="${verlaufItem.typ=='archiv' and verlaufItem.wertNeu=='false'}">
-								Vorgang aus dem Archiv wiederhergestellt.
+								Vorgang aus dem Archiv wiederhergestellt
 							</c:when>
 							<c:when test="${verlaufItem.typ=='betreff'}">
 								<c:choose>
 									<c:when test="${not empty verlaufItem.wertNeu}">Betreff geändert in: ${verlaufItem.wertNeu}</c:when>
-									<c:otherwise>Betreff gelöscht.</c:otherwise>
+									<c:otherwise>Betreff gelöscht</c:otherwise>
 								</c:choose>
 							</c:when>
 							<c:when test="${verlaufItem.typ=='adresse'}">
 								<c:choose>
 									<c:when test="${not empty verlaufItem.wertNeu}">Adresse geändert in: ${verlaufItem.wertNeu}</c:when>
-									<c:otherwise>Adresse gelöscht.</c:otherwise>
+									<c:otherwise>Adresse gelöscht</c:otherwise>
+								</c:choose>
+							</c:when>
+                            <c:when test="${verlaufItem.typ=='flurstueckseigentum'}">
+								<c:choose>
+									<c:when test="${not empty verlaufItem.wertNeu}">Flurstückseigentum geändert in: ${verlaufItem.wertNeu}</c:when>
+									<c:otherwise>Flurstückseigentum gelöscht</c:otherwise>
 								</c:choose>
 							</c:when>
 							<c:when test="${verlaufItem.typ=='detail'}">
 								<c:choose>
 									<c:when test="${not empty verlaufItem.wertNeu}">Details geändert in: ${fx:toHtml(verlaufItem.wertNeu)}</c:when>
-									<c:otherwise>Details gelöscht.</c:otherwise>
+									<c:otherwise>Details gelöscht</c:otherwise>
 								</c:choose>
 							</c:when>
 							<c:when test="${verlaufItem.typ=='delegiertAn'}">
 								<c:choose>
 									<c:when test="${not empty verlaufItem.wertNeu}">Vorgang delegiert an: ${fx:toHtml(verlaufItem.wertNeu)}</c:when>
-									<c:otherwise>Vorgang zurückgewiesen.</c:otherwise>
+									<c:otherwise>Vorgang zurückgewiesen von: ${fx:toHtml(verlaufItem.wertAlt)}</c:otherwise>
 								</c:choose>
 							</c:when>
 							<c:when test="${verlaufItem.typ=='prioritaet'}">
 								Priorität geändert in: ${verlaufItem.wertNeu}
 							</c:when>
 							<c:when test="${verlaufItem.typ=='missbrauchsmeldungErzeugt'}">
-								Missbrauchsmeldung erzeugt.
+                                Missbrauchsmeldung erzeugt
 							</c:when>
 							<c:when test="${verlaufItem.typ=='missbrauchsmeldungBestaetigung'}">
-								Missbrauchsmeldung erzeugt und bestätigt.
+								Missbrauchsmeldung von externem Autor erzeugt und bestätigt
 							</c:when>
 							<c:when test="${verlaufItem.typ=='missbrauchsmeldungBearbeitet'}">
-								Missbrauchsmeldung bearbeitet.
+								Missbrauchsmeldung abgearbeitet
 							</c:when>
 							<c:when test="${verlaufItem.typ=='unterstuetzerBestaetigung'}">
-								Unterstützung erzeugt und bestätigt.
+								Unterstützung von externem Autor erzeugt und bestätigt
+							</c:when>
+                            <c:when test="${verlaufItem.typ=='lobHinweiseKritik'}">
+								Lob, Hinweise oder Kritik von externem Autor hinzugefügt
 							</c:when>
 							<c:when test="${verlaufItem.typ=='vorgangBestaetigung'}">
-								Vorgang bestätigt.
+								Vorgang von externem Autor bestätigt
 							</c:when>
-							
-							<c:otherwise>
-								<div class="dev">
-									Typ: ${verlaufItem.typ}<br/>
-			        				alt: ${verlaufItem.wertAlt}<br/>
-			        				neu: ${verlaufItem.wertNeu}
-								</div>
-							</c:otherwise>
 						</c:choose>
 					</div>
 	  			</div>
+            </c:if>
 			</c:forEach>
             <c:if test="${not empty maxPages and not empty verlauf}">
 	            <util:pagination maxPages="${maxPages}" page="${page}" size="${size}"/>

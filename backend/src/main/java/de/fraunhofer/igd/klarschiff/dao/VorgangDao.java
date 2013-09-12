@@ -85,7 +85,7 @@ public class VorgangDao {
 	@Transactional
 	public void remove(Object o) {
 		em.remove(o);
-		//em.flush();
+		em.flush();
 	}
 	
 
@@ -128,14 +128,14 @@ public class VorgangDao {
 			if (!StringUtils.equals(vorgangOld.getDetails(), vorgang.getDetails())) verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.detail, StringUtils.abbreviate(vorgangOld.getDetails(), 100), StringUtils.abbreviate(vorgang.getDetails(), 100));
 			//Adresse
 			if (!StringUtils.equals(vorgangOld.getAdresse(), vorgang.getAdresse())) verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.adresse, StringUtils.abbreviate(vorgangOld.getAdresse(), 100), StringUtils.abbreviate(vorgang.getAdresse(), 100));
+            //Flurstückseigentum
+			if (!StringUtils.equals(vorgangOld.getFlurstueckseigentum(), vorgang.getFlurstueckseigentum())) verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.flurstueckseigentum, StringUtils.abbreviate(vorgangOld.getFlurstueckseigentum(), 100), StringUtils.abbreviate(vorgang.getFlurstueckseigentum(), 100));
 			//Delegieren
 			if (!StringUtils.equals(vorgangOld.getDelegiertAn(), vorgang.getDelegiertAn())) verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.delegiertAn, vorgangOld.getDelegiertAn(), vorgang.getDelegiertAn());
 			//Priorität
 			if (vorgangOld.getPrioritaet()!=vorgang.getPrioritaet()) verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.prioritaet, vorgangOld.getPrioritaet().getText(), vorgang.getPrioritaet().getText());
 			//Archiv
 			if (vorgangOld.getArchiviert() != vorgang.getArchiviert()) verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.archiv, vorgangOld.getArchiviert()+"", vorgang.getArchiviert()+"");
-			//Missbrauchsmeldung?
-			//Unterstützer?
 		}
 	}
 	
@@ -217,12 +217,7 @@ public class VorgangDao {
 			unStatus.add(EnumVorgangStatus.inBearbeitung);
 			query.addWhereConditions("vo.zustaendigkeit IN(:zustaendigkeit)")
 				.addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert=:archiviert)")
-				.addParameter("archiviert", Boolean.FALSE)
-				.addHavingConditions("(vo.typ!=:unTyp OR vo.status IN (:unStatus) OR COUNT(DISTINCT un.id)>=:unterstuetzer OR vo.erstsichtungErfolgt=:erstsichtungErfolgt OR COUNT(DISTINCT mi.id)>0) ")
-				.addParameter("unTyp", EnumVorgangTyp.idee)
-				.addParameter("unStatus", unStatus)
-				.addParameter("erstsichtungErfolgt", false)
-				.addParameter("unterstuetzer", settingsService.getVorgangIdeeUnterstuetzer());
+				.addParameter("archiviert", Boolean.FALSE);
 			if (cmd instanceof VorgangFeedCommand) {
 				query.addParameter("zustaendigkeit", Role.toString(((VorgangFeedCommand)cmd).getZustaendigkeiten()));
 			} else {
@@ -232,11 +227,24 @@ public class VorgangDao {
 			case offene:
 				query.addWhereConditions("(vo.status=:status1 OR vo.status=:status2)")
 					.addParameter("status1", EnumVorgangStatus.offen)
-					.addParameter("status2", EnumVorgangStatus.inBearbeitung);
+					.addParameter("status2", EnumVorgangStatus.inBearbeitung)
+                    .addHavingConditions("(vo.typ!=:unTyp OR vo.status IN (:unStatus) OR COUNT(DISTINCT un.id)>=:unterstuetzer OR vo.erstsichtungErfolgt=:erstsichtungErfolgt OR COUNT(DISTINCT mi.id)>0) ")
+                    .addParameter("unTyp", EnumVorgangTyp.idee)
+                    .addParameter("unStatus", unStatus)
+                    .addParameter("erstsichtungErfolgt", false)
+                    .addParameter("unterstuetzer", settingsService.getVorgangIdeeUnterstuetzer());
+				break;
+            case offeneIdeen:
+				query.addWhereConditions("(vo.status=:status)")
+					.addParameter("status", EnumVorgangStatus.offen)
+                    .addHavingConditions("(vo.typ=:unTyp AND vo.erstsichtungErfolgt=:erstsichtungErfolgt AND COUNT(DISTINCT un.id)<:unterstuetzer) ")
+                    .addParameter("unTyp", EnumVorgangTyp.idee)
+                    .addParameter("erstsichtungErfolgt", true)
+                    .addParameter("unterstuetzer", settingsService.getVorgangIdeeUnterstuetzer());
 				break;
 			case abgeschlossene:
 				query.addWhereConditions("(vo.status IN (:status))")
-					.addParameter("status", Arrays.asList(EnumVorgangStatus.closedVorgangStatus()));
+                    .addParameter("status", Arrays.asList(EnumVorgangStatus.closedVorgangStatus()));
 				break;
 			}
 			break;
@@ -382,6 +390,7 @@ public class VorgangDao {
 			.addGroupByAttribute("vo.ovi")
 			.addGroupByAttribute("vo.autorEmail")
 			.addGroupByAttribute("vo.adresse")
+			.addGroupByAttribute("vo.flurstueckseigentum")
 			.addGroupByAttribute("vo.hash")
 			.addGroupByAttribute("vo.status")
 			.addGroupByAttribute("vo.statusOrdinal")
@@ -672,6 +681,24 @@ public class VorgangDao {
 			.addWhereConditions("vo.delegiertAn=:delegiertAn").addParameter("delegiertAn", delegiertAn);
 		return query.getResultList(em);
 	}
+    
+    
+    /**
+	 * Ermittelt alle Vorgänge, die ab einer bestimmten Zeit den Status "in Bearbeitung" erhalten haben.
+	 * @param lastChange Zeitpunkt, ab dem die Vorgänge den Status "in Bearbeitung" erhalten haben.
+	 * @return Liste mit Vorgängen
+	 */
+	@SuppressWarnings("unchecked")
+	public List<Vorgang> findInProgressVorgaenge(Date lastChange) {
+		HqlQueryHelper query = addGroupByVorgang(new HqlQueryHelper())
+			.addFromTables("Vorgang vo JOIN vo.verlauf ve")
+			.addWhereConditions("ve.typ=:verlaufTyp").addParameter("verlaufTyp", EnumVerlaufTyp.status)
+			.addWhereConditions("ve.datum>=:datum").addParameter("datum", lastChange)
+			.addWhereConditions("vo.status IN (:status)").addParameter("status", Arrays.asList(EnumVorgangStatus.inProgressVorgangStatus()))
+			.addWhereConditions("vo.autorEmail IS NOT NULL")
+			.addWhereConditions("vo.autorEmail!=:autorEmail").addParameter("autorEmail", "");
+		return query.getResultList(em);
+	}
 
 	
 	/**
@@ -709,5 +736,152 @@ public class VorgangDao {
 	 */
 	public String getDelegiertAnForVorgang(Long vorgangId) {
 		return em.createQuery("SELECT vo.delegiertAn FROM Vorgang vo WHERE vo.id=:id", String.class).setParameter("id", vorgangId).getSingleResult();
+	}
+    
+    
+    /**
+	 * Ermittelt alle Vorgänge mit dem Status 'offen', die seit einem bestimmten Datum einer bestimmten Zuständigkeit zugewiesen sind, bisher aber nicht akzeptiert wurden.
+	 * @param administrator Zuständigkeit ignorieren?
+	 * @param zustaendigkeit Zuständigkeit, der die Vorgänge zugewiesen sind
+	 * @param datum Datum, seit dem die Vorgänge zugewiesen sind
+	 * @return Liste mit Vorgängen
+	 */
+	@SuppressWarnings("unchecked")
+    public List<Vorgang> findVorgaengeOffenNichtAkzeptiert(Boolean administrator, String zustaendigkeit, Date datum) {
+		HqlQueryHelper query = (new HqlQueryHelper()).addSelectAttribute("vo")
+			.addFromTables("Vorgang vo")
+			.addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert = FALSE)")
+			.addWhereConditions("vo.status = 'offen'")
+			.addWhereConditions("vo.zustaendigkeitStatus != 'akzeptiert'")
+            .addWhereConditions("vo.version <= :datum").addParameter("datum", datum);
+        if (administrator == false)
+            query.addWhereConditions("vo.zustaendigkeit = :zustaendigkeit").addParameter("zustaendigkeit", zustaendigkeit);
+        query.orderBy("vo.zustaendigkeit, vo.id");
+		return query.getResultList(em);
+	}
+    
+    
+    /**
+	 * Ermittelt alle Vorgänge mit dem Status 'in Bearbeitung', die einer bestimmten Zuständigkeit zugewiesen sind und seit einem bestimmten Datum nicht mehr verändert wurden, bisher aber keine Info der Verwaltung aufweisen.
+	 * @param administrator Zuständigkeit ignorieren?
+	 * @param zustaendigkeit Zuständigkeit, der die Vorgänge zugewiesen sind
+	 * @param datum Datum, seit dem die Vorgänge zugewiesen sind
+	 * @return Liste mit Vorgängen
+	 */
+	@SuppressWarnings("unchecked")
+    public List<Vorgang> findVorgaengeInbearbeitungOhneStatusKommentar(Boolean administrator, String zustaendigkeit, Date datum) {
+		HqlQueryHelper query = (new HqlQueryHelper()).addSelectAttribute("vo")
+			.addFromTables("Vorgang vo")
+			.addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert = FALSE)")
+			.addWhereConditions("vo.status = 'inBearbeitung'")
+			.addWhereConditions("(vo.statusKommentar IS NULL OR vo.statusKommentar = '')")
+            .addWhereConditions("vo.version <= :datum").addParameter("datum", datum);
+        if (administrator == false)
+            query.addWhereConditions("vo.zustaendigkeit = :zustaendigkeit").addParameter("zustaendigkeit", zustaendigkeit);
+        query.orderBy("vo.zustaendigkeit, vo.id");
+		return query.getResultList(em);
+	}
+    
+    
+    /**
+	 * Ermittelt alle Vorgänge des Typs 'idee' mit dem Status 'offen', die ihre Erstsichtung seit einem bestimmten Datum hinter sich haben, bisher aber noch nicht die Zahl der notwendigen Unterstützungen aufweisen.
+	 * @param administrator Zuständigkeit ignorieren?
+	 * @param zustaendigkeit Zuständigkeit, der die Vorgänge zugewiesen sind
+	 * @param datum Datum, seit dem die Erstsichtung abgeschlossen ist
+	 * @return Liste mit Vorgängen
+	 */
+	@SuppressWarnings("unchecked")
+    public List<Vorgang> findVorgaengeIdeeOffenOhneUnterstuetzung(Boolean administrator, String zustaendigkeit, Date datum) {
+		HqlQueryHelper query = addGroupByVorgang(new HqlQueryHelper())
+			.addFromTables("Vorgang vo JOIN vo.verlauf ve")
+			.addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert = FALSE)")
+			.addWhereConditions("vo.typ = 'idee'")
+			.addWhereConditions("vo.status = 'offen'")
+            .addWhereConditions("vo.erstsichtungErfolgt = TRUE")
+            .addWhereConditions("ve.typ = 'zustaendigkeitAkzeptiert'")
+            .addWhereConditions("ve.datum <= :datum").addParameter("datum", datum)
+            .addWhereConditions("(SELECT COUNT(*) FROM Unterstuetzer un WHERE un.vorgang = vo.id) < :unterstuetzer").addParameter("unterstuetzer", settingsService.getVorgangIdeeUnterstuetzer());
+        if (administrator == false)
+            query.addWhereConditions("vo.zustaendigkeit = :zustaendigkeit").addParameter("zustaendigkeit", zustaendigkeit);
+        query.orderBy("vo.zustaendigkeit, vo.id");
+		return query.getResultList(em);
+	}
+    
+    
+    /**
+	 * Ermittelt alle Vorgänge mit dem Status 'wird nicht bearbeitet', die bisher keine Info der Verwaltung aufweisen.
+	 * @param administrator Zuständigkeit ignorieren?
+	 * @param zustaendigkeit Zuständigkeit, der die Vorgänge zugewiesen sind
+	 * @return Liste mit Vorgängen
+	 */
+	@SuppressWarnings("unchecked")
+    public List<Vorgang> findVorgaengeWirdnichtbearbeitetOhneStatuskommentar(Boolean administrator, String zustaendigkeit) {
+		HqlQueryHelper query = (new HqlQueryHelper()).addSelectAttribute("vo")
+			.addFromTables("Vorgang vo")
+			.addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert = FALSE)")
+			.addWhereConditions("vo.status = 'wirdNichtBearbeitet'")
+			.addWhereConditions("(vo.statusKommentar IS NULL OR vo.statusKommentar = '')");
+        if (administrator == false)
+            query.addWhereConditions("vo.zustaendigkeit = :zustaendigkeit").addParameter("zustaendigkeit", zustaendigkeit);
+        query.orderBy("vo.zustaendigkeit, vo.id");
+		return query.getResultList(em);
+	}
+    
+    
+    /**
+	 * Ermittelt alle Vorgänge, die zwar nicht mehr den Status 'offen' aufweisen, bisher aber dennoch nicht akzeptiert wurden.
+	 * @param administrator Zuständigkeit ignorieren?
+	 * @param zustaendigkeit Zuständigkeit, der die Vorgänge zugewiesen sind
+	 * @return Liste mit Vorgängen
+	 */
+	@SuppressWarnings("unchecked")
+    public List<Vorgang> findVorgaengeNichtMehrOffenNichtAkzeptiert(Boolean administrator, String zustaendigkeit) {
+		HqlQueryHelper query = (new HqlQueryHelper()).addSelectAttribute("vo")
+			.addFromTables("Vorgang vo")
+			.addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert = FALSE)")
+			.addWhereConditions("vo.status NOT IN ('gemeldet','offen')")
+			.addWhereConditions("vo.zustaendigkeitStatus != 'akzeptiert'");
+        if (administrator == false)
+            query.addWhereConditions("vo.zustaendigkeit = :zustaendigkeit").addParameter("zustaendigkeit", zustaendigkeit);
+        query.orderBy("vo.zustaendigkeit, vo.id");
+		return query.getResultList(em);
+	}
+    
+    
+    /**
+	 * Ermittelt alle Vorgänge, die ihre Erstsichtung bereits hinter sich haben, deren Betreff, Details oder Foto bisher aber noch nicht freigegeben wurden.
+	 * @param administrator Zuständigkeit ignorieren?
+	 * @param zustaendigkeit Zuständigkeit, der die Vorgänge zugewiesen sind
+	 * @return Liste mit Vorgängen
+	 */
+	@SuppressWarnings("unchecked")
+    public List<Vorgang> findVorgaengeOhneRedaktionelleFreigaben(Boolean administrator, String zustaendigkeit) {
+		HqlQueryHelper query = (new HqlQueryHelper()).addSelectAttribute("vo")
+			.addFromTables("Vorgang vo")
+			.addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert = FALSE)")
+			.addWhereConditions("vo.status IN ('offen', 'inBearbeitung', 'wirdNichtBearbeitet', 'abgeschlossen')")
+			.addWhereConditions("vo.erstsichtungErfolgt = TRUE")
+			.addWhereConditions("((vo.betreff IS NOT NULL AND vo.betreff != '' AND (betreffFreigabeStatus IS NULL OR betreffFreigabeStatus = 'intern')) OR (vo.details IS NOT NULL AND vo.details != '' AND (detailsFreigabeStatus IS NULL OR detailsFreigabeStatus = 'intern')) OR (length(vo.fotoThumbJpg) IS NOT NULL AND (fotoFreigabeStatus IS NULL OR fotoFreigabeStatus = 'intern')))");
+        if (administrator == false)
+            query.addWhereConditions("vo.zustaendigkeit = :zustaendigkeit").addParameter("zustaendigkeit", zustaendigkeit);
+        query.orderBy("vo.zustaendigkeit, vo.id");
+		return query.getResultList(em);
+	}
+    
+    
+    /**
+	 * Ermittelt alle Vorgänge, die auf Grund von Kommunikationsfehlern im System keine Einträge in den Datenfeldern 'zustaendigkeit' und/oder 'zustaendigkeit_status' aufweisen.
+	 * @param administrator Zuständigkeit ignorieren?
+	 * @return Liste mit Vorgängen
+	 */
+	@SuppressWarnings("unchecked")
+    public List<Vorgang> findVorgaengeOhneZustaendigkeit(Boolean administrator) {
+		HqlQueryHelper query = (new HqlQueryHelper()).addSelectAttribute("vo")
+			.addFromTables("Vorgang vo")
+			.addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert = FALSE)")
+			.addWhereConditions("vo.status != 'gemeldet'")
+			.addWhereConditions("(vo.zustaendigkeit IS NULL OR vo.zustaendigkeitStatus IS NULL)")
+            .orderBy("vo.id");
+		return query.getResultList(em);
 	}
 }

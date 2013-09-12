@@ -68,7 +68,7 @@
 					<td class="label">Betreff</td>									
 					<td colspan="3">					
 						<util:freigabestatus status="${vorgang.betreffFreigabeStatus}" cssStyle="float:left;"/>					
-						<div class="result" style="width:643px;margin-left:20px;">						
+						<div class="result" style="width:668px;margin-left:20px;">						
 						${vorgang.betreff}
 						</div>						
 					</td>								
@@ -78,20 +78,29 @@
 					<td class="label">Details</td>					
 					<td colspan="3">
 						<util:freigabestatus status="${vorgang.detailsFreigabeStatus}" cssStyle="float:left;"/>					
-						<div class="result" style="width:643px;margin-left:20px;">						
+						<div class="result" style="width:668px;margin-left:20px;">						
 						${fx:toHtml(vorgang.details)}
 						</div>						
 					</td> 						
 				</tr></c:if>
-                <c:if test="${not empty vorgang.adresse}">
-	  			 <tr>
+                <tr>
+                    <c:if test="${not empty vorgang.adresse}">
 					<td class="label">Adresse</td>
 						<td>
 						<div class="result"> 
 						${vorgang.adresse}
 						</div>
 					</td>
-				</tr></c:if>
+                    </c:if>
+                    <c:if test="${not empty vorgang.flurstueckseigentum}">
+					<td class="label">Flurstückseigentum</td>
+						<td>
+						<div class="result" style="width:350px"> 
+						${vorgang.flurstueckseigentum}
+						</div>
+					</td>
+                    </c:if>
+				</tr>
 				<tr>
 					<td class="label">Erstellung</td>
 					<td>
@@ -159,8 +168,7 @@
 		  			<div class="kommentar ${(s.index%2==0) ? 'odd' : 'even'}">
 		  				<div class="kommentarHeader">
 		  					<span style="margin-right:10px;padding:0px;">${kommentar.nutzer}</span>
-			       			<fmt:formatDate value="${kommentar.datum}" pattern="dd.MM.yyyy"/><![CDATA[&nbsp;&nbsp;]]>
-			       			<span style="font-size:0.8em; color:#666;"><fmt:formatDate value="${kommentar.datum}" pattern="HH:mm"/></span>
+			       			<fmt:formatDate value="${kommentar.datum}" pattern="dd.MM.yyyy, HH:mm"/> Uhr
 		  				</div>
 						<div class="kommentarText" >
 			        		${fx:toHtml(kommentar.text)}

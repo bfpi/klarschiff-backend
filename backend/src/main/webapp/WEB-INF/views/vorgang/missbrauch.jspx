@@ -62,7 +62,10 @@
 	  		<c:forEach items="${missbrauchsmeldungen}" var="missbrauchsmeldung" varStatus="s">
 	  			<div class="missbrauch ${(s.index%2==0) ? 'odd' : 'even'} ${(empty missbrauchsmeldung.datumAbarbeitung) ? 'offen' : ''}">
 	  				<div class="missbrauchHeader">
-		       			<fmt:formatDate value="${missbrauchsmeldung.datum}" pattern="dd.MM.yyyy"/>
+		       			<c:if test="${missbrauchsmeldung.autorEmail != null}">
+                            <span style="margin-right:10px;padding:0px;">${missbrauchsmeldung.autorEmail}</span>
+                        </c:if>
+                        <fmt:formatDate value="${missbrauchsmeldung.datum}" pattern="dd.MM.yyyy, HH:mm"/> Uhr
 	  				</div>
 	  				
 					<div class="missbrauchText" >

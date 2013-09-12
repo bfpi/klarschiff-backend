@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import de.fraunhofer.igd.klarschiff.dao.VerlaufDao;
 import de.fraunhofer.igd.klarschiff.dao.VorgangDao;
+import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
 import de.fraunhofer.igd.klarschiff.vo.EnumVerlaufTyp;
 import de.fraunhofer.igd.klarschiff.vo.Missbrauchsmeldung;
 import de.fraunhofer.igd.klarschiff.vo.Verlauf;
@@ -38,6 +39,9 @@ public class VorgangMissbrauchController {
 
 	@Autowired
 	VerlaufDao verlaufDao;
+	
+	@Autowired
+	SecurityService securityService;
 	
 	/**
 	 * Die Methode verarbeitet den GET-Request auf der URL <code>/vorgang/{id}/missbrauch</code><br/>
@@ -100,17 +104,14 @@ public class VorgangMissbrauchController {
 			cmd.getMissbrauchsmeldung().setVorgang(vorgang);
 			cmd.getMissbrauchsmeldung().setDatum(new Date());
 			cmd.getMissbrauchsmeldung().setDatumBestaetigung(new Date());
+			cmd.getMissbrauchsmeldung().setAutorEmail(securityService.getCurrentUser().getName());
 			vorgangDao.persist(cmd.getMissbrauchsmeldung());
 			for (@SuppressWarnings("unused") Verlauf verlauf : vorgang.getVerlauf());
 			verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.missbrauchsmeldungErzeugt, null, null);
 			vorgangDao.merge(vorgang, false);
 			cmd.setMissbrauchsmeldung(new Missbrauchsmeldung());
 		}
-//			String str[] = action.split("_");
-//			EnumFreigabeStatus freigabeStatus = EnumFreigabeStatus.valueOf(str[2]);
-//			vorgang.setFotoFreigabeStatus(freigabeStatus);
-//			vorgangDao.merge(vorgang);
-//		}
+        
 		model.put("vorgang", vorgang);
 		model.put("missbrauchsmeldungen", vorgangDao.listMissbrauchsmeldung(vorgang));
 		return "vorgang/missbrauch";

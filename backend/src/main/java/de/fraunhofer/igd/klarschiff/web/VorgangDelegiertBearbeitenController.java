@@ -24,10 +24,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import de.fraunhofer.igd.klarschiff.dao.KommentarDao;
+import de.fraunhofer.igd.klarschiff.dao.LobHinweiseKritikDao;
 import de.fraunhofer.igd.klarschiff.dao.VorgangDao;
 import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
 import de.fraunhofer.igd.klarschiff.vo.EnumVorgangStatus;
 import de.fraunhofer.igd.klarschiff.vo.Kommentar;
+import de.fraunhofer.igd.klarschiff.vo.LobHinweiseKritik;
 import de.fraunhofer.igd.klarschiff.vo.StatusKommentarVorlage;
 import de.fraunhofer.igd.klarschiff.vo.Verlauf;
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
@@ -48,6 +50,9 @@ public class VorgangDelegiertBearbeitenController {
 	@Autowired
 	KommentarDao kommentarDao;
 	
+	@Autowired
+	LobHinweiseKritikDao lobHinweiseKritikDao;
+	
 
 	@Autowired
 	SecurityService securityService;
@@ -64,7 +69,7 @@ public class VorgangDelegiertBearbeitenController {
 	@ModelAttribute("allVorgangStatus")
     public EnumVorgangStatus[] allVorgangStatus() {
 		EnumVorgangStatus[] allVorgangStatus = EnumVorgangStatus.values();
-		allVorgangStatus = (EnumVorgangStatus[]) ArrayUtils.removeElement(ArrayUtils.removeElement(ArrayUtils.removeElement(allVorgangStatus, EnumVorgangStatus.gemeldet), EnumVorgangStatus.offen),EnumVorgangStatus.geloescht);
+		allVorgangStatus = (EnumVorgangStatus[]) ArrayUtils.removeElement(ArrayUtils.removeElement(ArrayUtils.removeElement(ArrayUtils.removeElement(ArrayUtils.removeElement(allVorgangStatus, EnumVorgangStatus.gemeldet), EnumVorgangStatus.offen), EnumVorgangStatus.geloescht), EnumVorgangStatus.wirdNichtBearbeitet), EnumVorgangStatus.duplikat);
         return allVorgangStatus;
     }
 
@@ -77,14 +82,27 @@ public class VorgangDelegiertBearbeitenController {
     }
 	
 	/**
-	 * Aktualisiert Kategorien in übergebenem Model mit Daten aus übergebenem Commandobjekt 
+	 * Aktualisiert interne Kommentare in übergebenem Model mit Daten aus übergebenem Commandobjekt 
 	 * @param model Model
 	 * @param cmd Command
 	 */
 	private void updateKommentarInModel(ModelMap model, VorgangDelegiertBearbeitenCommand cmd) {
 		try {
 			model.addAttribute("kommentare", kommentarDao.findKommentareForVorgang(cmd.getVorgang(), cmd.getPage(), cmd.getSize()));
-	    	model.put("maxPages", calculateMaxPages(cmd.getSize(), kommentarDao.countKommentare(cmd.getVorgang())));
+	    	model.put("maxPagesKommentare", calculateMaxPages(cmd.getSize(), kommentarDao.countKommentare(cmd.getVorgang())));
+
+		}catch (Exception e) {}
+	}
+	
+	/**
+	 * Aktualisiert Lob, Hinweise oder Kritik in übergebenem Model mit Daten aus übergebenem Commandobjekt 
+	 * @param model Model
+	 * @param cmd Command
+	 */
+	private void updateLobHinweiseKritikInModel(ModelMap model, VorgangDelegiertBearbeitenCommand cmd) {
+		try {
+			model.addAttribute("allelobhinweisekritik", lobHinweiseKritikDao.findLobHinweiseKritikForVorgang(cmd.getVorgang(), cmd.getPage(), cmd.getSize()));
+	    	model.put("maxPagesLobHinweiseKritik", calculateMaxPages(cmd.getSize(), lobHinweiseKritikDao.countLobHinweiseKritik(cmd.getVorgang())));
 
 		}catch (Exception e) {}
 	}
@@ -105,6 +123,7 @@ public class VorgangDelegiertBearbeitenController {
 		cmd.setVorgang(getVorgang(id));
 		model.put("cmd", cmd);
 		updateKommentarInModel(model, cmd);
+		updateLobHinweiseKritikInModel(model, cmd);
 		
 		return "vorgang/delegiert/bearbeiten";
 	}
@@ -126,7 +145,7 @@ public class VorgangDelegiertBearbeitenController {
 	 * Funktionsbeschreibung: 
 	 * <br/>Die Wahl des <code>action</code> Parameters erlaubt folgende Funktionalitäten:
 	 * <ul>
-	 * <li><code>Status setzen</code></li>
+	 * <li><code>&Auml;nderungen &uuml;bernehmen</code></li>
 	 * <li><code>zur&uuml;ckweisen</code></li>
 	 * <li><code>Kommentar speichern</code></li>
 	 * </ul>
@@ -155,14 +174,17 @@ public class VorgangDelegiertBearbeitenController {
 		if (result.hasErrors()) {
 			cmd.setVorgang(getVorgang(id));
 			updateKommentarInModel(model, cmd);
+            updateLobHinweiseKritikInModel(model, cmd);
 			return "vorgang/delegiert/bearbeiten";
 		}			
 		
-		if (action.equals("Status setzen")) {
+		if (action.equals("&Auml;nderungen &uuml;bernehmen")) {
 			vorgangDao.merge(cmd.getVorgang());
 		}  else if (action.equals("zur&uuml;ckweisen")) {
 			cmd.getVorgang().setDelegiertAn(null);
+            //cmd.getVorgang().setZustaendigkeitFrontend(securityService.getZustaendigkeit(cmd.getVorgang().getZustaendigkeit()).getLocality());
 			vorgangDao.merge(cmd.getVorgang());
+            return "redirect:/vorgang/delegiert/suchen";
 		}  else if (action.equals("Kommentar speichern")) {
 			if (!StringUtils.isBlank(cmd.getKommentar())) {		
 				Kommentar kommentar = new Kommentar();
@@ -176,6 +198,7 @@ public class VorgangDelegiertBearbeitenController {
 
 		cmd.setVorgang(getVorgang(id));
 		updateKommentarInModel(model, cmd);
+        updateLobHinweiseKritikInModel(model, cmd);
 		return "vorgang/delegiert/bearbeiten";
 	}
 	

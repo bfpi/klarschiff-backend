@@ -1,0 +1,59 @@
+<jsp:root 
+	xmlns:c="http://java.sun.com/jsp/jstl/core" 
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions" 
+	xmlns:spring="http://www.springframework.org/tags" 
+	xmlns:jsp="http://java.sun.com/JSP/Page" 
+	xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu"
+	xmlns:tiles="http://tiles.apache.org/tags-tiles" 
+	xmlns:fx="http://igd.fraunhofer.de/tags/elfunctions" 
+	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+	version="2.0"
+	>
+	<jsp:directive.page contentType="text/html;charset=UTF-8"/>
+
+	<!-- CONTENTTITLE -->
+	<div id="root_style_content_title">
+		Benutzerübersicht
+	</div>
+	
+	<!-- CONTENT -->
+	<div id="root_style_content">
+		<div class="fieldset" style="min-height:100px;">
+		<div class="fieldsettitle">Benutzer</div>	
+			<table class="resulttable">
+				<thead>
+					<tr>
+						<th>Login</th>
+						<th>Benutzer</th>
+						<th>Administrator</th>
+ 						<th>intern</th>
+						<th>extern</th>
+						<th>interne Rollen</th>
+						<th>externe Rollen (delegieren)</th>								
+					</tr>
+				</thead>
+				<tbody>
+					<c:forEach items="${benutzer}" var="user" varStatus="rowCounter">
+						<tr class="${(rowCounter.count%2==0)? 'odd' : 'even'}">
+							<td>${user.id}</td>
+							<td>${user.name}</td>					
+ 							<td align="center"><c:if test="${user.userAdmin}">&#x2714;</c:if></td>
+ 							<td align="center"><c:if test="${!user.userAdmin and user.userIntern}">&#x2714;</c:if></td>
+							<td align="center"><c:if test="${!user.userAdmin and user.userExtern}">&#x2714;</c:if></td>
+							<c:choose><c:when test="${user.userAdmin}"><td align="center">alle</td></c:when><c:otherwise><td><ul><c:forEach items="${user.zustaendigkeiten}"  var="role"><li><span>${role.id}</span></li></c:forEach></ul></td></c:otherwise></c:choose>	
+							<c:choose><c:when test="${user.userAdmin}"><td align="center">alle</td></c:when><c:otherwise><td><ul><c:forEach items="${user.delegiertAn}"  var="role"><li><span>${role.id}</span></li></c:forEach></ul></td></c:otherwise></c:choose>
+						</tr>
+					</c:forEach>
+				</tbody>
+			</table>
+		</div>
+	</div>
+	
+	<!-- HELP -->
+	<div id="root_style_help">
+		<p>
+            Auf dieser Seite finden Sie eine Übersicht über alle <util:help anchor="Benutzerrollen">Benutzer</util:help>, die Zugang zum Backend haben, sowie deren <util:help anchor="Benutzerrollen">Rollen</util:help>.
+		</p>
+	</div>
+
+</jsp:root>

@@ -59,6 +59,14 @@
 				<util:img url="/images/status_inBearbeitung_15.png"/>
 				offene Vorgänge
 			</util:button>
+            
+            <spring:url value="" var="url">
+				<spring:param name="einfacheSuche" value="offeneIdeen" />
+			</spring:url>
+			<util:button url="${url}" disabled="${cmdvorgangsuchen.einfacheSuche == 'offeneIdeen'}" cssStyle="margin-right:5px;">
+				<util:img url="/images/idee_offen_15.png" cssStyle="padding-right:3px;"/>
+				offene Ideen ohne ausreichend Unterstützer
+			</util:button>
 			
 			<spring:url value="" var="url">
 				<spring:param name="einfacheSuche" value="abgeschlossene" />
@@ -70,8 +78,16 @@
 			</util:button>
 			
 			<c:if test="${cmdvorgangsuchen.einfacheSuche=='offene' and missbrauchsmeldungenAbgeschlossenenVorgaenge gt 0}">
+                <c:url value="/images/missbrauchsmeldung.png" var="url"/>
 				<div style="padding-top:10px;font-size:10px;color:#D81922">
-					Wichtiger Hinweis: Es liegen Missbrauchsmeldungen (${missbrauchsmeldungenAbgeschlossenenVorgaenge}) für abgeschlossene Vorgänge vor!
+                    <c:if test="${missbrauchsmeldungenAbgeschlossenenVorgaenge==1}">
+                        <img alt="Missbrauchsmeldung" style="vertical-align:middle" src="${url}" title="Missbrauchsmeldung für abgeschlossenen Vorgang"/>
+                        Es liegt ${missbrauchsmeldungenAbgeschlossenenVorgaenge} Missbrauchsmeldung für einen abgeschlossenen Vorgang vor!
+                    </c:if>
+                    <c:if test="${missbrauchsmeldungenAbgeschlossenenVorgaenge gt 1}">
+                        <img alt="Missbrauchsmeldungen" style="vertical-align:middle" src="${url}" title="Missbrauchsmeldungen für abgeschlossene Vorgänge"/>
+                        Es liegen ${missbrauchsmeldungenAbgeschlossenenVorgaenge} Missbrauchsmeldungen für abgeschlossene Vorgänge vor!
+                    </c:if>
 				</div>
 			</c:if>
 
@@ -96,8 +112,8 @@
 						<tr>
 							<td colspan="2">
 								<div>
-									<form:label path="erweitertFulltext" title="Die folgenden Felder werden durchsucht: Betreff, Details, Kategorie, Kommentare, Missbrauchsmeldungen, Statuskommentar">Freitext</form:label>
-									<form:input path="erweitertFulltext" cssClass="inputtext" cssStyle="width:526px;"/>
+									<form:label path="erweitertFulltext" title="Die folgenden Felder werden durchsucht: Hauptkategorie, Unterkategorie, Betreff, Details, interne Kommentare, Statuskommentare und Missbrauchsmeldungen.">Freitext</form:label>
+									<form:input path="erweitertFulltext" cssClass="inputtext" cssStyle="width:526px;" title="Die folgenden Felder werden durchsucht: Hauptkategorie, Unterkategorie, Betreff, Details, interne Kommentare, Statuskommentare und Missbrauchsmeldungen."/>
 								</div>
 							</td>
 						</tr>
@@ -107,7 +123,7 @@
 									<div>
 										<form:label path="erweitertZustaendigkeit">Zuständigkeit</form:label>
 										<form:select path="erweitertZustaendigkeit">
-							            	<form:option value="" label="egal" cssClass="info"/>
+							            	<form:option value="" label="alle Zuständigkeiten" cssClass="info"/>
 							            	<form:option value="#mir zugewiesen#" label="mir zugewiesen"/>
 							            	<role:options roles="${allZustaendigkeiten}" role="${cmdvorgangsuchen.erweitertZustaendigkeit}"/>
 										</form:select>
@@ -117,7 +133,7 @@
 								<div> 
 									<form:label path="erweitertDelegiertAn">delegiert an</form:label>
 									<form:select path="erweitertDelegiertAn">
-						            	<form:option value="" label="egal" cssClass="info"/>
+						            	<form:option value="" label="" cssClass="info"/>
 						            	<role:options roles="${allDelegiertAn}" role="${cmdvorgangsuchen.erweitertDelegiertAn}"/>
 									</form:select>
 								</div>
@@ -154,7 +170,7 @@
 								<div>
 									<form:label path="erweitertArchiviert">archiviert</form:label>
 									<form:select path="erweitertArchiviert" onchange="updateArchiviert(this)" id="erweitertArchiviert">
-						            	<form:option value="" label="egal" cssClass="info"/>
+						            	<form:option value="" label="" cssClass="info"/>
 						            	<form:option value="true" label="ja"/>
 						            	<form:option value="false" label="nein"/>
 									</form:select>
@@ -172,7 +188,7 @@
 
 								<div style="padding-top: 10px;">
 									<form:label path="erweitertNummer">Nummer</form:label>
-									<form:input path="erweitertNummer" cssClass="inputtext" cssStyle="width:202px;"/>
+									<form:input path="erweitertNummer" cssClass="inputtext" cssStyle="width:200px;"/>
 								</div>
 							</td>
 
@@ -181,7 +197,7 @@
 								<div>
 						        	<form:label path="erweitertVorgangTyp">Typ</form:label>
 						            <form:select path="erweitertVorgangTyp" id="typ" onchange="updateHauptkategorie()">
-						            	<form:option value="" label="egal" cssClass="info"/>
+						            	<form:option value="" label="alle Typen" cssClass="info"/>
 						            	<c:forEach items="${vorgangtypen}" var="vorgangtyp">
 						            		<c:url value="/images/${vorgangtyp}_15.png" var="url"/>
 						            		<form:option value="${vorgangtyp}" label="${vorgangtyp.text}" cssStyle="background-image:url(${url});" cssClass="suffixiconsmall"/>
@@ -192,7 +208,7 @@
 						        <div>
 						        	<form:label path="erweitertHauptkategorie">Hauptkategorie</form:label>
 						            <form:select path="erweitertHauptkategorie" id="hauptkategorie" disabled="true" onchange="updateUnterkategorie()">
-						            	<form:option value="" label="egal" cssClass="info"/>
+						            	<form:option value="" label="alle Hauptkategorien" cssClass="info"/>
 										<form:options items="${hauptkategorien}" itemValue="id" itemLabel="name"/>
 						            </form:select>
 						        </div>
@@ -200,7 +216,7 @@
 						        <div>
 						        	<form:label path="erweitertKategorie">Unterkategorie</form:label>
 						            <form:select path="erweitertKategorie" id="unterkategorie" disabled="true" onchange="updateInfo()">
-						            	<form:option value="" label="egal" cssClass="info"/>
+						            	<form:option value="" label="alle Unterkategorien" cssClass="info"/>
 										<form:options items="${unterkategorien}" itemValue="id" itemLabel="name"/>
 						            </form:select>
 						        </div>
@@ -214,7 +230,7 @@
 								function updateHauptkategorie()
 								{
 									var items = [];	  
-									items.push('<option value="" class="info">egal</option>');
+									items.push('<option value="" class="info">alle Hauptkategorien</option>');
 								
 									var value = $('select#typ')[0].value;
 									var node = $('select#hauptkategorie');
@@ -239,7 +255,7 @@
 								{
 									var value = $('select#hauptkategorie')[0].value;
 									var items = [];	  
-									items.push('<option value="" class="info">egal</option>');
+									items.push('<option value="" class="info">alle Unterkategorien</option>');
 								
 									var node = $('select#unterkategorie');
 									node.empty();
@@ -307,9 +323,9 @@
 								</div>
 							
 								<div style="padding-top: 20px;">
-									<form:label path="erweitertUnterstuetzerAb">Unterstützungen</form:label>
-									<form:select path="erweitertUnterstuetzerAb">
-						            	<form:option value="" label="egal" cssClass="info"/>
+									<form:label path="erweitertUnterstuetzerAb" title="Wenn Sie die Unterstützungen als Filterkriterium verwenden, wird dieses nur auf noch offene Ideen angewendet. Ideen anderer Status werden dann in jedem Fall auch gefunden.">Unterstützungen</form:label>
+									<form:select path="erweitertUnterstuetzerAb" title="Wenn Sie die Unterstützungen als Filterkriterium verwenden, wird dieses nur auf noch offene Ideen angewendet. Ideen anderer Status werden dann in jedem Fall auch gefunden.">
+						            	<form:option value="" label="" cssClass="info"/>
 										<form:option value="${vorgangIdeenUnterstuetzer}" label="mindestens ${vorgangIdeenUnterstuetzer}"/>
 									</form:select>
 								</div>
@@ -317,7 +333,7 @@
 								<div style="padding-top: 20px;">
 									<form:label path="erweitertPrioritaet">Priorität</form:label>
 									<form:select path="erweitertPrioritaet">
-						            	<form:option value="" label="egal" cssClass="info"/>
+						            	<form:option value="" label="" cssClass="info"/>
 										<form:options items="${allPrioritaeten}" itemValue="text"/>
 									</form:select>
 								</div>
@@ -325,7 +341,7 @@
 								<div style="padding-top: 10px;">
 									<form:label path="erweitertStadtteilgrenze">Ortsteil</form:label>
 									<form:select path="erweitertStadtteilgrenze">
-						            	<form:option value="" label="egal" cssClass="info"/>
+						            	<form:option value="" label="alle Ortsteile" cssClass="info"/>
 						            	<c:forEach items="${allStadtteile}" var="stadtteil">
 							            	<form:option value="${stadtteil[0]}" label="${stadtteil[1]}"/>
 						            	</c:forEach>
@@ -353,18 +369,16 @@
 		                	<util:sortedtableheadercolumn name="#" id="0" currentOrderId="${cmdvorgangsuchen.order}" currentOrderDirection="${cmdvorgangsuchen.orderDirection}"/>
 		                	<util:sortedtableheadercolumn name="Typ" id="1" currentOrderId="${cmdvorgangsuchen.order}" currentOrderDirection="${cmdvorgangsuchen.orderDirection}"/>
 		                	<util:sortedtableheadercolumn name="Erstellung" id="2" currentOrderId="${cmdvorgangsuchen.order}" currentOrderDirection="${cmdvorgangsuchen.orderDirection}"/>
-		                	<util:sortedtableheadercolumn name="letzte Änderung" id="3" currentOrderId="${cmdvorgangsuchen.order}" currentOrderDirection="${cmdvorgangsuchen.orderDirection}"/>
-		                	<util:sortedtableheadercolumn name="Kategorie" id="4" colspan="2" currentOrderId="${cmdvorgangsuchen.order}" currentOrderDirection="${cmdvorgangsuchen.orderDirection}"/>
-		                	<util:sortedtableheadercolumn name="Status" id="5" currentOrderId="${cmdvorgangsuchen.order}" currentOrderDirection="${cmdvorgangsuchen.orderDirection}"/>
-		                	<util:sortedtableheadercolumn name="Unterstützungen" id="6" currentOrderId="${cmdvorgangsuchen.order}" currentOrderDirection="${cmdvorgangsuchen.orderDirection}"/>
+		                	<util:sortedtableheadercolumn name="Haupt- und Unterkategorie" id="3" colspan="2" currentOrderId="${cmdvorgangsuchen.order}" currentOrderDirection="${cmdvorgangsuchen.orderDirection}"/>
+		                	<util:sortedtableheadercolumn name="Status" id="4" currentOrderId="${cmdvorgangsuchen.order}" currentOrderDirection="${cmdvorgangsuchen.orderDirection}"/>
+                            <util:sortedtableheadercolumn name="Adresse" id="5" currentOrderId="${cmdvorgangsuchen.order}" currentOrderDirection="${cmdvorgangsuchen.orderDirection}"/>
+		                	<util:sortedtableheadercolumn name="Unterstützer" id="6" currentOrderId="${cmdvorgangsuchen.order}" currentOrderDirection="${cmdvorgangsuchen.orderDirection}"/>
 		                	<util:sortedtableheadercolumn name="Zuständigkeit" id="7" currentOrderId="${cmdvorgangsuchen.order}" currentOrderDirection="${cmdvorgangsuchen.orderDirection}"/>
-		                	<util:sortedtableheadercolumn name="Priorität" id="8" currentOrderId="${cmdvorgangsuchen.order}" currentOrderDirection="${cmdvorgangsuchen.orderDirection}"/>
 		                </tr>
 		            </thead>
 			        <tbody>
 				  		<c:forEach items="${vorgaenge}" var="_vorgang" varStatus="rowCounter">
 				  			<c:set value="${_vorgang[0]}" var="vorgang"/>
-				  			<c:set value="${_vorgang[1]}" var="aenderungsdatum"/>
 				  			<c:set value="${_vorgang[2]}" var="unterstuetzer"/>
 				  			<c:set value="${_vorgang[3]}" var="missbrauchsmeldung"/>
 		 		  			<c:url value="/vorgang/${vorgang.id}/uebersicht" var="url"/>
@@ -377,12 +391,7 @@
 									<img alt="${vorgang.typ.text}" src="${url}" height="15" width="15"  title="Typ: ${vorgang.typ.text}"/>
 								</td>
 				        		<td style="text-align: center;">
-				        			<fmt:formatDate value="${vorgang.datum}" pattern="dd.MM.yyyy"/><![CDATA[&nbsp;&nbsp;]]>
-				        			<span class="time"><fmt:formatDate value="${vorgang.datum}" pattern="HH:mm"/></span>
-								</td>
-								<td style="text-align: center;">
-				        			<fmt:formatDate value="${aenderungsdatum}" pattern="dd.MM.yyyy"/><![CDATA[&nbsp;&nbsp;]]>
-				        			<span class="time"><fmt:formatDate value="${aenderungsdatum}" pattern="HH:mm"/></span>
+				        			<fmt:formatDate value="${vorgang.datum}" pattern="dd.MM.yyyy"/>
 								</td>
 				        		<td>
 									${vorgang.kategorie.parent.name}
@@ -398,14 +407,14 @@
 										<img alt="archiviert" src="${url}" style="padding-left:5px;" title="archiviert"/>
 									</c:if>
 								</td>
+                                <td style="text-align: center;">
+									${vorgang.adresse}
+								</td>
 				        		<td style="text-align: center;">
 									${unterstuetzer}
 								</td>
 								<td>
 									<vorgang:zustaendigkeit vorgang="${vorgang}" statusAlignRight="true"/>
-								</td>
-								<td style="text-align: center;">
-									${vorgang.prioritaet}
 								</td>
 				        	</tr>
 						</c:forEach>
@@ -413,7 +422,7 @@
 		
 			        <tfoot>
 		                <tr class="footer">
-		                    <td colspan="10">
+		                    <td colspan="9">
 		                        <c:if test="${not empty maxPages}">
 		                            <util:pagination maxPages="${maxPages}" page="${cmdvorgangsuchen.page}" size="${cmdvorgangsuchen.size}"/>
 		                        </c:if>
@@ -470,7 +479,7 @@
 			        Suchergebnis 
 			        <c:url value="/images/csv.png" var="img"/>
 			        <c:url value="/vorgang/suchen/vorgaenge.xls" var="url"/>
-			        <util:button cssStyle="margin-right:10px;" url="${url}" img="${img}">als XLS exportieren</util:button>
+			        <util:button cssStyle="margin-right:10px;" url="${url}" img="${img}">als Excel-Tabelle exportieren</util:button>
 
 			        <c:url value="/images/freigabeStatus_extern.png" var="img"/>
 			        <c:url value="/vorgang/suchen/karte" var="url"/>
