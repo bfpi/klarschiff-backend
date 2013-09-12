@@ -754,8 +754,14 @@ div.pagination span.nav.enabled {
 	cursor: pointer;
 }
 
-button#rotateAnchor, button#editEnableAnchor, button#editDisabledAnchor, button#undoAnchor, button#redoAnchor, button#submitAnchor{
+button#rotateAnchor, button#editEnableAnchor, button#editDisabledAnchor, 
+button#undoAnchor, button#redoAnchor, button#submitAnchor, button#uploadButton,
+button#uploadSubmitButton, button#uploadCancelButton {
 	height: 26px;
+}
+
+button#uploadButton, form#uploadForm {
+  margin-left: 10px;
 }
 
 /* ######################### Fotobearbeitung - Confirm-Dialog ######################### */

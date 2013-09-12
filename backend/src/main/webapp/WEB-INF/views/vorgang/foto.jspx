@@ -30,34 +30,33 @@
 		
 		<div class="fieldset" style="min-height:200px;">
 			<div class="fieldsettitle">Foto</div>
-			<table>
-				<c:if test="${vorgang.fotoExists}">
-					<tr>
-						<td>
-							<util:freigabestatus status="${vorgang.fotoFreigabeStatus}"/>
-							<c:if test="${not vorgang.archiviert and vorgang.status ne 'gemeldet'}">
-								<![CDATA[&nbsp;&nbsp;]]>
-								<form method="post" style="display: inline;">
-									<util:freigabestatusbutton name="Foto" status="${vorgang.fotoFreigabeStatus}" geloeschtEnable="true"/>
-									<c:if test="${vorgang.fotoFreigabeStatus ne 'geloescht'}">
-										<![CDATA[&nbsp;&nbsp;]]>
-										<foto:bearbeitung />
-									</c:if>
-								</form>
-							</c:if>
-						</td>
-					</tr>
-				</c:if>
-				<tr>
+      <table>
+        <tr>
+          <td>
+            <c:if test="${vorgang.fotoExists}">
+              <util:freigabestatus status="${vorgang.fotoFreigabeStatus}"/>
+              <c:if test="${not vorgang.archiviert and vorgang.status ne 'gemeldet'}">
+                <![CDATA[&nbsp;&nbsp;]]>
+                <form method="post" id="fotoEditForm" style="display: inline;">
+                  <util:freigabestatusbutton name="Foto" status="${vorgang.fotoFreigabeStatus}" geloeschtEnable="true"/>
+                  <c:if test="${vorgang.fotoFreigabeStatus ne 'geloescht'}">
+                    <![CDATA[&nbsp;&nbsp;]]>
+                    <foto:bearbeitung />
+                  </c:if>
+                </form>
+              </c:if>
+            </c:if>
+            <foto:hochladen />
+          	<div id="recStack"><!--&nbsp;--></div>
+          </td>
+        </tr>
+        <tr>
 					<td>
 						<foto:foto vorgang="${vorgang}"/>
 					</td>
 				</tr>
 			</table>
 		</div>
-			
-		
-			
 	</div>
 	
 	<!-- HELP -->
