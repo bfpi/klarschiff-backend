@@ -161,7 +161,13 @@ public class Vorgang implements Serializable {
 	 * Erstsichtung erfolgt
 	 */
 	private boolean erstsichtungErfolgt = false;
-
+    
+	/**
+	 * Foto
+	 */
+	@Type(type="org.hibernate.type.BinaryType") 
+	byte[] fotoGrossJpg;
+    
 	/**
 	 * Foto
 	 */
@@ -481,6 +487,17 @@ public class Vorgang implements Serializable {
 		this.hash = hash;
 	}
 
+	public byte[] getFotoGrossJpg() {
+		if(fotoGrossJpg == null)
+			return fotoNormalJpg;
+		else
+			return fotoGrossJpg;
+	}
+
+	public void setFotoGrossJpg(byte[] fotoGrossJpg) {
+		this.fotoGrossJpg = fotoGrossJpg;
+	}
+    
 	public byte[] getFotoNormalJpg() {
 		return fotoNormalJpg;
 	}

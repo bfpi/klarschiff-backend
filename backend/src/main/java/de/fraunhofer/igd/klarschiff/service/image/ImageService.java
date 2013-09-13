@@ -35,6 +35,8 @@ public class ImageService {
 	 */
 	public enum ScaleTyp { max, correct }
 
+	int fotoGrossWidth = 720;
+	int fotoGrossHeight = 720;
 	int fotoNormalWidth = 360;
 	int fotoNormalHeight = 360;
 	int fotoThumbWidth = 150;
@@ -42,14 +44,15 @@ public class ImageService {
 	ScaleTyp scaleTyp = ScaleTyp.max;
 	
 	/**
-	 * Setzt das Bild für einen Vorgang. Dabei wird das Bild sowohl für die Vorschau als auch das eigentliche Bild abgelegt.
-	 * Die Bilder werden entsprechend scaliert
+	 * Setzt das Bild für einen Vorgang. Dabei wird das Bild in drei Größen
+	 * abgelegt (Gross, Normal, Thumb).
+	 * Die Bilder werden entsprechend skaliert.
 	 * @param image Bild als ByteArray
 	 * @param vorgang Vorgang in dem die Bilddaten gesetzt werden sollen
 	 * @throws Exception
 	 */
 	public void setImageForVorgang(byte[] image, Vorgang vorgang) throws Exception {
-
+    	vorgang.setFotoGrossJpg(scaleImage(image, fotoGrossWidth, fotoGrossHeight, scaleTyp));
     	vorgang.setFotoNormalJpg(scaleImage(image, fotoNormalWidth, fotoNormalHeight, scaleTyp));
     	vorgang.setFotoThumbJpg(scaleImage(image, fotoThumbWidth, fotoThumbHeight, scaleTyp));
 	}
@@ -65,7 +68,7 @@ public class ImageService {
 	{
 		try {
 			//censor normal image
-			BufferedImage image = ImageIO.read(new ByteArrayInputStream(vorgang.getFotoNormalJpg()));
+			BufferedImage image = ImageIO.read(new ByteArrayInputStream(vorgang.getFotoGrossJpg()));
 			float heightScaling =  (float)image.getHeight() / height.floatValue();
 			float widthScaling = (float)image.getWidth() / width.floatValue();
 			Graphics2D graphics2D = image.createGraphics();
@@ -80,10 +83,12 @@ public class ImageService {
 			graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 			
 			graphics2D.drawImage(image, null, null);
-			vorgang.setFotoNormalJpg(imageToByteArray(image));
+			vorgang.setFotoGrossJpg(imageToByteArray(image));
 	    	
+			//Normal neu berechnen
+			vorgang.setFotoNormalJpg(scaleImage(vorgang.getFotoGrossJpg(), fotoNormalWidth, fotoNormalHeight, scaleTyp));
 			//Thumb neu berechnen
-			vorgang.setFotoThumbJpg(scaleImage(vorgang.getFotoNormalJpg(), fotoThumbWidth, fotoThumbHeight, scaleTyp));
+			vorgang.setFotoThumbJpg(scaleImage(vorgang.getFotoGrossJpg(), fotoThumbWidth, fotoThumbHeight, scaleTyp));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -92,7 +97,7 @@ public class ImageService {
     public void rotateImageForVorgang(Vorgang vorgang)
 	{
 		try {
-            BufferedImage oldImage = ImageIO.read(new ByteArrayInputStream(vorgang.getFotoNormalJpg()));
+            BufferedImage oldImage = ImageIO.read(new ByteArrayInputStream(vorgang.getFotoGrossJpg()));
             BufferedImage newImage = new BufferedImage(oldImage.getHeight(), oldImage.getWidth(), oldImage.getType());
             
             Graphics2D graphics2D = (Graphics2D) newImage.getGraphics();
@@ -100,8 +105,9 @@ public class ImageService {
             graphics2D.translate((newImage.getWidth() - oldImage.getWidth()) / 2, (newImage.getHeight() - oldImage.getHeight()) / 2);
             graphics2D.drawImage(oldImage, 0, 0, oldImage.getWidth(), oldImage.getHeight(), null);
 
-            vorgang.setFotoNormalJpg(imageToByteArray(newImage));
-	    	vorgang.setFotoThumbJpg(scaleImage(vorgang.getFotoNormalJpg(), fotoThumbWidth, fotoThumbHeight, scaleTyp));
+            vorgang.setFotoGrossJpg(imageToByteArray(newImage));
+            vorgang.setFotoNormalJpg(scaleImage(vorgang.getFotoGrossJpg(), fotoNormalWidth, fotoNormalHeight, scaleTyp));
+            vorgang.setFotoThumbJpg(scaleImage(vorgang.getFotoGrossJpg(), fotoThumbWidth, fotoThumbHeight, scaleTyp));
             
         } catch (Exception e) {
 			throw new RuntimeException(e);

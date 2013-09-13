@@ -45,7 +45,6 @@ public class FotoController {
 		response.flushBuffer();
     }
 
-	
 	/**
 	 * Die Methode verarbeitet den GET-Request auf der URL <code>foto/normal/{id}.jpg</code><br/>
 	 * Funktionsbeschreibung: Liefert in der Response das Foto zum gewählten Vorgang in Thumbnailgröße
@@ -64,4 +63,23 @@ public class FotoController {
 		response.setStatus(HttpServletResponse.SC_OK);
 		response.flushBuffer();
     }
+	
+	/**
+	 * Die Methode verarbeitet den GET-Request auf der URL <code>foto/gross/{id}.jpg</code><br/>
+	 * Funktionsbeschreibung: Liefert in der Response das Foto zum gewählten Vorgang in doppelter Größe
+	 * @param id Vorgangs-ID
+	 * @param response HttpServletResponse
+	 */
+	@RequestMapping(value="/gross/{id}.jpg", method = RequestMethod.GET)
+	@ResponseBody
+	public void gross(@PathVariable("id") Long id, HttpServletResponse response) throws Exception
+	{
+		Vorgang vorgang = vorgangDao.findVorgang(id);
+		response.setHeader("Content-Type", "image/jpg;charset=UTF-8");
+		response.setHeader("Content-Length", vorgang.getFotoGrossJpg().length+"");
+		OutputStream os = response.getOutputStream();
+		os.write(vorgang.getFotoGrossJpg());
+		response.setStatus(HttpServletResponse.SC_OK);
+		response.flushBuffer();
+	}
 }
