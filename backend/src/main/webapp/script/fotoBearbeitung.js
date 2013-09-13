@@ -158,7 +158,7 @@ $(function () {
     // Rotate
 	$("#rotateAnchor").click(function() {
         $("#submitAnchor").parent().append("<input type='hidden' name='action' value='fotoRotate'/>");
-        $("form").submit();
+        $("#fotoEditForm").submit();
 	});
 	
 	// Clear

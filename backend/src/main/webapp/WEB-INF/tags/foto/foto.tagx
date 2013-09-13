@@ -44,7 +44,24 @@
 						Foto gelöscht.
 					</c:when>
 					<c:when test="${vorgang.fotoExists}">
-						<img id="picture" alt="Foto" src="${url}"/>
+						<c:choose>
+							<c:when test="${empty onclick}">
+								<c:url value="/script/colorbox/jquery.colorbox-min.js" var="script_url" />
+								<script defer="defer" type="text/javascript" src="${script_url}">
+									<!-- -->
+								</script>
+								<script defer="defer" type="text/javascript">
+									$(function(){ $(".colorbox").colorbox(); });
+								</script>
+								<c:url value="/foto/gross/${vorgang.id}.jpg?timestamp=${now}" var="gross_url"/>
+								<a href="${gross_url}" class="colorbox">
+									<img id="picture" alt="Foto" src="${url}"/>
+								</a>					
+							</c:when>
+							<c:otherwise>
+								<img id="picture" alt="Foto" src="${url}"/>
+							</c:otherwise>
+						</c:choose>
 					</c:when>
 					<c:otherwise>
 						Kein Foto vorhanden.
