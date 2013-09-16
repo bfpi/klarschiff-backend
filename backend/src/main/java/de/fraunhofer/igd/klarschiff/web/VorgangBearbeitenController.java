@@ -34,6 +34,7 @@ import de.fraunhofer.igd.klarschiff.service.classification.ClassificationService
 import de.fraunhofer.igd.klarschiff.service.security.Role;
 import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
 import de.fraunhofer.igd.klarschiff.service.settings.SettingsService;
+import de.fraunhofer.igd.klarschiff.tld.CustomFunctions;
 import de.fraunhofer.igd.klarschiff.vo.EnumFreigabeStatus;
 import de.fraunhofer.igd.klarschiff.vo.EnumPrioritaet;
 import de.fraunhofer.igd.klarschiff.vo.EnumVorgangStatus;
@@ -45,6 +46,7 @@ import de.fraunhofer.igd.klarschiff.vo.StatusKommentarVorlage;
 import de.fraunhofer.igd.klarschiff.vo.Verlauf;
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
 import de.fraunhofer.igd.klarschiff.vo.VorgangHistoryClasses;
+import java.util.Date;
 
 /**
  * Controller für die Vorgangsbearbeitung
@@ -354,7 +356,7 @@ public class VorgangBearbeitenController {
 				return "vorgang/bearbeiten";
 			}			
 			vorgangDao.merge(cmd.getVorgang());
-		} else if (action.equals("Kommentar speichern")) {
+		} else if (action.equals("Kommentar anlegen")) {
 			if (!StringUtils.isBlank(cmd.getKommentar())) {		
 				Kommentar kommentar = new Kommentar();
 				kommentar.setVorgang(cmd.getVorgang());
@@ -362,6 +364,21 @@ public class VorgangBearbeitenController {
 				kommentar.setNutzer(securityService.getCurrentUser().getName());
 				kommentarDao.persist(kommentar);
 				cmd.setKommentar(null);
+			}
+		} else if (action.equals("kommentarSave")) {
+			long kId = Long.parseLong(request.getParameter("id"));
+			Kommentar kommentar = kommentarDao.findById(kId);
+			if(CustomFunctions.mayCurrentUserEditKommentar(kommentar)) {
+				kommentar.setText(request.getParameter("kommentarEdit"));
+				kommentar.setZuletztBearbeitet(new Date());
+				kommentarDao.persist(kommentar);
+			}
+		} else if (action.equals("kommentarDelete")) {
+			long kId = Long.parseLong(request.getParameter("id"));
+			Kommentar kommentar = kommentarDao.findById(kId);
+			if(CustomFunctions.mayCurrentUserEditKommentar(kommentar)) {
+				kommentar.setGeloescht(true);
+				kommentarDao.persist(kommentar);
 			}
 		} else if (action.equals("delegieren")) {
             /*if (cmd.getVorgang().getDelegiertAn()!=null && !cmd.getVorgang().getDelegiertAn().isEmpty()) 

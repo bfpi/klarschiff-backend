@@ -2,6 +2,7 @@ package de.fraunhofer.igd.klarschiff.vo;
 
 import java.io.Serializable;
 import java.util.Date;
+import javax.persistence.Column;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -57,11 +58,21 @@ public class Kommentar implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(style = "S-")
     private Date datum;
+	
+    /**
+     * Letzte Bearbeitung des Kommentars
+     */
+    @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(style = "S-")
+    private Date zuletztBearbeitet;
 
     /**
      * Id des Benutzer, der den Kommentar erstellt hat
      */
 	private String nutzer; 
+
+    @Column(columnDefinition = "boolean default false")
+    private boolean geloescht = false;
 
 	/* --------------- GET + SET ----------------------------*/
 
@@ -97,11 +108,27 @@ public class Kommentar implements Serializable {
         this.datum = datum;
     }
 
+    public Date getZuletztBearbeitet() {
+        return this.zuletztBearbeitet;
+    }
+
+    public void setZuletztBearbeitet(Date datum) {
+        this.zuletztBearbeitet = datum;
+    }
+
 	public String getNutzer() {
 		return nutzer;
 	}
 
 	public void setNutzer(String nutzer) {
 		this.nutzer = nutzer;
+	}
+	
+	public boolean getGeloescht() {
+		return geloescht;
+	}
+
+	public void setGeloescht(boolean geloescht) {
+		this.geloescht = geloescht;
 	}
 }

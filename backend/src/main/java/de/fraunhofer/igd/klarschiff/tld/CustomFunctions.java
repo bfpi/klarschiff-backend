@@ -20,6 +20,7 @@ import de.fraunhofer.igd.klarschiff.service.security.User;
 import de.fraunhofer.igd.klarschiff.service.settings.SettingsService;
 import de.fraunhofer.igd.klarschiff.util.SecurityUtil;
 import de.fraunhofer.igd.klarschiff.vo.EnumVorgangStatus;
+import de.fraunhofer.igd.klarschiff.vo.Kommentar;
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
 import de.fraunhofer.igd.klarschiff.web.FehlerController;
 
@@ -178,6 +179,15 @@ public class CustomFunctions {
 		return ((SecurityService)AppContext.getApplicationContext().getBean("securityService")).isCurrentZustaendigForVorgang(vorgang);
 	}
 	
+	/**
+	 * Ermittelt, ob der aktuelle Benutzer den Kommentar erstellt hat.
+	 * Dies geschieht anhand des Anzeigenamens.
+	 * @param kommentar Kommentar, der geprüft werden soll
+	 * @return <code>true</code> - der aktuelle Benutzer hat den Kommentar erstellt
+	 */
+	public static boolean mayCurrentUserEditKommentar(Kommentar kommentar) {
+		return ((SecurityService)AppContext.getApplicationContext().getBean("securityService")).mayCurrentUserEditKommentar(kommentar);
+	}
 	
 	/**
 	 * Fasst verschiedene Daten einer Exception und zusätzliche Daten für die Darstellung von Exceptions in der GUI in einer Map zusammen (z.B. exceptionId, 
