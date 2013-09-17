@@ -141,7 +141,7 @@
 					<tr>
 						<td class="label" style="padding-top:10px;">Foto</td>
 						<td colspan="10" style="padding-top:10px;">
-							<foto:foto vorgang="${vorgang}" typ="thumb"/>
+							<foto:foto vorgang="${vorgang}" typ="thumb" clickZoom="true" />
 						</td>
 					</tr>
 				</c:if>

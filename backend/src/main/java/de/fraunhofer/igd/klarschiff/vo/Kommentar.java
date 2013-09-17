@@ -54,7 +54,6 @@ public class Kommentar implements Serializable {
      * Erstellungszeit des Kommentars
      */
     @NotNull
-    @Version
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(style = "S-")
     private Date datum;
@@ -62,9 +61,14 @@ public class Kommentar implements Serializable {
     /**
      * Letzte Bearbeitung des Kommentars
      */
+    @Version
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(style = "S-")
     private Date zuletztBearbeitet;
+	
+	@NotNull
+	@Column(columnDefinition = "integer default 0")
+	private Integer anzBearbeitet;
 
     /**
      * Id des Benutzer, der den Kommentar erstellt hat
@@ -115,6 +119,14 @@ public class Kommentar implements Serializable {
     public void setZuletztBearbeitet(Date datum) {
         this.zuletztBearbeitet = datum;
     }
+
+	public Integer getAnzBearbeitet() {
+		return anzBearbeitet;
+	}
+
+	public void setAnzBearbeitet(Integer anzBearbeitet) {
+		this.anzBearbeitet = anzBearbeitet;
+	}
 
 	public String getNutzer() {
 		return nutzer;

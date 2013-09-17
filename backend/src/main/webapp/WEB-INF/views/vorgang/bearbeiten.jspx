@@ -417,7 +417,7 @@
 				  				<div class="kommentarHeader">
 				  					${kommentar.nutzer};
 									angelegt: <fmt:formatDate value="${kommentar.datum}" pattern="dd.MM.yyyy, HH:mm"/> Uhr
-									<c:if test="${kommentar.zuletztBearbeitet != null}">
+									<c:if test="${kommentar.anzBearbeitet > 0}">
 										; zuletzt bearbeitet:
 										<fmt:formatDate value="${kommentar.zuletztBearbeitet}" pattern="dd.MM.yyyy, HH:mm"/> Uhr
 									</c:if>

@@ -362,6 +362,8 @@ public class VorgangBearbeitenController {
 				kommentar.setVorgang(cmd.getVorgang());
 				kommentar.setText(cmd.getKommentar());
 				kommentar.setNutzer(securityService.getCurrentUser().getName());
+				kommentar.setAnzBearbeitet(0);
+				kommentar.setDatum(new Date());
 				kommentarDao.persist(kommentar);
 				cmd.setKommentar(null);
 			}
@@ -370,7 +372,7 @@ public class VorgangBearbeitenController {
 			Kommentar kommentar = kommentarDao.findById(kId);
 			if(CustomFunctions.mayCurrentUserEditKommentar(kommentar)) {
 				kommentar.setText(request.getParameter("kommentarEdit"));
-				kommentar.setZuletztBearbeitet(new Date());
+				kommentar.setAnzBearbeitet(kommentar.getAnzBearbeitet() + 1);
 				kommentarDao.persist(kommentar);
 			}
 		} else if (action.equals("kommentarDelete")) {

@@ -31,7 +31,7 @@
 	<!-- CONTENT -->
 	<div id="root_style_content">
 		<vorgang:vorgangPrintEmail vorgang="${vorgang}"/>
-		<form:form method="POST" modelAttribute="cmd" >
+		<form:form method="POST" modelAttribute="cmd">
 			<div class="fieldset">
 				<div class="fieldsettitle">Vorgang</div>
 	
@@ -82,6 +82,7 @@
 									<c:if test="${cmd.vorgang.fotoFreigabeStatus ne 'geloescht'}">
 										<![CDATA[&nbsp;&nbsp;]]>
 										<foto:bearbeitung />
+										<div id="recStack"><!--&nbsp;--></div>
 									</c:if>
 								</td>
 							</tr>
@@ -89,7 +90,7 @@
 								<td style="vertical-align:top;" width="100px">
 								</td>
 								<td style="vertical-align:top;" width="365px">
-									<foto:foto vorgang="${vorgang}"/>
+									<foto:foto vorgang="${vorgang}" clickZoom="true"/>
 								</td>
 							</tr>
 						</c:when>
