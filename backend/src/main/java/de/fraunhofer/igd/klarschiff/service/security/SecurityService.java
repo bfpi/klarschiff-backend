@@ -31,6 +31,7 @@ import org.springframework.stereotype.Service;
 
 import de.fraunhofer.igd.klarschiff.dao.VorgangDao;
 import de.fraunhofer.igd.klarschiff.util.SystemUtil;
+import de.fraunhofer.igd.klarschiff.vo.Kommentar;
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
 
 /**
@@ -546,6 +547,15 @@ public class SecurityService {
 		} catch (Exception e) {
 			return new String(bos.toByteArray()) + "\n\nException: " + e.getMessage();
 		}
+	}
+
+	/**
+	 * Prüft, ob der aktuelle Nutzer einen Kommentar bearbeiten darf.
+	 * @param kommentar Zu prüfender Kommentar
+	 * @return Darf der Nutzer bearbeiten
+	 */
+	public boolean mayCurrentUserEditKommentar(Kommentar kommentar) {
+		return this.getCurrentUser().getName().equals(kommentar.getNutzer());
 	}
 	
 		

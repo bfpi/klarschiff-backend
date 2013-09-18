@@ -719,8 +719,20 @@ div.pagination span.nav.enabled {
 	background-color: #FFCD05;
 }
 
-.kommentarText,.missbrauchText {
+.kommentarText, .missbrauchText, .kommentarEdit {
 	padding: 5px 10px 5px 10px;
+}
+
+.kommentar button {
+	float: right;
+}
+
+.kommentar div.clear {
+	clear: right;
+}
+
+.kommentarEdit textarea {
+	width: 385px;
 }
 
 .verlauf {
