@@ -64,7 +64,8 @@ public class Kommentar implements Serializable {
     @Version
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(style = "S-")
-    private Date zuletztBearbeitet;
+    @Column(columnDefinition = "timestamp default current_timestamp")
+	private Date zuletztBearbeitet;
 	
 	@NotNull
 	@Column(columnDefinition = "integer default 0")

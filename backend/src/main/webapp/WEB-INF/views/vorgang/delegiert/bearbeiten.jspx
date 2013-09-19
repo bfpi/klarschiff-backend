@@ -78,7 +78,7 @@
 				        			</td>
 				        		
 				        			<td valign="bottom" style="padding-left:5px;">
-										<input type="submit" value="Kommentar speichern" name="action"/>
+										<input type="submit" value="Kommentar anlegen" name="action"/>
 				        			</td>
 				        	
 				        		</tr>
@@ -88,14 +88,55 @@
 				  		<c:forEach items="${kommentare}" var="kommentar" varStatus="s">
 				  			<div class="kommentar ${(s.index%2==0) ? 'odd' : 'even'}">
 				  				<div class="kommentarHeader">
-				  					<span style="margin-right:10px;padding:0px;">${kommentar.nutzer}</span>
-					       			<fmt:formatDate value="${kommentar.datum}" pattern="dd.MM.yyyy, HH:mm"/> Uhr
+									${kommentar.nutzer};
+									angelegt: <fmt:formatDate value="${kommentar.datum}" pattern="dd.MM.yyyy, HH:mm"/> Uhr
+									<c:if test="${kommentar.anzBearbeitet > 0}">
+										; zuletzt bearbeitet:
+										<fmt:formatDate value="${kommentar.zuletztBearbeitet}" pattern="dd.MM.yyyy, HH:mm"/> Uhr
+									</c:if> 
 				  				</div>
-								<div class="kommentarText" >
-					        		${fx:toHtml(kommentar.text)}
+								<div class="kommentarText">
+									<c:if test="${fx:mayCurrentUserEditKommentar(kommentar)}">
+										<button name="action" title="Kommentar bearbeiten" class="kommentarEditButton">
+											<c:url value="/images/edit.png" var="url"/>
+											<img src="${url}" alt=""/>										
+										</button>
+										<form:form method="POST" modelAttribute="cmd" onsubmit="return confirm('Soll der Kommentar wirklich gelöscht werden?')">
+											<input type="hidden" name="id" value="${kommentar.id}" />
+											<button name="action" value="kommentarDelete" title="Kommentar löschen" class="kommentarDeleteButton">
+												<c:url value="/images/delete.png" var="url"/>
+												<img src="${url}" alt=""/>										
+											</button>
+										</form:form>
+									</c:if>
+									<span class="text">${fx:toHtml(kommentar.text)}</span>
+									<div class="clear"><!--  --></div>
 								</div>	
+								<div class="kommentarEdit" style="display:none;" >
+									<form:form method="POST" modelAttribute="cmd">
+										<input type="hidden" name="id" value="${kommentar.id}" />
+										<button name="action" title="Abbrechen" class="kommentarEditCancel">
+											<c:url value="/images/cancel.png" var="url"/>
+											<img src="${url}" alt=""/>										
+										</button>
+										<button name="action" title="Kommentar speichern" value="kommentarSave" class="kommentarEditSave">
+											<c:url value="/images/save.png" var="url"/>
+											<img src="${url}" alt=""/>										
+										</button>
+										<textarea name="kommentarEdit">${fx:toHtml(kommentar.text)}</textarea>
+										<div class="clear"><!--  --></div>
+									</form:form>
+								</div>
 				  			</div>
 						</c:forEach>
+						<script type="text/javascript">
+							$(function() {
+								$('.kommentarEditButton, .kommentarEditCancel').click(function() {
+									$(this).closest(".kommentar").find(".kommentarText, .kommentarEdit").toggle();
+									return false;
+								});
+							});
+						</script>
 			            <c:if test="${not empty maxPagesKommentare and not empty kommentare}">
 				            <util:pagination maxPages="${maxPagesKommentare}" page="${cmd.page}" size="${cmd.size}" post="true"/>
 				            <br/>
