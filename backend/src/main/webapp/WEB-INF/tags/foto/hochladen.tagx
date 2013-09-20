@@ -14,18 +14,20 @@
     <!-- this tag intentionally left blank -->
   </script>
 	
-  <button id="uploadButton" type="button" title="Foto hochladen">
+  <button id="uploadButton" type="button" title="Foto ersetzen oder neues Foto hinzufügen">
     <c:url value="/images/foto_upload.png" var="url" />
     <img src="${url}" alt=""/>
   </button>
 
   <form:form id="uploadForm" style="display:none;" method="POST" modelAttribute="cmd" enctype="multipart/form-data">
-    <button id="uploadCancelButton" type="button" title="Hochladen abbrechen">
+    <button id="uploadCancelButton" type="button" title="Ersetzen des Fotos oder Hinzufügen eines neuen Fotos abbrechen">
       <c:url value="/images/cancel.png" var="url" />
       <img src="${url}" alt=""/>
     </button>
+    <![CDATA[&nbsp;]]>
     <input type="file" name="foto"/>
-    <button id="uploadSubmitButton" type="submit" value="upload" name="action" title="Hochladen">
+    <![CDATA[&nbsp;]]>
+    <button id="uploadSubmitButton" type="submit" value="upload" name="action" title="ausgewähltes Foto hochladen">
       <c:url value="/images/foto_edit_save.png" var="url" />
       <img src="${url}" alt=""/>
     </button>

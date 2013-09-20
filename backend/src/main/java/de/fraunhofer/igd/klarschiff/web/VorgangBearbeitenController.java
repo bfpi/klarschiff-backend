@@ -259,6 +259,7 @@ public class VorgangBearbeitenController {
 	 * <li><code>&Auml;nderungen &uuml;bernehmen </code></li>
 	 * <li><code>Kommentar speichern</code></li>
 	 * <li><code>delegieren</code></li>
+	 * <li><code>zur&uuml;ckholen</code></li>
 	 * <li><code>archivieren</code></li>
 	 * <li><code>wiederherstellen</code></li>
 	 * <li><code>setzen</code></li>
@@ -387,6 +388,10 @@ public class VorgangBearbeitenController {
                 cmd.getVorgang().setZustaendigkeitFrontend(securityService.getZustaendigkeit(cmd.getVorgang().getDelegiertAn()).getLocality());
             else
                 cmd.getVorgang().setZustaendigkeitFrontend(securityService.getZustaendigkeit(cmd.getVorgang().getZustaendigkeit()).getLocality());*/
+			vorgangDao.merge(cmd.getVorgang());
+		} else if (action.equals("zur&uuml;ckholen")) {
+            cmd.getVorgang().setDelegiertAn(null);
+            //cmd.getVorgang().setZustaendigkeitFrontend(securityService.getZustaendigkeit(cmd.getVorgang().getZustaendigkeit()).getLocality());
 			vorgangDao.merge(cmd.getVorgang());
 		} else if (action.equals("archivieren")) {
 			cmd.getVorgang().setArchiviert(true);

@@ -56,7 +56,7 @@
 								</script>
 								<c:url value="/foto/gross/${vorgang.id}.jpg?timestamp=${now}" var="gross_url"/>
 								<a href="${gross_url}" class="colorbox">
-									<img id="picture" alt="Foto" src="${url}"/>
+									<img id="picture" alt="Foto" src="${url}" style="border:none" title="Foto größer anzeigen"/>
 								</a>					
 							</c:when>
 							<c:otherwise>

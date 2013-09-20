@@ -180,7 +180,7 @@ Ihr Klarschiff.HRO-Team]]></value></property>
 	</bean>
 	
 	<bean class="org.springframework.mail.SimpleMailMessage" id="kriteriumOffenNichtAkzeptiertTemplate">
-		<property name="text"><value><![CDATA[Folgende Vorgänge mit dem Status „offen“ sind seit mindestens %tage% Tagen zugewiesen. Bitte führen Sie die Erstsichtung durch, damit der Status „in Bearbeitung“ erreicht wird:
+		<property name="text"><value><![CDATA[Folgende Vorgänge mit dem Status „offen“ sind seit mindestens %tage% Tagen zugewiesen. Bitte prüfen Sie jeweils die Zuständigkeit; anschließend akzeptieren Sie diese bitte oder leiten den Vorgang weiter. Falls Sie die Zuständigkeit akzeptieren, so führen Sie bitte außerdem die Erstsichtung durch, falls diese noch nicht erfolgt ist:
 
 Nummer   aktuelle Zuständigkeit     Typ       zugewiesen seit
 ******   **********************     ***       ***************
@@ -188,7 +188,7 @@ Nummer   aktuelle Zuständigkeit     Typ       zugewiesen seit
 	</bean>
 	
 	<bean class="org.springframework.mail.SimpleMailMessage" id="kriteriumOffenInbearbeitungOhneStatusKommentarTemplate">
-		<property name="text"><value><![CDATA[Folgende Vorgänge mit dem Status „in Bearbeitung“ sind seit mindestens %tage% Tagen unverändert. Bitte geben Sie den Bürgerinnen und Bürgern eine kurze Info zum Bearbeitungsstand im Kommentarfeld zum Status oder schließen Sie die Vorgänge ab, falls dies bislang vergessen wurde:
+		<property name="text"><value><![CDATA[Folgende Vorgänge mit dem Status „in Bearbeitung“ sind seit mindestens %tage% Tagen unverändert. Bitte geben Sie den Bürgerinnen und Bürgern jeweils eine kurze Info zum Bearbeitungsstand im Kommentarfeld zum Status oder schließen Sie den Vorgang ab, falls dies bislang einfach vergessen wurde:
 
 Nummer   aktuelle Zuständigkeit     Typ       unverändert seit
 ******   **********************     ***       ****************
@@ -196,7 +196,7 @@ Nummer   aktuelle Zuständigkeit     Typ       unverändert seit
 	</bean>
 	
 	<bean class="org.springframework.mail.SimpleMailMessage" id="kriteriumIdeeOffenOhneUnterstuetzungTemplate">
-		<property name="text"><value><![CDATA[Folgende Ideen mit dem Status „offen“ haben ihre Erstsichtung seit mindestens %tage% Tagen hinter sich, weisen aber bisher noch nicht die notwendige Anzahl von %unterstuetzungen% Unterstützungen auf. Bitte setzen Sie die Ideen auf den Status „wird nicht bearbeitet“ und geben Sie den Bürgerinnen und Bürgern eine kurze Begründung im Kommentarfeld zum Status:
+		<property name="text"><value><![CDATA[Folgende Ideen mit dem Status „offen“ haben ihre Erstsichtung seit mindestens %tage% Tagen hinter sich, weisen aber bisher noch nicht die notwendige Anzahl von %unterstuetzungen% Unterstützungen auf. Falls Sie die jeweilige Idee abschließen möchten, so setzen Sie diese bitte auf den Status „wird nicht bearbeitet“ und geben Sie den Bürgerinnen und Bürgern eine kurze Begründung im Kommentarfeld zum Status:
 
 Nummer   aktuelle Zuständigkeit     Unterstützungen   Erstsichtungszeitpunkt
 ******   **********************     ***************   **********************
@@ -204,7 +204,7 @@ Nummer   aktuelle Zuständigkeit     Unterstützungen   Erstsichtungszeitpunkt
 	</bean>
 	
 	<bean class="org.springframework.mail.SimpleMailMessage" id="kriteriumWirdnichtbearbeitetOhneStatuskommentarTemplate">
-		<property name="text"><value><![CDATA[Folgende Vorgänge mit dem Status „wird nicht bearbeitet“ weisen bisher keine Info der Verwaltung auf. Bitte geben Sie den Bürgerinnen und Bürgern eine kurze Info zum Bearbeitungsstand im Kommentarfeld zum Status:
+		<property name="text"><value><![CDATA[Folgende Vorgänge mit dem Status „wird nicht bearbeitet“ weisen bisher keine Info der Verwaltung auf. Bitte geben Sie den Bürgerinnen und Bürgern jeweils eine kurze Info zum Bearbeitungsstand im Kommentarfeld zum Status:
 
 Nummer   aktuelle Zuständigkeit     Typ       Status „wird nicht bearbeitet“ seit
 ******   **********************     ***       ***********************************
@@ -212,7 +212,7 @@ Nummer   aktuelle Zuständigkeit     Typ       Status „wird nicht bearbeitet�
 	</bean>
 	
 	<bean class="org.springframework.mail.SimpleMailMessage" id="kriteriumNichtMehrOffenNichtAkzeptiertTemplate">
-		<property name="text"><value><![CDATA[Folgende Vorgänge weisen zwar nicht mehr den Status „offen“ auf, wurden bisher aber dennoch nicht akzeptiert. Bitte prüfen Sie die Zuständigkeit; anschließend akzeptieren Sie diese bitte oder leiten den Vorgang weiter:
+		<property name="text"><value><![CDATA[Folgende Vorgänge weisen zwar nicht mehr den Status „offen“ auf, wurden bisher aber dennoch nicht akzeptiert. Bitte prüfen Sie jeweils die Zuständigkeit; anschließend akzeptieren Sie diese bitte oder leiten den Vorgang weiter:
 
 Nummer   aktuelle Zuständigkeit     Typ       Status                  nicht akzeptiert seit
 ******   **********************     ***       ******                  *********************
@@ -220,7 +220,7 @@ Nummer   aktuelle Zuständigkeit     Typ       Status                  nicht akz
 	</bean>
 	
 	<bean class="org.springframework.mail.SimpleMailMessage" id="kriteriumOhneRedaktionelleFreigabenTemplate">
-		<property name="text"><value><![CDATA[Folgende Vorgänge haben zwar ihre Erstsichtung bereits hinter sich, allerdings wurden Betreff, Details und/oder Foto bisher noch nicht redaktionell freigegeben. Bitte prüfen Sie Betreff, Details und/oder Foto redaktionell und setzen Sie diese (gegebenenfalls nach redaktioneller Korrektur und/oder Anpassung) möglichst auf den Freigabestatus „extern“:
+		<property name="text"><value><![CDATA[Folgende Vorgänge haben zwar ihre Erstsichtung bereits hinter sich, allerdings wurden Betreff, Details und/oder Foto bisher noch nicht redaktionell freigegeben. Bitte prüfen Sie jeweils Betreff, Details und/oder Foto redaktionell und setzen Sie diese (gegebenenfalls nach redaktioneller Korrektur und/oder Anpassung) möglichst auf den Freigabestatus „extern“:
 
 Nummer   aktuelle Zuständigkeit     Typ       Status                  Freigabestatus Betreff   Freigabestatus Details   Freigabestatus Foto
 ******   **********************     ***       ******                  **********************   **********************   *******************
