@@ -47,7 +47,7 @@
 	        </div>
 	        <div>
 	        	<form:label path="text" cssErrorClass="error">Text</form:label>
-	            <form:textarea path="text" cssClass="inputtext" cols="6" cssStyle="width:370px;margin-left:20px"/>
+	            <form:textarea path="text" cssClass="inputtext" cols="6" cssStyle="width:370px;height:100px;margin-left:20px"/>
 	        </div>
 	        <div>
 	        	Welche Daten sollen mitgesendet werden? 

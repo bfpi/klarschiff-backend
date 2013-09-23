@@ -42,7 +42,7 @@
 				        	<form:label path="vorgang.betreff" cssErrorClass="error">Betreff</form:label>
 				        	<util:freigabestatus status="${cmd.vorgang.betreffFreigabeStatus}"/>
 							<c:if test="${cmd.vorgang.betreffFreigabeStatus!='geloescht'}">
-					            <form:input path="vorgang.betreff" cssClass="inputtext" cssStyle="width:333px;"/>
+					            <form:input path="vorgang.betreff" cssClass="inputtext" cssStyle="width:333px"/>
 							</c:if>
 						</td>
 						<td style="vertical-align:top;">
@@ -56,7 +56,7 @@
 				        	<form:label path="vorgang.details" cssErrorClass="error">Details</form:label>
 							<util:freigabestatus status="${cmd.vorgang.detailsFreigabeStatus}"/>
 							<c:if test="${cmd.vorgang.detailsFreigabeStatus!='geloescht'}">
-				            <form:textarea path="vorgang.details" cols="6" cssStyle="width:333px;"/>
+				            <form:textarea path="vorgang.details" cols="6" cssStyle="width:333px;height:100px"/>
 							</c:if>
 						</td>
 						<td style="vertical-align:top;">

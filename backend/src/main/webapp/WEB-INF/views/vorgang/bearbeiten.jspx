@@ -202,12 +202,15 @@
                                         </c:if>
 									</form:select>
 								</div>
+                                <c:set value="500" var="textlaengeMaximal"/>
 								<div>
 									<table width="100%" cellpadding="0" cellspacing="0">
 										<tr>
 											<td valign="top" width="470px;">
 												<form:label path="statusKommentar" cssErrorClass="error">Kommentar</form:label>
-												<form:textarea path="statusKommentar" id="statusKommentar" cols="6" maxlength="500" cssStyle="width:350px;"/>
+												<form:textarea path="statusKommentar" id="statusKommentar" cols="6" maxlength="${textlaengeMaximal}" cssStyle="width:350px;height:100px" onKeyUp="$('#zeichenAnzahl').html(verbleibendeZeichen(${textlaengeMaximal}, $('#statusKommentar')[0].value.length));"/>
+                                                <br/>
+                                                <label style="width:350px;margin-left:100px">Sie können noch <span id="zeichenAnzahl">${textlaengeMaximal}</span> Zeichen eingeben.</label>
 											</td>
 											<td valign="top" style="padding-left:10px;">
 												<select id="vorlage" onchange="vorlageSelect()">
@@ -220,8 +223,13 @@
 												<script type="text/javascript">
 													function vorlageSelect() {
 														$('#statusKommentar')[0].value = $('select#vorlage')[0].value;
+                                                        $('#zeichenAnzahl').html(verbleibendeZeichen(${textlaengeMaximal}, $('#statusKommentar')[0].value.length));
 														$('select#vorlage')[0].selectedIndex = 0;
 													}
+                                                    
+                                                    function verbleibendeZeichen(textlaengeMaximal, textlaengeAktuell) {
+                                                        return textlaengeMaximal - textlaengeAktuell;
+                                                    }
 												</script>
 
 											</td>
@@ -231,7 +239,7 @@
 										</form:errors>
 									</table>
 								</div>
-								<input type="submit" value="Änderungen übernehmen" name="action"/>
+                                <input type="submit" value="Änderungen übernehmen" name="action"/>
 							</form:form>
 						</div>
 					</div>
@@ -328,6 +336,8 @@
 							{
 								typ = $('select#typ')[0].value;
 								hauptkategorie = $('select#hauptkategorie')[0].value;
+                                
+                                $('#zeichenAnzahl').html(verbleibendeZeichen(${textlaengeMaximal}, $('#statusKommentar')[0].value.length));
 			
 								if (isBlank(typ)) {
 									updateHauptkategorie();
@@ -365,7 +375,7 @@
 					        		<tr>
 					        			<td valign="top">
 					        				<util:freigabestatus status="${cmd.vorgang.detailsFreigabeStatus}"/>
-								            <form:textarea path="vorgang.details" cols="6" cssStyle="width:331px;"/>
+								            <form:textarea path="vorgang.details" cols="6" cssStyle="width:331px;height:100px"/>
 					        			</td>
 					        			<td valign="top" style="padding-left:5px;">
 											<util:freigabestatusbutton name="Details" status="${cmd.vorgang.detailsFreigabeStatus}"/>
@@ -401,7 +411,7 @@
 				        	<table cellpadding="0" cellspacing="0">
 				        		<tr>
 				        			<td valign="top">
-							            <form:textarea path="kommentar" cols="6" cssStyle="width:350px;"/>
+							            <form:textarea path="kommentar" cols="6" cssStyle="width:350px;height:100px"/>
 				        			</td>
 				        		
 				        			<td valign="bottom" style="padding-left:5px;">
