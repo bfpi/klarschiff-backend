@@ -12,6 +12,7 @@ public class SettingsService {
 
 	String version;
 	Long vorgangIdeeUnterstuetzer;
+	Integer vorgangStatusKommentarTextlaengeMaximal;
 	String proxyHost;
 	String proxyPort;
 	boolean showLogins;
@@ -52,6 +53,14 @@ public class SettingsService {
 
 	public void setVorgangIdeeUnterstuetzer(Long vorgangIdeeUnterstuetzer) {
 		this.vorgangIdeeUnterstuetzer = vorgangIdeeUnterstuetzer;
+	}
+    
+    public Integer getVorgangStatusKommentarTextlaengeMaximal() {
+		return vorgangStatusKommentarTextlaengeMaximal;
+	}
+
+	public void setVorgangStatusKommentarTextlaengeMaximal(Integer vorgangStatusKommentarTextlaengeMaximal) {
+		this.vorgangStatusKommentarTextlaengeMaximal = vorgangStatusKommentarTextlaengeMaximal;
 	}
 
 	public String getProxyHost() {

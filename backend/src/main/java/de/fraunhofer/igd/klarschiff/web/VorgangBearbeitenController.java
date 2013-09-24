@@ -87,6 +87,14 @@ public class VorgangBearbeitenController {
     public Long vorgangIdeenUnterstuetzer() {
         return settingsService.getVorgangIdeeUnterstuetzer();
     }
+    
+    /**
+	 * Liefert (in Systemkonfiguration festgelegte) maximale Zeichenanzahl für Statuskommentare zu Vorgängen
+	 */
+	@ModelAttribute("vorgangStatusKommentarTextlaengeMaximal")
+    public Integer vorgangStatusKommentarTextlaengeMaximal() {
+        return settingsService.getVorgangStatusKommentarTextlaengeMaximal();
+    }
 	
 	/**
 	 * Liefert alle vorhandenen Zuständigkeiten des aktuellen Benutzers
@@ -294,7 +302,7 @@ public class VorgangBearbeitenController {
             assertNotEmpty(cmd, result, Assert.EvaluateOn.ever, "vorgang.statusKommentar", "Für den Status „wird nicht bearbeitet“ müssen Sie einen Kommentar angeben!");
         }
         
-		assertMaxLength(cmd, result, Assert.EvaluateOn.ever, "vorgang.statusKommentar", 500, "Der Statuskommentar ist zu lang! Erlaubt sind hier maximal 500 Zeichen.");
+		assertMaxLength(cmd, result, Assert.EvaluateOn.ever, "vorgang.statusKommentar", vorgangStatusKommentarTextlaengeMaximal(), "Der Statuskommentar ist zu lang! Erlaubt sind hier maximal " + vorgangStatusKommentarTextlaengeMaximal().toString() + " Zeichen.");
         
 		if (result.hasErrors()) {
 			cmd.setVorgang(getVorgang(id));
