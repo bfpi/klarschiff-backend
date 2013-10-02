@@ -247,16 +247,34 @@ public class SecurityService {
 
 	
 	/**
-	 * Ermittelt die E-Mailadressen der Benutzer für eine Rolle
-	 * @param roleId Rolle, für den die Benutzer und dann deren E-Mailadressen ermittelt werden sollen
-	 * @return Array mit E-Mailadressen
+	 * Ermittelt die E-Mail-Adressen aller Benutzer einer Rolle
+	 * @param roleId Rolle, für die die Benutzer und deren E-Mail-Adressen ermittelt werden sollen
+	 * @return Array mit E-Mail-Adressen
 	 */
 	public String[] getAllUserEmailsForRole(String roleId) {
-		List<String> reciever = new ArrayList<String>();
+		List<String> receiver = new ArrayList<String>();
 		for (User user : getAllUserForRole(roleId))
 			if (!StringUtils.isBlank(user.getEmail()))
-				reciever.add(user.getEmail());
-		return reciever.toArray(new String[0]);
+				receiver.add(user.getEmail());
+		return receiver.toArray(new String[0]);
+	}
+
+	
+	/**
+	 * Ermittelt die E-Mail-Adressen der externen Benutzer einer Rolle
+	 * @param roleId Rolle, für die die externen Benutzer und deren E-Mail-Adressen ermittelt werden sollen
+	 * @return Array mit E-Mail-Adressen
+	 */
+	public String[] getAllExternUserEmailsForRole(String roleId) {
+		List<String> receiver = new ArrayList<String>();
+		for (User user : getAllUserForRole(roleId)) {
+            if (isUserExtern(user.getId()) && !isUserIntern(user.getId()) && !isUserAdmin(user.getId())) {
+                if (!StringUtils.isBlank(user.getEmail())) {
+                    receiver.add(user.getEmail());
+                }
+            }
+        }
+		return receiver.toArray(new String[0]);
 	}
 	
 	

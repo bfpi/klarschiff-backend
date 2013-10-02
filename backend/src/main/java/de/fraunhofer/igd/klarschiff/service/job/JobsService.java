@@ -139,20 +139,24 @@ public class JobsService {
 
 	
 	/**
-	 * Der Job informiert Externe Benutzer über neue an sie delegierte Vorgänge.
+	 * Der Job informiert externe Benutzer über neue an sie delegierte Vorgänge.
 	 */
-	@ScheduledSyncInCluster(cron="0 0 5 * * *", name="Externe ueber neue Vorgaenge informieren")
+	@ScheduledSyncInCluster(cron="0 0 5 * * *", name="externe Benutzer ueber neue Vorgaenge informieren")
 	public void informExtern() {
 		Date date = DateUtils.addDays(new Date(), -1);
 
-		//Für alle delegiertAn
+		// für alle delegiertAn
 		for(Role delegiertAn : securityService.getAllDelegiertAn()) {
 
-			//Finde alle Vorgänge, dessen DelegiertAn in den letzten 24h geändert wurde und deren DelegiertAn=delegiertAn ist
+			// finde alle Vorgänge, deren DelegiertAn in den letzten 24 Stunden geändert wurde und deren DelegiertAn = delegiertAn ist
 			List<Vorgang> vorgaenge = vorgangDao.findVorgaengeForDelegiertAn(date, delegiertAn.getId());
+            
+            // falls Vorgänge gefunden wurden
+            if (!vorgaenge.isEmpty() && vorgaenge != null) {
 
-			//sende eMail
-			mailService.sendInformExternMail(vorgaenge, securityService.getAllUserEmailsForRole(delegiertAn.getId()));
+                // sende E-Mail
+                mailService.sendInformExternMail(vorgaenge, securityService.getAllExternUserEmailsForRole(delegiertAn.getId()));
+            }
 		}
 	}
 	
