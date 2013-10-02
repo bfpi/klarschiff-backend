@@ -100,7 +100,7 @@
 						</div>
 					</td>
 				</tr></c:if>
-				
+                
 				<tr>
 					<td class="label">Erstellung</td>
 					<td>
@@ -146,6 +146,7 @@
 					</tr>
 				</c:if>
 			</table>
+            <div style="padding:10px 0 0 3px;text-align:justify"><span class="label-important">Hinweis: Die textlichen Angaben der Adresse und des Flurstückseigentums werden anhand der Position des Vorgangs auf der Karte <span style="font-weight:bold">automatisch</span> durch das System hinzugefügt. Diese beiden textlichen Angaben stammen also <span style="font-weight:bold">nicht</span> vom Autor des Vorgangs.</span></div>
 		</div>
 		
 		<div class="fieldset">

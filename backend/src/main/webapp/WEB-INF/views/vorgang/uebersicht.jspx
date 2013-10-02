@@ -119,7 +119,7 @@
 					</c:if>
 				</tr>
 			</table>
-            <div style="padding-left:3px;width:762px;text-align:justify"><span class="label">Hinweis: Adresse und Flurstückseigentum werden anhand der Position des Vorgangs auf der Karte automatisch durch das System bestimmt. Diese beiden Angaben stammen also <span style="font-weight:bold">nicht</span> vom Autor des Vorgangs.</span></div>
+            <div style="padding-left:3px;width:764px;text-align:justify"><span class="label-important">Hinweis: Die textlichen Angaben der Adresse und des Flurstückseigentums werden anhand der Position des Vorgangs auf der Karte <span style="font-weight:bold">automatisch</span> durch das System hinzugefügt. Diese beiden textlichen Angaben stammen also <span style="font-weight:bold">nicht</span> vom Autor des Vorgangs.</span></div>
 		</div>
 
 		<!-- Status -->
