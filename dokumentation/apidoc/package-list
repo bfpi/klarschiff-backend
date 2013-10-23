@@ -18,4 +18,5 @@ de.fraunhofer.igd.klarschiff.util
 de.fraunhofer.igd.klarschiff.vo
 de.fraunhofer.igd.klarschiff.vo.extra
 de.fraunhofer.igd.klarschiff.web
+org.springframework.ldap.core.support
 org.springframework.security.config

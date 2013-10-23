@@ -5,8 +5,8 @@
 	<groupId>de.fraunhofer.igd.klarschiff</groupId>
 	<artifactId>backend</artifactId>
 	<packaging>war</packaging>
-	<version>0.1.0.BUILD-SNAPSHOT</version>
-	<name>Klarschiff-Backend</name>
+	<version>1.3</version>
+	<name>Klarschiff.HRO-Backend</name>
 
 
 	<properties>
@@ -588,6 +588,14 @@
 				</configuration>
 				<!-- <configuration> <webXml>target/web.xml</webXml> </configuration> -->
 			</plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.9.1</version>
+                <configuration>
+                    <show>private</show>
+                </configuration>
+            </plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
