@@ -631,23 +631,17 @@ public class VorgangDao {
 	
 	
 	/**
-	 * Ermittlet die aktuellsten Vorgänge, die eine akzeptierte Zuständigkeit besitzen zum trainieren des Zuständigkeitsfinders 
-	 * @param maxResult maximale Anzahl von Vorgängen in der Ergebnisliste 
+	 * Ermittlet die aktuellsten Vorgänge, die eine akzeptierte Zuständigkeit besitzen, um mit diesen den Zuständigkeitsfinder zu trainieren
+	 * @param maxResults maximale Anzahl von Vorgängen in der Ergebnisliste 
 	 * @return Vorgänge mit akzeptierten Zuständigkeiten
 	 */
 	@SuppressWarnings("unchecked")
-	public List<Vorgang> findVorgangForTrainClassificator(int maxResult) {
-		HqlQueryHelper query = addGroupByVorgang(new HqlQueryHelper())
-			.addFromTables("Vorgang vo JOIN vo.verlauf ve")
-			.addWhereConditions("vo.zustaendigkeitStatus=:zustaendigkeitStatus")
-			.addParameter("zustaendigkeitStatus", EnumZustaendigkeitStatus.akzeptiert)
-			.orderBy("MAX(ve.datum) DESC")
-			.maxResults(maxResult);
-		return query.getResultList(em);
+	public List<Vorgang> findVorgangForTrainClassificator(int maxResults) {
+		return em.createQuery("SELECT a FROM Vorgang a, Vorgang b WHERE a.kategorie = b.kategorie AND a.version <= b.version AND a.zustaendigkeitStatus = 'akzeptiert' AND b.zustaendigkeitStatus = 'akzeptiert' GROUP BY a.id HAVING count(*) <= 10", Vorgang.class).setMaxResults(maxResults).getResultList();
 	}
-
-	
-	/**
+    
+    
+    /**
 	 * Ermittelt alle Vorgänge, bei denen ab einer bestimmten Zeit die Zuständigkeit geändert wurde. 
 	 * @param lastChange Zeitpunkt ab dem die Zuständigkeit geändert wurde
 	 * @param zustaendigkeit Zuständigkeit

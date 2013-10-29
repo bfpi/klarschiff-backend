@@ -87,7 +87,7 @@
 				</p>
 				<ul class="help">
 					<li>Zeit: _:52 Uhr</li>
-					<li>Es werden die 500 Vorgänge genommen, die zuletzt geändert wurden und deren Zuständigkeit akzeptiert ist.</li>
+					<li>Es werden je Kategorie maximal die 10 jüngsten Vorgänge herangezogen, deren Zuständigkeit akzeptiert ist. Insgesamt werden maximal 1000 Vorgänge herangezogen.</li>
 				</ul>
 				<form method="post">
 					<input type="hidden" name="action" value="reBuildClassifier"/>
