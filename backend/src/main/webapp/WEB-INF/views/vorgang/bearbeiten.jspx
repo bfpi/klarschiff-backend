@@ -515,28 +515,36 @@
 
                 <!-- Delegieren -->
                 <c:choose>
-                    <c:when test="${(cmd.vorgang.delegiertAn == null or cmd.vorgang.delegiertAn == '') and cmd.vorgang.status!='gemeldet' and cmd.vorgang.status!='offen' and cmd.vorgang.status!='geloescht'}">
+                    <c:when test="${cmd.vorgang.delegiertAn == null or cmd.vorgang.delegiertAn == ''}">
                         <div class="fieldset" id="delegierenpanel">
                             <div class="fieldsettitle closepanel" id="delegierentab"><div style="width:100%; height:15px;">Delegieren</div></div>
                             <div id="delegierencontent">
-                                <form:form method="POST" modelAttribute="cmd.vorgang" >
-                                    <div>
-                                        an<![CDATA[&nbsp;]]>
-                                        <form:select path="delegiertAn" cssErrorClass="error">
-                                            <form:option value="" label="" cssClass="info"/>
-                                            <c:forEach items="${allDelegiertAn}" var="role">
-                                                    <form:option value="${role.id}" title="${role.description}"/>	
-                                            </c:forEach>
-                                        </form:select>
-                                        <![CDATA[&nbsp;]]> 
-                                        <input type="submit" value="delegieren" name="action"/>
-                                    </div>
-                                </form:form>
+                                <c:choose>
+                                    <c:when test="${cmd.vorgang.zustaendigkeitStatus == 'akzeptiert' and cmd.vorgang.status != 'gemeldet' and cmd.vorgang.status != 'offen' and cmd.vorgang.status != 'geloescht'}">
+                                        <form:form method="POST" modelAttribute="cmd.vorgang" >
+                                            <div>
+                                                an<![CDATA[&nbsp;]]>
+                                                <form:select path="delegiertAn" cssErrorClass="error">
+                                                    <form:option value="" label="" cssClass="info"/>
+                                                    <c:forEach items="${allDelegiertAn}" var="role">
+                                                            <form:option value="${role.id}" title="${role.description}"/>	
+                                                    </c:forEach>
+                                                </form:select>
+                                                <![CDATA[&nbsp;]]> 
+                                                <input type="submit" value="delegieren" name="action"/>
+                                            </div>
+                                        </form:form>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <c:url value="/images/" var="urlStaticIcon"/>
+                                        Das Delegieren ist nur dann möglich, wenn der Vorgang <span class="statistic_accepted" title="akzeptiert">✔</span> ist und er gleichzeitig nicht <img alt="gemeldet" src="${urlStaticIcon}status_gemeldet_15.png" height="15" width="15" title="gemeldet" class="statistic_icon"/>, <img alt="offen" src="${urlStaticIcon}status_offen_15.png" height="15" width="15" title="offen" class="statistic_icon"/> oder <img alt="geloescht" src="${urlStaticIcon}status_geloescht_15.png" height="15" width="15" title="gelöscht" class="statistic_icon"/> ist.
+                                    </c:otherwise>
+                                </c:choose>
                             </div>
                         </div>
                         <util:ddpanel name="delegieren"/>
                     </c:when>
-                    <c:when test="${cmd.vorgang.delegiertAn != null and cmd.vorgang.delegiertAn != ''}">
+                    <c:otherwise>
                         <c:set value="${fx:role(cmd.vorgang.delegiertAn)}" var="delegiertAn"/>
                         <div class="fieldset" id="delegierenpanel">
                             <div class="fieldsettitle closepanel" id="delegierentab"><div style="width:100%; height:15px;">Vorgang zurückholen (Delegieren rückgängig machen)</div></div>
@@ -549,7 +557,7 @@
                                 </form:form>
                             </div>
                         </div>
-                    </c:when>
+                    </c:otherwise>
                 </c:choose>
 
 				<!-- Priorität -->
