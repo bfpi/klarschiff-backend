@@ -96,6 +96,7 @@
     	p:userAttributesMapping="${ldap.userAttributesMapping}"
     	p:roleAttributesMapping="${ldap.roleAttributesMapping}"
     	p:userSearchBase="${ldap.userSearchBase}"
+    	p:userSearchBaseAlternative="${ldap.userSearchBaseAlternative}"
     	p:userObjectClass="${ldap.userObjectClass}"
     	p:userSearchFilter="${ldap.userSearchFilter}"
     	p:groupSearchBase="${ldap.groupSearchBase}"

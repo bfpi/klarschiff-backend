@@ -53,6 +53,7 @@ public class SecurityService {
 	String userAttributesMapping;
 	String roleAttributesMapping;
 	String userSearchBase;
+	String userSearchBaseAlternative;
 	String userObjectClass;
 	String userSearchFilter;
 	String groupSearchBase;
@@ -151,7 +152,12 @@ public class SecurityService {
 	public User getUser(String login) {
 		try {
 			List<User> users = securityServiceLdap.getObjectListFromLdap(userSearchBase, "(&(objectclass="+userObjectClass+")("+StringUtils.replace(userSearchFilter, "{0}", login)+"))", userContextMapper);
-			return users.get(0);
+            if (!users.isEmpty())
+                return users.get(0);
+            else {
+                users = securityServiceLdap.getObjectListFromLdap(userSearchBaseAlternative, "(&(objectclass="+userObjectClass+")("+StringUtils.replace(userSearchFilter, "{0}", login)+"))", userContextMapper);
+                return users.get(0);
+            }
 		} catch (Exception e) {
 			return null;
 		}
@@ -601,6 +607,14 @@ public class SecurityService {
 
 	public void setUserSearchBase(String userSearchBase) {
 		this.userSearchBase = userSearchBase;
+	}
+
+	public String getUserSearchBaseAlternative() {
+		return userSearchBaseAlternative;
+	}
+
+	public void setUserSearchBaseAlternative(String userSearchBaseAlternative) {
+		this.userSearchBaseAlternative = userSearchBaseAlternative;
 	}
 
 	public String getUserObjectClass() {
