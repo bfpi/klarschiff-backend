@@ -142,7 +142,7 @@
 						serverResolutions="${geoService.mapServerResolutions}"
 		        		ovi="${vorgang.oviWkt}"
 		        		oviMargin="${geoService.mapOviMargin/4}"
-		        		cssStyle="height:100px;width:90%;"
+		        		cssStyle="height:200px;width:580px;"
 		        		/>
 				</td>	
 			</tr>
