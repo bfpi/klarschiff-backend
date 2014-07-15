@@ -414,7 +414,8 @@ CREATE OR REPLACE VIEW klarschiff_wfs AS
 				m.datum_bestaetigung IS NOT NULL AND 
 				m.datum_abarbeitung IS NULL AND
 				m.vorgang = v.id
-		);
+		)
+	ORDER BY v.datum DESC;
 		
 ALTER TABLE klarschiff_wfs OWNER TO ${f_username};
 
