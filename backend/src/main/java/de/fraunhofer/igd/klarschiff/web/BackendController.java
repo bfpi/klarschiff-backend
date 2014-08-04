@@ -150,7 +150,7 @@ public class BackendController {
 
 			mailService.sendVorgangBestaetigungMail(vorgang);
 		} catch (Exception e) {
-			logger.warn(e);
+			logger.warn("Fehler bei BackendController.vorgang:", e);
 			sendError(response, e);
 		}
 	}
@@ -182,6 +182,9 @@ public class BackendController {
 			@RequestParam(value = "authCode", required = false) String authCode,
 			HttpServletResponse response) {
 		try {
+      if (settingsService.getPropertyValue("kod.auth_code") == null) {
+        throw new BackendControllerException(13, "[authCode] nicht konfiguriert", "Es wurde kein kod.auth_code konfiguriert.");
+      }
       logger.info("kod.auth_code" + settingsService.getPropertyValue("kod.auth_code"));
       logger.info("param authCode" + authCode);
       if (!settingsService.getPropertyValue("kod.auth_code").equals(authCode)) {
@@ -235,7 +238,7 @@ public class BackendController {
 
 			sendOk(response, vorgang.getId().toString());
 		} catch (Exception e) {
-			logger.warn(e);
+			logger.warn("Fehler bei BackendController.vorgangKOD:", e);
 			sendError(response, e);
 		}
 	}
