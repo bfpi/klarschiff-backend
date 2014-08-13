@@ -318,16 +318,16 @@ public class VorgangBearbeitenController {
 			vorgangDao.merge(cmd.getVorgang());
 		} else if (action.equals("&uuml;bernehmen und akzeptieren")) {
 			cmd.getVorgang().setZustaendigkeitStatus(EnumZustaendigkeitStatus.akzeptiert);
-            cmd.getVorgang().setZustaendigkeitFrontend(securityService.getZustaendigkeit(cmd.getVorgang().getZustaendigkeit()).getLocality());
+            cmd.getVorgang().setZustaendigkeitFrontend(securityService.getZustaendigkeit(cmd.getVorgang().getZustaendigkeit()).getL());
 			vorgangDao.merge(cmd.getVorgang());
 		} else if (action.equals("automatisch neu zuweisen")) {
 			cmd.getVorgang().setZustaendigkeit(classificationService.calculateZustaendigkeitforVorgang(cmd.getVorgang()).getId());
-			cmd.getVorgang().setZustaendigkeitFrontend(securityService.getZustaendigkeit(cmd.getVorgang().getZustaendigkeit()).getLocality());
+			cmd.getVorgang().setZustaendigkeitFrontend(securityService.getZustaendigkeit(cmd.getVorgang().getZustaendigkeit()).getL());
 			cmd.getVorgang().setZustaendigkeitStatus(EnumZustaendigkeitStatus.zugewiesen);
 			vorgangDao.merge(cmd.getVorgang());
 		} else if (action.equals("zuweisen")) {
 			cmd.getVorgang().setZustaendigkeitStatus(EnumZustaendigkeitStatus.zugewiesen);
-            cmd.getVorgang().setZustaendigkeitFrontend(securityService.getZustaendigkeit(cmd.getVorgang().getZustaendigkeit()).getLocality());
+            cmd.getVorgang().setZustaendigkeitFrontend(securityService.getZustaendigkeit(cmd.getVorgang().getZustaendigkeit()).getL());
 			vorgangDao.merge(cmd.getVorgang());
 		} else if (action.equals("&Auml;nderungen &uuml;bernehmen")) {
 			assertNotEmpty(cmd, result, Assert.EvaluateOn.ever, "vorgang.status", null);
@@ -393,13 +393,13 @@ public class VorgangBearbeitenController {
 			}
 		} else if (action.equals("delegieren")) {
             /*if (cmd.getVorgang().getDelegiertAn()!=null && !cmd.getVorgang().getDelegiertAn().isEmpty()) 
-                cmd.getVorgang().setZustaendigkeitFrontend(securityService.getZustaendigkeit(cmd.getVorgang().getDelegiertAn()).getLocality());
+                cmd.getVorgang().setZustaendigkeitFrontend(securityService.getZustaendigkeit(cmd.getVorgang().getDelegiertAn()).getL());
             else
-                cmd.getVorgang().setZustaendigkeitFrontend(securityService.getZustaendigkeit(cmd.getVorgang().getZustaendigkeit()).getLocality());*/
+                cmd.getVorgang().setZustaendigkeitFrontend(securityService.getZustaendigkeit(cmd.getVorgang().getZustaendigkeit()).getL());*/
 			vorgangDao.merge(cmd.getVorgang());
 		} else if (action.equals("zur&uuml;ckholen")) {
             cmd.getVorgang().setDelegiertAn(null);
-            //cmd.getVorgang().setZustaendigkeitFrontend(securityService.getZustaendigkeit(cmd.getVorgang().getZustaendigkeit()).getLocality());
+            //cmd.getVorgang().setZustaendigkeitFrontend(securityService.getZustaendigkeit(cmd.getVorgang().getZustaendigkeit()).getL());
 			vorgangDao.merge(cmd.getVorgang());
 		} else if (action.equals("archivieren")) {
 			cmd.getVorgang().setArchiviert(true);

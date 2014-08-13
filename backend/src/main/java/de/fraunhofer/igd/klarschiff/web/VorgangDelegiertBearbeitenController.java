@@ -184,7 +184,7 @@ public class VorgangDelegiertBearbeitenController {
 			vorgangDao.merge(cmd.getVorgang());
 		}  else if (action.equals("zur&uuml;ckweisen")) {
 			cmd.getVorgang().setDelegiertAn(null);
-            //cmd.getVorgang().setZustaendigkeitFrontend(securityService.getZustaendigkeit(cmd.getVorgang().getZustaendigkeit()).getLocality());
+            //cmd.getVorgang().setZustaendigkeitFrontend(securityService.getZustaendigkeit(cmd.getVorgang().getZustaendigkeit()).getL());
 			vorgangDao.merge(cmd.getVorgang());
             return "redirect:/vorgang/delegiert/suchen";
 		}  else if (action.equals("Kommentar anlegen")) {

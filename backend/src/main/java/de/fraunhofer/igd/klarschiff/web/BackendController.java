@@ -292,7 +292,7 @@ public class BackendController {
 			vorgangDao.merge(vorgang);
 
 			vorgang.setZustaendigkeit(classificationService.calculateZustaendigkeitforVorgang(vorgang).getId());
-			vorgang.setZustaendigkeitFrontend(securityService.getZustaendigkeit(vorgang.getZustaendigkeit()).getLocality());
+			vorgang.setZustaendigkeitFrontend(securityService.getZustaendigkeit(vorgang.getZustaendigkeit()).getL());
 			vorgang.setZustaendigkeitStatus(EnumZustaendigkeitStatus.zugewiesen);
 			
 			vorgangDao.merge(vorgang);
