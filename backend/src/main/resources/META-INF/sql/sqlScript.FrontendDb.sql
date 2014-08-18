@@ -381,7 +381,7 @@ CREATE OR REPLACE VIEW klarschiff_wfs AS
 		v.bemerkung, 
 		v.kategorieid,
 		k.parent AS hauptkategorieid,
-		v.the_geom, 
+		v.the_geom::geometry(Point,25833) AS the_geom, 
 		v.titel, 
 		v.vorgangstyp, 
 		v.status,
@@ -418,7 +418,7 @@ CREATE OR REPLACE VIEW klarschiff_wfs AS
 		
 ALTER TABLE klarschiff_wfs OWNER TO ${f_username};
 
-CREATE VIEW klarschiff_wfs_tmpl AS
+CREATE OR REPLACE VIEW klarschiff_wfs_tmpl AS
     SELECT 
     	v.id, 
     	v.datum, 
@@ -428,7 +428,7 @@ CREATE VIEW klarschiff_wfs_tmpl AS
     	k.name AS kategorie_name, 
     	v.hauptkategorieid, 
     	kh.name AS hauptkategorie_name, 
-    	v.the_geom, 
+    	v.the_geom::geometry(Point,25833) AS the_geom, 
     	v.titel, 
     	v.vorgangstyp, 
     	t.name AS vorgangstyp_name, 
