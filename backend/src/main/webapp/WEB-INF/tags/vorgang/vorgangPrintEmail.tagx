@@ -27,13 +27,8 @@
 		$('#emailDirect').click( function() {
 				$.ajax({
 					url: "${url}",
-				  	success: function( data ) {
-				  		if ($.browser.msie <![CDATA[&&]]> parseInt($.browser.version, 10)<![CDATA[>=]]>8) {
-				            win = window.open(data,'emailWindow', "width=10,height=10,left=100,top=100,toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=0,resizable=0");
-				            win.close();
-				  		} else {
-						    location.href = data;
-				  		}
+				  	success: function(data) {
+                        location.href = data;
 				    }
 				});
 			});

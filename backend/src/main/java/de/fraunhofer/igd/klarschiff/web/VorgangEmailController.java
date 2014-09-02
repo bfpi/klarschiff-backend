@@ -6,11 +6,11 @@ import static de.fraunhofer.igd.klarschiff.web.Assert.assertNotEmpty;
 
 import java.io.OutputStream;
 
+import java.net.URLEncoder;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.codec.EncoderException;
-import org.apache.commons.codec.net.URLCodec;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -218,28 +218,23 @@ public class VorgangEmailController {
 	 * @param delegiert E-Mailverand für delgierte? (keine Missbrauchsmedlungen)
 	 */
 	public void emailDirect(Long id, HttpServletResponse response, boolean delegiert) throws Exception {
-		//Vorgang ermitteln
+		// Vorgang ermitteln
 		Vorgang vorgang = vorgangDao.findVorgang(id);
 		
-		//Inhalte der E-mail ermittlen
-		String text = mailService.composeVorgangWeiterleitenMail(vorgang, "", true, true, !delegiert);
+		// Subject und Body für die E-Mail ermittlen
 		String subject = mailService.getVorgangWeiterleitenMailTemplate().getSubject();
+		String body = mailService.composeVorgangWeiterleitenMail(vorgang, "", true, true, !delegiert);
 		
-		//Encoding
-		text = encode(text, mailService.getMailtoMailclientEncoding());
-		subject = encode(subject, mailService.getMailtoMailclientEncoding());
-		
-		String link = "mailto:?subject="+subject+"&body="+text;
-		logger.debug(link);
+		// Text-Encoding ermitteln
+        String encoding = mailService.getMailtoMailclientEncoding();
+        
+        // Subject und Body jeweils URL-encoden sowie vollständigen Link zusammensetzen
+		String link = "mailto:?subject=" + URLEncoder.encode(subject) + "&body=" + URLEncoder.encode(body);
 
-		response.setCharacterEncoding("utf-8");
-		response.setHeader("Content-Type", "text/html;charset=utf-8");
-		response.getOutputStream().write(link.getBytes());
+		response.setCharacterEncoding(encoding);
+		response.setHeader("Content-Type", "text/html;charset=" + encoding);
+		response.getOutputStream().write(link.replaceAll("\\+", "%20").getBytes(encoding));
 		response.setStatus(HttpServletResponse.SC_OK);
 		response.flushBuffer();
-	}
-	
-	private static String encode(String str, String encoding) throws EncoderException {
-		return new URLCodec(encoding).encode(str).replace("+", "%20");
 	}
 }
