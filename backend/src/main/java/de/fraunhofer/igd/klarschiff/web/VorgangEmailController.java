@@ -223,7 +223,13 @@ public class VorgangEmailController {
 		
 		// Subject und Body für die E-Mail ermittlen
 		String subject = mailService.getVorgangWeiterleitenMailTemplate().getSubject();
-		String body = mailService.composeVorgangWeiterleitenMail(vorgang, "", true, true, !delegiert);
+        String body = new String();
+        if (delegiert) {
+            body = mailService.composeVorgangWeiterleitenMail(vorgang, "", true, true, false);
+        }
+        else {
+            body = mailService.composeVorgangWeiterleitenMail(vorgang, "", true, true, true);
+        }
 		
 		// Text-Encoding ermitteln
         String encoding = mailService.getMailtoMailclientEncoding();
