@@ -24,9 +24,11 @@
 		<c:url value="/vorgang/${_url}${vorgang.id}/emailDirect" var="url"/>
 		<span id="emailDirect" title="Daten des Vorgangs als E-Mail aus eigenem E-Mail-Client versenden" style="padding:5px;cursor:pointer;"><img src="${imgurl}" alt="mailen" style="border:hidden; border-width:0px;"/></span>
 		<script type="text/javascript">
-		$('#emailDirect').click( function() {
-				$.ajax({
+		$("#emailDirect").click( function() {
+                $.ajax({
 					url: "${url}",
+                    type: "GET",
+                    data: { browser: (!navigator.userAgent.match(/Trident\/7\./) &amp;&amp; $.browser.mozilla) ? "firefox" : "other" },
 				  	success: function(data) {
                         location.href = data;
 				    }
