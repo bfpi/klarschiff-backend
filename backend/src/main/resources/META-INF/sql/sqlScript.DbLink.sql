@@ -1010,12 +1010,13 @@ CREATE TRIGGER klarschiff_trigger_vorgang
 CREATE OR REPLACE FUNCTION klarschiff_triggerfunction_adresse()
 RETURNS trigger AS $BODY$
 DECLARE
-  ergebnis record;
+  ergebnis_adresse record;
+  ergebnis_strasse record;
 
 BEGIN
   -- nur ausführen bei einem neuen Vorgang oder beim Aktualisieren eines Vorgangs (hier 
   -- aber nur, wenn sich die Geometrie ändert oder wenn im Adressfeld nix drinsteht!)
-  IF (TG_OP = 'INSERT' OR (TG_OP = 'UPDATE' AND (NEW.adresse IS null OR NEW.adresse = ''))
+  IF (TG_OP = 'INSERT' OR (TG_OP = 'UPDATE' AND (NEW.adresse IS null OR NEW.adresse = '' OR NEW.adresse = 'nicht zuordenbar'))
     OR (TG_OP = 'UPDATE' AND (encode(NEW.ovi, 'base64') <> encode(OLD.ovi, 'base64'))))
   THEN
     -- Verbindung zur Adresstabelle aufbauen (hierfür verwendet man idealerweise die
@@ -1038,18 +1039,36 @@ BEGIN
       AND ST_DWithin(standortsuche.geom, NEW.ovi, 100) 
     ORDER BY ST_Distance(standortsuche.geom, NEW.ovi) LIMIT 1;
 
+    -- räumliche Abfrage durchführen, die genau einen Datensatz (oder NULL) als Ergebnis 
+    -- liefert, der auch gleich in die oben deklarierte Variable geschrieben wird
+    SELECT standortsuche.strasse, 
+      ST_Distance(standortsuche.geom, NEW.ovi) AS distanz
+    INTO ergebnis_strasse
+    FROM klarschiff_vorgang, 
+      dblink('standortsuche_verbindung', 'SELECT strasse, geom FROM standortsuche.standortsuche WHERE strasse_id IS NOT NULL and hausnummer IS NULL') AS standortsuche(strasse varchar, geom geometry)
+    WHERE ST_DWithin(standortsuche.geom, NEW.ovi, 100) 
+    ORDER BY ST_Distance(standortsuche.geom, NEW.ovi) LIMIT 1;
+
     -- Verbindung zur Adresstabelle wieder schließen
     PERFORM dblink_disconnect('standortsuche_verbindung');
-
-    -- wenn das Ergebnis nicht NULL ist und die Distanz der ermittelten Adresse zum 
+    
+    -- falls das Ergebnis für Adressen nicht NULL ist und die Distanz der ermittelten Adresse zum 
     -- Vorgang kleiner gleich 50 m: Adresse zuweisen
-    IF ergebnis.adresse IS NOT NULL AND ergebnis.distanz <= 50 THEN
-      NEW.adresse := ergebnis.adresse;
-      -- wenn das Ergebnis nicht NULL ist und die Distanz der ermittelten Adresse zum
-      -- Vorgang kleiner gleich 100 m: "bei " + Adresse zuweisen
-    ELSIF ergebnis.adresse IS NOT NULL AND ergebnis.distanz <= 100 THEN
-      NEW.adresse := 'bei ' || ergebnis.adresse;
-      -- ansonsten: "nicht zuordenbar" zuweisen
+    IF ergebnis_adresse.adresse IS NOT NULL AND ergebnis_adresse.distanz <= 50 THEN
+      NEW.adresse := ergebnis_adresse.adresse;
+    -- ansonsten, falls das Ergebnis für Adressen nicht NULL ist und die Distanz der ermittelten Adresse zum
+    -- Vorgang kleiner gleich 100 m: "bei " + Adresse zuweisen
+    ELSIF ergebnis_adresse.adresse IS NOT NULL AND ergebnis_adresse.distanz <= 100 THEN
+      NEW.adresse := 'bei ' || ergebnis_adresse.adresse;
+    -- ansonsten, falls das Ergebnis für Straßen nicht NULL ist und die Distanz der ermittelten Straße zum 
+    -- Vorgang kleiner gleich 50 m: Straße zuweisen
+    ELSIF ergebnis_strasse.strasse IS NOT NULL AND ergebnis_strasse.distanz <= 50 THEN
+      NEW.adresse := ergebnis_strasse.strasse;
+    -- ansonsten, falls das Ergebnis für Straßen nicht NULL ist und die Distanz der ermittelten Straße zum
+    -- Vorgang kleiner gleich 100 m: "bei " + Straße zuweisen
+    ELSIF ergebnis_strasse.strasse IS NOT NULL AND ergebnis_strasse.distanz <= 100 THEN
+      NEW.adresse := 'bei ' || ergebnis_strasse.strasse;
+    -- ansonsten: "nicht zuordenbar" zuweisen
     ELSE
       NEW.adresse := 'nicht zuordenbar';
     END IF;
