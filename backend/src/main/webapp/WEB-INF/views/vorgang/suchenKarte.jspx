@@ -42,6 +42,13 @@
        		vorgaenge="${fx:extractArrayItemFromList(vorgaenge, 0)}"
        		oviMargin="${geoService.mapOviMargin}" 
        		cssStyle="height: 500px; width: 100%;"
+            wmsUrl="${geoService.wmsUrl}"
+            wmsTitle="${geoService.wmsTitle}"
+            wmsLayers="${geoService.wmsLayers}"
+            wmsFormat="${geoService.wmsFormat}"
+            wmsTransparent="${geoService.wmsTransparent}"
+            wmsMinScale="${geoService.wmsMinScale}"
+            wmsSingleTile="${geoService.wmsSingleTile}"
        		/>
 	</div>
 

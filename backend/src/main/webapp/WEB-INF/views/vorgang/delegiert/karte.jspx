@@ -46,7 +46,15 @@
         		cssStyle="height: 500px; width: 100%;"
         		mapExternUrl="${mapExternUrl}"
                 vorgangTyp="${vorgang.typ}"
-			    vorgangStatus="${vorgang.status}"/>
+			    vorgangStatus="${vorgang.status}"
+                wmsUrl="${geoService.wmsUrl}"
+                wmsTitle="${geoService.wmsTitle}"
+                wmsLayers="${geoService.wmsLayers}"
+                wmsFormat="${geoService.wmsFormat}"
+                wmsTransparent="${geoService.wmsTransparent}"
+                wmsMinScale="${geoService.wmsMinScale}"
+                wmsSingleTile="${geoService.wmsSingleTile}"
+            />
 		</div>
 	</div>
 	
