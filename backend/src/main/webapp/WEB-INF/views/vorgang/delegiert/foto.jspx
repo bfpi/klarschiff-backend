@@ -33,7 +33,7 @@
 			<table>
 				<tr>
 					<td>
-						<foto:foto vorgang="${vorgang}"/>
+						<foto:foto vorgang="${vorgang}" clickZoom="true"/>
 					</td>
 					<c:if test="${vorgang.fotoExists and vorgang.fotoFreigabeStatus!='geloescht'}">
 						<td style="vertical-align:top;">

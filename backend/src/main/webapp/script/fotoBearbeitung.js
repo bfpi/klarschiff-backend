@@ -158,7 +158,12 @@ $(function () {
     // Rotate
 	$("#rotateAnchor").click(function() {
         $("#submitAnchor").parent().append("<input type='hidden' name='action' value='fotoRotate'/>");
-        $("#fotoEditForm").submit();
+        if($("#fotoEditForm").length) {
+			$("#fotoEditForm").submit();
+		}
+		else {
+			$("form").submit();
+		}
 	});
 	
 	// Clear
@@ -218,7 +223,12 @@ $(function () {
 		$("#submitAnchor").parent().append("<input type='hidden' name='censoringHeight' value='"+h+"'/>");
 		$("#submitAnchor").parent().append("<input type='hidden' name='action' value='fotoSave'/>");
 		
-		$("#fotoEditForm").submit();
+		if($("#fotoEditForm").length) {
+			$("#fotoEditForm").submit();
+		}
+		else {
+			$("form").submit();
+		}
 		$.md.hide();
 	}	
 });

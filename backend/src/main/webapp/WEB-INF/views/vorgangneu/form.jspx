@@ -69,6 +69,13 @@
 		        		ovi="${cmd.vorgang.oviWkt}"
 		        		oviFormElementId="vorgang.oviWkt"
 		        		cssStyle="height: 500px; width: 100%; margin-left:100px;"
+                        wmsUrl="${geoService.wmsUrl}"
+                        wmsTitle="${geoService.wmsTitle}"
+                        wmsLayers="${geoService.wmsLayers}"
+                        wmsFormat="${geoService.wmsFormat}"
+                        wmsTransparent="${geoService.wmsTransparent}"
+                        wmsMinScale="${geoService.wmsMinScale}"
+                        wmsSingleTile="${geoService.wmsSingleTile}"
 		        		/>			
 		        </div>
                 

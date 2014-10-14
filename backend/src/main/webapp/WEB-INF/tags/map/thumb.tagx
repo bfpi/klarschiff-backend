@@ -23,6 +23,13 @@
 	<jsp:directive.attribute name="title" type="java.lang.String" required="false" rtexprvalue="true"/>
 	<jsp:directive.attribute name="initOpenLayers" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="cssStyle" type="java.lang.String" required="false" rtexprvalue="true"/>
+	<jsp:directive.attribute name="wmsUrl" type="java.lang.String" required="true" rtexprvalue="true"/>
+	<jsp:directive.attribute name="wmsTitle" type="java.lang.String" required="true" rtexprvalue="true"/>
+	<jsp:directive.attribute name="wmsLayers" type="java.lang.String" required="true" rtexprvalue="true"/>
+	<jsp:directive.attribute name="wmsFormat" type="java.lang.String" required="true" rtexprvalue="true"/>
+	<jsp:directive.attribute name="wmsTransparent" type="java.lang.String" required="true" rtexprvalue="true"/>
+	<jsp:directive.attribute name="wmsMinScale" type="java.lang.String" required="true" rtexprvalue="true"/>
+	<jsp:directive.attribute name="wmsSingleTile" type="java.lang.String" required="true" rtexprvalue="true"/>
 
 	<c:if test="${empty projection}">
 		<c:set var="projection" value="EPSG:25833"/>
@@ -116,6 +123,17 @@
                         tileSize: new OpenLayers.Size(256, 256)
                     } );
                 map.addLayer(luftbild);
+                
+                var poiLayer = new OpenLayers.Layer.WMS( 
+                    "${wmsTitle}", 
+                    "${wmsUrl}", {
+                        layers: "${wmsLayers}",
+                        format: "${wmsFormat}",
+                        transparent: "${wmsTransparent}",
+                        minScale: "${wmsMinScale}",
+                        singleTile: "${wmsSingleTile}"
+                    } );
+                map.addLayer(poiLayer);
                 
                 map.addLayer(vlayer);
 

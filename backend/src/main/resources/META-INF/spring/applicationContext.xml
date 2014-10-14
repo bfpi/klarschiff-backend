@@ -98,6 +98,7 @@
 	<bean class="de.fraunhofer.igd.klarschiff.service.settings.SettingsService" id="settingsService" 
 		p:version="${version}"
 		p:vorgangIdeeUnterstuetzer="${vorgang.idee.unterstuetzer}"
+		p:vorgangStatusKommentarTextlaengeMaximal="${vorgang.statusKommentar.textlaengeMaximal}"
 		p:proxyHost="${proxy.host}"
 		p:proxyPort="${proxy.port}"
 		p:showLogins="${show.logins}"

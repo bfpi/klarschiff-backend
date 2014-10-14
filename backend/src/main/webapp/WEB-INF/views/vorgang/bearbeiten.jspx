@@ -202,12 +202,14 @@
                                         </c:if>
 									</form:select>
 								</div>
-								<div>
+                                <div>
 									<table width="100%" cellpadding="0" cellspacing="0">
 										<tr>
 											<td valign="top" width="470px;">
 												<form:label path="statusKommentar" cssErrorClass="error">Kommentar</form:label>
-												<form:textarea path="statusKommentar" id="statusKommentar" cols="6" maxlength="500" cssStyle="width:350px;"/>
+												<form:textarea path="statusKommentar" id="statusKommentar" cols="6" maxlength="${vorgangStatusKommentarTextlaengeMaximal}" cssStyle="width:350px;height:100px" onKeyUp="$('#zeichenAnzahl').html(verbleibendeZeichen(${vorgangStatusKommentarTextlaengeMaximal}, $('#statusKommentar')[0].value.length));"/>
+                                                <br/>
+                                                <label style="width:350px;margin-left:100px">Sie können noch <span id="zeichenAnzahl">${vorgangStatusKommentarTextlaengeMaximal}</span> Zeichen eingeben.</label>
 											</td>
 											<td valign="top" style="padding-left:10px;">
 												<select id="vorlage" onchange="vorlageSelect()">
@@ -220,8 +222,13 @@
 												<script type="text/javascript">
 													function vorlageSelect() {
 														$('#statusKommentar')[0].value = $('select#vorlage')[0].value;
+                                                        $('#zeichenAnzahl').html(verbleibendeZeichen(${vorgangStatusKommentarTextlaengeMaximal}, $('#statusKommentar')[0].value.length));
 														$('select#vorlage')[0].selectedIndex = 0;
 													}
+                                                    
+                                                    function verbleibendeZeichen(vorgangStatusKommentarTextlaengeMaximal, textlaengeAktuell) {
+                                                        return vorgangStatusKommentarTextlaengeMaximal - textlaengeAktuell;
+                                                    }
 												</script>
 
 											</td>
@@ -231,14 +238,14 @@
 										</form:errors>
 									</table>
 								</div>
-								<input type="submit" value="Änderungen übernehmen" name="action"/>
+                                <input type="submit" value="Änderungen übernehmen" name="action"/>
 							</form:form>
 						</div>
 					</div>
 					<util:ddpanel name="status"/>
 				</c:if>
 
-				<!-- Vorgang -->		
+				<!-- Vorgangsdaten -->		
 				<div class="fieldset" id="vorgangpanel">
 					<div class="fieldsettitle closepanel" id="vorgangtab"><div style="width:100%; height:15px;">Vorgangsdaten</div></div>
 					<div id="vorgangcontent">
@@ -328,6 +335,8 @@
 							{
 								typ = $('select#typ')[0].value;
 								hauptkategorie = $('select#hauptkategorie')[0].value;
+                                
+                                $('#zeichenAnzahl').html(verbleibendeZeichen(${vorgangStatusKommentarTextlaengeMaximal}, $('#statusKommentar')[0].value.length));
 			
 								if (isBlank(typ)) {
 									updateHauptkategorie();
@@ -365,7 +374,7 @@
 					        		<tr>
 					        			<td valign="top">
 					        				<util:freigabestatus status="${cmd.vorgang.detailsFreigabeStatus}"/>
-								            <form:textarea path="vorgang.details" cols="6" cssStyle="width:331px;"/>
+								            <form:textarea path="vorgang.details" cols="6" cssStyle="width:331px;height:100px"/>
 					        			</td>
 					        			<td valign="top" style="padding-left:5px;">
 											<util:freigabestatusbutton name="Details" status="${cmd.vorgang.detailsFreigabeStatus}"/>
@@ -390,7 +399,7 @@
 				<util:ddpanel name="vorgang"/>
 
 				
-				<!-- Kommentare -->
+				<!-- interne Kommentare -->
 				<div class="fieldset" id="kommentarpanel">
 					<div class="fieldsettitle closepanel " id="kommentartab"><div style="width:100%; height:15px;">interne Kommentare</div></div>
 					<div id="kommentarcontent">
@@ -401,11 +410,11 @@
 				        	<table cellpadding="0" cellspacing="0">
 				        		<tr>
 				        			<td valign="top">
-							            <form:textarea path="kommentar" cols="6" cssStyle="width:350px;"/>
+							            <form:textarea path="kommentar" cols="6" cssStyle="width:350px;height:100px"/>
 				        			</td>
 				        		
 				        			<td valign="bottom" style="padding-left:5px;">
-										<input type="submit" value="Kommentar speichern" name="action"/>
+										<input type="submit" value="Kommentar anlegen" name="action"/>
 				        			</td>
 				        	
 				        		</tr>
@@ -415,14 +424,55 @@
 				  		<c:forEach items="${kommentare}" var="kommentar" varStatus="s">
 				  			<div class="kommentar ${(s.index%2==0) ? 'odd' : 'even'}">
 				  				<div class="kommentarHeader">
-				  					<span style="margin-right:10px;padding:0px;">${kommentar.nutzer}</span>
-					       			<fmt:formatDate value="${kommentar.datum}" pattern="dd.MM.yyyy, HH:mm"/> Uhr
+				  					${kommentar.nutzer};
+									angelegt: <fmt:formatDate value="${kommentar.datum}" pattern="dd.MM.yyyy, HH:mm"/> Uhr
+									<c:if test="${kommentar.anzBearbeitet > 0}">
+										; bearbeitet:
+										<fmt:formatDate value="${kommentar.zuletztBearbeitet}" pattern="dd.MM.yyyy, HH:mm"/> Uhr
+									</c:if>
 				  				</div>
-								<div class="kommentarText" >
-					        		${fx:toHtml(kommentar.text)}
+								<div class="kommentarText">
+									<c:if test="${fx:mayCurrentUserEditKommentar(kommentar)}">
+										<button name="action" title="Kommentar bearbeiten" class="kommentarEditButton">
+											<c:url value="/images/edit.png" var="url"/>
+											<img src="${url}" alt=""/>										
+										</button>
+										<form:form method="POST" modelAttribute="cmd" onsubmit="return confirm('Soll der Kommentar wirklich gelöscht werden?')">
+											<input type="hidden" name="id" value="${kommentar.id}" />
+											<button name="action" value="kommentarDelete" title="Kommentar löschen" class="kommentarDeleteButton">
+												<c:url value="/images/delete.png" var="url"/>
+												<img src="${url}" alt=""/>										
+											</button>
+										</form:form>
+									</c:if>
+					        		<span class="text">${fx:toHtml(kommentar.text)}</span>
+									<div class="clear"><!--  --></div>
 								</div>	
+								<div class="kommentarEdit" style="display:none;" >
+									<form:form method="POST" modelAttribute="cmd">
+										<input type="hidden" name="id" value="${kommentar.id}" />
+										<button name="action" title="Abbrechen" class="kommentarEditCancel">
+											<c:url value="/images/cancel.png" var="url"/>
+											<img src="${url}" alt=""/>										
+										</button>
+										<button name="action" title="Kommentar speichern" value="kommentarSave" class="kommentarEditSave">
+											<c:url value="/images/save.png" var="url"/>
+											<img src="${url}" alt=""/>										
+										</button>
+										<textarea name="kommentarEdit">${fx:toHtml(kommentar.text)}</textarea>
+										<div class="clear"><!--  --></div>
+									</form:form>
+								</div>
 				  			</div>
 						</c:forEach>
+						<script type="text/javascript">
+							$(function() {
+								$('.kommentarEditButton, .kommentarEditCancel').click(function() {
+									$(this).closest(".kommentar").find(".kommentarText, .kommentarEdit").toggle();
+									return false;
+								});
+							});
+						</script>
 			            <c:if test="${not empty maxPagesKommentare and not empty kommentare}">
 				            <util:pagination maxPages="${maxPagesKommentare}" page="${cmd.page}" size="${cmd.size}" post="true"/>
 				            <br/>
@@ -463,28 +513,52 @@
                     <util:ddpanel name="lobhinweisekritik"/>
                 </c:if>
 
-
-				<!-- Delegieren -->
-				<div class="fieldset" id="delegierenpanel">
-					<div class="fieldsettitle closepanel" id="delegierentab"><div style="width:100%; height:15px;">Delegieren</div></div>
-					<div id="delegierencontent">
-						<form:form method="POST" modelAttribute="cmd.vorgang" >
-							<div class="label">
-								an
-								<![CDATA[&nbsp;]]>
-								<form:select path="delegiertAn" cssErrorClass="error">
-					            	<form:option value="" label="" cssClass="info"/>
-									<c:forEach items="${allDelegiertAn}" var="role">
-					            			<form:option value="${role.id}" title="${role.description}"/>	
-									</c:forEach>
-								</form:select>
-								<![CDATA[&nbsp;]]> 
-								<input type="submit" value="delegieren" name="action"/>
-							</div>
-						</form:form>
-					</div>
-				</div>
-				<util:ddpanel name="delegieren"/>
+                <!-- Delegieren -->
+                <c:choose>
+                    <c:when test="${cmd.vorgang.delegiertAn == null or cmd.vorgang.delegiertAn == ''}">
+                        <div class="fieldset" id="delegierenpanel">
+                            <div class="fieldsettitle closepanel" id="delegierentab"><div style="width:100%; height:15px;">Delegieren</div></div>
+                            <div id="delegierencontent">
+                                <c:choose>
+                                    <c:when test="${cmd.vorgang.zustaendigkeitStatus == 'akzeptiert' and cmd.vorgang.status != 'gemeldet' and cmd.vorgang.status != 'offen' and cmd.vorgang.status != 'geloescht'}">
+                                        <form:form method="POST" modelAttribute="cmd.vorgang" >
+                                            <div>
+                                                an<![CDATA[&nbsp;]]>
+                                                <form:select path="delegiertAn" cssErrorClass="error">
+                                                    <form:option value="" label="" cssClass="info"/>
+                                                    <c:forEach items="${allDelegiertAn}" var="role">
+                                                            <form:option value="${role.id}" title="${role.description}"/>	
+                                                    </c:forEach>
+                                                </form:select>
+                                                <![CDATA[&nbsp;]]> 
+                                                <input type="submit" value="delegieren" name="action"/>
+                                            </div>
+                                        </form:form>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <c:url value="/images/" var="urlStaticIcon"/>
+                                        Das Delegieren ist nur dann möglich, wenn der Vorgang <span class="statistic_accepted" title="akzeptiert">✔</span> ist und er gleichzeitig nicht <img alt="gemeldet" src="${urlStaticIcon}status_gemeldet_15.png" height="15" width="15" title="gemeldet" class="statistic_icon"/>, <img alt="offen" src="${urlStaticIcon}status_offen_15.png" height="15" width="15" title="offen" class="statistic_icon"/> oder <img alt="geloescht" src="${urlStaticIcon}status_geloescht_15.png" height="15" width="15" title="gelöscht" class="statistic_icon"/> ist.
+                                    </c:otherwise>
+                                </c:choose>
+                            </div>
+                        </div>
+                        <util:ddpanel name="delegieren"/>
+                    </c:when>
+                    <c:otherwise>
+                        <c:set value="${fx:role(cmd.vorgang.delegiertAn)}" var="delegiertAn"/>
+                        <div class="fieldset" id="delegierenpanel">
+                            <div class="fieldsettitle closepanel" id="delegierentab"><div style="width:100%; height:15px;">Vorgang zurückholen (Delegieren rückgängig machen)</div></div>
+                            <div id="delegierencontent">
+                                <form:form method="POST" modelAttribute="cmd.vorgang" >
+                                    <div>
+                                        von ${delegiertAn.description}<![CDATA[&nbsp;]]>
+                                        <input type="submit" value="zur&#252;ckholen" name="action"/>
+                                    </div>
+                                </form:form>
+                            </div>
+                        </div>
+                    </c:otherwise>
+                </c:choose>
 
 				<!-- Priorität -->
 				<div class="fieldset" id="prioritaetpanel">

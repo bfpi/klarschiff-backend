@@ -33,10 +33,20 @@
 						</button>
 					</c:when>
 					<c:otherwise>
-						<button name="action" value="freigabeStatus_${name}_${statusCurrent}"  title="Freigabestatus auf „${statusCurrent}“ setzen">
-							<c:url value="/images/freigabeStatus_${statusCurrent}.png" var="url" />
-		 					<img src="${url}" alt=""/>  												
-						</button>
+                        <c:choose>
+                            <c:when test="${statusCurrent=='geloescht'}">
+                                <button name="action" value="freigabeStatus_${name}_${statusCurrent}"  title="Freigabestatus auf „gelöscht“ setzen">
+                                    <c:url value="/images/freigabeStatus_${statusCurrent}.png" var="url" />
+                                    <img src="${url}" alt=""/>  												
+                                </button>
+                            </c:when>
+                            <c:otherwise>
+                                <button name="action" value="freigabeStatus_${name}_${statusCurrent}"  title="Freigabestatus auf „${statusCurrent}“ setzen">
+                                    <c:url value="/images/freigabeStatus_${statusCurrent}.png" var="url" />
+                                    <img src="${url}" alt=""/>  												
+                                </button>
+                            </c:otherwise>
+                        </c:choose>
 					</c:otherwise>
 				</c:choose>
 			

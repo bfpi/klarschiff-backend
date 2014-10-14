@@ -30,49 +30,49 @@ public class RedaktionKriterien implements Serializable {
      * Eskalationsstufe
      */
     @NotNull
-    Short stufe;
+    private Short stufe;
     
     /**
      * Tage, die Vorgänge mit dem Status 'offen', die bisher nicht akzeptiert wurden, mindestens zugewiesen sein sollen
      */
     @NotNull
-    Short tageOffenNichtAkzeptiert;
+    private Short tageOffenNichtAkzeptiert;
     
     /**
      * Tage, die Vorgänge mit dem Status 'in Bearbeitung', die bisher keine Info der Verwaltung aufweisen, unverändert geblieben sein sollen
      */
     @NotNull
-    Short tageInbearbeitungOhneStatusKommentar;
+    private Short tageInbearbeitungOhneStatusKommentar;
     
     /**
      * Tage, die Ideen mit dem Status 'offen', die bisher nicht die Zahl der notwendigen Unterstützungen aufweisen, seit der Erstsichtung überdauert haben sollen
      */
     @NotNull
-    Short tageIdeeOffenOhneUnterstuetzung;
+    private Short tageIdeeOffenOhneUnterstuetzung;
     
     /**
      * Vorgänge ausweisen mit dem Status 'wird nicht bearbeitet', die bisher keine Info der Verwaltung aufweisen?
      */
     @NotNull
-    Boolean wirdnichtbearbeitetOhneStatuskommentar;
+    private Boolean wirdnichtbearbeitetOhneStatuskommentar;
     
     /**
      * Vorgänge ausweisen mit dem Status 'offen', die bisher nicht akzeptiert wurden?
      */
     @NotNull
-    Boolean nichtMehrOffenNichtAkzeptiert;
+    private Boolean nichtMehrOffenNichtAkzeptiert;
     
     /**
      * Vorgänge ausweisen, die ihre Erstsichtung bereits hinter sich haben, deren Betreff, Details und/oder Foto aber noch nicht freigegeben wurde?
      */
     @NotNull
-    Boolean ohneRedaktionelleFreigaben;
+    private Boolean ohneRedaktionelleFreigaben;
     
     /**
      * Vorgänge ausweisen, die auf Grund von Kommunikationsfehlern keine Einträge in den Datenfeldern 'zustaendigkeit' und 'zustaendigkeit_status' aufweisen?
      */
     @NotNull
-    Boolean ohneZustaendigkeit;
+    private Boolean ohneZustaendigkeit;
 	
 	/* --------------- GET + SET ----------------------------*/
 

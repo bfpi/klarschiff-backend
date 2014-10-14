@@ -47,7 +47,7 @@ public class ClassificationService {
 	@Autowired
 	SecurityService securityService;
 	
-	private int maxCountForClassifiereTrainSet = 500;
+	private int maxCountForClassifiereTrainSet = 1000;
 	protected int waitTimeToInitClassficationService = 10000;
 	private ClassificationContext ctx;
 	

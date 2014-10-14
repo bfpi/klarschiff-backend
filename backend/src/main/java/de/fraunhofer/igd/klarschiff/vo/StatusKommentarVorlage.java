@@ -34,7 +34,6 @@ public class StatusKommentarVorlage {
 	/**
 	 * Text der Vorlagen für den Statuskommentar
 	 */
-	@Size(max = 300)
 	private String text;
 
 	/* --------------- TRANSIENT ----------------------------*/

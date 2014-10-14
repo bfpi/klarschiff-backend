@@ -31,6 +31,7 @@ import org.springframework.stereotype.Service;
 
 import de.fraunhofer.igd.klarschiff.dao.VorgangDao;
 import de.fraunhofer.igd.klarschiff.util.SystemUtil;
+import de.fraunhofer.igd.klarschiff.vo.Kommentar;
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
 
 /**
@@ -150,8 +151,9 @@ public class SecurityService {
 	public User getUser(String login) {
 		try {
 			List<User> users = securityServiceLdap.getObjectListFromLdap(userSearchBase, "(&(objectclass="+userObjectClass+")("+StringUtils.replace(userSearchFilter, "{0}", login)+"))", userContextMapper);
-			return users.get(0);
-		} catch (Exception e) {
+            return users.get(0);
+		}
+        catch (Exception e) {
 			return null;
 		}
 	}
@@ -246,16 +248,34 @@ public class SecurityService {
 
 	
 	/**
-	 * Ermittelt die E-Mailadressen der Benutzer für eine Rolle
-	 * @param roleId Rolle, für den die Benutzer und dann deren E-Mailadressen ermittelt werden sollen
-	 * @return Array mit E-Mailadressen
+	 * Ermittelt die E-Mail-Adressen aller Benutzer einer Rolle
+	 * @param roleId Rolle, für die die Benutzer und deren E-Mail-Adressen ermittelt werden sollen
+	 * @return Array mit E-Mail-Adressen
 	 */
 	public String[] getAllUserEmailsForRole(String roleId) {
-		List<String> reciever = new ArrayList<String>();
+		List<String> receiver = new ArrayList<String>();
 		for (User user : getAllUserForRole(roleId))
 			if (!StringUtils.isBlank(user.getEmail()))
-				reciever.add(user.getEmail());
-		return reciever.toArray(new String[0]);
+				receiver.add(user.getEmail());
+		return receiver.toArray(new String[0]);
+	}
+
+	
+	/**
+	 * Ermittelt die E-Mail-Adressen der externen Benutzer einer Rolle
+	 * @param roleId Rolle, für die die externen Benutzer und deren E-Mail-Adressen ermittelt werden sollen
+	 * @return Array mit E-Mail-Adressen
+	 */
+	public String[] getAllExternUserEmailsForRole(String roleId) {
+		List<String> receiver = new ArrayList<String>();
+		for (User user : getAllUserForRole(roleId)) {
+            if (isUserExtern(user.getId()) && !isUserIntern(user.getId()) && !isUserAdmin(user.getId())) {
+                if (!StringUtils.isBlank(user.getEmail())) {
+                    receiver.add(user.getEmail());
+                }
+            }
+        }
+		return receiver.toArray(new String[0]);
 	}
 	
 	
@@ -546,6 +566,15 @@ public class SecurityService {
 		} catch (Exception e) {
 			return new String(bos.toByteArray()) + "\n\nException: " + e.getMessage();
 		}
+	}
+
+	/**
+	 * Prüft, ob der aktuelle Nutzer einen Kommentar bearbeiten darf.
+	 * @param kommentar Zu prüfender Kommentar
+	 * @return Darf der Nutzer bearbeiten
+	 */
+	public boolean mayCurrentUserEditKommentar(Kommentar kommentar) {
+		return this.getCurrentUser().getName().equals(kommentar.getNutzer());
 	}
 	
 		

@@ -33,6 +33,7 @@ import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.PrecisionModel;
 import com.vividsolutions.jts.io.WKTReader;
 import com.vividsolutions.jts.io.WKTWriter;
+import org.hibernate.annotations.Where;
 
 /**
  * VO zum Abbilden eines Vorganges.
@@ -154,8 +155,7 @@ public class Vorgang implements Serializable {
     /**
      * Kommentar zum Status
      */
-	@Size(max = 500)
-    private String statusKommentar;
+	private String statusKommentar;
     
 	/**
 	 * Erstsichtung erfolgt
@@ -211,6 +211,7 @@ public class Vorgang implements Serializable {
 	 * Liste der Kommentare
 	 */
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "vorgang")
+    @Where(clause = "geloescht = 'false'")
     private List<Kommentar> kommentare = new ArrayList<Kommentar>();
 
     /**

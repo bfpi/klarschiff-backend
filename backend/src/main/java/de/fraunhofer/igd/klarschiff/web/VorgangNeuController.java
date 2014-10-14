@@ -148,7 +148,7 @@ public class VorgangNeuController {
 
 		if (StringUtils.isNotBlank(cmd.zustaendigkeit)) {
 			vorgang.setZustaendigkeit(cmd.getZustaendigkeit());
-			vorgang.setZustaendigkeitFrontend(securityService.getZustaendigkeit(cmd.getZustaendigkeit()).getLocality());
+			vorgang.setZustaendigkeitFrontend(securityService.getZustaendigkeit(cmd.getZustaendigkeit()).getL());
 			vorgang.setZustaendigkeitStatus(EnumZustaendigkeitStatus.zugewiesen);
 		}
 		
@@ -156,7 +156,7 @@ public class VorgangNeuController {
 		
 		if (StringUtils.isBlank(cmd.zustaendigkeit)) {
 			vorgang.setZustaendigkeit(classificationService.calculateZustaendigkeitforVorgang(vorgang).getId());
-            vorgang.setZustaendigkeitFrontend(securityService.getZustaendigkeit(vorgang.getZustaendigkeit()).getLocality());
+            vorgang.setZustaendigkeitFrontend(securityService.getZustaendigkeit(vorgang.getZustaendigkeit()).getL());
 			vorgang.setZustaendigkeitStatus(EnumZustaendigkeitStatus.zugewiesen);
 			
 			//verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.zustaendigkeit, null, vorgang.getZustaendigkeit());

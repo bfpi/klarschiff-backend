@@ -538,13 +538,13 @@ public class VorgangDao {
 
 	
 	/**
-	 * Ermittelt alle Vorgänge, die noch nicht archiviert wurden und bis zu einem bestimmten Zeitpunkt abgeschlossen wurden. 
-	 * @param versionBefor Zeitpunkt, bis zu dem die Vorgänge abgeschlossen sein sollten
-	 * @return Ergebnisliste der Vorgänge
+	 * Ermittelt alle Vorgänge, die abgeschlossen sind und seit einem bestimmten Zeitraum nicht mehr bearbeitet wurden.
+	 * @param versionBefor Zeitpunkt, bis zu dem die letzte Bearbeitung hätte stattfinden müssen
+	 * @return Ergebnisliste mit Vorgängen
 	 * @see de.fraunhofer.igd.klarschiff.service.job.JobsService#archivVorgaenge()
 	 */
 	public List<Vorgang> findNotArchivVorgang(Date versionBefor) {
-	    return em.createQuery("select o from Vorgang o WHERE o.status IN (:status) AND version<:versionBefor AND archiviert IS NULL", Vorgang.class)
+	    return em.createQuery("SELECT o FROM Vorgang o WHERE o.status IN (:status) AND version <= :versionBefor AND (archiviert IS NULL OR archiviert = FALSE)", Vorgang.class)
 		    .setParameter("status", Arrays.asList(EnumVorgangStatus.closedVorgangStatus()))
 		    .setParameter("versionBefor", versionBefor)
 		    .getResultList();	    
@@ -552,13 +552,13 @@ public class VorgangDao {
 
 	
 	/**
-	 * Ermittelt alle Vorgänge, die bis zu einem bestimmten Zeitpunkt gemeldet, aber noch nicht bestätigt wurden.
-	 * @param datumBefor Zeitpunkt bis zu dem die Vorgänge gemeldet wurden
-	 * @return Ergebnisliste der Vorgänge
+	 * Ermittelt alle Vorgänge, die gemeldet, aber nach einem bestimmten Zeitraum noch nicht bestätigt wurden.
+	 * @param datumBefor Zeitpunkt, bis zu dem die Vorgänge hätten bestätigt werden müssen
+	 * @return Ergebnisliste mit Vorgängen
 	 * @see de.fraunhofer.igd.klarschiff.service.job.JobsService#removeUnbestaetigtVorgang()
 	 */
 	public List<Vorgang> findUnbestaetigtVorgang(Date datumBefor) {
-		return em.createQuery("select o from Vorgang o WHERE o.status=:status AND datum<:datumBefor", Vorgang.class)
+		return em.createQuery("SELECT o FROM Vorgang o WHERE o.status = :status AND datum <= :datumBefor", Vorgang.class)
 			.setParameter("status", EnumVorgangStatus.gemeldet)
 			.setParameter("datumBefor", datumBefor)
 			.getResultList();	    
@@ -566,26 +566,26 @@ public class VorgangDao {
 
 	
 	/**
-	 * Ermittelt alle Unterstützungen, die bis zu einem bestimmten Zeitpunkt abgegeben aber noch nicht bestätigt wurden
-	 * @param datumBefor Zeitpunkt bis zu dem die Unterstützungen abgegeben wurden
+	 * Ermittelt alle Unterstützungen, die eingegangen sind, aber nach einem bestimmten Zeitraum noch nicht bestätigt wurden.
+	 * @param datumBefor Zeitpunkt, bis zu dem die Unterstützungen hätten bestätigt werden müssen
 	 * @return Ergebnisliste mit Unterstützungen
 	 * @see de.fraunhofer.igd.klarschiff.service.job.JobsService#removeUnbestaetigtUnterstuetzer()
 	 */
 	public List<Unterstuetzer> findUnbestaetigtUnterstuetzer(Date datumBefor) {
-	    return em.createQuery("select o from Unterstuetzer o WHERE o.datumBestaetigung IS NULL AND datum<:datumBefor", Unterstuetzer.class)
+	    return em.createQuery("SELECT o FROM Unterstuetzer o WHERE o.datumBestaetigung IS NULL AND datum <= :datumBefor", Unterstuetzer.class)
 		    .setParameter("datumBefor", datumBefor)
 		    .getResultList();	    
 	}
 	
 	
 	/**
-	 * Ermittelt alle Missbrauchsmeldungen, die bis zu einem bestimmten Zeitpunkt abgegeben aber noch nicht bestätigt wurden
-	 * @param datumBefor Zeitpunkt bis zu dem die Missbrauchsmeldungen abgegeben wurden
+	 * Ermittelt alle Missbrauchsmeldungen, die eingegangen sind, aber nach einem bestimmten Zeitraum noch nicht bestätigt wurden.
+	 * @param datumBefor Zeitpunkt, bis zu dem die Missbrauchsmeldungen hätten bestätigt werden müssen
 	 * @return Ergebnisliste mit Missbrauchsmeldungen
 	 * @see de.fraunhofer.igd.klarschiff.service.job.JobsService#removeUnbestaetigtMissbrauchsmeldung()
 	 */
 	public List<Missbrauchsmeldung> findUnbestaetigtMissbrauchsmeldung(Date datumBefor) {
-	    return em.createQuery("select o from Missbrauchsmeldung o WHERE o.datumBestaetigung IS NULL AND datum<:datumBefor", Missbrauchsmeldung.class)
+	    return em.createQuery("SELECT o FROM Missbrauchsmeldung o WHERE o.datumBestaetigung IS NULL AND datum <= :datumBefor", Missbrauchsmeldung.class)
 		    .setParameter("datumBefor", datumBefor)
 		    .getResultList();	    
 	}
@@ -631,23 +631,17 @@ public class VorgangDao {
 	
 	
 	/**
-	 * Ermittlet die aktuellsten Vorgänge, die eine akzeptierte Zuständigkeit besitzen zum trainieren des Zuständigkeitsfinders 
-	 * @param maxResult maximale Anzahl von Vorgängen in der Ergebnisliste 
+	 * Ermittlet die aktuellsten Vorgänge, die eine akzeptierte Zuständigkeit besitzen, um mit diesen den Zuständigkeitsfinder zu trainieren
+	 * @param maxResults maximale Anzahl von Vorgängen in der Ergebnisliste 
 	 * @return Vorgänge mit akzeptierten Zuständigkeiten
 	 */
 	@SuppressWarnings("unchecked")
-	public List<Vorgang> findVorgangForTrainClassificator(int maxResult) {
-		HqlQueryHelper query = addGroupByVorgang(new HqlQueryHelper())
-			.addFromTables("Vorgang vo JOIN vo.verlauf ve")
-			.addWhereConditions("vo.zustaendigkeitStatus=:zustaendigkeitStatus")
-			.addParameter("zustaendigkeitStatus", EnumZustaendigkeitStatus.akzeptiert)
-			.orderBy("MAX(ve.datum) DESC")
-			.maxResults(maxResult);
-		return query.getResultList(em);
+	public List<Vorgang> findVorgangForTrainClassificator(int maxResults) {
+		return em.createQuery("SELECT a FROM Vorgang a, Vorgang b WHERE a.kategorie = b.kategorie AND a.version <= b.version AND a.zustaendigkeitStatus = 'akzeptiert' AND b.zustaendigkeitStatus = 'akzeptiert' GROUP BY a.id HAVING count(*) <= 10", Vorgang.class).setMaxResults(maxResults).getResultList();
 	}
-
-	
-	/**
+    
+    
+    /**
 	 * Ermittelt alle Vorgänge, bei denen ab einer bestimmten Zeit die Zuständigkeit geändert wurde. 
 	 * @param lastChange Zeitpunkt ab dem die Zuständigkeit geändert wurde
 	 * @param zustaendigkeit Zuständigkeit
@@ -692,11 +686,12 @@ public class VorgangDao {
 	public List<Vorgang> findInProgressVorgaenge(Date lastChange) {
 		HqlQueryHelper query = addGroupByVorgang(new HqlQueryHelper())
 			.addFromTables("Vorgang vo JOIN vo.verlauf ve")
-			.addWhereConditions("ve.typ=:verlaufTyp").addParameter("verlaufTyp", EnumVerlaufTyp.status)
-			.addWhereConditions("ve.datum>=:datum").addParameter("datum", lastChange)
-			.addWhereConditions("vo.status IN (:status)").addParameter("status", Arrays.asList(EnumVorgangStatus.inProgressVorgangStatus()))
+			.addWhereConditions("ve.typ = :verlaufTyp").addParameter("verlaufTyp", EnumVerlaufTyp.status)
+			.addWhereConditions("ve.datum >= :datum").addParameter("datum", lastChange)
+            .addWhereConditions("vo.status = :status").addParameter("status", EnumVorgangStatus.inBearbeitung)
+            .addWhereConditions("ve.wertNeu = 'in Bearbeitung'")
 			.addWhereConditions("vo.autorEmail IS NOT NULL")
-			.addWhereConditions("vo.autorEmail!=:autorEmail").addParameter("autorEmail", "");
+			.addWhereConditions("vo.autorEmail != :autorEmail").addParameter("autorEmail", "");
 		return query.getResultList(em);
 	}
 
@@ -710,11 +705,12 @@ public class VorgangDao {
 	public List<Vorgang> findClosedVorgaenge(Date lastChange) {
 		HqlQueryHelper query = addGroupByVorgang(new HqlQueryHelper())
 			.addFromTables("Vorgang vo JOIN vo.verlauf ve")
-			.addWhereConditions("ve.typ=:verlaufTyp").addParameter("verlaufTyp", EnumVerlaufTyp.status)
-			.addWhereConditions("ve.datum>=:datum").addParameter("datum", lastChange)
+			.addWhereConditions("ve.typ = :verlaufTyp").addParameter("verlaufTyp", EnumVerlaufTyp.status)
+			.addWhereConditions("ve.datum >= :datum").addParameter("datum", lastChange)
 			.addWhereConditions("vo.status IN (:status)").addParameter("status", Arrays.asList(EnumVorgangStatus.closedVorgangStatus()))
+			.addWhereConditions("ve.wertNeu IN ('abgeschlossen', 'wird nicht bearbeitet')")
 			.addWhereConditions("vo.autorEmail IS NOT NULL")
-			.addWhereConditions("vo.autorEmail!=:autorEmail").addParameter("autorEmail", "");
+			.addWhereConditions("vo.autorEmail != :autorEmail").addParameter("autorEmail", "");
 		return query.getResultList(em);
 	}
 

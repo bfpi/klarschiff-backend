@@ -68,25 +68,10 @@ public class JobsService {
 	
 
 	/**
-	 * Der Job archiviert abgeschlossene Vorgänge.
+	 * Dieser Job löscht alle Vorgänge, die gemeldet, aber nach einem bestimmten Zeitraum noch nicht bestätigt wurden.
 	 */
 	@Transactional
-	@ScheduledSyncInCluster(cron="0 40 0 * * *", name="Vorgaenge archivieren")
-	public void archivVorgaenge() {
-		Date date = DateUtils.addMonths(new Date(), -monthsToArchivVorgaenge);
-		for(Vorgang vorgang : vorgangDao.findNotArchivVorgang(date))
-		{
-			vorgang.setArchiviert(true);
-			vorgangDao.merge(vorgang);
-		}
-	}
-
-	
-	/**
-	 * Der Job entfernt gemeldet aber noch nicht bestätigte Vorgänge.
-	 */
-	@Transactional
-	@ScheduledSyncInCluster(cron="0 43 * * * *", name="unbestaetigte Vorgaenge entfernen")
+	@ScheduledSyncInCluster(cron="0 43 * * * *", name="unbestaetigte Vorgaenge loeschen")
 	public void removeUnbestaetigtVorgang() {
 		Date date = DateUtils.addHours(new Date(), -hoursToRemoveUnbestaetigtVorgang);
 		for(Vorgang vorgang : vorgangDao.findUnbestaetigtVorgang(date))
@@ -97,10 +82,10 @@ public class JobsService {
 
 	
 	/**
-	 * Der Job entfernt gemeldete aber noch nicht bestätigte Unterstützungen.
+	 * Dieser Job löscht alle Unterstützungen, die eingegangen sind, aber nach einem bestimmten Zeitraum noch nicht bestätigt wurden.
 	 */
 	@Transactional
-	@ScheduledSyncInCluster(cron="0 46 * * * *", name="unbestaetigte Unterstuetzer entfernen")
+	@ScheduledSyncInCluster(cron="0 46 * * * *", name="unbestaetigte Unterstuetzungen loeschen")
 	public void removeUnbestaetigtUnterstuetzer() {
 		Date date = DateUtils.addHours(new Date(), -hoursToRemoveUnbestaetigtUnterstuetzer);
 		for(Unterstuetzer unterstuetzer : vorgangDao.findUnbestaetigtUnterstuetzer(date))
@@ -111,10 +96,10 @@ public class JobsService {
 
 	
 	/**
-	 * Der Job entfernt gemeldete aber noch nicht bestätigte Missbrauchsmeldungen.
+	 * Dieser Job löscht alle Missbrauchsmeldungen, die eingegangen sind, aber nach einem bestimmten Zeitraum noch nicht bestätigt wurden.
 	 */
 	@Transactional
-	@ScheduledSyncInCluster(cron="0 49 * * * *", name="unbestaetigte Missbrauchsmeldungen entfernen")
+	@ScheduledSyncInCluster(cron="0 49 * * * *", name="unbestaetigte Missbrauchsmeldungen loeschen")
 	public void removeUnbestaetigtMissbrauchsmeldung() {
 		Date date = DateUtils.addHours(new Date(), -hoursToRemoveUnbestaetigtMissbrauchsmeldung);
 		for(Missbrauchsmeldung missbrauchsmeldung : vorgangDao.findUnbestaetigtMissbrauchsmeldung(date))
@@ -125,7 +110,7 @@ public class JobsService {
 
 	
 	/**
-	 * Der Job aktuallisiert den Klassifikationsalgorithmus für den Zuständigkeitsfinder.
+	 * Dieser Job aktualisiert den Klassifikator für den Zuständigkeitsfinder.
 	 */
 	@Scheduled(cron="0 52 * * * *")
 	public void reBuildClassifier() {
@@ -136,75 +121,25 @@ public class JobsService {
 			logger.error("ClassificationContext konnte nicht erneuert werden.", e);
 		}
 	}
-
-	
-	/**
-	 * Der Job informiert Externe Benutzer über neue an sie delegierte Vorgänge.
+    
+    
+    /**
+	 * Dieser Job archiviert alle Vorgänge, die abgeschlossen sind und seit einem bestimmten Zeitraum nicht mehr bearbeitet wurden.
 	 */
-	@ScheduledSyncInCluster(cron="0 0 5 * * *", name="Externe ueber neue Vorgaenge informieren")
-	public void informExtern() {
-		Date date = DateUtils.addDays(new Date(), -1);
-
-		//Für alle delegiertAn
-		for(Role delegiertAn : securityService.getAllDelegiertAn()) {
-
-			//Finde alle Vorgänge, dessen DelegiertAn in den letzten 24h geändert wurde und deren DelegiertAn=delegiertAn ist
-			List<Vorgang> vorgaenge = vorgangDao.findVorgaengeForDelegiertAn(date, delegiertAn.getId());
-
-			//sende eMail
-			mailService.sendInformExternMail(vorgaenge, securityService.getAllUserEmailsForRole(delegiertAn.getId()));
+	@Transactional
+	@ScheduledSyncInCluster(cron="0 40 00 * * *", name="abgeschlossene Vorgaenge archivieren")
+	public void archivVorgaenge() {
+		Date date = DateUtils.addMonths(new Date(), -monthsToArchivVorgaenge);
+		for(Vorgang vorgang : vorgangDao.findNotArchivVorgang(date))
+		{
+			vorgang.setArchiviert(true);
+			vorgangDao.merge(vorgang);
 		}
 	}
-	
-	
-	/**
-	 * Der Job informiert die Dispatcher über neue nicht zuordbare Vorgänge.
-	 */
-	@ScheduledSyncInCluster(cron="0 5 5 * * *", name="Dispatcher ueber neue Vorgaenge informieren")
-	public void informDispatcher() {
-		Date date = DateUtils.addDays(new Date(), -1);
-		
-		//Finde alle Vorgänge, dessen Zuständigkeit in den letzten 24h geändert wurde und deren Zuständigkeit=dispatcher ist
-		List<Vorgang> vorgaenge = vorgangDao.findVorgaengeForZustaendigkeit(date, securityService.getDispatcherZustaendigkeitId());
-		
-		//sende eMail
-		mailService.sendInformDispatcherMail(vorgaenge, securityService.getAllUserEmailsForRole(securityService.getDispatcherZustaendigkeitId()));
-	}
-    
-    /**
-	 * Der Job informiert den Ersteller von Vorgängen über deren Übergang in den Status "in Bearbeitung".
-	 */
-	@ScheduledSyncInCluster(cron="0 5 10 * * *", name="Ersteller ueber Statusaenderung nach in Bearbeitung informieren")
-	public void informErstellerInBearbeitung() {
-		Date date = DateUtils.addDays(new Date(), -1);
-		
-		//Finde alle Vorgänge, deren Status sich in den letzten 24h auf "in Bearbeitung" geändert hat und eine autorEmail haben
-		List<Vorgang> vorgaenge = vorgangDao.findInProgressVorgaenge(date);
-		
-		//sende eMail
-		for (Vorgang vorgang : vorgaenge)
-			mailService.sendInformErstellerMailInBearbeitung(vorgang);
-	}
-
-	
-	/**
-	 * Der Job informiert den Ersteller von Vorgängen über deren Abschluß.
-	 */
-	@ScheduledSyncInCluster(cron="0 10 10 * * *", name="Ersteller ueber Vorgangsabschluss informieren")
-	public void informErstellerAbschluss() {
-		Date date = DateUtils.addDays(new Date(), -1);
-		
-		//Finde alle Vorgänge, die in den letzten 24h abgeschlossen wurden und eine autorEmail haben
-		List<Vorgang> vorgaenge = vorgangDao.findClosedVorgaenge(date);
-		
-		//sende eMail
-		for (Vorgang vorgang : vorgaenge)
-			mailService.sendInformErstellerMailAbschluss(vorgang);
-	}
     
     
     /**
-	 * Der Job informiert die Empfänger redaktioneller E-Mails.
+	 * Dieser Job informiert die Empfänger redaktioneller E-Mails.
 	 */
 	@ScheduledSyncInCluster(cron="0 40 01 * * *", name="Empfaenger redaktioneller E-Mails informieren")
 	public void informRedaktionEmpfaenger() {
@@ -324,9 +259,79 @@ public class JobsService {
 		}
 	}
 
-
+	
 	/**
-	 * Der Job registriert die aktulle ServerInstanze in der DB
+	 * Dieser Job informiert externe Nutzer mittels E-Mail über diejenigen Vorgänge, die innerhalb der letzten 24 Stunden an sie delegiert wurden.
+	 */
+	@ScheduledSyncInCluster(cron="0 00 05 * * *", name="externe Nutzer ueber neue Vorgaenge informieren")
+	public void informExtern() {
+		Date date = DateUtils.addDays(new Date(), -1);
+
+		// für alle delegiertAn
+		for(Role delegiertAn : securityService.getAllDelegiertAn()) {
+
+			// finde alle Vorgänge, deren DelegiertAn in den letzten 24 Stunden geändert wurde und deren DelegiertAn gleich delegiertAn ist
+			List<Vorgang> vorgaenge = vorgangDao.findVorgaengeForDelegiertAn(date, delegiertAn.getId());
+            
+            // falls Vorgänge gefunden wurden
+            if (!vorgaenge.isEmpty() && vorgaenge != null) {
+
+                // sende E-Mail
+                mailService.sendInformExternMail(vorgaenge, securityService.getAllExternUserEmailsForRole(delegiertAn.getId()));
+            }
+		}
+	}
+	
+	
+	/**
+	 * Dieser Job informiert die Dispatcher mittels E-Mail über diejenigen Vorgänge, die innerhalb der letzten 24 Stunden durch wiederholtes automatisches Zuweisung keiner Zuständigkeit zugeordnet werden konnten und somit letztendlich der Dispatcher-Gruppe zugewiesen wurden.
+	 */
+	@ScheduledSyncInCluster(cron="0 05 05 * * *", name="Dispatcher ueber neue Vorgaenge informieren")
+	public void informDispatcher() {
+		Date date = DateUtils.addDays(new Date(), -1);
+		
+		// finde alle Vorgänge, deren Zuständigkeit in den letzten 24 Stunden geändert wurde und deren Zuständigkeit gleich dispatcher ist
+		List<Vorgang> vorgaenge = vorgangDao.findVorgaengeForZustaendigkeit(date, securityService.getDispatcherZustaendigkeitId());
+		
+		// sende E-Mail
+		mailService.sendInformDispatcherMail(vorgaenge, securityService.getAllUserEmailsForRole(securityService.getDispatcherZustaendigkeitId()));
+	}
+    
+    
+    /**
+	 * Dieser Job informiert die Ersteller von Vorgängen darüber, dass ihre Vorgänge innerhalb der letzten 24 Stunden in Bearbeitung genommen wurden.
+	 */
+	@ScheduledSyncInCluster(cron="0 05 10 * * *", name="Ersteller ueber Statusaenderungen nach in Bearbeitung informieren")
+	public void informErstellerInBearbeitung() {
+		Date date = DateUtils.addDays(new Date(), -1);
+		
+		// finde alle Vorgänge, deren Status sich innerhalb der letzten 24 Stunden auf inBearbeitung geändert hat und die eine autorEmail aufweisen
+		List<Vorgang> vorgaenge = vorgangDao.findInProgressVorgaenge(date);
+		
+		// sende E-Mail
+		for (Vorgang vorgang : vorgaenge)
+			mailService.sendInformErstellerMailInBearbeitung(vorgang);
+	}
+
+	
+	/**
+	 * Dieser Job informiert die Ersteller von Vorgängen darüber, dass ihre Vorgänge innerhalb der letzten 24 Stunden abgeschlossen wurden.
+	 */
+	@ScheduledSyncInCluster(cron="0 10 10 * * *", name="Ersteller ueber Vorgangsabschluesse informieren")
+	public void informErstellerAbschluss() {
+		Date date = DateUtils.addDays(new Date(), -1);
+		
+		// finde alle Vorgänge, die innerhalb der letzten 24 Stunden abgeschlossen wurden und die eine autorEmail aufweisen
+		List<Vorgang> vorgaenge = vorgangDao.findClosedVorgaenge(date);
+		
+		// sende E-Mail
+		for (Vorgang vorgang : vorgaenge)
+			mailService.sendInformErstellerMailAbschluss(vorgang);
+	}
+    
+    
+    /**
+	 * Dieser Job registriert die aktulle ServerInstanze in der DB
 	 */
 	@Scheduled(fixedRate=20000)
 	public void notifyAliveServer(){
