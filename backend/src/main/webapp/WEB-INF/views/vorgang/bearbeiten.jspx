@@ -459,7 +459,7 @@
 											<c:url value="/images/save.png" var="url"/>
 											<img src="${url}" alt=""/>										
 										</button>
-										<textarea name="kommentarEdit">${fx:toHtml(kommentar.text)}</textarea>
+										<textarea name="kommentarEdit">${kommentar.text}</textarea>
 										<div class="clear"><!--  --></div>
 									</form:form>
 								</div>
