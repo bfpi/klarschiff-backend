@@ -46,6 +46,13 @@
 	        		oviMargin="${geoService.mapOviMargin}"
 	        	    oviFormElementId="oviWkt"
 	        		cssStyle="height: 500px; width: 100%;"
+                    wmsUrl="${geoService.wmsUrl}"
+                    wmsTitle="${geoService.wmsTitle}"
+                    wmsLayers="${geoService.wmsLayers}"
+                    wmsFormat="${geoService.wmsFormat}"
+                    wmsTransparent="${geoService.wmsTransparent}"
+                    wmsMinScale="${geoService.wmsMinScale}"
+                    wmsSingleTile="${geoService.wmsSingleTile}"
 	        		/>
 			</div>
 			<input type="submit" value="Speichern"/>

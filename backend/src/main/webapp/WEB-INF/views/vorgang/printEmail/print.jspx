@@ -142,7 +142,14 @@
 						serverResolutions="${geoService.mapServerResolutions}"
 		        		ovi="${vorgang.oviWkt}"
 		        		oviMargin="${geoService.mapOviMargin/4}"
-		        		cssStyle="height: 200px; width: 100%;"
+		        		cssStyle="height:200px;width:580px;"
+                        wmsUrl="${geoService.wmsUrl}"
+                        wmsTitle="${geoService.wmsTitle}"
+                        wmsLayers="${geoService.wmsLayers}"
+                        wmsFormat="${geoService.wmsFormat}"
+                        wmsTransparent="${geoService.wmsTransparent}"
+                        wmsMinScale="${geoService.wmsMinScale}"
+                        wmsSingleTile="${geoService.wmsSingleTile}"
 		        		/>
 				</td>	
 			</tr>

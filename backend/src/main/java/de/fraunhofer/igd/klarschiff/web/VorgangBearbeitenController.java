@@ -34,6 +34,7 @@ import de.fraunhofer.igd.klarschiff.service.classification.ClassificationService
 import de.fraunhofer.igd.klarschiff.service.security.Role;
 import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
 import de.fraunhofer.igd.klarschiff.service.settings.SettingsService;
+import de.fraunhofer.igd.klarschiff.tld.CustomFunctions;
 import de.fraunhofer.igd.klarschiff.vo.EnumFreigabeStatus;
 import de.fraunhofer.igd.klarschiff.vo.EnumPrioritaet;
 import de.fraunhofer.igd.klarschiff.vo.EnumVorgangStatus;
@@ -45,6 +46,7 @@ import de.fraunhofer.igd.klarschiff.vo.StatusKommentarVorlage;
 import de.fraunhofer.igd.klarschiff.vo.Verlauf;
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
 import de.fraunhofer.igd.klarschiff.vo.VorgangHistoryClasses;
+import java.util.Date;
 
 /**
  * Controller für die Vorgangsbearbeitung
@@ -84,6 +86,14 @@ public class VorgangBearbeitenController {
 	@ModelAttribute("vorgangIdeenUnterstuetzer")
     public Long vorgangIdeenUnterstuetzer() {
         return settingsService.getVorgangIdeeUnterstuetzer();
+    }
+    
+    /**
+	 * Liefert (in Systemkonfiguration festgelegte) maximale Zeichenanzahl für Statuskommentare zu Vorgängen
+	 */
+	@ModelAttribute("vorgangStatusKommentarTextlaengeMaximal")
+    public Integer vorgangStatusKommentarTextlaengeMaximal() {
+        return settingsService.getVorgangStatusKommentarTextlaengeMaximal();
     }
 	
 	/**
@@ -257,6 +267,7 @@ public class VorgangBearbeitenController {
 	 * <li><code>&Auml;nderungen &uuml;bernehmen </code></li>
 	 * <li><code>Kommentar speichern</code></li>
 	 * <li><code>delegieren</code></li>
+	 * <li><code>zur&uuml;ckholen</code></li>
 	 * <li><code>archivieren</code></li>
 	 * <li><code>wiederherstellen</code></li>
 	 * <li><code>setzen</code></li>
@@ -291,7 +302,7 @@ public class VorgangBearbeitenController {
             assertNotEmpty(cmd, result, Assert.EvaluateOn.ever, "vorgang.statusKommentar", "Für den Status „wird nicht bearbeitet“ müssen Sie einen Kommentar angeben!");
         }
         
-		assertMaxLength(cmd, result, Assert.EvaluateOn.ever, "vorgang.statusKommentar", 500, "Der Statuskommentar ist zu lang! Erlaubt sind hier maximal 500 Zeichen.");
+		assertMaxLength(cmd, result, Assert.EvaluateOn.ever, "vorgang.statusKommentar", vorgangStatusKommentarTextlaengeMaximal(), "Der Statuskommentar ist zu lang! Erlaubt sind hier maximal " + vorgangStatusKommentarTextlaengeMaximal().toString() + " Zeichen.");
         
 		if (result.hasErrors()) {
 			cmd.setVorgang(getVorgang(id));
@@ -307,16 +318,16 @@ public class VorgangBearbeitenController {
 			vorgangDao.merge(cmd.getVorgang());
 		} else if (action.equals("&uuml;bernehmen und akzeptieren")) {
 			cmd.getVorgang().setZustaendigkeitStatus(EnumZustaendigkeitStatus.akzeptiert);
-            cmd.getVorgang().setZustaendigkeitFrontend(securityService.getZustaendigkeit(cmd.getVorgang().getZustaendigkeit()).getLocality());
+            cmd.getVorgang().setZustaendigkeitFrontend(securityService.getZustaendigkeit(cmd.getVorgang().getZustaendigkeit()).getL());
 			vorgangDao.merge(cmd.getVorgang());
 		} else if (action.equals("automatisch neu zuweisen")) {
 			cmd.getVorgang().setZustaendigkeit(classificationService.calculateZustaendigkeitforVorgang(cmd.getVorgang()).getId());
-			cmd.getVorgang().setZustaendigkeitFrontend(securityService.getZustaendigkeit(cmd.getVorgang().getZustaendigkeit()).getLocality());
+			cmd.getVorgang().setZustaendigkeitFrontend(securityService.getZustaendigkeit(cmd.getVorgang().getZustaendigkeit()).getL());
 			cmd.getVorgang().setZustaendigkeitStatus(EnumZustaendigkeitStatus.zugewiesen);
 			vorgangDao.merge(cmd.getVorgang());
 		} else if (action.equals("zuweisen")) {
 			cmd.getVorgang().setZustaendigkeitStatus(EnumZustaendigkeitStatus.zugewiesen);
-            cmd.getVorgang().setZustaendigkeitFrontend(securityService.getZustaendigkeit(cmd.getVorgang().getZustaendigkeit()).getLocality());
+            cmd.getVorgang().setZustaendigkeitFrontend(securityService.getZustaendigkeit(cmd.getVorgang().getZustaendigkeit()).getL());
 			vorgangDao.merge(cmd.getVorgang());
 		} else if (action.equals("&Auml;nderungen &uuml;bernehmen")) {
 			assertNotEmpty(cmd, result, Assert.EvaluateOn.ever, "vorgang.status", null);
@@ -354,20 +365,41 @@ public class VorgangBearbeitenController {
 				return "vorgang/bearbeiten";
 			}			
 			vorgangDao.merge(cmd.getVorgang());
-		} else if (action.equals("Kommentar speichern")) {
+		} else if (action.equals("Kommentar anlegen")) {
 			if (!StringUtils.isBlank(cmd.getKommentar())) {		
 				Kommentar kommentar = new Kommentar();
 				kommentar.setVorgang(cmd.getVorgang());
 				kommentar.setText(cmd.getKommentar());
 				kommentar.setNutzer(securityService.getCurrentUser().getName());
+				kommentar.setAnzBearbeitet(0);
+				kommentar.setDatum(new Date());
 				kommentarDao.persist(kommentar);
 				cmd.setKommentar(null);
 			}
+		} else if (action.equals("kommentarSave")) {
+			long kId = Long.parseLong(request.getParameter("id"));
+			Kommentar kommentar = kommentarDao.findById(kId);
+			if(CustomFunctions.mayCurrentUserEditKommentar(kommentar)) {
+				kommentar.setText(request.getParameter("kommentarEdit"));
+				kommentar.setAnzBearbeitet(kommentar.getAnzBearbeitet() + 1);
+				kommentarDao.persist(kommentar);
+			}
+		} else if (action.equals("kommentarDelete")) {
+			long kId = Long.parseLong(request.getParameter("id"));
+			Kommentar kommentar = kommentarDao.findById(kId);
+			if(CustomFunctions.mayCurrentUserEditKommentar(kommentar)) {
+				kommentar.setGeloescht(true);
+				kommentarDao.persist(kommentar);
+			}
 		} else if (action.equals("delegieren")) {
             /*if (cmd.getVorgang().getDelegiertAn()!=null && !cmd.getVorgang().getDelegiertAn().isEmpty()) 
-                cmd.getVorgang().setZustaendigkeitFrontend(securityService.getZustaendigkeit(cmd.getVorgang().getDelegiertAn()).getLocality());
+                cmd.getVorgang().setZustaendigkeitFrontend(securityService.getZustaendigkeit(cmd.getVorgang().getDelegiertAn()).getL());
             else
-                cmd.getVorgang().setZustaendigkeitFrontend(securityService.getZustaendigkeit(cmd.getVorgang().getZustaendigkeit()).getLocality());*/
+                cmd.getVorgang().setZustaendigkeitFrontend(securityService.getZustaendigkeit(cmd.getVorgang().getZustaendigkeit()).getL());*/
+			vorgangDao.merge(cmd.getVorgang());
+		} else if (action.equals("zur&uuml;ckholen")) {
+            cmd.getVorgang().setDelegiertAn(null);
+            //cmd.getVorgang().setZustaendigkeitFrontend(securityService.getZustaendigkeit(cmd.getVorgang().getZustaendigkeit()).getL());
 			vorgangDao.merge(cmd.getVorgang());
 		} else if (action.equals("archivieren")) {
 			cmd.getVorgang().setArchiviert(true);

@@ -34,7 +34,7 @@ public class ClassficationServiceInitThread extends Thread {
 			Thread thread = ThreadUtil.findThreadByName(InitializeServiceThread.class.getSimpleName());
 			while(thread!=null && thread.isAlive()) sleep(100);
 			classificationService.logger.debug("init ClassificationService");
-			LogUtil.info("Zuständigkeitsfinder wird initailisiert ...");
+			LogUtil.info("Zuständigkeitsfinder wird initialisiert ...");
 			classificationService.reBuildClassifier();
 		} catch (Exception e) {
 			classificationService.logger.error("Fehler beim Initialisieren des ClassificationService", e);

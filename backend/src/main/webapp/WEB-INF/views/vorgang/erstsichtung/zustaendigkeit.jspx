@@ -100,7 +100,7 @@
 						</div>
 					</td>
 				</tr></c:if>
-				
+                
 				<tr>
 					<td class="label">Erstellung</td>
 					<td>
@@ -134,6 +134,13 @@
 			        		cssStyle="height: 300px; width: 100%;"
 			        		vorgangTyp="${vorgang.typ}"
 			        		vorgangStatus="${vorgang.status}"
+                            wmsUrl="${geoService.wmsUrl}"
+                            wmsTitle="${geoService.wmsTitle}"
+                            wmsLayers="${geoService.wmsLayers}"
+                            wmsFormat="${geoService.wmsFormat}"
+                            wmsTransparent="${geoService.wmsTransparent}"
+                            wmsMinScale="${geoService.wmsMinScale}"
+                            wmsSingleTile="${geoService.wmsSingleTile}"
 			        	/>
 					</td>
 				</tr>
@@ -141,11 +148,12 @@
 					<tr>
 						<td class="label" style="padding-top:10px;">Foto</td>
 						<td colspan="10" style="padding-top:10px;">
-							<foto:foto vorgang="${vorgang}" typ="thumb"/>
+							<foto:foto vorgang="${vorgang}" typ="thumb" clickZoom="true" />
 						</td>
 					</tr>
 				</c:if>
 			</table>
+            <div style="padding:10px 0 0 3px;text-align:justify"><span class="label-important">Hinweis: Die textlichen Angaben der Adresse und des Flurstückseigentums werden anhand der Position des Vorgangs auf der Karte <span style="font-weight:bold">automatisch</span> durch das System hinzugefügt. Diese beiden textlichen Angaben stammen also <span style="font-weight:bold">nicht</span> vom Autor des Vorgangs.</span></div>
 		</div>
 		
 		<div class="fieldset">

@@ -51,12 +51,12 @@
           </td>
         </tr>
         <tr>
-					<td>
-						<foto:foto vorgang="${vorgang}"/>
-					</td>
-				</tr>
-			</table>
-		</div>
+          <td>
+		    <foto:foto vorgang="${vorgang}" clickZoom="true"/>
+          </td>
+        </tr>
+      </table>
+      </div>
 	</div>
 	
 	<!-- HELP -->

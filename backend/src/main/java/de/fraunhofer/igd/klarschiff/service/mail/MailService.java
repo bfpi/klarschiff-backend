@@ -225,7 +225,7 @@ public class MailService {
 			str.append(vorgang.getKategorie().getName());
 			str.append("\n");
 			
-			if (vorgang.getBetreff().isEmpty() == false) {
+			if (vorgang.getBetreff() != null && !vorgang.getBetreff().isEmpty()) {
 				str.append("Betreff: " );
 				str.append(vorgang.getBetreff());
 				str.append("\n");
@@ -234,7 +234,7 @@ public class MailService {
 				str.append("\n");
 			}
 			
-			if (vorgang.getDetails().isEmpty() == false) {
+            if (vorgang.getDetails() != null && !vorgang.getDetails().isEmpty()) {
 				str.append("Details: " );
 				str.append(vorgang.getDetails());
 				str.append("\n");
@@ -243,13 +243,13 @@ public class MailService {
 				str.append("\n");
 			}
 			
-			if(vorgang.getAdresse().isEmpty() == false){
+            if (vorgang.getAdresse() != null && !vorgang.getAdresse().isEmpty()) {
 				str.append("Adresse: ");
 				str.append(vorgang.getAdresse());
 				str.append("\n");
 			}
             
-            if(vorgang.getFlurstueckseigentum().isEmpty() == false){
+            if (vorgang.getFlurstueckseigentum() != null && !vorgang.getFlurstueckseigentum().isEmpty()) {
 				str.append("Flurstückseigentum: ");
 				str.append(vorgang.getFlurstueckseigentum());
 				str.append("\n");
@@ -259,7 +259,7 @@ public class MailService {
 			str.append(formatter.format(vorgang.getDatum()));
 			str.append("\n");
 			
-			if (vorgang.getAutorEmail().isEmpty() == false) {
+            if (vorgang.getAutorEmail() != null && !vorgang.getAutorEmail().isEmpty()) {
 				str.append("Autor: " );
 				str.append(vorgang.getAutorEmail());
 				str.append("\n");
@@ -269,32 +269,32 @@ public class MailService {
 			str.append(vorgang.getStatus().getText());
 			str.append("\n");
 			
-			if (vorgang.getStatusKommentar() != null) {
+            if (vorgang.getStatusKommentar() != null && !vorgang.getStatusKommentar().isEmpty()) {
 				str.append("Kommentar: " );
 				str.append(vorgang.getStatusKommentar());
 				str.append("\n");
 			}
 			
-			str.append("Zust\u00e4ndigkeit: " ); 
+			str.append("Zuständigkeit: " ); 
 			str.append(vorgang.getZustaendigkeit());
 			str.append(" (");
 			str.append(vorgang.getZustaendigkeitStatus());
 			str.append(")");
 			str.append("\n");
 
-			if (vorgang.getDelegiertAn() != null) {
+			if (vorgang.getDelegiertAn() != null && !vorgang.getDelegiertAn().isEmpty()) {
 				str.append("Delegiert an: " );
 				str.append(vorgang.getDelegiertAn());
 				str.append("\n");
 			}
 
-			if ( sendKarte==true ) {
+			if (sendKarte) {
 				str.append("\nKarte\n*****\n");
 				str.append("Aufruf in Klarschiff: "+geoService.getMapExternExternUrl(vorgang)+"\n\n");
 				str.append("Aufruf in Geoport.HRO: "+geoService.getMapExternUrl(vorgang)+"\n");
 			}
 			
-			if ( sendKommentare == true) {
+			if (sendKommentare) {
 				str.append("\ninterne Kommentare\n******************\n");
 				for (Kommentar kommentar : kommentarDao.findKommentareForVorgang(vorgang)) {
 					str.append("- " + kommentar.getNutzer() + " " + formatter.format(kommentar.getDatum()) +" -\n" );
@@ -303,7 +303,7 @@ public class MailService {
 				}
 			}
 				
-			if ( sendMissbrauchsmeldungen == true) {	
+			if (sendMissbrauchsmeldungen) {	
 				str.append("\nMissbrauchsmeldungen\n********************\n");
 				for (Missbrauchsmeldung missbrauchsmeldung : vorgangDao.listMissbrauchsmeldung(vorgang)) {
 					str.append("- " + formatter.format(missbrauchsmeldung.getDatum()) +" -\n" );

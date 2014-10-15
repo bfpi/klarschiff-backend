@@ -203,6 +203,13 @@
 			        		onClick="${url}"
 			        		initOpenLayers="false"
                             title="Klicken Sie für eine größere Ansicht auf die Karte."
+                            wmsUrl="${geoService.wmsUrl}"
+                            wmsTitle="${geoService.wmsTitle}"
+                            wmsLayers="${geoService.wmsLayers}"
+                            wmsFormat="${geoService.wmsFormat}"
+                            wmsTransparent="${geoService.wmsTransparent}"
+                            wmsMinScale="${geoService.wmsMinScale}"
+                            wmsSingleTile="${geoService.wmsSingleTile}"
 			        		/>
 					</div>				
 				</td>

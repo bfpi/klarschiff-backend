@@ -28,11 +28,11 @@
         <table class="resulttable">
             <thead>
                 <tr>
-                    <util:sortedtableheadercolumn name="Vorgang" id="1" currentOrderId="${cmd.order}" currentOrderDirection="${cmd.orderDirection}"/>
-                    <util:sortedtableheadercolumn name="Datum" id="2" currentOrderId="${cmd.order}" currentOrderDirection="${cmd.orderDirection}"/>
-                    <util:sortedtableheadercolumn name="Autor" id="3" currentOrderId="${cmd.order}" currentOrderDirection="${cmd.orderDirection}"/>
-                    <util:sortedtableheadercolumn name="Empfänger" id="4" currentOrderId="${cmd.order}" currentOrderDirection="${cmd.orderDirection}"/>
-                    <util:sortedtableheadercolumn name="Nachricht" id="5" currentOrderId="${cmd.order}" currentOrderDirection="${cmd.orderDirection}"/>
+                    <util:sortedtableheadercolumn name="Vorgang" id="0" currentOrderId="${cmdlobhinweisekritik.order}" currentOrderDirection="${cmdlobhinweisekritik.orderDirection}"/>
+                    <util:sortedtableheadercolumn name="Datum" id="1" currentOrderId="${cmdlobhinweisekritik.order}" currentOrderDirection="${cmdlobhinweisekritik.orderDirection}"/>
+                    <util:sortedtableheadercolumn name="Autor" id="2" currentOrderId="${cmdlobhinweisekritik.order}" currentOrderDirection="${cmdlobhinweisekritik.orderDirection}"/>
+                    <util:sortedtableheadercolumn name="Empfänger" id="3" currentOrderId="${cmdlobhinweisekritik.order}" currentOrderDirection="${cmdlobhinweisekritik.orderDirection}"/>
+                    <util:sortedtableheadercolumn name="Nachricht" id="4" currentOrderId="${cmdlobhinweisekritik.order}" currentOrderDirection="${cmdlobhinweisekritik.orderDirection}"/>
                 </tr>
             </thead>
             <tbody>
@@ -51,7 +51,7 @@
                 <tr class="footer">
                     <td colspan="5">
                         <c:if test="${not empty maxPages}">
-                            <util:pagination maxPages="${maxPages}" page="${cmd.page}" size="${cmd.size}"/>
+                            <util:pagination maxPages="${maxPages}" page="${cmdlobhinweisekritik.page}" size="${cmdlobhinweisekritik.size}"/>
                         </c:if>
                     </td>
                 </tr>

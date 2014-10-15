@@ -27,12 +27,14 @@ import de.fraunhofer.igd.klarschiff.dao.KommentarDao;
 import de.fraunhofer.igd.klarschiff.dao.LobHinweiseKritikDao;
 import de.fraunhofer.igd.klarschiff.dao.VorgangDao;
 import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
+import de.fraunhofer.igd.klarschiff.tld.CustomFunctions;
 import de.fraunhofer.igd.klarschiff.vo.EnumVorgangStatus;
 import de.fraunhofer.igd.klarschiff.vo.Kommentar;
 import de.fraunhofer.igd.klarschiff.vo.LobHinweiseKritik;
 import de.fraunhofer.igd.klarschiff.vo.StatusKommentarVorlage;
 import de.fraunhofer.igd.klarschiff.vo.Verlauf;
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
+import java.util.Date;
 
 /**
  * Controller für die Vorgangsbearbeitung durch Externe (Delegierte)
@@ -182,17 +184,34 @@ public class VorgangDelegiertBearbeitenController {
 			vorgangDao.merge(cmd.getVorgang());
 		}  else if (action.equals("zur&uuml;ckweisen")) {
 			cmd.getVorgang().setDelegiertAn(null);
-            //cmd.getVorgang().setZustaendigkeitFrontend(securityService.getZustaendigkeit(cmd.getVorgang().getZustaendigkeit()).getLocality());
+            //cmd.getVorgang().setZustaendigkeitFrontend(securityService.getZustaendigkeit(cmd.getVorgang().getZustaendigkeit()).getL());
 			vorgangDao.merge(cmd.getVorgang());
             return "redirect:/vorgang/delegiert/suchen";
-		}  else if (action.equals("Kommentar speichern")) {
+		}  else if (action.equals("Kommentar anlegen")) {
 			if (!StringUtils.isBlank(cmd.getKommentar())) {		
 				Kommentar kommentar = new Kommentar();
 				kommentar.setVorgang(cmd.getVorgang());
 				kommentar.setText(cmd.getKommentar());
 				kommentar.setNutzer(securityService.getCurrentUser().getName());
+				kommentar.setAnzBearbeitet(0);
+				kommentar.setDatum(new Date());
 				kommentarDao.persist(kommentar);
 				cmd.setKommentar(null);
+			}
+		} else if (action.equals("kommentarSave")) {
+			long kId = Long.parseLong(request.getParameter("id"));
+			Kommentar kommentar = kommentarDao.findById(kId);
+			if(CustomFunctions.mayCurrentUserEditKommentar(kommentar)) {
+				kommentar.setText(request.getParameter("kommentarEdit"));
+				kommentar.setAnzBearbeitet(kommentar.getAnzBearbeitet() + 1);
+				kommentarDao.persist(kommentar);
+			}
+		} else if (action.equals("kommentarDelete")) {
+			long kId = Long.parseLong(request.getParameter("id"));
+			Kommentar kommentar = kommentarDao.findById(kId);
+			if(CustomFunctions.mayCurrentUserEditKommentar(kommentar)) {
+				kommentar.setGeloescht(true);
+				kommentarDao.persist(kommentar);
 			}
 		} 
 

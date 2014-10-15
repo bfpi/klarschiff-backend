@@ -15,6 +15,7 @@
 	<jsp:directive.attribute name="cssStyle" type="java.lang.String" required="false" rtexprvalue="true"/>
 	<jsp:directive.attribute name="onclick" type="java.lang.String" required="false" rtexprvalue="true"/>
 	<jsp:directive.attribute name="render" type="java.lang.Boolean" required="false" description="Indicate if the contents of this tag and all enclosed tags should be rendered (default 'true')" />
+	<jsp:directive.attribute name="clickZoom" type="java.lang.Boolean" required="false"/>
 	
  	<jsp:useBean id="now" class="java.util.Date"/>
 
@@ -45,7 +46,7 @@
 					</c:when>
 					<c:when test="${vorgang.fotoExists}">
 						<c:choose>
-							<c:when test="${empty onclick}">
+							<c:when test="${clickZoom}">
 								<c:url value="/script/colorbox/jquery.colorbox-min.js" var="script_url" />
 								<script defer="defer" type="text/javascript" src="${script_url}">
 									<!-- -->
@@ -55,7 +56,7 @@
 								</script>
 								<c:url value="/foto/gross/${vorgang.id}.jpg?timestamp=${now}" var="gross_url"/>
 								<a href="${gross_url}" class="colorbox">
-									<img id="picture" alt="Foto" src="${url}"/>
+									<img id="picture" alt="Foto" src="${url}" style="border:none" title="Foto größer anzeigen"/>
 								</a>					
 							</c:when>
 							<c:otherwise>

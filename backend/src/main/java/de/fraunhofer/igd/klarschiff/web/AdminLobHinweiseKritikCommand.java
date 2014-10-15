@@ -22,12 +22,11 @@ public class AdminLobHinweiseKritikCommand implements Serializable {
     
     public String getOrderString() {
 		switch(order) {
-			case 0: return "o.id";
-			case 1: return "o.vorgang";
-			case 2: return "o.datum";
-			case 3: return "o.autorEmail";
-			case 4: return "o.empfaengerEmail";
-			case 5: return "o.freitext";
+			case 0: return "o.vorgang";
+			case 1: return "o.datum";
+			case 2: return "o.autorEmail";
+			case 3: return "o.empfaengerEmail";
+			case 4: return "o.freitext";
 			default: return "";
 		}
 	}

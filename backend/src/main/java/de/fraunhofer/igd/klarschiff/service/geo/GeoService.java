@@ -79,6 +79,14 @@ public class GeoService {
 	String mapExternProjection;
 	String mapExternUrl;
 	String mapExternExternUrl;
+    
+    String wmsUrl;
+    String wmsTitle;
+    String wmsLayers;
+    String wmsFormat;
+    Boolean wmsTransparent;
+    Integer wmsMinScale;
+    Boolean wmsSingleTile;
 	
 	String wfsCapabilitiesUrl;
 	double oviBuffer = 10d;
@@ -392,80 +400,91 @@ public class GeoService {
 	public void setMapExternUrl(String mapExternUrl) {
 		this.mapExternUrl = mapExternUrl;
 	}
-
 	public String getMapExternExternUrl() {
 		return mapExternExternUrl;
 	}
-
 	public void setMapExternExternUrl(String mapExternExternUrl) {
 		this.mapExternExternUrl = mapExternExternUrl;
 	}
-
-
-	public String getWfsCapabilitiesUrl() {
+	public String getWmsUrl() {
+		return wmsUrl;
+	}
+	public void setWmsUrl(String wmsUrl) {
+		this.wmsUrl = wmsUrl;
+	}
+	public String getWmsTitle() {
+		return wmsTitle;
+	}
+	public void setWmsTitle(String wmsTitle) {
+		this.wmsTitle = wmsTitle;
+	}
+	public String getWmsLayers() {
+		return wmsLayers;
+	}
+	public void setWmsLayers(String wmsLayers) {
+		this.wmsLayers = wmsLayers;
+	}
+	public String getWmsFormat() {
+		return wmsFormat;
+	}
+	public void setWmsFormat(String wmsFormat) {
+		this.wmsFormat = wmsFormat;
+	}
+	public Boolean getWmsTransparent() {
+		return wmsTransparent;
+	}
+	public void setWmsTransparent(Boolean wmsTransparent) {
+		this.wmsTransparent = wmsTransparent;
+	}
+	public Integer getWmsMinScale() {
+		return wmsMinScale;
+	}
+	public void setWmsMinScale(Integer wmsMinScale) {
+		this.wmsMinScale = wmsMinScale;
+	}
+	public Boolean getWmsSingleTile() {
+		return wmsSingleTile;
+	}
+	public void setWmsSingleTile(Boolean wmsSingleTile) {
+		this.wmsSingleTile = wmsSingleTile;
+	}
+    public String getWfsCapabilitiesUrl() {
 		return wfsCapabilitiesUrl;
 	}
-
-
-	public void setWfsCapabilitiesUrl(String wfsCapabilitiesUrl) {
+    public void setWfsCapabilitiesUrl(String wfsCapabilitiesUrl) {
 		this.wfsCapabilitiesUrl = wfsCapabilitiesUrl;
 	}
-
-
-	public double getOviBuffer() {
+    public double getOviBuffer() {
 		return oviBuffer;
 	}
-
-
-	public void setOviBuffer(double oviBuffer) {
+    public void setOviBuffer(double oviBuffer) {
 		this.oviBuffer = oviBuffer;
 	}
-
-
-	public WfsExceptionHandling getWfsExceptionHandling() {
+    public WfsExceptionHandling getWfsExceptionHandling() {
 		return wfsExceptionHandling;
 	}
-
-
-	public void setWfsExceptionHandling(WfsExceptionHandling wfsExceptionHandling) {
+    public void setWfsExceptionHandling(WfsExceptionHandling wfsExceptionHandling) {
 		this.wfsExceptionHandling = wfsExceptionHandling;
 	}
-
-
-	public String getMapRestrictedExtent() {
+    public String getMapRestrictedExtent() {
 		return mapRestrictedExtent;
 	}
-
-
-	public void setMapRestrictedExtent(String mapRestrictedExtent) {
+    public void setMapRestrictedExtent(String mapRestrictedExtent) {
 		this.mapRestrictedExtent = mapRestrictedExtent;
 	}
-
-
-	public String getMapResolutions() {
+    public String getMapResolutions() {
 		return mapResolutions;
 	}
-
-
-	public void setMapResolutions(String mapResolutions) {
+    public void setMapResolutions(String mapResolutions) {
 		this.mapResolutions = mapResolutions;
 	}
-
-
-
-	public DataStore getDataStore() {
+    public DataStore getDataStore() {
 		return dataStore;
 	}
-
-
-
-	public String getMapServerResolutions() {
+    public String getMapServerResolutions() {
 		return mapServerResolutions;
 	}
-
-
-
-	public void setMapServerResolutions(String mapServerResolutions) {
+    public void setMapServerResolutions(String mapServerResolutions) {
 		this.mapServerResolutions = mapServerResolutions;
 	}
 }

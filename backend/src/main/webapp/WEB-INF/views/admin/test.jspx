@@ -26,29 +26,16 @@
 		<div style="color: red;margin-bottom:20pX;">Achtung! Hier können Änderungen an den aktuellen Daten in der Datenbank vorgenommen werden.</div>
 
 		<div class="fieldset" id="jobServiceTestpanel">
-			<div class="fieldsettitle closepanel" id="jobServiceTesttab"><div style="width:100%; height:15px;">Job-Service-Test</div></div>
+			<div class="fieldsettitle closepanel" id="jobServiceTesttab"><div style="width:100%; height:15px;">Job-Service-Tests</div></div>
 			<div id="jobServiceTestcontent">
 
-				<div class="subtitle">archivVorgaenge</div>
-				<p class="help">
-					Alle Vorgänge, die abgeschlossen sind und seit einer bestimmten Zeit nicht mehr bearbeitet wurden werden archiviert.
-				</p>
-				<ul class="help">
-					<li>Zeit: 0:40 Uhr</li>
-					<li>Vorgänge sind seit einem Monat nicht mehr bearbeitet.</li>
-				</ul>
-				<form method="post">
-					<input type="hidden" name="action" value="archivVorgaenge"/>
-					<input type="submit" value="Ausführen"/>
-				</form>
-	
 				<div class="subtitle">removeUnbestaetigtVorgang</div>
 				<p class="help">
-					Gemeldete aber nicht bestätigte Vorgänge werden gelöscht.
+                    Alle Vorgänge, die gemeldet, aber nach einem bestimmten Zeitraum noch nicht bestätigt wurden, werden gelöscht.
 				</p>
 				<ul class="help">
-					<li>Zeit: _:43 Uhr</li>
-					<li>Vorgänge sind älter als eine Stunde.</li>
+					<li>Ausführungszeitpunkt: täglich um *:43 Uhr</li>
+					<li>Bedingung: Gemeldete Vorgänge wurden nach einem bestimmten Zeitraum noch nicht bestätigt.</li>
 				</ul>
 				<form method="post">
 					<input type="hidden" name="action" value="removeUnbestaetigtVorgang"/>
@@ -57,11 +44,11 @@
 	
 				<div class="subtitle">removeUnbestaetigtUnterstuetzer</div>
 				<p class="help">
-					Noch nicht bestätigte Unterstützungen werden gelöscht.
+                    Alle Unterstützungen, die eingegangen sind, aber nach einem bestimmten Zeitraum noch nicht bestätigt wurden, werden gelöscht.
 				</p>
 				<ul class="help">
-					<li>Zeit: _:46 Uhr</li>
-					<li>Unterstützungen sind älter als eine Stunde.</li>
+					<li>Ausführungszeitpunkt: täglich um *:46 Uhr</li>
+					<li>Bedingung: Eingegangene Unterstützungen wurden nach einem bestimmten Zeitraum noch nicht bestätigt.</li>
 				</ul>
 				<form method="post">
 					<input type="hidden" name="action" value="removeUnbestaetigtUnterstuetzer"/>
@@ -70,11 +57,11 @@
 	
 				<div class="subtitle">removeUnbestaetigtMissbrauchsmeldung</div>
 				<p class="help">
-					Noch nicht bestätigte Missbrauchsmeldungen werden gelöscht.
+					Alle Missbrauchsmeldungen, die eingegangen sind, aber nach einem bestimmten Zeitraum noch nicht bestätigt wurden, werden gelöscht.
 				</p>
 				<ul class="help">
-					<li>Zeit: _:49 Uhr</li>
-					<li>Missbrauchsmeldungen sind älter als eine Stunde.</li>
+					<li>Ausführungszeitpunkt: täglich um *:49 Uhr</li>
+					<li>Bedingung: Eingegangene Missbrauchsmeldungen wurden nach einem bestimmten Zeitraum noch nicht bestätigt.</li>
 				</ul>
 				<form method="post">
 					<input type="hidden" name="action" value="removeUnbestaetigtMissbrauchsmeldung"/>
@@ -83,24 +70,49 @@
 	
 				<div class="subtitle">reBuildClassifier</div>
 				<p class="help">
-					Der Klassifikator für den Zuständigkeitsfinder wird komplett neu aufgebaut.
+					Der Klassifikator für den Zuständigkeitsfinder wird aktualisiert.
 				</p>
 				<ul class="help">
-					<li>Zeit: _:52 Uhr</li>
-					<li>Es werden die 500 Vorgänge genommen, die zuletzt geändert wurden und deren Zuständigkeit akzeptiert ist.</li>
+					<li>Ausführungszeitpunkt: täglich um *:52 Uhr</li>
+					<li>Anmerkung: Es werden je Kategorie maximal die 10 neuesten Vorgänge herangezogen, deren Zuständigkeit akzeptiert ist. Insgesamt werden maximal 1.000 Vorgänge herangezogen.</li>
 				</ul>
 				<form method="post">
 					<input type="hidden" name="action" value="reBuildClassifier"/>
 					<input type="submit" value="Ausführen"/>
 				</form>
+                
+                <div class="subtitle">archivVorgaenge</div>
+				<p class="help">
+					Alle Vorgänge, die abgeschlossen sind und seit einem bestimmten Zeitraum nicht mehr bearbeitet wurden, werden archiviert.
+				</p>
+				<ul class="help">
+					<li>Ausführungszeitpunkt: täglich um 00:40 Uhr</li>
+					<li>Bedingung: Abgeschlosse Vorgänge wurden seit einem bestimmten Zeitraum nicht mehr bearbeitet.</li>
+				</ul>
+				<form method="post">
+					<input type="hidden" name="action" value="archivVorgaenge"/>
+					<input type="submit" value="Ausführen"/>
+				</form>
+                
+                <div class="subtitle">informRedaktionEmpfaenger</div>
+				<p class="help">
+					Die Empfänger redaktioneller E-Mails werden informiert. 
+				</p>
+				<ul class="help">
+					<li>Ausführungszeitpunkt: täglich um 01:40 Uhr</li>
+				</ul>
+				<form method="post">
+					<input type="hidden" name="action" value="informRedaktionEmpfaenger"/>
+					<input type="submit" value="Ausführen"/>
+				</form>
 	
 				<div class="subtitle">informExtern</div>
 				<p class="help">
-					Externe Nutzer des Systems werden durch eine E-Mail über die Vorgänge informiert, die in letzter Zeit an den externen Nutzer delegiert wurden.
+					Externe Nutzer werden mittels E-Mail über diejenigen Vorgänge informiert, die innerhalb der letzten 24 Stunden an sie delegiert wurden.
 				</p>
 				<ul class="help">
-					<li>Zeit: 5:00 Uhr</li>
-					<li>Es werden immer die Vorgänge berücksichtigt, bei denen das Delegieren innerhalb der letzten 24h stattfand.</li>
+					<li>Ausführungszeitpunkt: täglich um 05:00 Uhr</li>
+					<li>Anmerkung: Es werden immer alle Vorgänge berücksichtigt, bei denen das Delegieren innerhalb der letzten 24 Stunden stattfand.</li>
 				</ul>
 				<form method="post">
 					<input type="hidden" name="action" value="informExtern"/>
@@ -109,12 +121,11 @@
 	
 				<div class="subtitle">informDispatcher</div>
 				<p class="help">
-					Dispatcher des Systems werden durch eine E-Mail über die Vorgänge informiert, die in letzter Zeit durch wiederholtes 
-					automatisches Zuordnen letztendlich keinem zugeordnet werden konnten und somit beim Dispatcher gelandet sind.
+					Die Dispatcher werden mittels E-Mail über diejenigen Vorgänge informiert, die innerhalb der letzten 24 Stunden durch wiederholtes automatisches Zuweisung keiner Zuständigkeit zugeordnet werden konnten und somit letztendlich der Dispatcher-Gruppe zugewiesen wurden.
 				</p>
 				<ul class="help">
-					<li>Zeit: 5:05 Uhr</li>
-					<li>Es werden immer die Vorgänge berücksichtigt, bei denen der Dipatcher innerhalb der letzten 24h zugeordnet wurde.</li>
+					<li>Ausführungszeitpunkt: täglich um 05:05 Uhr</li>
+					<li>Anmerkung: Es werden immer alle Vorgänge berücksichtigt, die innerhalb der letzten 24 Stunden der Dispatcher-Gruppe zugeordnet wurden.</li>
 				</ul>
 				<form method="post">
 					<input type="hidden" name="action" value="informDispatcher"/>
@@ -123,11 +134,11 @@
 	
 				<div class="subtitle">informErstellerInBearbeitung</div>
 				<p class="help">
-					Ersteller von Vorgängen werden über die Statusänderung der Vorgägnge auf in Bearbeitung informiert. 
+					Die Ersteller von Vorgängen werden darüber informiert, dass ihre Vorgänge innerhalb der letzten 24 Stunden in Bearbeitung genommen wurden.
 				</p>
 				<ul class="help">
-					<li>Zeit: 10:05 Uhr</li>
-					<li>Es werden immer die Vorgänge berücksichtigt, die innerhalb der letzten 24h auf den Status in Bearbeitung gesetzt wurden.</li>
+					<li>Ausführungszeitpunkt: täglich um 10:05 Uhr</li>
+					<li>Anmerkung: Es werden immer alle Vorgänge berücksichtigt, die innerhalb der letzten 24 Stunden in Bearbeitung genommen wurden.</li>
 				</ul>
 				<form method="post">
 					<input type="hidden" name="action" value="informErstellerInBearbeitung"/>
@@ -136,26 +147,14 @@
 	
 				<div class="subtitle">informErstellerAbschluss</div>
 				<p class="help">
-					Ersteller von Vorgängen werden über den Abschluss der Vorgägnge informiert. 
+                    Die Ersteller von Vorgängen werden darüber informiert, dass ihre Vorgänge innerhalb der letzten 24 Stunden abgeschlossen wurden.
 				</p>
 				<ul class="help">
-					<li>Zeit: 10:10 Uhr</li>
-					<li>Es werden immer die Vorgänge berücksichtigt, die innerhalb der letzten 24h abgeschlossen wurden.</li>
+					<li>Ausführungszeitpunkt: täglich um 10:10 Uhr</li>
+                    <li>Anmerkung: Es werden immer alle Vorgänge berücksichtigt, die innerhalb der letzten 24 Stunden abgeschlossen wurden.</li>
 				</ul>
 				<form method="post">
 					<input type="hidden" name="action" value="informErstellerAbschluss"/>
-					<input type="submit" value="Ausführen"/>
-				</form>
-                
-                <div class="subtitle">informRedaktionEmpfaenger</div>
-				<p class="help">
-					Empfänger redaktioneller E-Mails werden informiert. 
-				</p>
-				<ul class="help">
-					<li>Zeit: 01:40 Uhr</li>
-				</ul>
-				<form method="post">
-					<input type="hidden" name="action" value="informRedaktionEmpfaenger"/>
 					<input type="submit" value="Ausführen"/>
 				</form>
 			</div>
@@ -163,7 +162,7 @@
 		<util:ddpanel name="jobServiceTest"/>
 	
 		<div class="fieldset" id="backendServiceTestpanel">
-			<div class="fieldsettitle closepanel" id="backendServiceTesttab"><div style="width:100%; height:15px;">Backend-Service-Test</div></div>
+			<div class="fieldsettitle closepanel" id="backendServiceTesttab"><div style="width:100%; height:15px;">Backend-Service-Tests</div></div>
 			<div id="backendServiceTestcontent">
 
 				<div class="subtitle">neuer Vorgang</div>	

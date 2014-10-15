@@ -54,7 +54,7 @@
 					<li>API-Dokumentation: Dokumentation der Implementierung für Entwickler</li>
 				</ul>
 				<br/>
-                <p>Die Dokumentation zum Frontend von Klarschiff finden Sie <a href="http://demo.klarschiff-hro.de/pc/dokumentation.html" target="_blank">hier.</a> Wichtigste Elemente dieser Dokumentation sind die Installationsanweisung (inklusive Hervorhebung besonders wichtiger Punkte) und die Kurzbeschreibung der Komponenten, aus denen sich das Frontend zusammensetzt.</p>
+                <p>Die Dokumentation zum Frontend von Klarschiff finden Sie <a href="https://github.com/rostock/klarschiff-frontend/wiki/Dokumentation" target="_blank">hier.</a> Wichtigste Elemente dieser Dokumentation sind die Installationsanweisung (inklusive Hervorhebung besonders wichtiger Punkte) und die Kurzbeschreibung der Komponenten, aus denen sich das Frontend zusammensetzt.</p>
 			</c:otherwise>
 
 		</c:choose>

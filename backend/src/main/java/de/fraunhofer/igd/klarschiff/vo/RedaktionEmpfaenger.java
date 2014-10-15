@@ -33,37 +33,37 @@ public class RedaktionEmpfaenger implements Serializable {
     /**
 	 * Zugehörigkeit des Empfängers zu einer Zuständigkeit
 	 */ 
-	String zustaendigkeit;
+	private String zustaendigkeit;
     
     /**
 	 * E-Mail-Adresse des Empfängers
 	 */
     @NotNull
-	String email;
+	private String email;
     
     /**
      * Eskalationsstufe, in der der Empfänger redaktionelle E-Mails erhalten soll
      */
     @NotNull
-    Short stufe;
+    private Short stufe;
     
     /**
      * Tage, die zwischen dem Versenden redaktioneller E-Mails an den Empfänger verstreichen sollen
      */
     @NotNull
-    Short tageZwischenMails;
+    private Short tageZwischenMails;
 	
 	/**
 	 * Zeitpunkt des letzen Versandes einer redaktionellen E-Mail an den Empfänger
 	 */
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(style = "S-")
-    Date letzteMail;
+    private Date letzteMail;
 	
 	/**
 	 * Soll Empfänger auch E-Mails mit Lob, Kritik und Hinweisen empfangen?
 	 */
-    Boolean empfaengerLobHinweiseKritik;
+    private Boolean empfaengerLobHinweiseKritik;
 	
 	/* --------------- GET + SET ----------------------------*/
 

@@ -26,15 +26,15 @@ public class KommentarDao {
     public void persist(Kommentar kommentar) {
         em.persist(kommentar);
     }
-
+	
 	@Transactional
 	public List<Kommentar> findKommentareForVorgang(Vorgang vorgang) {
-		return em.createQuery("SELECT o FROM Kommentar o WHERE o.vorgang=:vorgang ORDER BY o.datum DESC", Kommentar.class).setParameter("vorgang", vorgang).getResultList();
+		return em.createQuery("SELECT o FROM Kommentar o WHERE o.vorgang=:vorgang AND o.geloescht = 'false' ORDER BY o.datum DESC", Kommentar.class).setParameter("vorgang", vorgang).getResultList();
 	}
 	
 	@Transactional
 	public List<Kommentar> findKommentareForVorgang(Vorgang vorgang, Integer page, Integer size) {
-		TypedQuery<Kommentar> query = em.createQuery("SELECT o FROM Kommentar o WHERE o.vorgang=:vorgang ORDER BY o.datum DESC", Kommentar.class).setParameter("vorgang", vorgang);
+		TypedQuery<Kommentar> query = em.createQuery("SELECT o FROM Kommentar o WHERE o.vorgang=:vorgang AND o.geloescht = 'false' ORDER BY o.datum DESC", Kommentar.class).setParameter("vorgang", vorgang);
 		
 		if (page!=null && size!=null)
 			query.setFirstResult((page-1)*size);
@@ -45,6 +45,10 @@ public class KommentarDao {
 	}
 	
 	public long countKommentare(Vorgang vorgang) {
-		return em.createQuery("SELECT COUNT(o) FROM Kommentar o WHERE o.vorgang=:vorgang", Long.class).setParameter("vorgang", vorgang).getSingleResult();
+		return em.createQuery("SELECT COUNT(o) FROM Kommentar o WHERE o.vorgang=:vorgang AND o.geloescht = 'false'", Long.class).setParameter("vorgang", vorgang).getSingleResult();
+	}
+
+	public Kommentar findById(long id) {
+		return em.find(Kommentar.class, id);
 	}
 }

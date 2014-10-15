@@ -120,6 +120,11 @@
 		<function-signature>java.lang.Boolean isCurrentZustaendigForVorgang(de.fraunhofer.igd.klarschiff.vo.Vorgang)</function-signature>
 	</function>
 	<function>
+		<name>mayCurrentUserEditKommentar</name>
+		<function-class>de.fraunhofer.igd.klarschiff.tld.CustomFunctions</function-class>
+		<function-signature>java.lang.Boolean mayCurrentUserEditKommentar(de.fraunhofer.igd.klarschiff.vo.Kommentar)</function-signature>
+	</function>
+	<function>
 		<name>processException</name>
 		<function-class>de.fraunhofer.igd.klarschiff.tld.CustomFunctions</function-class>
 		<function-signature>java.util.Map processException(java.lang.Throwable)</function-signature>

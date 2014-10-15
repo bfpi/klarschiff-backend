@@ -18,21 +18,20 @@ import org.springframework.stereotype.Service;
 @Service
 public class JobExecutorService {
 
-	int corePoolSize = 2;
-	int maxPooSize = 4;
-	long keepAliveTime = 10;
-	int workQueueSize = 30;
+	int corePoolSize = 5;
+	int maxPoolSize = 10;
+	long keepAliveTime = 24;
 	
-	ThreadPoolExecutor threadPool;
-	ArrayBlockingQueue<Runnable> workQueue;
+	ThreadPoolExecutor threadPool = null;
+	ArrayBlockingQueue<Runnable> workQueue = new ArrayBlockingQueue(1000);
 	
+    
 	/**
 	 * Initialisierung der Queue und des Pools
 	 */
 	@PostConstruct
 	public void init() {
-		workQueue = new ArrayBlockingQueue<Runnable>(workQueueSize);
-		threadPool = new ThreadPoolExecutor(corePoolSize, maxPooSize, keepAliveTime, TimeUnit.MINUTES, workQueue);
+		threadPool = new ThreadPoolExecutor(corePoolSize, maxPoolSize, keepAliveTime, TimeUnit.HOURS, workQueue);
 	}
 	
 	
@@ -63,12 +62,12 @@ public class JobExecutorService {
 		this.corePoolSize = corePoolSize;
 	}
 
-	public int getMaxPooSize() {
-		return maxPooSize;
+	public int getmaxPoolSize() {
+		return maxPoolSize;
 	}
 
-	public void setMaxPooSize(int maxPooSize) {
-		this.maxPooSize = maxPooSize;
+	public void setmaxPoolSize(int maxPoolSize) {
+		this.maxPoolSize = maxPoolSize;
 	}
 
 	public long getKeepAliveTime() {
@@ -77,13 +76,5 @@ public class JobExecutorService {
 
 	public void setKeepAliveTime(long keepAliveTime) {
 		this.keepAliveTime = keepAliveTime;
-	}
-
-	public int getWorkQueueSize() {
-		return workQueueSize;
-	}
-
-	public void setWorkQueueSize(int workQueueSize) {
-		this.workQueueSize = workQueueSize;
 	}
 }
