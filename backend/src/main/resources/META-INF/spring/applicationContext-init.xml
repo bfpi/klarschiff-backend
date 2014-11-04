@@ -47,23 +47,8 @@
 				<ref bean="stadtteilGrenze_14"/>
 				<ref bean="stadtteilGrenze_15"/>
 				<ref bean="stadtteilGrenze_16"/>
-				<ref bean="stadtteilGrenze_17"/>
-				<ref bean="stadtteilGrenze_18"/>
-				<ref bean="stadtteilGrenze_19"/>
-				<ref bean="stadtteilGrenze_20"/>
-				<ref bean="stadtteilGrenze_21"/>
-				<ref bean="stadtteilGrenze_22"/>
-				<ref bean="stadtteilGrenze_23"/>
-				<ref bean="stadtteilGrenze_24"/>
-				<ref bean="stadtteilGrenze_25"/>
-				<ref bean="stadtteilGrenze_26"/>
-				<ref bean="stadtteilGrenze_27"/>
-				<ref bean="stadtteilGrenze_28"/>
-				<ref bean="stadtteilGrenze_29"/>
-				<ref bean="stadtteilGrenze_30"/>
-				<ref bean="stadtteilGrenze_31"/>
                 
-                <ref bean="kat_01"/>
+        <ref bean="kat_01"/>
 				<ref bean="kat_01_01"/>
 				<ref bean="kat_01_02"/>
 				<ref bean="kat_01_03"/>
@@ -228,7 +213,7 @@
 				<ref bean="kat_15_02"/>
 				<ref bean="kat_15_03"/>
                 
-                <ref bean="kat_16"/>				
+        <ref bean="kat_16"/>				
 				<ref bean="kat_16_01"/>
 				<ref bean="kat_16_02"/>
 				<ref bean="kat_16_03"/>
@@ -266,135 +251,69 @@
 		<constructor-arg value="META-INF/oviwkt/stadtgrenze.wkt"/>
 	</bean>
 	<bean id="stadtteilGrenze_01" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
-		<constructor-arg value="Hansaviertel"/>
-		<constructor-arg value="META-INF/oviwkt/Hansaviertel.wkt"/>
+		<constructor-arg value="Eldena"/>
+		<constructor-arg value="META-INF/oviwkt/Eldena.wkt"/>
 	</bean>
 	<bean id="stadtteilGrenze_02" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
-		<constructor-arg value="Hinrichshagen"/>
-		<constructor-arg value="META-INF/oviwkt/Hinrichshagen.wkt"/>
+    <constructor-arg value="Fettenvorstadt/Stadtrandsiedlung"/>
+		<constructor-arg value="META-INF/oviwkt/Fettenvorstadt-Stadtrandsiedlung.wkt"/>
 	</bean>
 	<bean id="stadtteilGrenze_03" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
-		<constructor-arg value="Dierkow-Neu"/>
-		<constructor-arg value="META-INF/oviwkt/Dierkow-Neu.wkt"/>
+		<constructor-arg value="Fleischervorstadt"/>
+		<constructor-arg value="META-INF/oviwkt/Fleischervorstadt.wkt"/>
 	</bean>
 	<bean id="stadtteilGrenze_04" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
-		<constructor-arg value="Stuthof"/>
-		<constructor-arg value="META-INF/oviwkt/Stuthof.wkt"/>
+		<constructor-arg value="Friedrichshagen"/>
+		<constructor-arg value="META-INF/oviwkt/Friedrichshagen.wkt"/>
 	</bean>
 	<bean id="stadtteilGrenze_05" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
-		<constructor-arg value="Dierkow-Ost"/>
-		<constructor-arg value="META-INF/oviwkt/Dierkow-Ost.wkt"/>
+		<constructor-arg value="Groß Schönwalde"/>
+		<constructor-arg value="META-INF/oviwkt/Gross-Schoenwalde.wkt"/>
 	</bean>
 	<bean id="stadtteilGrenze_06" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
-		<constructor-arg value="Gehlsdorf"/>
-		<constructor-arg value="META-INF/oviwkt/Gehlsdorf.wkt"/>
+		<constructor-arg value="Industriegebiet"/>
+		<constructor-arg value="META-INF/oviwkt/Industriegebiet.wkt"/>
 	</bean>
 	<bean id="stadtteilGrenze_07" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
-		<constructor-arg value="Krummendorf"/>
-		<constructor-arg value="META-INF/oviwkt/Krummendorf.wkt"/>
+		<constructor-arg value="Innenstadt"/>
+		<constructor-arg value="META-INF/oviwkt/Innenstadt.wkt"/>
 	</bean>
 	<bean id="stadtteilGrenze_08" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
-		<constructor-arg value="Peez"/>
-		<constructor-arg value="META-INF/oviwkt/Peez.wkt"/>
+		<constructor-arg value="Ladebow"/>
+		<constructor-arg value="META-INF/oviwkt/Ladebow.wkt"/>
 	</bean>
-
 	<bean id="stadtteilGrenze_09" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
-		<constructor-arg value="Kröpeliner-Tor-Vorstadt"/>
-		<constructor-arg value="META-INF/oviwkt/Kröpeliner-Tor-Vorstadt.wkt"/>
+		<constructor-arg value="Nördliche Mühlenvorstadt"/>
+		<constructor-arg value="META-INF/oviwkt/Noerdliche-Muehlenvorstadt.wkt"/>
 	</bean>
-
 	<bean id="stadtteilGrenze_10" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
-		<constructor-arg value="Markgrafenheide"/>
-		<constructor-arg value="META-INF/oviwkt/Markgrafenheide.wkt"/>
+		<constructor-arg value="Ostseeviertel"/>
+		<constructor-arg value="META-INF/oviwkt/Ostseeviertel.wkt"/>
 	</bean>
-	
 	<bean id="stadtteilGrenze_11" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
-		<constructor-arg value="Dierkow-West"/>
-		<constructor-arg value="META-INF/oviwkt/Dierkow-West.wkt"/>
+    <constructor-arg value="Riems/Insel Koos"/>
+		<constructor-arg value="META-INF/oviwkt/Riems-Insel-Koos.wkt"/>
 	</bean>
-	
 	<bean id="stadtteilGrenze_12" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
-		<constructor-arg value="Nienhagen"/>
-		<constructor-arg value="META-INF/oviwkt/Nienhagen.wkt"/>
+		<constructor-arg value="Schönwalde II"/>
+		<constructor-arg value="META-INF/oviwkt/Schoenwalde-II.wkt"/>
 	</bean>
-	
 	<bean id="stadtteilGrenze_13" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
-		<constructor-arg value="Hinrichsdorf"/>
-		<constructor-arg value="META-INF/oviwkt/Hinrichsdorf.wkt"/>
+    <constructor-arg value="Schönwalde I/Südstadt"/>
+		<constructor-arg value="META-INF/oviwkt/Schoenwalde-I-Suedstadt.wkt"/>
 	</bean>
 		<bean id="stadtteilGrenze_14" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
-		<constructor-arg value="Schmarl"/>
-		<constructor-arg value="META-INF/oviwkt/Schmarl.wkt"/>
+		<constructor-arg value="Steinbeckervorstadt"/>
+		<constructor-arg value="META-INF/oviwkt/Steinbeckervorstadt.wkt"/>
 	</bean>
 		<bean id="stadtteilGrenze_15" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
-		<constructor-arg value="Groß Klein"/>
-		<constructor-arg value="META-INF/oviwkt/Groß Klein.wkt"/>
+    <constructor-arg value="Südliche Mühlenvorstadt/Obstbausiedlung"/>
+		<constructor-arg value="META-INF/oviwkt/Suedliche-Muehlenvorstadt-Obstbausiedlung.wkt"/>
 	</bean>
 		<bean id="stadtteilGrenze_16" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
-		<constructor-arg value="Südstadt"/>
-		<constructor-arg value="META-INF/oviwkt/Südstadt.wkt"/>
+		<constructor-arg value="Wieck"/>
+		<constructor-arg value="META-INF/oviwkt/Wieck.wkt"/>
 	</bean>
-		<bean id="stadtteilGrenze_17" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
-		<constructor-arg value="Toitenwinkel"/>
-		<constructor-arg value="META-INF/oviwkt/Toitenwinkel.wkt"/>
-	</bean>
-		<bean id="stadtteilGrenze_18" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
-		<constructor-arg value="Wiethagen"/>
-		<constructor-arg value="META-INF/oviwkt/Wiethagen.wkt"/>
-	</bean>
-		<bean id="stadtteilGrenze_19" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
-		<constructor-arg value="Torfbrücke"/>
-		<constructor-arg value="META-INF/oviwkt/Torfbrücke.wkt"/>
-	</bean>
-		<bean id="stadtteilGrenze_20" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
-		<constructor-arg value="Jürgeshof"/>
-		<constructor-arg value="META-INF/oviwkt/Jürgeshof.wkt"/>
-	</bean>
-		<bean id="stadtteilGrenze_21" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
-		<constructor-arg value="Brinckmansdorf"/>
-		<constructor-arg value="META-INF/oviwkt/Brinckmansdorf.wkt"/>
-	</bean>
-		<bean id="stadtteilGrenze_22" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
-		<constructor-arg value="Stadtmitte"/>
-		<constructor-arg value="META-INF/oviwkt/Stadtmitte.wkt"/>
-	</bean>
-		<bean id="stadtteilGrenze_23" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
-		<constructor-arg value="Hohe Düne"/>
-		<constructor-arg value="META-INF/oviwkt/Hohe Düne.wkt"/>
-	</bean>
-		<bean id="stadtteilGrenze_24" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
-		<constructor-arg value="Biestow"/>
-		<constructor-arg value="META-INF/oviwkt/Biestow.wkt"/>
-	</bean>
-		<bean id="stadtteilGrenze_25" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
-		<constructor-arg value="Gartenstadt"/>
-		<constructor-arg value="META-INF/oviwkt/Gartenstadt.wkt"/>
-	</bean>
-		<bean id="stadtteilGrenze_26" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
-		<constructor-arg value="Reutershagen"/>
-		<constructor-arg value="META-INF/oviwkt/Reutershagen.wkt"/>
-	</bean>
-		<bean id="stadtteilGrenze_27" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
-		<constructor-arg value="Seebad Warnemünde"/>
-		<constructor-arg value="META-INF/oviwkt/Seebad Warnemünde.wkt"/>
-	</bean>
-		<bean id="stadtteilGrenze_28" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
-		<constructor-arg value="Diedrichshagen"/>
-		<constructor-arg value="META-INF/oviwkt/Diedrichshagen.wkt"/>
-	</bean>
-		<bean id="stadtteilGrenze_29" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
-		<constructor-arg value="Lichtenhagen"/>
-		<constructor-arg value="META-INF/oviwkt/Lichtenhagen.wkt"/>
-	</bean>
-		<bean id="stadtteilGrenze_30" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
-		<constructor-arg value="Lütten Klein"/>
-		<constructor-arg value="META-INF/oviwkt/Lütten Klein.wkt"/>
-	</bean>
-		<bean id="stadtteilGrenze_31" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
-		<constructor-arg value="Evershagen"/>
-		<constructor-arg value="META-INF/oviwkt/Evershagen.wkt"/>
-	</bean>
-    
     
 	<bean id="kat_01" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:name="Gehweg/Radweg/Straße" p:typ="problem">
 		<property name="children">
