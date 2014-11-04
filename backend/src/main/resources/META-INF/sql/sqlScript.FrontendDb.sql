@@ -17,15 +17,6 @@ SET escape_string_warning = off;
 
 
 -- #######################################################################################
--- # Schema                                                                              #
--- #######################################################################################
-
---CREATE SCHEMA ${f_schema};
---ALTER SCHEMA ${f_schema} OWNER TO ${f_username};
-
-
-
--- #######################################################################################
 -- # Initialisierung                                                                     #
 -- #######################################################################################
 
@@ -53,6 +44,13 @@ DROP TABLE IF EXISTS klarschiff_unterstuetzer CASCADE;
 DROP TABLE IF EXISTS klarschiff_vorgang CASCADE;
 DROP TABLE IF EXISTS klarschiff_vorgangstyp CASCADE;
 
+-- #######################################################################################
+-- # Schema                                                                              #
+-- #######################################################################################
+
+DROP SCHEMA IF EXISTS ${f_schema} CASCADE;
+CREATE SCHEMA ${f_schema};
+ALTER SCHEMA ${f_schema} OWNER TO ${f_username};
 
 
 -- #######################################################################################
@@ -63,15 +61,13 @@ DROP TABLE IF EXISTS klarschiff_vorgangstyp CASCADE;
 CREATE TABLE klarschiff_geo_rss (
     id integer NOT NULL,
     klarschiff_geo_rss_fid integer NOT NULL,               --########### @deprecated ############
-    the_geom geometry,
     ideen boolean NOT NULL,
     ideen_kategorien character varying(255),
     probleme boolean NOT NULL,
-    probleme_kategorien character varying(255),
-    CONSTRAINT enforce_dims_the_geom CHECK ((ndims(the_geom) = 2)),
-    CONSTRAINT enforce_srid_the_geom CHECK ((srid(the_geom) = 25833))
+    probleme_kategorien character varying(255)
 );
 ALTER TABLE klarschiff_geo_rss OWNER TO ${f_username};
+SELECT AddGeometryColumn('klarschiff_geo_rss', 'the_geom', 25833, 'MULTIPOLYGON', 2);
 
 
 -- Name: klarschiff_kategorie; Type: TABLE; Schema: ${f_schema}; Owner: ${f_username}; Tablespace: 
@@ -99,26 +95,18 @@ ALTER TABLE klarschiff_missbrauchsmeldung OWNER TO ${f_username};
 
 -- Name: klarschiff_stadtgrenze_hro; Type: TABLE; Schema: ${f_schema}; Owner: ${f_username}; Tablespace: 
 CREATE TABLE klarschiff_stadtgrenze_hro (
-    ogc_fid integer NOT NULL,
-    the_geom geometry,
-    CONSTRAINT enforce_dims_the_geom CHECK ((ndims(the_geom) = 2)),
-    CONSTRAINT enforce_geotype_the_geom CHECK (((geometrytype(the_geom) = 'POLYGON'::text) OR (the_geom IS NULL))),
-    CONSTRAINT enforce_srid_the_geom CHECK ((srid(the_geom) = 25833))
+    ogc_fid integer NOT NULL
 );
 ALTER TABLE klarschiff_stadtgrenze_hro OWNER TO ${f_username};
-
+SELECT AddGeometryColumn('klarschiff_stadtgrenze_hro', 'the_geom', 25833, 'MULTIPOLYGON', 2);
 
 -- Name: klarschiff_stadtteile_hro; Type: TABLE; Schema: ${f_schema}; Owner: ${f_username}; Tablespace: 
 CREATE TABLE klarschiff_stadtteile_hro (
     ogc_fid integer NOT NULL,
-    bezeichnung character varying,
-    the_geom geometry,
-    CONSTRAINT enforce_dims_the_geom CHECK ((ndims(the_geom) = 2)),
-    CONSTRAINT enforce_geotype_the_geom CHECK (((geometrytype(the_geom) = 'POLYGON'::text) OR (the_geom IS NULL))),
-    CONSTRAINT enforce_srid_the_geom CHECK ((srid(the_geom) = 25833))
+    bezeichnung character varying
 );
 ALTER TABLE klarschiff_stadtteile_hro OWNER TO ${f_username};
-
+SELECT AddGeometryColumn('klarschiff_stadtteile_hro', 'the_geom', 25833, 'MULTIPOLYGON', 2);
 
 -- Name: klarschiff_status; Type: TABLE; Schema: ${f_schema}; Owner: ${f_username}; Tablespace: 
 CREATE TABLE klarschiff_status (
@@ -153,7 +141,6 @@ CREATE TABLE klarschiff_vorgang (
     datum_statusaenderung timestamp without time zone,
     details text,
     kategorieid bigint,
-    the_geom geometry,
     titel character varying(300),
     vorgangstyp character varying(255),
     status character varying(255),
@@ -167,12 +154,12 @@ CREATE TABLE klarschiff_vorgang (
     details_vorhanden boolean,
     details_freigegeben boolean,
     archiviert boolean,
-    zustaendigkeit character varying(255),
-    CONSTRAINT enforce_dims_the_geom CHECK ((ndims(the_geom) = 2)),
-    CONSTRAINT enforce_geotype_the_geom CHECK (((geometrytype(the_geom) = 'POINT'::text) OR (the_geom IS NULL))),
-    CONSTRAINT enforce_srid_the_geom CHECK ((srid(the_geom) = 25833))
+    zustaendigkeit character varying(255)
 );
+
 ALTER TABLE klarschiff_vorgang OWNER TO ${f_username};
+
+SELECT AddGeometryColumn('klarschiff_vorgang', 'the_geom', 25833, 'POINT', 2);
 
 
 -- Name: klarschiff_vorgangstyp; Type: TABLE; Schema: ${f_schema}; Owner: ${f_username}; Tablespace: 

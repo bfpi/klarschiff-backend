@@ -1030,7 +1030,7 @@ BEGIN
       COALESCE(standortsuche.hausnummerzusatz, '') || ' ' || 
       COALESCE(standortsuche.zusatz, '')) AS adresse, 
       ST_Distance(standortsuche.geom, NEW.ovi) AS distanz
-    INTO ergebnis
+    INTO ergebnis_adresse
     FROM klarschiff_vorgang, 
       dblink('standortsuche_verbindung', 'SELECT strasse, hausnummer, hausnummerzusatz, ' ||
         'zusatz, geom FROM standortsuche') AS standortsuche(strasse varchar, 
@@ -1045,7 +1045,7 @@ BEGIN
       ST_Distance(standortsuche.geom, NEW.ovi) AS distanz
     INTO ergebnis_strasse
     FROM klarschiff_vorgang, 
-      dblink('standortsuche_verbindung', 'SELECT strasse, geom FROM standortsuche.standortsuche WHERE strasse_id IS NOT NULL and hausnummer IS NULL') AS standortsuche(strasse varchar, geom geometry)
+      dblink('standortsuche_verbindung', 'SELECT strasse, geom FROM standortsuche WHERE strasse_id IS NOT NULL and hausnummer IS NULL') AS standortsuche(strasse varchar, geom geometry)
     WHERE ST_DWithin(standortsuche.geom, NEW.ovi, 100) 
     ORDER BY ST_Distance(standortsuche.geom, NEW.ovi) LIMIT 1;
 
