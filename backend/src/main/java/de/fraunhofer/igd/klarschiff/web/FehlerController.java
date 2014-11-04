@@ -92,7 +92,7 @@ public class FehlerController {
     	{
     		//Daten ermitteln
     		String exceptionId = UUID.randomUUID().toString().replaceAll(":", "_");
-    		Exception exception = (Exception)request.getAttribute("javax.servlet.error.exception");
+    		Throwable exception = (Throwable)request.getAttribute("javax.servlet.error.exception");
     		String requestPath = (String)request.getAttribute("javax.servlet.forward.request_uri");
     		String queryString = (String)request.getAttribute("javax.servlet.forward.query_string");
     		String forwardRequestPath = (String)request.getAttribute("javax.servlet.forward.path_info");
