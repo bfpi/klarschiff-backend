@@ -1272,9 +1272,9 @@ span.show-tooltip-text {
 
 /* ######################### HEADER ######################### */
 #root_style_header {
-    height:65px;
+    height:120px;
 	margin-bottom: 10px;
-    background-color:#FFCD05;
+    background-image: url("../images/header.png");
     color:#D81920;
     text-align:center;
     line-height:62px;

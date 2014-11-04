@@ -46,7 +46,7 @@
 	    
 	    	<!-- HEADER -->
 			<div id="root_style_header">
-                DEMO
+                <![CDATA[&nbsp;]]>
             </div>
 			
 			<div id="root_style_midle">
