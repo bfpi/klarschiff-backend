@@ -8,14 +8,13 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
+import javax.imageio.plugins.jpeg.JPEGImageWriteParam;
 
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.sun.image.codec.jpeg.JPEGCodec;
-import com.sun.image.codec.jpeg.JPEGEncodeParam;
-import com.sun.image.codec.jpeg.JPEGImageEncoder;
+import com.sun.imageio.plugins.jpeg.JPEGImageWriter;
 
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
 
@@ -24,6 +23,7 @@ import de.fraunhofer.igd.klarschiff.vo.Vorgang;
  * zum Auslesen eines Bildes aus einem HTTP-Request
  * @author Stefan Audersch (Fraunhofer IGD)
  * @author Marcus Kröller (Fraunhofer IGD)
+ * @author Alexander Kruth (BFPI)
  */
 @Service
 public class ImageService {
@@ -194,15 +194,19 @@ public class ImageService {
 	 * @throws IOException
 	 */
 	private static byte[] imageToByteArray(BufferedImage image) throws IOException {
-		ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(bos);
-		JPEGEncodeParam param = encoder.getDefaultJPEGEncodeParam(image);
-        param.setQuality(0.8f, false);
-        encoder.setJPEGEncodeParam(param);
-        encoder.encode(image);        
-        ImageIO.write(image, "jpg" , bos); 
- 
-        return bos.toByteArray();
+        JPEGImageWriter writer = (JPEGImageWriter) ImageIO.getImageWritersBySuffix("jpg").next();
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        try {
+          writer.setOutput(ImageIO.createImageOutputStream(bos));
+          JPEGImageWriteParam param = (JPEGImageWriteParam) writer.getDefaultWriteParam();
+          param.setCompressionMode(JPEGImageWriteParam.MODE_EXPLICIT);
+          param.setCompressionQuality(0.8f);
+          writer.write(image);
+          return bos.toByteArray();
+        } finally {
+          writer.dispose();
+          bos.close();
+        }
 	}
 
 	/* --------------- GET + SET ----------------------------*/
