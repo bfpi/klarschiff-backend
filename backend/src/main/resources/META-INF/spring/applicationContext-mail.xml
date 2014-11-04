@@ -46,8 +46,8 @@
     />
 
 	<bean class="org.springframework.mail.SimpleMailMessage" id="vorgangBestaetigungMailTemplate"
-	p:from="${mail.from}" p:subject="Klarschiff.HRO: Bestätigung einer Meldung">
-		<property name="text"><value><![CDATA[Sehr geehrte(r) Nutzer/-in von Klarschiff.HRO,
+	p:from="${mail.from}" p:subject="Klarschiff: Bestätigung einer Meldung">
+		<property name="text"><value><![CDATA[Sehr geehrte(r) Nutzer/-in von Klarschiff,
 
 vielen Dank für Ihre Meldung. Für die weitere Bearbeitung benötigen wir nochmals eine Bestätigung von Ihnen. Bitte rufen Sie daher innerhalb von 24 Stunden nach Eingang dieser E-Mail einmalig folgende URL auf: %baseUrlFrontend%vorgangBestaetigung/?hash=%hash%
 
@@ -62,12 +62,12 @@ Bitte beachten Sie: Das Löschen funktioniert nur, solange wir Ihre Meldung noch
 Vielen Dank und mit freundlichen Grüßen
 
 
-Ihr Klarschiff.HRO-Team]]></value></property>
+Ihr Klarschiff-Team]]></value></property>
 	</bean>
 
 	<bean class="org.springframework.mail.SimpleMailMessage" id="unterstuetzungBestaetigungMailTemplate"
-	p:from="${mail.from}" p:subject="Klarschiff.HRO: Bestätigung einer Unterstützung">
-		<property name="text"><value><![CDATA[Sehr geehrte(r) Nutzer/-in von Klarschiff.HRO,
+	p:from="${mail.from}" p:subject="Klarschiff: Bestätigung einer Unterstützung">
+		<property name="text"><value><![CDATA[Sehr geehrte(r) Nutzer/-in von Klarschiff,
 
 vielen Dank für Ihre Unterstützung einer bestehenden Meldung. Damit die Unterstützung gültig wird, benötigen wir nochmals eine Bestätigung von Ihnen. Bitte rufen Sie daher innerhalb von 24 Stunden nach Eingang dieser E-Mail einmalig folgende URL auf: %baseUrlFrontend%unterstuetzerBestaetigung/?hash=%hash%
 
@@ -76,12 +76,12 @@ Bitte beachten Sie: Falls Sie nicht innerhalb der 24-Stunden-Frist bestätigen, 
 Vielen Dank und mit freundlichen Grüßen
 
 
-Ihr Klarschiff.HRO-Team]]></value></property>
+Ihr Klarschiff-Team]]></value></property>
 	</bean>
 
 	<bean class="org.springframework.mail.SimpleMailMessage" id="missbrauchsmeldungBestaetigungMailTemplate"
-	p:from="${mail.from}" p:subject="Klarschiff.HRO: Bestätigung einer Missbrauchsmeldung">
-		<property name="text"><value><![CDATA[Sehr geehrte(r) Nutzer/-in von Klarschiff.HRO,
+	p:from="${mail.from}" p:subject="Klarschiff: Bestätigung einer Missbrauchsmeldung">
+		<property name="text"><value><![CDATA[Sehr geehrte(r) Nutzer/-in von Klarschiff,
 
 vielen Dank für Ihre Missbrauchsmeldung zu einer bestehenden Meldung. Damit die Missbrauchsmeldung gültig wird, benötigen wir nochmals eine Bestätigung von Ihnen. Bitte rufen Sie daher innerhalb von 24 Stunden nach Eingang dieser E-Mail einmalig folgende URL auf: %baseUrlFrontend%missbrauchsmeldungBestaetigung/?hash=%hash%
   
@@ -90,14 +90,14 @@ Bitte beachten Sie: Falls Sie nicht innerhalb der 24-Stunden-Frist bestätigen, 
 Vielen Dank und mit freundlichen Grüßen
 
 
-Ihr Klarschiff.HRO-Team]]></value></property>
+Ihr Klarschiff-Team]]></value></property>
 	</bean>
 
 	<bean class="org.springframework.mail.SimpleMailMessage" id="vorgangWeiterleitenMailTemplate"
-	p:from="${mail.from}" p:subject="Klarschiff.HRO: weitergeleiteter Vorgang">
+	p:from="${mail.from}" p:subject="Klarschiff: weitergeleiteter Vorgang">
 		<property name="text"><value><![CDATA[Sehr geehrte Damen und Herren,
 
-der folgende Vorgang wurde durch die/den Klarschiff.HRO-Nutzer/-in %absender% an Sie weitergeleitet:
+der folgende Vorgang wurde durch die/den Klarschiff-Nutzer/-in %absender% an Sie weitergeleitet:
 
 Anmerkungen der/des Absenderin/Absenders
 ****************************************
@@ -110,12 +110,12 @@ Daten des weitergeleiteten Vorgangs
 Vielen Dank und mit freundlichen Grüßen
 
 
-Ihr Klarschiff.HRO-Team]]></value></property>
+Ihr Klarschiff-Team]]></value></property>
 	</bean>
 
 	<bean class="org.springframework.mail.SimpleMailMessage" id="informDispatcherMailTemplate"
-	p:from="${mail.from}" p:subject="Klarschiff.HRO: nicht zuordbare Vorgänge">
-		<property name="text"><value><![CDATA[Sehr geehrte(r) Dispatcher/-in von Vorgängen in Klarschiff.HRO,
+	p:from="${mail.from}" p:subject="Klarschiff: nicht zuordbare Vorgänge">
+		<property name="text"><value><![CDATA[Sehr geehrte(r) Dispatcher/-in von Vorgängen in Klarschiff,
 
 innerhalb der letzten 24 Stunden wurden Ihnen in Ihrer Funktion als Dispatcher/-in automatisch Vorgänge überantwortet, die auch nach mehrfacher automatischer Zuständigkeitsfindung nicht eindeutig zugewiesen werden konnten. Bitte bearbeiten Sie diese Vorgänge oder weisen Sie Ihnen die jeweils passende Zuständigkeit manuell zu: 
 
@@ -126,12 +126,12 @@ Daten der nicht zuordbaren Vorgänge
 Vielen Dank und mit freundlichen Grüßen
 
 
-Ihr Klarschiff.HRO-Team]]></value></property>
+Ihr Klarschiff-Team]]></value></property>
 	</bean>
 	
 	<bean class="org.springframework.mail.SimpleMailMessage" id="informExternMailTemplate"
-	p:from="${mail.from}" p:subject="Klarschiff.HRO: neue delegierte Vorgänge">
-		<property name="text"><value><![CDATA[Sehr geehrte(r) Bearbeiter/-in von Vorgängen in Klarschiff.HRO,
+	p:from="${mail.from}" p:subject="Klarschiff: neue delegierte Vorgänge">
+		<property name="text"><value><![CDATA[Sehr geehrte(r) Bearbeiter/-in von Vorgängen in Klarschiff,
 		
 innerhalb der letzten 24 Stunden wurden Vorgänge an Sie delegiert. Bitte bearbeiten Sie diese Vorgänge: 
 
@@ -142,12 +142,12 @@ Daten der neuen delegierten Vorgänge
 Vielen Dank und mit freundlichen Grüßen
 
 
-Ihr Klarschiff.HRO-Team]]></value></property>
+Ihr Klarschiff-Team]]></value></property>
 	</bean>
 
 	<bean class="org.springframework.mail.SimpleMailMessage" id="informErstellerMailInBearbeitungTemplate"
-	p:from="${mail.from}" p:subject="Klarschiff.HRO: Meldung in Bearbeitung">
-		<property name="text"><value><![CDATA[Sehr geehrte(r) Nutzer/-in von Klarschiff.HRO,
+	p:from="${mail.from}" p:subject="Klarschiff: Meldung in Bearbeitung">
+		<property name="text"><value><![CDATA[Sehr geehrte(r) Nutzer/-in von Klarschiff,
 		
 hiermit teilen wir Ihnen mit, dass Ihre Meldung vom %datum% nun in Bearbeitung ist.
 
@@ -158,12 +158,12 @@ Nachfolgend können Sie nochmals die wichtigsten Daten Ihrer Meldung in kompakte
 Vielen Dank und mit freundlichen Grüßen
 
 
-Ihr Klarschiff.HRO-Team]]></value></property>
+Ihr Klarschiff-Team]]></value></property>
 	</bean>
 
 	<bean class="org.springframework.mail.SimpleMailMessage" id="informErstellerMailAbschlussTemplate"
-	p:from="${mail.from}" p:subject="Klarschiff.HRO: Bearbeitung einer Meldung ist abgeschlossen">
-		<property name="text"><value><![CDATA[Sehr geehrte(r) Nutzer/-in von Klarschiff.HRO,
+	p:from="${mail.from}" p:subject="Klarschiff: Bearbeitung einer Meldung ist abgeschlossen">
+		<property name="text"><value><![CDATA[Sehr geehrte(r) Nutzer/-in von Klarschiff,
 		
 hiermit teilen wir Ihnen mit, dass die Bearbeitung Ihrer Meldung vom %datum% abgeschlossen ist, und zwar mit folgendem Status:
 
@@ -176,7 +176,7 @@ Nachfolgend können Sie nochmals die wichtigsten Daten Ihrer Meldung in kompakte
 Vielen Dank und mit freundlichen Grüßen
 
 
-Ihr Klarschiff.HRO-Team]]></value></property>
+Ihr Klarschiff-Team]]></value></property>
 	</bean>
 	
 	<bean class="org.springframework.mail.SimpleMailMessage" id="kriteriumOffenNichtAkzeptiertTemplate">
@@ -236,10 +236,10 @@ Nummer   Typ       Status
 	</bean>
 	
 	<bean class="org.springframework.mail.SimpleMailMessage" id="informRedaktionEmpfaengerMailTemplate"
-	p:from="${mail.from}" p:subject="Klarschiff.HRO: wichtige redaktionelle Hinweise">
+	p:from="${mail.from}" p:subject="Klarschiff: wichtige redaktionelle Hinweise">
 		<property name="text"><value><![CDATA[Sehr geehrte(r) Bearbeiter/-in,
 
-es gibt folgende wichtige Hinweise zum Bearbeitungsstand in Ihrer Klarschiff.HRO-Rolle %zustaendigkeit%:
+es gibt folgende wichtige Hinweise zum Bearbeitungsstand in Ihrer Klarschiff-Rolle %zustaendigkeit%:
 		
 %kriteriumOffenNichtAkzeptiert%
 
@@ -255,10 +255,10 @@ es gibt folgende wichtige Hinweise zum Bearbeitungsstand in Ihrer Klarschiff.HRO
 
 %kriteriumOhneZustaendigkeit%
 
-Wir möchten Sie bitten diesen Hinweisen nachzugehen. Eine kurzfristige Reaktion auf die Vorgänge in Klarschiff.HRO trägt zum positiven Image der Verwaltung bei.
+Wir möchten Sie bitten diesen Hinweisen nachzugehen. Eine kurzfristige Reaktion auf die Vorgänge in Klarschiff trägt zum positiven Image der Verwaltung bei.
 
 
-Diese E-Mail wird automatisch vom Klarschiff.HRO-System generiert.]]></value></property>
+Diese E-Mail wird automatisch vom Klarschiff-System generiert.]]></value></property>
 	</bean>
 	
 </beans>
