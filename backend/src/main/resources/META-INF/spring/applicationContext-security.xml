@@ -60,6 +60,8 @@
 		url="${ldap.server.url}" 
 		port="10389"
 		root="${ldap.root}"
+		manager-dn="${ldap.managerDn}"
+		manager-password="${ldap.managerPassword}"
 		/>
 
 	<secure:ldap-user-service id="ldapUserService"
