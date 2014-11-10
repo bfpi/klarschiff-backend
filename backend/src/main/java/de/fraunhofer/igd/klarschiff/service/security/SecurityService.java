@@ -199,6 +199,11 @@ public class SecurityService {
         
         Collections.sort(userList, new Comparator<User>() {
             public int compare(User u1, User u2) {
+              if (u1 == null)
+                return -1;
+              else if (u2 == null)
+                return 1;
+              else
                 return u1.getId().compareTo(u2.getId());
             }
         });
