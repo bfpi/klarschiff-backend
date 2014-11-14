@@ -91,7 +91,7 @@
 					</td>
 				</c:if>					
 				
-				<c:if test="${not empty vorgang.fotoThumbJpg}">
+				<c:if test="${not empty vorgang.fotoThumb}">
 					<td valign="middle">
 						<span>Foto
 						<c:url value="/images/freigabeStatus_${vorgang.fotoFreigabeStatus}.png" var="url"/>

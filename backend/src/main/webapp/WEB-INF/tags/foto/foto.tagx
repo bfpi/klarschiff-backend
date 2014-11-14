@@ -22,17 +22,14 @@
 	<c:if test="${empty render or render}">
 		<c:set value="${fx:bean('imageService')}" var="imageService"/>
 		<c:choose>
-			<c:when test="${typ == 'orginal'}">
-				<c:url value="/TODO" var="url"/>
-			</c:when>
 			<c:when test="${typ == 'thumb'}">
-				<c:url value="/foto/thumb/${vorgang.id}.jpg?timestamp=${now}" var="url"/>
+				<c:url value="${imageService.url}${vorgang.fotoThumb}?timestamp=${now}" var="url"/>
 				<c:set value="${imageService.fotoThumbWidth+2}px" var="width"/>
 				<c:set value="${imageService.fotoThumbHeight+2}px" var="height"/>
 			</c:when>
 			<c:otherwise>
 				<c:set value="normal" var="typ"/>
-				<c:url value="/foto/normal/${vorgang.id}.jpg?timestamp=${now}" var="url"/>
+				<c:url value="${imageService.url}${vorgang.fotoNormal}?timestamp=${now}" var="url"/>
 				<c:set value="${imageService.fotoNormalWidth+2}px" var="width"/>
 				<c:set value="${imageService.fotoNormalHeight+2}px" var="height"/>
 			</c:otherwise>
@@ -54,7 +51,7 @@
 								<script defer="defer" type="text/javascript">
 									$(function(){ $(".colorbox").colorbox(); });
 								</script>
-								<c:url value="/foto/gross/${vorgang.id}.jpg?timestamp=${now}" var="gross_url"/>
+								<c:url value="${imageService.url}${vorgang.fotoGross}?timestamp=${now}" var="gross_url"/>
 								<a href="${gross_url}" class="colorbox">
 									<img id="picture" alt="Foto" src="${url}" style="border:none" title="Foto größer anzeigen"/>
 								</a>					

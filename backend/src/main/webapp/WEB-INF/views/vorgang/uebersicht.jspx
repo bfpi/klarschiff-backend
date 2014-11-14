@@ -240,7 +240,7 @@
 					</div>				
 				</td>
 				<td width="50%" style="vertical-align:top;padding-left:10px;">
-					<c:if test="${not empty vorgang.fotoNormalJpg and vorgang.fotoFreigabeStatus!='geloescht'}">
+					<c:if test="${not empty vorgang.fotoNormal and vorgang.fotoFreigabeStatus!='geloescht'}">
 						<div class="fieldset" style="height:220px;">
 							<div class="fieldsettitle">Foto</div>
 							<table>

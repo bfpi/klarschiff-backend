@@ -768,17 +768,10 @@ CREATE TRIGGER klarschiff_trigger_verlauf
 CREATE OR REPLACE FUNCTION klarschiff_triggerfunction_vorgang()
 RETURNS trigger AS $BODY$
 DECLARE
-  foto_normal text;          -- Backend = Frontend: foto_normal_jpg
-  foto_thumb text;           -- Backend = Frontend: foto_thumb_jpg
   query text;
 
 BEGIN
   PERFORM dblink_connect('hostaddr=${f_host} port=${f_port} dbname=${f_dbname} user=${f_username} password=${f_password}');
-
-  IF TG_OP IN ('INSERT', 'UPDATE') THEN
-    foto_normal := encode(new.foto_normal_jpg, 'base64');
-    foto_thumb := encode(new.foto_thumb_jpg, 'base64');
-  END IF;
 
   query := CASE TG_OP
     WHEN 'DELETE' THEN
@@ -811,16 +804,23 @@ BEGIN
         ELSE
           'NULL'
         END || ', ' ||
-      --fotoNormalJpg & fotoThumbJpg
-      CASE WHEN foto_normal IS NOT NULL AND new.foto_freigabe_status = 'extern' THEN
-        'foto_normal_jpg = decode(' || quote_literal(foto_normal) || ', ''base64''), ' ||
-        'foto_thumb_jpg = decode(' ||quote_literal(foto_thumb) || ', ''base64'')'
-      ELSE
-        'foto_normal_jpg = NULL, foto_thumb_jpg = NULL'
-      END || ', ' ||
+      --fotoNormal
+      'foto_normal = ' || CASE
+        WHEN new.foto_freigabe_status = 'extern' AND new.foto_normal IS NOT NULL AND new.foto_normal <> '' THEN
+          quote_literal(new.foto_normal)
+        ELSE
+          'NULL'
+        END || ', ' ||
+      --fotoThumb
+      'foto_thumb = ' || CASE
+        WHEN new.foto_freigabe_status = 'extern' AND new.foto_thumb IS NOT NULL AND new.foto_thumb <> '' THEN
+          quote_literal(new.foto_thumb)
+        ELSE
+          'NULL'
+        END || ', ' ||
       --fotoVorhanden
       'foto_vorhanden = ' || CASE 
-        WHEN length(new.foto_normal_jpg) IS NOT NULL AND length(new.foto_thumb_jpg) IS NOT NULL THEN
+        WHEN length(new.foto_normal) IS NOT NULL AND length(new.foto_thumb) IS NOT NULL THEN
           'TRUE'
         ELSE
           'FALSE'
@@ -877,8 +877,8 @@ BEGIN
       'WHERE id = ' || new.id
     WHEN 'INSERT' THEN
       'INSERT INTO ${f_schema}.klarschiff_vorgang (id, datum, vorgangstyp, ' ||
-        'the_geom, status, kategorieid, titel, details, bemerkung, foto_normal_jpg, ' ||
-        'foto_thumb_jpg, foto_vorhanden, foto_freigegeben, betreff_vorhanden, ' ||
+        'the_geom, status, kategorieid, titel, details, bemerkung, foto_normal, ' ||
+        'foto_thumb, foto_vorhanden, foto_freigegeben, betreff_vorhanden, ' ||
         'betreff_freigegeben, details_vorhanden, details_freigegeben, archiviert, zustaendigkeit) ' ||
       'VALUES (' || new.id ||', ' || quote_literal(new.datum::varchar(50)) || ', ' ||
         quote_literal(new.typ) || ', ' || quote_literal(new.ovi::text) || ', ' ||
@@ -904,17 +904,23 @@ BEGIN
           ELSE
             'NULL'
         END || ', ' ||
-        --fotoNormalJpg & fotoThumbJpg
+        --fotoNormal
         CASE
-          WHEN new.foto_normal_jpg IS NOT NULL AND new.foto_freigabe_status = 'extern' THEN
-            'decode(' || quote_literal(foto_normal) || ', ''base64''), ' ||
-            'decode(' ||quote_literal(foto_thumb) || ', ''base64'')'
+          WHEN new.foto_normal IS NOT NULL AND new.foto_freigabe_status = 'extern' THEN
+            quote_literal(foto_normal)
           ELSE
-            'NULL, NULL'
+            'NULL'
+        END || ', ' ||
+        --fotoThumb
+        CASE
+          WHEN new.foto_thumb IS NOT NULL AND new.foto_freigabe_status = 'extern' THEN
+            quote_literal(foto_thumb)
+          ELSE
+            'NULL'
         END || ', ' ||
         --fotoVorhanden
         CASE
-          WHEN length(new.foto_normal_jpg) IS NOT NULL AND length(new.foto_thumb_jpg) IS NOT NULL THEN
+          WHEN length(new.foto_normal) IS NOT NULL AND length(new.foto_thumb) IS NOT NULL THEN
             'TRUE'
           ELSE
             'FALSE'
