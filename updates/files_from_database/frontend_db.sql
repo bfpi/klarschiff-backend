@@ -3,7 +3,7 @@ ADD COLUMN foto_normal varchar(255),
 ADD COLUMN foto_thumb varchar(255);
 
 DROP TRIGGER klarschiff_trigger_vorgang ON klarschiff.klarschiff_vorgang CASCADE;
-DROP FUNCTION klarschiff.klarschiff_triggerfunction_vorgang;
+DROP FUNCTION klarschiff.klarschiff_triggerfunction_vorgang();
 
 DROP VIEW klarschiff.klarschiff_wfs_tmpl;
 DROP VIEW klarschiff.klarschiff_wfs;

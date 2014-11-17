@@ -907,14 +907,14 @@ BEGIN
         --fotoNormal
         CASE
           WHEN new.foto_normal IS NOT NULL AND new.foto_freigabe_status = 'extern' THEN
-            quote_literal(foto_normal)
+            quote_literal(new.foto_normal)
           ELSE
             'NULL'
         END || ', ' ||
         --fotoThumb
         CASE
           WHEN new.foto_thumb IS NOT NULL AND new.foto_freigabe_status = 'extern' THEN
-            quote_literal(foto_thumb)
+            quote_literal(new.foto_thumb)
           ELSE
             'NULL'
         END || ', ' ||
