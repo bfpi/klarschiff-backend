@@ -165,20 +165,17 @@ public class Vorgang implements Serializable {
 	/**
 	 * Foto
 	 */
-	@Type(type="org.hibernate.type.BinaryType") 
-	byte[] fotoGrossJpg;
+	private String fotoGross;
     
 	/**
 	 * Foto
 	 */
-    @Type(type="org.hibernate.type.BinaryType") 
-    byte[] fotoNormalJpg;
+    private String fotoNormal;
 
     /**
      * Foto des Vorganges als Vorschaubild
      */
-    @Type(type="org.hibernate.type.BinaryType") 
-    byte[] fotoThumbJpg;
+    private String fotoThumb;
     
     /**
      * Freigabestatus des Foto
@@ -294,7 +291,7 @@ public class Vorgang implements Serializable {
      */
     @Transient
     public boolean getFotoExists() {
-    	return (fotoNormalJpg!=null);
+    	return (fotoNormal!=null);
     }
     
 	
@@ -488,33 +485,33 @@ public class Vorgang implements Serializable {
 		this.hash = hash;
 	}
 
-	public byte[] getFotoGrossJpg() {
-		if(fotoGrossJpg == null)
-			return fotoNormalJpg;
+	public String getFotoGross() {
+		if(fotoGross == null)
+			return fotoNormal;
 		else
-			return fotoGrossJpg;
+			return fotoGross;
 	}
 
-	public void setFotoGrossJpg(byte[] fotoGrossJpg) {
-		this.fotoGrossJpg = fotoGrossJpg;
+	public void setFotoGross(String fotoGross) {
+		this.fotoGross = fotoGross;
 	}
     
-	public byte[] getFotoNormalJpg() {
-		return fotoNormalJpg;
+	public String getFotoNormal() {
+		return fotoNormal;
 	}
 
-	public void setFotoNormalJpg(byte[] fotoNormalJpg) {
-		this.fotoNormalJpg = fotoNormalJpg;
+	public void setFotoNormal(String fotoNormal) {
+		this.fotoNormal = fotoNormal;
 	}
 
-	public byte[] getFotoThumbJpg() {
-		return fotoThumbJpg;
+	public String getFotoThumb() {
+		return fotoThumb;
 	}
 
-	public void setFotoThumbJpg(byte[] fotoThumbJpg) {
-		this.fotoThumbJpg = fotoThumbJpg;
+	public void setFotoThumb(String fotoThumb) {
+		this.fotoThumb = fotoThumb;
 	}
-
+    
 	public EnumFreigabeStatus getFotoFreigabeStatus() {
 		return fotoFreigabeStatus;
 	}

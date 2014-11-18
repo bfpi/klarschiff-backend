@@ -15,8 +15,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.sun.imageio.plugins.jpeg.JPEGImageWriter;
+import de.fraunhofer.igd.klarschiff.service.settings.SettingsService;
 
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.UUID;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Der Service dient zur Manipulation von Bildern, wie z.B. das Skalieren oder das Ausschwärzen von Bildbereichen, bzw. 
@@ -27,7 +34,9 @@ import de.fraunhofer.igd.klarschiff.vo.Vorgang;
  */
 @Service
 public class ImageService {
-	
+    @Autowired
+	SettingsService settingsService;
+
 	/**
 	 * Gibt an, wie ein Bild skaliert werden soll. Das Ergebnisbild hat nach der Skalierung die entsprechenden maximalen
 	 * Abmaße bei <code>max</code>. Das Ergebnisbild hat nach der Skalierung genau die Abmaße haben soll, wobei entsprechende 
@@ -52,10 +61,48 @@ public class ImageService {
 	 * @throws Exception
 	 */
 	public void setImageForVorgang(byte[] image, Vorgang vorgang) throws Exception {
-    	vorgang.setFotoGrossJpg(scaleImage(image, fotoGrossWidth, fotoGrossHeight, scaleTyp));
-    	vorgang.setFotoNormalJpg(scaleImage(image, fotoNormalWidth, fotoNormalHeight, scaleTyp));
-    	vorgang.setFotoThumbJpg(scaleImage(image, fotoThumbWidth, fotoThumbHeight, scaleTyp));
+      vorgang.setFotoGross(generateFilenameAndWriteFile(
+              scaleImage(image, fotoGrossWidth, fotoGrossHeight, scaleTyp),
+              vorgang, vorgang.getFotoGross(), "gross"));
+      vorgang.setFotoNormal(generateFilenameAndWriteFile(
+              scaleImage(image, fotoNormalWidth, fotoNormalHeight, scaleTyp),
+              vorgang, vorgang.getFotoNormal(), "normal"));
+      vorgang.setFotoThumb(generateFilenameAndWriteFile(
+              scaleImage(image, fotoThumbWidth, fotoThumbHeight, scaleTyp),
+              vorgang, vorgang.getFotoThumb(), "thumb"));
 	}
+
+    /**
+     * Speichert das in <code>image</code> übergebene Bild in den Dateinamen,
+     * der über <code>prevFilename</code> übergeben wurde. Falls dieser leer
+     * ist, wird mittels <code>vorgang</code>-ID und <code>middlePart</code>
+     * und einer UUID ein neuer Dateiname generiert und zurück gegeben.
+     * @param image Bilddaten
+     * @param vorgang Vorgang
+     * @param prevFilename Dateiname, darf leer sein
+     * @param middlePart Zum Erzeugen eines neuen Dateinamens
+     * @return neuer oder übergebener Dateiname
+     * @throws IOException
+     */
+    public String generateFilenameAndWriteFile(byte[] image, Vorgang vorgang,
+            String prevFilename, String middlePart) throws IOException {
+      String filename;
+      if(prevFilename == null) {
+        filename = StringUtils.join(new String[] { "ks",
+          vorgang.getId().toString(), middlePart, UUID.randomUUID().toString()
+        }, "_");
+      }
+      else {
+        filename = prevFilename;
+      }
+      Files.write(Paths.get(getPath(), filename), image);
+      return filename;
+    }
+
+    public BufferedImage imageFromVorgang(Vorgang vorgang) throws IOException {
+      InputStream inStream = Files.newInputStream(Paths.get(getPath(), vorgang.getFotoGross()));
+      return ImageIO.read(inStream);
+    }
 
 	/**
 	 * Schwarz Bereiche in einem Bild aus. Das Vorschau- als auch das eigentliche Bild eines Vorganges wird dabei geändert.
@@ -68,7 +115,7 @@ public class ImageService {
 	{
 		try {
 			//censor normal image
-			BufferedImage image = ImageIO.read(new ByteArrayInputStream(vorgang.getFotoGrossJpg()));
+			BufferedImage image = imageFromVorgang(vorgang);
 			float heightScaling =  (float)image.getHeight() / height.floatValue();
 			float widthScaling = (float)image.getWidth() / width.floatValue();
 			Graphics2D graphics2D = image.createGraphics();
@@ -81,14 +128,8 @@ public class ImageService {
 									(int)((int)Float.parseFloat(cords[3])*widthScaling));
 			}
 			graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-			
 			graphics2D.drawImage(image, null, null);
-			vorgang.setFotoGrossJpg(imageToByteArray(image));
-	    	
-			//Normal neu berechnen
-			vorgang.setFotoNormalJpg(scaleImage(vorgang.getFotoGrossJpg(), fotoNormalWidth, fotoNormalHeight, scaleTyp));
-			//Thumb neu berechnen
-			vorgang.setFotoThumbJpg(scaleImage(vorgang.getFotoGrossJpg(), fotoThumbWidth, fotoThumbHeight, scaleTyp));
+			setImageForVorgang(imageToByteArray(image), vorgang);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -97,7 +138,7 @@ public class ImageService {
     public void rotateImageForVorgang(Vorgang vorgang)
 	{
 		try {
-            BufferedImage oldImage = ImageIO.read(new ByteArrayInputStream(vorgang.getFotoGrossJpg()));
+            BufferedImage oldImage = imageFromVorgang(vorgang);
             BufferedImage newImage = new BufferedImage(oldImage.getHeight(), oldImage.getWidth(), oldImage.getType());
             
             Graphics2D graphics2D = (Graphics2D) newImage.getGraphics();
@@ -105,9 +146,7 @@ public class ImageService {
             graphics2D.translate((newImage.getWidth() - oldImage.getWidth()) / 2, (newImage.getHeight() - oldImage.getHeight()) / 2);
             graphics2D.drawImage(oldImage, 0, 0, oldImage.getWidth(), oldImage.getHeight(), null);
 
-            vorgang.setFotoGrossJpg(imageToByteArray(newImage));
-            vorgang.setFotoNormalJpg(scaleImage(vorgang.getFotoGrossJpg(), fotoNormalWidth, fotoNormalHeight, scaleTyp));
-            vorgang.setFotoThumbJpg(scaleImage(vorgang.getFotoGrossJpg(), fotoThumbWidth, fotoThumbHeight, scaleTyp));
+            setImageForVorgang(imageToByteArray(newImage), vorgang);
             
         } catch (Exception e) {
 			throw new RuntimeException(e);
@@ -251,4 +290,11 @@ public class ImageService {
 		this.scaleTyp = scaleTyp;
 	}
 
+    public String getPath() {
+        return settingsService.getPropertyValue("image.path");
+    }
+
+    public String getUrl() {
+        return settingsService.getPropertyValue("image.url");
+    }
 }

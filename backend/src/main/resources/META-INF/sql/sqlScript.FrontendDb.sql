@@ -145,8 +145,8 @@ CREATE TABLE klarschiff_vorgang (
     vorgangstyp character varying(255),
     status character varying(255),
     bemerkung character varying,
-    foto_normal_jpg bytea,
-    foto_thumb_jpg bytea,
+    foto_normal character varying(255),
+    foto_thumb character varying(255),
     foto_vorhanden boolean,
     foto_freigegeben boolean,
     betreff_vorhanden boolean,
@@ -256,104 +256,6 @@ ALTER TABLE ONLY klarschiff_missbrauchsmeldung
     ADD CONSTRAINT klarschiff_missbrauchsmeldung_vorgang_fkey FOREIGN KEY (vorgang) REFERENCES klarschiff_vorgang(id);
 
 
-    
--- #######################################################################################
--- # Triggerfunktionen                                                                   #
--- #######################################################################################
-
--- Name: klarschiff_triggerfunction_vorgang(); Type: FUNCTION; Schema: ${f_schema}; Owner: ${f_username}
-CREATE OR REPLACE FUNCTION klarschiff_triggerfunction_vorgang() RETURNS trigger AS
-$BODY$
-DECLARE
-	basepath text;
-	
-	filedata bytea;
-	filename text;
-	
-	_oid oid;
-	_fd int;
-	_function_result int;
-
-BEGIN
-   	--basepath = '/nfs/web/klarschiff/fotos/', 'c:/temp/;
-	basepath = '${f_exportimage_path}';
-
-	-- ########## Foto normal ##########
-	filename = basepath||'ks_'||new.id||'_normal.jpg';
-	IF new.foto_normal_jpg IS NOT NULL THEN
-		filedata = new.foto_normal_jpg;
-	ELSE
-		filedata = ''::bytea;
-	END IF;
-	
-	-- ########## Foto normal - Datei erzeugen ##########
-	--temporaer ein oid erzeugen
-	_oid = lo_create(-1);
-
-	--oid oeffnen
-	_fd = lo_open(_oid, 131072);
-
-	--Daten in das OID schreiben
-	_function_result = lowrite(_fd, filedata);
-
-	--oid schliessen
-	_function_result = lo_close(_fd);
-
-	--oid in Datei exportieren
-	_function_result = lo_export(_oid, filename);
-
-	--oid entfernen
-	_function_result = lo_unlink(_oid);
-
-	-- ########## Foto thumb ##########
-	filename = basepath||'ks_'||new.id||'_thumb.jpg';
-	IF new.foto_thumb_jpg IS NOT NULL THEN
-		filedata = new.foto_thumb_jpg;
-	ELSE
-		filedata = ''::bytea;
-	END IF;
-	
-	-- ########## Foto thumb - Datei erzeugen ##########
-	--temporaer ein oid erzeugen
-	_oid = lo_create(-1);
-
-	--oid oeffnen
-	_fd = lo_open(_oid, 131072);
-
-	--Daten in das OID schreiben
-	_function_result = lowrite(_fd, filedata);
-
-	--oid schliessen
-	_function_result = lo_close(_fd);
-
-	--oid in Datei exportieren
-	_function_result = lo_export(_oid, filename);
-
-	--oid entfernen
-	_function_result = lo_unlink(_oid);
-	
-	RETURN NEW;
-END;
-$BODY$ LANGUAGE plpgsql VOLATILE COST 100;
-
-ALTER FUNCTION klarschiff_triggerfunction_vorgang() OWNER TO ${f_username};
-
-
-
--- #######################################################################################
--- # Trigger                                                                             #
--- #######################################################################################
-
-DROP TRIGGER IF EXISTS klarschiff_trigger_vorgang ON klarschiff_vorgang CASCADE;
-
-CREATE TRIGGER klarschiff_trigger_vorgang 
-	AFTER INSERT OR UPDATE 
-	ON klarschiff_vorgang 
-	FOR EACH ROW 
-	EXECUTE PROCEDURE klarschiff_triggerfunction_vorgang();
-
-
-	
 -- #######################################################################################
 -- # Views                                                                               #
 -- #######################################################################################
@@ -379,8 +281,10 @@ CREATE OR REPLACE VIEW klarschiff_wfs AS
 				v.id = u.vorgang AND 
 				u.datum IS NOT NULL
 		) AS unterstuetzer,
-		v.foto_vorhanden, 
+		v.foto_vorhanden,
 		v.foto_freigegeben,
+		v.foto_normal,
+		v.foto_thumb,
         v.betreff_vorhanden,
         v.betreff_freigegeben,
         v.details_vorhanden,
@@ -422,9 +326,11 @@ CREATE OR REPLACE VIEW klarschiff_wfs_tmpl AS
     	t.name AS vorgangstyp_name, 
     	v.status, 
     	s.name AS status_name, 
-    	v.unterstuetzer, 
-    	v.foto_vorhanden, 
-		v.foto_freigegeben,
+    	v.unterstuetzer,
+    	v.foto_vorhanden,
+    	v.foto_freigegeben,
+    	v.foto_normal,
+    	v.foto_thumb,
         v.betreff_vorhanden,
         v.betreff_freigegeben,
         v.details_vorhanden,
