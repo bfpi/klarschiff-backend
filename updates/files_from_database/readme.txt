@@ -23,3 +23,6 @@
 7. DbLink-Skript per Admin-Funktion im Backend ausführen
 
 8. Im Geoserver für die Layer vorgaenge und vorgaenge_rss den Feature Type erneut laden
+
+9. Überflüssige Spalten im Backend löschen
+  psql -f drop_columns.sql klarschiff_backend klarschiff_backend
