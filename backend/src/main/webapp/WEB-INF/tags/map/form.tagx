@@ -156,7 +156,8 @@
                 vorgaenge = new OpenLayers.Layer.Vector("alle Vorgänge", {
                     protocol: new OpenLayers.Protocol.WFS({
                         version: "1.1.0",
-                        url: "/ows/klarschiff/wfs",
+                        //url: "/ows/klarschiff/wfs",
+                        url: "${wfsCapabilitiesUrl}",
                         featureType: "vorgaenge",
                         featureNS: "http://demo.klarschiff-hro.de/ows/klarschiff",
                         srsName: "EPSG:25833",
