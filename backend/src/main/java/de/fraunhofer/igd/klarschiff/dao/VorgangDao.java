@@ -392,8 +392,9 @@ public class VorgangDao {
 			.addGroupByAttribute("vo.statusOrdinal")
 			.addGroupByAttribute("vo.statusKommentar")
 			.addGroupByAttribute("vo.erstsichtungErfolgt")
-			.addGroupByAttribute("vo.fotoNormalJpg")
-			.addGroupByAttribute("vo.fotoThumbJpg")
+			.addGroupByAttribute("vo.fotoGross")
+			.addGroupByAttribute("vo.fotoNormal")
+			.addGroupByAttribute("vo.fotoThumb")
 			.addGroupByAttribute("vo.fotoFreigabeStatus")
 			.addGroupByAttribute("vo.zustaendigkeit")
 			.addGroupByAttribute("vo.zustaendigkeitStatus")
@@ -853,7 +854,7 @@ public class VorgangDao {
 			.addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert = FALSE)")
 			.addWhereConditions("vo.status IN ('offen', 'inBearbeitung', 'wirdNichtBearbeitet', 'abgeschlossen')")
 			.addWhereConditions("vo.erstsichtungErfolgt = TRUE")
-			.addWhereConditions("((vo.betreff IS NOT NULL AND vo.betreff != '' AND (betreffFreigabeStatus IS NULL OR betreffFreigabeStatus = 'intern')) OR (vo.details IS NOT NULL AND vo.details != '' AND (detailsFreigabeStatus IS NULL OR detailsFreigabeStatus = 'intern')) OR (length(vo.fotoThumbJpg) IS NOT NULL AND (fotoFreigabeStatus IS NULL OR fotoFreigabeStatus = 'intern')))");
+			.addWhereConditions("((vo.betreff IS NOT NULL AND vo.betreff != '' AND (betreffFreigabeStatus IS NULL OR betreffFreigabeStatus = 'intern')) OR (vo.details IS NOT NULL AND vo.details != '' AND (detailsFreigabeStatus IS NULL OR detailsFreigabeStatus = 'intern')) OR (vo.fotoThumb IS NOT NULL AND (fotoFreigabeStatus IS NULL OR fotoFreigabeStatus = 'intern')))");
         if (administrator == false)
             query.addWhereConditions("vo.zustaendigkeit = :zustaendigkeit").addParameter("zustaendigkeit", zustaendigkeit);
         query.orderBy("vo.zustaendigkeit, vo.id");

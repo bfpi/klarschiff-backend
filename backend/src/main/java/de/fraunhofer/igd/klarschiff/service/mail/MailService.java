@@ -31,6 +31,7 @@ import de.fraunhofer.igd.klarschiff.vo.RedaktionKriterien;
 import de.fraunhofer.igd.klarschiff.vo.Unterstuetzer;
 import de.fraunhofer.igd.klarschiff.vo.Verlauf;
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
+import java.nio.file.Paths;
 
 /**
  * Die Klasse stellt einen Service bereit über den E-Mails erstellt und versendet werden können.
@@ -181,8 +182,10 @@ public class MailService {
 
 			mimeMessageHelper.setText(mailText);
 			
-			if (sendFoto && vorgang.getFotoNormalJpg()!=null) 
-				mimeMessageHelper.addAttachment("foto.jpg", new ByteArrayResource(vorgang.getFotoNormalJpg()), "image/jpg");
+			if (sendFoto && vorgang.getFotoNormal()!=null)
+				mimeMessageHelper.addAttachment("foto.jpg",
+                        Paths.get(settingsService.getPropertyValue("image.path"),
+                                vorgang.getFotoNormal()).toFile());
 				
 			jobExecutorService.runJob(new MailSenderJob(this, mimeMessageHelper.getMimeMessage()));
 			
