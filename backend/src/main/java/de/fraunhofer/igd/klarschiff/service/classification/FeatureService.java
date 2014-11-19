@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -164,36 +165,53 @@ public class FeatureService {
 				}
 			} else {
 				//Wert neu berechnen
+                                logger.debug("createFeature fuer Vorgang Wert neu berechnen Attribut ("+attribute.getName() +")");
 				if (attribute.getName().equals("kategorie")) {
 					instance.setValue(attribute, vorgang.getKategorie().getId()+"");
+                                        logger.debug("createFeature instance.setValue Attribut:("+attribute.getName()+") value:("+ vorgang.getKategorie().getId() +")");
 				} else if (attribute.getName().equals("zustaendigkeit")) {
 					if (inclClassAttribute) {
-						if (vorgang.getZustaendigkeitStatus()==EnumZustaendigkeitStatus.akzeptiert)
+                                                logger.info("createFeature instance.setValue Zustaendigkeit Attribut:("+attribute.getName()+") Zustaendigkeit:("+vorgang.getZustaendigkeit()+")");
+						if (vorgang.getZustaendigkeitStatus()==EnumZustaendigkeitStatus.akzeptiert){
+                                                        int valIndex = attribute.indexOfValue(vorgang.getZustaendigkeit()+"");
+                                                        if (valIndex == -1){
+                                                            logger.debug("FEHLER createFeature instance.setValue Attribut:("+attribute.getName()+") Zustaendigkeit:("+vorgang.getZustaendigkeit()+") ist nicht definiert (keine interne AD-Gruppe)");
+                                                            //throw new Exception("FEHLER createFeature instance.setValue Attribut:("+attribute.getName()+") Zustaendigkeit:("+vorgang.getZustaendigkeit()+") ist nicht definiert (keine interne AD-Gruppe)");
+                                                        }else{
 							instance.setValue(attribute, vorgang.getZustaendigkeit()+"");
+                                                        }
+                                                }
 						else throw new Exception("Zuständigkeit des Vorganges kann nicht als Feature mit aufgenommen werden, da die Zuständigkeit noch nicht akzeptiert ist.");
 					}
 				} else if (attribute.isGeoAttribute()){
 					Double value = geoService.calculateFeature(vorgang.getOvi(), attribute);
-					if (value!=null) instance.setValue(attribute, value);
+                                        if (value!=null) logger.debug("createFeature fuer Vorgang Wert neu berechnen Ovi "+value.toString());
+                                        if (value==null) logger.debug("createFeature fuer Vorgang Wert neu berechnen Ovi null");
+                                        if (!(value > 0)) logger.debug("createFeature fuer Vorgang Wert neu berechnen Ovi 0 -> null");
+					if (value!=null && value > 0) instance.setValue(attribute, value);
 				} else throw new Exception("Unbekanntes Feature: "+attribute.getName());
 			}
 		}
 		
 		if (vorgangFeatures==null) {
 			//vorgangFeatures neu anlegen
+                        logger.info("createFeature vorgangFeatures neu anlegen");
 			vorgangFeatures = new VorgangFeatures();
 			vorgangFeatures.setVorgang(vorgang);
 			//einzelne Werte in vorgangFeatures ablegen
 			for (Enumeration<Attribute> iter=ctx.getAttributes().elements(); iter.hasMoreElements(); )
 			{
 				Attribute attribute = iter.nextElement();
-				if (!attribute.isUpdateble && !instance.isMissing(attribute))
+				if (!attribute.isUpdateble) { 
+                                    if ( !instance.isMissing(attribute)) {
 					vorgangFeatures.getFeatures().put(attribute.getName(), (attribute.isNominal()) ? instance.stringValue(attribute) : instance.value(attribute)+"");
+			}
+                                }
 			}
 			//vorgangFeatures speichern
 			vorgangDao.persist(vorgangFeatures);
 		}
-		
+                
 		return instance;
 	}
 
@@ -212,15 +230,35 @@ public class FeatureService {
 		List<Instance> instances = new ArrayList<Instance>(); 
 			
 		for (String zustaendigkeit : kategorie.getInitialZustaendigkeiten()) {
+                        String[] zustaendigkeitpair = zustaendigkeit.split(";");
+                        String zustaendigkeitpairstring = zustaendigkeit;
+                        zustaendigkeit = zustaendigkeitpair[0];
+                        String flaeche = "";
 			try {
+                                logger.debug("createFeature fuer die Kategorie ("+kategorie.getName()+") initiale Zustaendigkeit:("+zustaendigkeit+")  versuch.");
 				Instance instance = new Instance(ctx.getAttributes().size());
 				instance.setValue(ctx.getAttributMap().get("kategorie") ,kategorie.getId()+"");
-				if (inclClassAttribute) instance.setValue(ctx.getAttributMap().get("zustaendigkeit"), zustaendigkeit);
+				if (inclClassAttribute){
+                                    int valIndex = ctx.getAttributMap().get("zustaendigkeit").indexOfValue(zustaendigkeit);
+                                    if (valIndex == -1){
+                                        logger.info("FEHLER createFeature fuer die Kategorie ("+kategorie.getName()+") initiale Zustaendigkeit:("+zustaendigkeit+") ist nicht definiert (keine interne AD-Gruppe)");
+                                        //throw new Exception("FEHLER createFeature instance.setValue Attribut:("+attribute.getName()+") Zustaendigkeit:("+vorgang.getZustaendigkeit()+") ist nicht definiert (keine interne AD-Gruppe)");
+                                    }else{
+                                        instance.setValue(ctx.getAttributMap().get("zustaendigkeit"), zustaendigkeit);
+                                    }
+                                    if(zustaendigkeitpair.length > 1){
+                                        flaeche = zustaendigkeitpair[1];
+                                        flaeche = StringUtils.replace(flaeche,"$komma$", ",");
+                                        logger.debug("createFeature fuer die Kategorie ("+kategorie.getName()+") initiale Zustaendigkeit:("+zustaendigkeit+") FLAECHE: geo_"+flaeche+"_innerhalb = 1 .");
+                                        instance.setValue(ctx.getAttributMap().get("geo_"+flaeche+"_innerhalb"), 1);
+                                    }
 				instances.add(instance);
+                                }
 			} catch (Exception e) {
-				logger.info("Initiale Zuständigkeit ("+zustaendigkeit+") für die Kategorie ("+kategorie.getName()+") ist nicht gültig.");
+				logger.info("FEHLER Initiale Zustaendigkeit ("+zustaendigkeitpairstring+") fuer die Kategorie ("+kategorie.getName()+") ist fehlgeschlagen.");
 			}
 		}
+                
 		return instances;
 	}
 	
