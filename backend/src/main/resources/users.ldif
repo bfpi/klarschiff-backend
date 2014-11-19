@@ -98,6 +98,176 @@ member: uid=u2,ou=klarschiff,ou=SV,ou=system
 o: intern
 ou: Gruppe 2 intern
 
+dn: cn=a67_ausstattung,ou=klarschiff,ou=SV,ou=system
+objectClass: groupOfNames
+objectClass: top
+cn: a67_ausstattung
+member: uid=u2,ou=klarschiff,ou=SV,ou=system
+o: intern
+ou: Gruppe 2 intern
+
+dn: cn=a66_ampeln,ou=klarschiff,ou=SV,ou=system
+objectClass: groupOfNames
+objectClass: top
+cn: a66_ampeln
+member: uid=u2,ou=klarschiff,ou=SV,ou=system
+member: uid=u2,ou=klarschiff,ou=SV,ou=system
+o: intern
+ou: Gruppe 2 intern
+
+dn: cn=a67_stadtbaeume,ou=klarschiff,ou=SV,ou=system
+objectClass: groupOfNames
+objectClass: top
+cn: a67_stadtbaeume
+member: uid=u2,ou=klarschiff,ou=SV,ou=system
+member: uid=u2,ou=klarschiff,ou=SV,ou=system
+o: intern
+ou: Gruppe 2 intern
+
+dn: cn=a82_ordnungswidrigkeiten,ou=klarschiff,ou=SV,ou=system
+objectClass: groupOfNames
+objectClass: top
+cn: a82_ordnungswidrigkeiten
+member: uid=u2,ou=klarschiff,ou=SV,ou=system
+member: uid=u2,ou=klarschiff,ou=SV,ou=system
+o: intern
+ou: Gruppe 2 intern
+
+dn: cn=a66_strassenaufsicht,ou=klarschiff,ou=SV,ou=system
+objectClass: groupOfNames
+objectClass: top
+cn: a66_strassenaufsicht
+member: uid=u2,ou=klarschiff,ou=SV,ou=system
+member: uid=u2,ou=klarschiff,ou=SV,ou=system
+o: intern
+ou: Gruppe 2 intern
+
+dn: cn=a73_muelltonnen,ou=klarschiff,ou=SV,ou=system
+objectClass: groupOfNames
+objectClass: top
+cn: a73_muelltonnen
+member: uid=u2,ou=klarschiff,ou=SV,ou=system
+member: uid=u2,ou=klarschiff,ou=SV,ou=system
+o: intern
+ou: Gruppe 2 intern
+
+dn: cn=a67_spielplatzservice,ou=klarschiff,ou=SV,ou=system
+objectClass: groupOfNames
+objectClass: top
+cn: a67_spielplatzservice
+member: uid=u2,ou=klarschiff,ou=SV,ou=system
+member: uid=u2,ou=klarschiff,ou=SV,ou=system
+o: intern
+ou: Gruppe 2 intern
+
+dn: cn=a66_beleuchtung,ou=klarschiff,ou=SV,ou=system
+objectClass: groupOfNames
+objectClass: top
+cn: a66_beleuchtung
+member: uid=u2,ou=klarschiff,ou=SV,ou=system
+member: uid=u2,ou=klarschiff,ou=SV,ou=system
+o: intern
+ou: Gruppe 2 intern
+
+dn: cn=a41_denkmalpflege,ou=klarschiff,ou=SV,ou=system
+objectClass: groupOfNames
+objectClass: top
+cn: a41_denkmalpflege
+member: uid=u2,ou=klarschiff,ou=SV,ou=system
+member: uid=u2,ou=klarschiff,ou=SV,ou=system
+o: intern
+ou: Gruppe 2 intern
+
+dn: cn=a66_oepnv,ou=klarschiff,ou=SV,ou=system
+objectClass: groupOfNames
+objectClass: top
+cn: a66_oepnv
+member: uid=u2,ou=klarschiff,ou=SV,ou=system
+member: uid=u2,ou=klarschiff,ou=SV,ou=system
+o: intern
+ou: Gruppe 2 intern
+
+dn: cn=a73_umweltaufsicht,ou=klarschiff,ou=SV,ou=system
+objectClass: groupOfNames
+objectClass: top
+cn: a73_umweltaufsicht
+member: uid=u2,ou=klarschiff,ou=SV,ou=system
+member: uid=u2,ou=klarschiff,ou=SV,ou=system
+o: intern
+ou: Gruppe 2 intern
+
+dn: cn=a66_ausstattung,ou=klarschiff,ou=SV,ou=system
+objectClass: groupOfNames
+objectClass: top
+cn: a66_ausstattung
+member: uid=u2,ou=klarschiff,ou=SV,ou=system
+member: uid=u2,ou=klarschiff,ou=SV,ou=system
+o: intern
+ou: Gruppe 2 intern
+
+dn: cn=a66_bauwerke,ou=klarschiff,ou=SV,ou=system
+objectClass: groupOfNames
+objectClass: top
+cn: a66_bauwerke
+member: uid=u2,ou=klarschiff,ou=SV,ou=system
+member: uid=u2,ou=klarschiff,ou=SV,ou=system
+o: intern
+ou: Gruppe 2 intern
+
+dn: cn=a73_strassenreinigung,ou=klarschiff,ou=SV,ou=system
+objectClass: groupOfNames
+objectClass: top
+cn: a73_strassenreinigung
+member: uid=u2,ou=klarschiff,ou=SV,ou=system
+member: uid=u2,ou=klarschiff,ou=SV,ou=system
+o: intern
+ou: Gruppe 2 intern
+
+dn: cn=a73_altfahrzeuge,ou=klarschiff,ou=SV,ou=system
+objectClass: groupOfNames
+objectClass: top
+cn: a73_altfahrzeuge
+member: uid=u2,ou=klarschiff,ou=SV,ou=system
+member: uid=u2,ou=klarschiff,ou=SV,ou=system
+o: intern
+ou: Gruppe 2 intern
+
+dn: cn=a67_gruenflaechen,ou=klarschiff,ou=SV,ou=system
+objectClass: groupOfNames
+objectClass: top
+cn: a67_gruenflaechen
+member: uid=u2,ou=klarschiff,ou=SV,ou=system
+member: uid=u2,ou=klarschiff,ou=SV,ou=system
+o: intern
+ou: Gruppe 2 intern
+
+dn: cn=a66_beschilderung,ou=klarschiff,ou=SV,ou=system
+objectClass: groupOfNames
+objectClass: top
+cn: a66_beschilderung
+member: uid=u2,ou=klarschiff,ou=SV,ou=system
+member: uid=u2,ou=klarschiff,ou=SV,ou=system
+o: intern
+ou: Gruppe 2 intern
+
+dn: cn=a82_forst,ou=klarschiff,ou=SV,ou=system
+objectClass: groupOfNames
+objectClass: top
+cn: a82_forst
+member: uid=u2,ou=klarschiff,ou=SV,ou=system
+member: uid=u2,ou=klarschiff,ou=SV,ou=system
+o: intern
+ou: Gruppe 2 intern
+
+dn: cn=a73_container,ou=klarschiff,ou=SV,ou=system
+objectClass: groupOfNames
+objectClass: top
+cn: a73_container
+member: uid=u2,ou=klarschiff,ou=SV,ou=system
+member: uid=u2,ou=klarschiff,ou=SV,ou=system
+o: intern
+ou: Gruppe 2 intern
+
 #externe Gruppen für KlarschiffHRO
 dn: cn=e1,ou=klarschiff,ou=SV,ou=system
 objectClass: groupOfNames
