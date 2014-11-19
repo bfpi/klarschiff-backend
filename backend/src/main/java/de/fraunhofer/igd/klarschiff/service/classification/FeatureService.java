@@ -17,6 +17,7 @@ import de.fraunhofer.igd.klarschiff.dao.VorgangDao;
 import de.fraunhofer.igd.klarschiff.service.geo.GeoService;
 import de.fraunhofer.igd.klarschiff.service.security.Role;
 import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
+import de.fraunhofer.igd.klarschiff.service.settings.SettingsService;
 import de.fraunhofer.igd.klarschiff.vo.EnumZustaendigkeitStatus;
 import de.fraunhofer.igd.klarschiff.vo.Kategorie;
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
@@ -45,6 +46,9 @@ public class FeatureService {
 	
 	@Autowired
 	SecurityService securityService;
+        
+	@Autowired
+	SettingsService settingsService;
 	
 	List<String> bewirtschaftungFeatures;
 	List<String> flaechenFeatures;
@@ -71,21 +75,35 @@ public class FeatureService {
 
 		//Bewirtschaftung vom WFS
 		for(String b : bewirtschaftungFeatures) {
+                logger.debug("attributes.appendElements(Attribute.createGeoAttributes(geo_bewirtschaftung_"+b+","+
+                        settingsService.getPropertyValue("geo.wfs.zufiprefex")+":bewirtschaftung,...,"+
+                        settingsService.getPropertyValue("geo.wfs.geomname")+"...)");
 		attributes.appendElements(Attribute.createGeoAttributes(
 				"geo_bewirtschaftung_"+b, 
-				"igd:bewirtschaftung", 
+				//"klarschiff_zufi:bewirtschaftung", 
+				//"zufi:bewirtschaftung", 
+				settingsService.getPropertyValue("geo.wfs.zufiprefex")+":bewirtschaftung", 
 				"bewirtschafter", 
 				b, 
-				"the_geom", 
+				//"the_geom", 
+				//"geom",
+                                settingsService.getPropertyValue("geo.wfs.geomname") , 
 				false));
 		}
 		
 		//Flächentypen vom WFS
 		for(String f : flaechenFeatures) {
+                        logger.debug("attributes.appendElements(Attribute.createGeoAttributes(...,"+
+                                settingsService.getPropertyValue("geo.wfs.zufiprefex")+":"+f+","+
+                                settingsService.getPropertyValue("geo.wfs.geomname")+"...)");
 			attributes.appendElements(Attribute.createGeoAttributes(
 					"geo_"+f, 
-					"igd:"+f, 
-					"the_geom", 
+					//"zufi:"+f, 
+					//"the_geom", 
+					//"klarschiff_zufi:"+f, 
+					//"geom", 
+                                        settingsService.getPropertyValue("geo.wfs.zufiprefex")+":"+f,
+                                        settingsService.getPropertyValue("geo.wfs.geomname") ,
 					false));
 		}
 		Map<String, Attribute> attributMap = new HashMap<String, Attribute>();
@@ -137,6 +155,7 @@ public class FeatureService {
 			if (vorgangFeatures!=null && !attribute.isUpdateble()) {
 				//Wert ggf. aus vorgangFeatures nehmen 
 				if (vorgangFeatures.getFeatures().containsKey(attribute.getName())) {
+                                        logger.debug("createFeature fuer Vorgang Wert ggf. aus vorgangFeatures nehmen Attribut ("+attribute.getName()+") set value ("+vorgangFeatures.getFeatures().get(attribute.getName()) +")" );
 					if (attribute.isNominal()) {
 						instance.setValue(attribute, vorgangFeatures.getFeatures().get(attribute.getName()));
 					} else {
