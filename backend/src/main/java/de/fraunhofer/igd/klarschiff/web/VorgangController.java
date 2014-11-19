@@ -175,10 +175,8 @@ public class VorgangController {
 		for (@SuppressWarnings("unused") Verlauf verlauf : vorgang.getVerlauf());
 
 		if (action.equals("fotoSave")) {
-
 			imageService.censorImageForVorgang(vorgang, censorRectangleString, censoringWidth, censoringHeight);
 			vorgangDao.merge(vorgang);
-		
 		} else if (action.equals("fotoRotate")) {
 			imageService.rotateImageForVorgang(vorgang);
 			vorgangDao.merge(vorgang);

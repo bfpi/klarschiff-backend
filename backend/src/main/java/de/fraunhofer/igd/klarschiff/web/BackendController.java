@@ -132,18 +132,20 @@ public class BackendController {
 			
 			vorgang.setDetails(details);
 			
-			if (bild!=null)
-				try {
-					imageService.setImageForVorgang(Base64.decode(bild.getBytes()), vorgang);
-				} catch (Exception e) {
-					throw new BackendControllerException(11, "[bild] nicht korrekt", "Das Bild ist fehlerhaft und kann nicht verarbeitewt werden.");
-				}
-			
 			vorgang.setDatum(new Date());
 			vorgang.setStatus(EnumVorgangStatus.gemeldet);
 			vorgang.setPrioritaet(EnumPrioritaet.mittel);
 						
 			vorgangDao.persist(vorgang);
+
+			if (bild!=null) {
+				try {
+					imageService.setImageForVorgang(Base64.decode(bild.getBytes()), vorgang);
+				} catch (Exception e) {
+					throw new BackendControllerException(11, "[bild] nicht korrekt", "Das Bild ist fehlerhaft und kann nicht verarbeitewt werden.", e);
+				}
+				vorgangDao.merge(vorgang);
+			}
 
 			if (resultHashOnSubmit==true) sendOk(response, vorgang.getHash());
 			else sendOk(response);

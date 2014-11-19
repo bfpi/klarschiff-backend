@@ -33,7 +33,6 @@
         <secure:intercept-url pattern="/rollen/**" access="hasRole('ROLE_INTERN') or hasRole('ROLE_ADMIN')" />
         <secure:intercept-url pattern="/login/**" access="permitAll" />
         <secure:intercept-url pattern="/xmlfeeds/**" access="permitAll" />
-        <secure:intercept-url pattern="/foto/**" access="hasRole('ROLE_EXTERN') or hasRole('ROLE_INTERN') or hasRole('ROLE_ADMIN')" />
         <secure:intercept-url pattern="/vorgangneu" access="hasRole('ROLE_EXTERN') or hasRole('ROLE_ADMIN') or hasRole('ROLE_INTERN')" />
         <secure:intercept-url pattern="/kategorien/**" access="hasRole('ROLE_EXTERN') or hasRole('ROLE_ADMIN') or hasRole('ROLE_INTERN')" />
         <secure:intercept-url pattern="/" access="hasRole('ROLE_EXTERN') or hasRole('ROLE_INTERN') or hasRole('ROLE_ADMIN')"/>
@@ -47,10 +46,6 @@
  			<map>
   				<entry key="/vorgang/(\d*)/" value="zusteandigkeit"/>
  				<entry key="/vorgang/delegiert/(\d*)/" value="delegiertAn"/>
- 				<entry key="/foto/normal/(\d*)/" value="delegiertAn"/>
- 				<entry key="/foto/normal/(\d*)/" value="zusteandigkeit"/>
- 				<entry key="/foto/thumb/(\d*)/" value="delegiertAn"/>
- 				<entry key="/foto/thumb/(\d*)/" value="zusteandigkeit"/>
  			</map>
  		</property>
  	</bean>
@@ -60,6 +55,8 @@
 		url="${ldap.server.url}" 
 		port="10389"
 		root="${ldap.root}"
+        manager-dn="${ldap.managerDn}"
+        manager-password="${ldap.managerPassword}"
 		/>
 
 	<secure:ldap-user-service id="ldapUserService"

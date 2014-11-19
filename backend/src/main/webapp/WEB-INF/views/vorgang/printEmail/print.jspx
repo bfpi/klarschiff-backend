@@ -110,7 +110,7 @@
 				</c:if>
 			</tr>
 
-			<c:if test="${not empty vorgang.fotoNormalJpg and vorgang.fotoFreigabeStatus!='geloescht'}">
+			<c:if test="${not empty vorgang.fotoNormal and vorgang.fotoFreigabeStatus!='geloescht'}">
 				<tr>
 					<td class="label">Foto</td>									
 					<td class="value" colspan="10">
