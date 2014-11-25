@@ -306,6 +306,7 @@ public class BackendController {
 			return "backend/bestaetigungOk";
 			
 		} catch (Exception e) {
+			logger.warn(e);
 			return "backend/bestaetigungFehler";
 		}
 	}
