@@ -29,10 +29,10 @@ public class VorgangDelegiertSuchenCommand implements Serializable {
 			case 0: return "vo.id";
 			case 1: return "vo.typ";
 			case 2: return "vo.datum";
-			case 3: return "vo.kategorie.parent.name,vo.kategorie.name";
-			case 4: return "vo.statusOrdinal";
+			case 3: return "kat_haupt.name,kat_unter.name";
+			case 4: return "vo.status_ordinal";
 			case 5: return "vo.zustaendigkeit";
-			case 6: return "vo.prioritaetOrdinal";
+			case 6: return "vo.prioritaet_ordinal";
 			default: return "";
 		}
 	}
