@@ -63,10 +63,10 @@ public class VorgangSuchenCommand implements Serializable {
 			case 0: return "vo.id";
 			case 1: return "vo.typ";
 			case 2: return "vo.datum";
-			case 3: return "vo.kategorie.parent.name,vo.kategorie.name";
-			case 4: return "vo.statusOrdinal";
+			case 3: return "kat_haupt.name,kat_unter.name";
+			case 4: return "vo.status_ordinal";
 			case 5: return "vo.adresse";
-			case 6: return "COUNT(DISTINCT un.hash)";
+			case 6: return "un.count";
 			case 7: return "vo.zustaendigkeit";
 			default: return "";
 		}

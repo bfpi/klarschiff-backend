@@ -72,7 +72,7 @@ public class VorgangFeedController {
     	cmd.setEinfacheSuche(VorgangSuchenCommand.EinfacheSuche.offene);
     	cmd.setZustaendigkeiten(user.getZustaendigkeiten());
 		
-    	List<Object[]> list = vorgangDao.listVorgang(cmd);
+    	List<Object[]> list = vorgangDao.getVorgaenge(cmd);
     	
     	Element rss = new Element("rss");
     	rss.setAttribute("version", "2.0");

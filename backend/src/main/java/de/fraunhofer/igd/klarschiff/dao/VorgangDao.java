@@ -34,6 +34,11 @@ import de.fraunhofer.igd.klarschiff.web.VorgangDelegiertSuchenCommand;
 import de.fraunhofer.igd.klarschiff.web.VorgangFeedCommand;
 import de.fraunhofer.igd.klarschiff.web.VorgangFeedDelegiertAnCommand;
 import de.fraunhofer.igd.klarschiff.web.VorgangSuchenCommand;
+import java.math.BigInteger;
+import org.apache.commons.lang.StringEscapeUtils;
+import org.hibernate.SQLQuery;
+import org.hibernate.Session;
+import org.hibernate.type.StandardBasicTypes;
 
 /**
  * Die Dao-Klasse erlaubt das Verwalten der Vorgänge in der DB.
@@ -202,158 +207,160 @@ public class VorgangDao {
 	}
 
 	
-	/**
-	 * Erzeugt das Grundgerüst der HQL-Anfrage zur Suche von Vorgängen anhand der Parameter im <code>VorgangSuchenCommand</code>
-	 * @param cmd Command mit den Parametern zur Suche
-	 * @return vorbereitetes Hilfsobjekt für HQL-Anfragen
-	 */
-	private HqlQueryHelper prepare(VorgangSuchenCommand cmd) {
-		HqlQueryHelper query = new HqlQueryHelper();
-		
-		List<EnumVorgangStatus> unStatus = new ArrayList<EnumVorgangStatus>(Arrays.asList(EnumVorgangStatus.closedVorgangStatus()));
+  /**
+   * Fügt zu einem StringBuilder den WHERE-Teil einer SQL-Query zur Suche von
+   * Vorgängen anhand der Parameter im <code>VorgangSuchenCommand</code>
+   * hinzu.
+   *
+   * @param cmd Command mit den Parametern zur Suche
+   * @param sql StringBuilder an den angehängt wird
+   * @return StringBuilder an den angehängt wird mit WHERE
+   */
+  private StringBuilder addFilter(VorgangSuchenCommand cmd, StringBuilder sql) {
+    List<EnumVorgangStatus> unStatus = new ArrayList<EnumVorgangStatus>(Arrays.asList(EnumVorgangStatus.closedVorgangStatus()));
 
-		switch (cmd.getSuchtyp()) {
-		case einfach:
-			unStatus.add(EnumVorgangStatus.inBearbeitung);
-			query.addWhereConditions("vo.zustaendigkeit IN(:zustaendigkeit)")
-				.addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert=:archiviert)")
-				.addParameter("archiviert", Boolean.FALSE);
-			if (cmd instanceof VorgangFeedCommand) {
-				query.addParameter("zustaendigkeit", Role.toString(((VorgangFeedCommand)cmd).getZustaendigkeiten()));
-			} else {
-				query.addParameter("zustaendigkeit", Role.toString(securityService.getCurrentZustaendigkeiten(true)));
-			}
-			switch (cmd.getEinfacheSuche()) {
-			case offene:
-				query.addWhereConditions("(vo.status=:status1 OR vo.status=:status2)")
-					.addParameter("status1", EnumVorgangStatus.offen)
-					.addParameter("status2", EnumVorgangStatus.inBearbeitung)
-                    .addHavingConditions("(vo.typ!=:unTyp OR vo.status IN (:unStatus) OR COUNT(DISTINCT un.id)>=:unterstuetzer OR vo.erstsichtungErfolgt=:erstsichtungErfolgt OR COUNT(DISTINCT mi.id)>0) ")
-                    .addParameter("unTyp", EnumVorgangTyp.idee)
-                    .addParameter("unStatus", unStatus)
-                    .addParameter("erstsichtungErfolgt", false)
-                    .addParameter("unterstuetzer", settingsService.getVorgangIdeeUnterstuetzer());
-				break;
-            case offeneIdeen:
-				query.addWhereConditions("(vo.status=:status)")
-					.addParameter("status", EnumVorgangStatus.offen)
-                    .addHavingConditions("(vo.typ=:unTyp AND vo.erstsichtungErfolgt=:erstsichtungErfolgt AND COUNT(DISTINCT un.id)<:unterstuetzer) ")
-                    .addParameter("unTyp", EnumVorgangTyp.idee)
-                    .addParameter("erstsichtungErfolgt", true)
-                    .addParameter("unterstuetzer", settingsService.getVorgangIdeeUnterstuetzer());
-				break;
-			case abgeschlossene:
-				query.addWhereConditions("(vo.status IN (:status))")
-                    .addParameter("status", Arrays.asList(EnumVorgangStatus.closedVorgangStatus()));
-				break;
-			}
-			break;
-		case erweitert:
-			//FullText
-			if (!StringUtils.isBlank(cmd.getErweitertFulltext())) {
-				query.addWhereConditions("(vo.betreff LIKE :fulltext OR " +
-						"vo.details LIKE :fulltext OR " +
-						"vo.statusKommentar LIKE :fulltext OR " +
-						"mi.text LIKE :fulltext OR " +
-						"ko.text LIKE :fulltext OR " +
-						"vo.kategorie.name LIKE :fulltext OR " +
-						"vo.kategorie.parent.name LIKE :fulltext)").addParameter("fulltext", "%"+cmd.getErweitertFulltext().toLowerCase()+"%");
-			}
-			//Nummer
-			if (cmd.getErweitertNummerAsLong()!=null) {
-				query.addWhereConditions("(vo.id = :nummer)").addParameter("nummer", cmd.getErweitertNummerAsLong());
-			}
-			//Kategorie
-			if (cmd.getErweitertKategorie()!=null) {
-				query.addWhereConditions("(vo.kategorie = :kategorie)").addParameter("kategorie", cmd.getErweitertKategorie());
-		 	//Hauptkategorie
-			} else if (cmd.getErweitertHauptkategorie()!=null) {
-				query.addWhereConditions("(vo.kategorie IN (:kategorie))").addParameter("kategorie", cmd.getErweitertHauptkategorie().getChildren());
-			//Typ
-			} else if (cmd.getErweitertVorgangTyp()!=null) {
-				query.addWhereConditions("vo.typ=:typ").addParameter("typ", cmd.getErweitertVorgangTyp());
-			}
-			//Status
-			{
-				List<EnumVorgangStatus> inStatus = Arrays.asList(cmd.getErweitertVorgangStatus());
-				List<EnumVorgangStatus> notInStatus = new ArrayList<EnumVorgangStatus>(Arrays.asList(EnumVorgangStatus.values())); 
-				notInStatus.removeAll(inStatus);
-				if (inStatus.size()!=0) query.addWhereConditions("vo.status IN (:inStatus)").addParameter("inStatus", inStatus);
-				if (notInStatus.size()!=0)	query.addWhereConditions("vo.status NOT IN (:notInStatus)").addParameter("notInStatus", notInStatus);
-			}
-			//Zuständigkeit
-			if (!StringUtils.isBlank(cmd.getErweitertZustaendigkeit())) {
-				if (cmd.getErweitertZustaendigkeit().equals("#mir zugewiesen#")) {
-					query.addWhereConditions("vo.zustaendigkeit IN (:zustaendigkeit)")
-						.addParameter("zustaendigkeit", Role.toString(securityService.getCurrentZustaendigkeiten(true)));
-				} else {
-					query.addWhereConditions("vo.zustaendigkeit=:zustaendigkeit")
-						.addParameter("zustaendigkeit", cmd.getErweitertZustaendigkeit());
-				}
-			}
-			//DelegiertAn
-			if (!StringUtils.isBlank(cmd.getErweitertDelegiertAn())) {
-				query.addWhereConditions("vo.delegiertAn=:delegiertAn")
-					.addParameter("delegiertAn", cmd.getErweitertDelegiertAn());
-			}
-			//Datum
-			if (cmd.getErweitertDatumVon()!=null) {
-				query.addWhereConditions("vo.datum>=:datumVon")
-					.addParameter("datumVon", DateUtils.truncate(cmd.getErweitertDatumVon(), Calendar.DAY_OF_MONTH));
-			}
-			if (cmd.getErweitertDatumBis()!=null) {
-				query.addWhereConditions("vo.datum<=:datumBis")
-					.addParameter("datumBis", DateUtils.ceiling(cmd.getErweitertDatumBis(), Calendar.DAY_OF_MONTH));
-			}
-			//Archiviert
-			if (cmd.getErweitertArchiviert()!=null) {
-				if (cmd.getErweitertArchiviert()) {
-					query.addWhereConditions("vo.archiviert=:archiviert")
-						.addParameter("archiviert", Boolean.TRUE);
-				} else {
-					query.addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert=:archiviert)")
-						.addParameter("archiviert", Boolean.FALSE);
-				}
-			}
-			//Unterstützer
-			if (cmd.getErweitertUnterstuetzerAb()!=null) {
-				query.addHavingConditions("COUNT(DISTINCT un.id)>=:unterstuetzer")
-					.addParameter("unterstuetzer", cmd.getErweitertUnterstuetzerAb());
-			}
-			//Priorität
-			if (cmd.getErweitertPrioritaet()!=null) {
-				query.addWhereConditions("vo.prioritaet=:prioritaet")
-					.addParameter("prioritaet", cmd.getErweitertPrioritaet());
-			}
-			//Stadtteil
-			if (cmd.getErweitertStadtteilgrenze()!=null) {
-				query.addWhereConditions("within(vo.ovi, (SELECT g.grenze FROM StadtteilGrenze g WHERE g.id=:stadtteil))=true")
-					.addParameter("stadtteil", cmd.getErweitertStadtteilgrenze());
-			}
-			break;
-		}
-		return query;
-	}
-	
-	/**
-	 * Ermittelt die Ergebnisanzahl für eine definierte parametrisierte Anfrage nach Vorgängen. 
-	 * @param cmd Command mit den Parametern zur Suche
-	 * @return Anzahl der Vorgänge im Suchergebnis
-	 */
-	@SuppressWarnings("unchecked")
-	public long countVorgang(VorgangSuchenCommand cmd) {
-		HqlQueryHelper query = addGroupByVorgang(prepare(cmd), false)
-			.addFromTables("Vorgang vo " +
-					"JOIN vo.verlauf ve " +
-					"LEFT JOIN vo.unterstuetzer un WITH un.datumBestaetigung IS NOT NULL " +
-					"LEFT JOIN vo.missbrauchsmeldungen mi WITH mi.datumBestaetigung IS NOT NULL AND mi.datumAbarbeitung IS NULL " +
-					"LEFT JOIN vo.kommentare ko")
-			.addSelectAttribute("vo.id");
-		List<Long> ids = query.getResultList(em);
-		return ids.size();
-	}
-	
-	
+    ArrayList<String> conds = new ArrayList<String>();
+    switch (cmd.getSuchtyp()) {
+      case einfach:
+        unStatus.add(EnumVorgangStatus.inBearbeitung);
+         {
+          List<String> zustaendigkeiten;
+          if (cmd instanceof VorgangFeedCommand) {
+            zustaendigkeiten = Role.toString(((VorgangFeedCommand) cmd).getZustaendigkeiten());
+          } else {
+            zustaendigkeiten = Role.toString(securityService.getCurrentZustaendigkeiten(true));
+          }
+          conds.add("vo.zustaendigkeit IN ('" + StringUtils.join(zustaendigkeiten, "', '") + "')");
+        }
+        conds.add("vo.archiviert IS NULL OR NOT vo.archiviert");
+        switch (cmd.getEinfacheSuche()) {
+          case offene:
+            conds.add("vo.status IN ('" + EnumVorgangStatus.offen + "', '"
+                    + EnumVorgangStatus.inBearbeitung + "')");
+            conds.add("vo.typ != '" + EnumVorgangTyp.idee + "'"
+                    + " OR vo.status IN ('" + StringUtils.join(unStatus, "', '") + "')"
+                    + " OR un.count >= " + settingsService.getVorgangIdeeUnterstuetzer()
+                    + " OR NOT vo.erstsichtung_erfolgt "
+                    + " OR mi.count > 0");
+            break;
+          case offeneIdeen:
+            conds.add("vo.status IN ('" + EnumVorgangStatus.offen + "')");
+            conds.add("vo.typ = '" + EnumVorgangTyp.idee + "'"
+                    + " AND un.count < " + settingsService.getVorgangIdeeUnterstuetzer()
+                    + " AND vo.erstsichtung_erfolgt ");
+            break;
+          case abgeschlossene:
+            conds.add("vo.status in ('" + StringUtils.join(EnumVorgangStatus.closedVorgangStatus(), "', '") + "')");
+            break;
+        }
+        break;
+      case erweitert:
+        //FullText
+        if (!StringUtils.isBlank(cmd.getErweitertFulltext())) {
+          String text = StringEscapeUtils.escapeSql("%" + cmd.getErweitertFulltext() + "%");
+          conds.add("vo.betreff ILIKE '" + text + "'"
+                  + " OR vo.details ILIKE '" + text + "'"
+                  + " OR vo.status_kommentar ILIKE '" + text + "'"
+                  + " OR vo.id IN (SELECT vorgang FROM klarschiff_missbrauchsmeldung "
+                  + "   WHERE datum_bestaetigung IS NOT NULL AND text ILIKE '" + text + "')"
+                  + " OR vo.id IN (SELECT vorgang FROM klarschiff_kommentar "
+                  + "   WHERE NOT geloescht AND text ILIKE '" + text + "')"
+                  + " OR vo.kategorie IN (SELECT id FROM klarschiff_kategorie WHERE name ILIKE '" + text + "')"
+                  + " OR vo.kategorie IN (SELECT id FROM klarschiff_kategorie WHERE parent in ("
+                  + "SELECT id FROM klarschiff_kategorie WHERE name ILIKE '" + text + "'))");
+        }
+        //Nummer
+        if (cmd.getErweitertNummerAsLong() != null) {
+          conds.add("vo.id = " + cmd.getErweitertNummerAsLong());
+        }
+        //Kategorie
+        if (cmd.getErweitertKategorie() != null) {
+          conds.add("vo.kategorie = " + cmd.getErweitertKategorie().getId());
+          //Hauptkategorie
+        } else if (cmd.getErweitertHauptkategorie() != null) {
+          conds.add("vo.kategorie IN (SELECT id FROM klarschiff_kategorie WHERE parent = " + cmd.getErweitertHauptkategorie().getId() + ")");
+          //Typ
+        } else if (cmd.getErweitertVorgangTyp() != null) {
+          conds.add("vo.typ = '" + cmd.getErweitertVorgangTyp().name() + "'");
+        }
+        //Status
+         {
+          List<EnumVorgangStatus> inStatus = Arrays.asList(cmd.getErweitertVorgangStatus());
+          List<EnumVorgangStatus> notInStatus = new ArrayList<EnumVorgangStatus>(Arrays.asList(EnumVorgangStatus.values()));
+          notInStatus.removeAll(inStatus);
+          if (!inStatus.isEmpty()) {
+            conds.add("vo.status IN ('" + StringUtils.join(inStatus, "', '") + "')");
+          }
+          if (!notInStatus.isEmpty()) {
+            conds.add("vo.status NOT IN ('" + StringUtils.join(notInStatus, "', '") + "')");
+          }
+        }
+        //Zuständigkeit
+        if (!StringUtils.isBlank(cmd.getErweitertZustaendigkeit())) {
+          if (cmd.getErweitertZustaendigkeit().equals("#mir zugewiesen#")) {
+            conds.add("vo.zustaendigkeit IN ('" + StringUtils.join(
+                    Role.toString(securityService.getCurrentZustaendigkeiten(true)), "', '"
+            ) + "')");
+          } else {
+            conds.add("vo.zustaendigkeit = '" + cmd.getErweitertZustaendigkeit() + "'");
+          }
+        }
+        //DelegiertAn
+        if (!StringUtils.isBlank(cmd.getErweitertDelegiertAn())) {
+          conds.add("vo.delegiert_an = '" + cmd.getErweitertDelegiertAn() + "'");
+        }
+        //Datum
+        if (cmd.getErweitertDatumVon() != null) {
+          java.sql.Date datumVon = new java.sql.Date(DateUtils.truncate(cmd.getErweitertDatumVon(), Calendar.DAY_OF_MONTH).getTime());
+          conds.add("vo.datum >= '" + datumVon.toString() + "'");
+        }
+        if (cmd.getErweitertDatumBis() != null) {
+          java.sql.Date datumBis = new java.sql.Date(DateUtils.truncate(cmd.getErweitertDatumBis(), Calendar.DAY_OF_MONTH).getTime());
+          conds.add("vo.datum <= '" + datumBis.toString() + "'");
+        }
+        //Archiviert
+        if (cmd.getErweitertArchiviert() != null) {
+          if (cmd.getErweitertArchiviert()) {
+            conds.add("vo.archiviert");
+          } else {
+            conds.add("vo.archiviert IS NULL OR NOT vo.archiviert");
+          }
+        }
+        //Unterstützer
+        if (cmd.getErweitertUnterstuetzerAb() != null) {
+          unStatus.add(EnumVorgangStatus.inBearbeitung);
+          conds.add("vo.typ != '" + EnumVorgangTyp.idee + "' "
+                  + " OR NOT vo.erstsichtung_erfolgt "
+                  + " OR vo.status IN ('" + StringUtils.join(unStatus, "', '") + "')"
+                  + " OR un.count >= " + cmd.getErweitertUnterstuetzerAb()
+          );
+        }
+        //Priorität
+        if (cmd.getErweitertPrioritaet() != null) {
+          conds.add("vo.prioritaet = '" + cmd.getErweitertPrioritaet().name() + "'");
+        }
+        //Stadtteil
+        if (cmd.getErweitertStadtteilgrenze() != null) {
+          conds.add("geometry_within(vo.ovi, (SELECT grenze FROM klarschiff_stadtteil_grenze WHERE id=" + cmd.getErweitertStadtteilgrenze() + "))");
+        }
+        break;
+    }
+    // Unterstützer
+    sql.append(" LEFT JOIN (SELECT vorgang, COUNT(DISTINCT id) FROM klarschiff_unterstuetzer")
+            .append(" WHERE datum_bestaetigung IS NOT NULL GROUP BY vorgang) un")
+            .append(" ON vo.id = un.vorgang");
+    // Missbrauchsmeldungen
+    sql.append(" LEFT JOIN (SELECT vorgang, COUNT(DISTINCT id) FROM klarschiff_missbrauchsmeldung")
+            .append(" WHERE datum_bestaetigung IS NOT NULL ")
+            .append("   AND datum_abarbeitung IS NULL GROUP BY vorgang) mi")
+            .append(" ON vo.id = mi.vorgang");
+    if (!conds.isEmpty()) {
+      sql.append(" WHERE (").append(StringUtils.join(conds, ") AND (")).append(")");
+    }
+    return sql;
+  }
+
+
 	/**
 	 * Fügt die GroupBy-Terme zu einer HQL-Anfrage hinzu, wenn in der Anfrage nach dem Vorgang gruppiert werden soll. Die Parameter für
 	 * die Projektion auf die Vorgangsattributte werden dabei zur HQL-Anfrage hinzugefügt.
@@ -409,37 +416,68 @@ public class VorgangDao {
 	}
 	
 	
-	/**
-	 * Ermittelt die Liste der Vorgänge zur Suche anhand der Parameter im <code>VorgangSuchenCommand</code>
-	 * @param cmd Command mit den Parametern zur Suche
-	 * @return Ergebnisliste der Vorgänge
-	 * @see #prepare(VorgangSuchenCommand)
-	 * @see #addGroupByVorgang(HqlQueryHelper)
-	 */
-	@SuppressWarnings("unchecked")
-	public List<Object[]> listVorgang(VorgangSuchenCommand cmd) {
-		HqlQueryHelper query = addGroupByVorgang(prepare(cmd))
-			.addSelectAttribute("MAX(ve.datum)")
-			.addSelectAttribute("COUNT(DISTINCT un.id)")
-			.addSelectAttribute("COUNT(DISTINCT mi.id) AS missbrauch")
-			.addFromTables("Vorgang vo " +
-					"JOIN vo.verlauf ve " +
-					"LEFT JOIN vo.unterstuetzer un WITH un.datumBestaetigung IS NOT NULL " +
-					"LEFT JOIN vo.missbrauchsmeldungen mi WITH mi.datumBestaetigung IS NOT NULL AND mi.datumAbarbeitung IS NULL " +
-					"LEFT JOIN vo.kommentare ko");
-		if (cmd.getPage()!=null && cmd.getSize()!=null)
-			query.firstResult((cmd.getPage()-1)*cmd.getSize());
-		if (cmd.getSize()!=null)
-			query.maxResults(cmd.getSize());
-		
-		query.orderBy("missbrauch DESC");
-		for(String field : cmd.getOrderString().split(","))
-			query.orderBy(field.trim()+" "+cmd.getOrderDirectionString());
-		
-		return query.getResultList(em);
-	}
+  /**
+   * Ermittelt die Liste der Vorgänge zur Suche anhand der Parameter im
+   * <code>VorgangSuchenCommand</code>
+   *
+   * @param cmd Command mit den Parametern zur Suche
+   * @return Ergebnisliste der Vorgänge
+   */
+  public List<Object[]> getVorgaenge(VorgangSuchenCommand cmd) {
+    StringBuilder sql = new StringBuilder();
+    sql.append("SELECT vo.*,")
+            .append(" verlauf1.datum AS aenderungsdatum,")
+            .append(" COALESCE(un.count, 0) AS unterstuetzer,")
+            .append(" COALESCE(mi.count, 0) AS missbrauchsmeldung");
+    sql.append(" FROM klarschiff_vorgang vo");
+    // Für Sortierung
+    sql.append(" LEFT JOIN klarschiff_kategorie kat_unter ON vo.kategorie = kat_unter.id");
+    sql.append(" LEFT JOIN klarschiff_kategorie kat_haupt ON kat_unter.parent = kat_haupt.id");
+    // Änderungsdatum
+    sql.append(" INNER JOIN (SELECT vorgang, MAX(datum) AS datum FROM klarschiff_verlauf")
+            .append(" GROUP BY vorgang) verlauf1 ON vo.id = verlauf1.vorgang");
 
-	
+    sql = addFilter(cmd, sql);
+    // ORDER
+    ArrayList orderBys = new ArrayList();
+    for (String field : cmd.getOrderString().split(",")) {
+      orderBys.add(field.trim() + " " + cmd.getOrderDirectionString());
+    }
+    if (!orderBys.isEmpty()) {
+      sql.append(" ORDER BY ").append(StringUtils.join(orderBys, ", "));
+    }
+    // LIMIT
+    if (cmd.getSize() != null) {
+      sql.append(" LIMIT ").append(cmd.getSize());
+    }
+    if (cmd.getPage() != null && cmd.getSize() != null) {
+      sql.append(" OFFSET ").append((cmd.getPage() - 1) * cmd.getSize());
+    }
+    return ((Session) em.getDelegate())
+            .createSQLQuery(sql.toString())
+            .addEntity("vo", Vorgang.class)
+            .addScalar("aenderungsdatum", StandardBasicTypes.DATE)
+            .addScalar("unterstuetzer", StandardBasicTypes.LONG)
+            .addScalar("missbrauchsmeldung", StandardBasicTypes.LONG)
+            .list();
+  }
+
+    /**
+	 * Ermittelt die Ergebnisanzahl für eine definierte parametrisierte Anfrage nach Vorgängen. 
+	 * @param cmd Command mit den Parametern zur Suche
+	 * @return Anzahl der Vorgänge im Suchergebnis
+	 */
+    public long countVorgaenge(VorgangSuchenCommand cmd) {
+      StringBuilder sql = new StringBuilder();
+      sql.append("SELECT count(vo.*) AS count FROM klarschiff_vorgang vo");
+      sql = addFilter(cmd, sql);
+      SQLQuery query = ((Session) em.getDelegate()).createSQLQuery(sql.toString());
+      for (BigInteger i: (List<BigInteger>) query.list()) {
+        return i.longValue();
+      }
+      return 0;
+    }
+
 	/**
 	 * Ermittelt die Anzahl der offenen Missbrauchsmeldungen für abgeschlosse Vorgänge.
 	 * Bei der Suche werden die Rollen des aktuellen Benutzers berücksichtigt.
