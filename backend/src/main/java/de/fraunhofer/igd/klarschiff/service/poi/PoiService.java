@@ -79,7 +79,8 @@ public class PoiService {
                     row.createCell(7).setCellValue(vorgang.getAdresse());                    
 					row.createCell(8).setCellValue(unterstuetzer);	
 					row.createCell(9).setCellValue(vorgang.getZustaendigkeit());
-					row.createCell(10).setCellValue(vorgang.getZustaendigkeitStatus().getText());
+					if(vorgang.getZustaendigkeitStatus() != null)
+					  row.createCell(10).setCellValue(vorgang.getZustaendigkeitStatus().getText());
 					row.createCell(11).setCellValue(vorgang.getDelegiertAn());
 					row.createCell(12).setCellValue(vorgang.getPrioritaet().getText());
 					r++;

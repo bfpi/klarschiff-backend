@@ -242,7 +242,7 @@
 									$.ajaxSetup({ scriptCharset: "utf-8" , contentType: "application/json; charset=utf-8"});
 									$.getJSON('${url}/kategorieTyp?typ='+value, function(data) {
 										$.each(data, function(index, val) {
-											items.push('<option value="' + val.id + '">' + val.nameEscapeHtml + '</option>');
+											items.push($('<option></option>').val(val.id).html(val.nameEscapeHtml)[0].outerHTML);
 										});
 										node.empty();
 										node.append(items.join(''));
@@ -266,7 +266,7 @@
 									$.ajaxSetup({ scriptCharset: "utf-8" , contentType: "application/json; charset=utf-8"});
 									$.getJSON('${url}/kategorie?kategorie='+value, function(data) {
 										$.each(data, function(index, val) {
-											items.push('<option value="' + val.id + '">' + val.nameEscapeHtml + '</option>');
+											items.push($('<option></option>').val(val.id).html(val.nameEscapeHtml)[0].outerHTML);
 										});
 										node.empty();
 										node.append(items.join(''));
