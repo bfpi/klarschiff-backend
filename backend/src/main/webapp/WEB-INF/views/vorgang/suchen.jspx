@@ -215,7 +215,7 @@
 						        
 						        <div>
 						        	<form:label path="erweitertKategorie">Unterkategorie</form:label>
-						            <form:select path="erweitertKategorie" id="unterkategorie" disabled="true" onchange="updateInfo()">
+						            <form:select path="erweitertKategorie" id="unterkategorie" disabled="true">
 						            	<form:option value="" label="alle Unterkategorien" cssClass="info"/>
 										<form:options items="${unterkategorien}" itemValue="id" itemLabel="name"/>
 						            </form:select>
