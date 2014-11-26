@@ -175,10 +175,10 @@ public class VorgangSuchenController {
 		}
 		updateKategorieInModel(modelMap, cmd);
     	//Suchen
-		modelMap.addAttribute("vorgaenge", vorgangDao.listVorgang(cmd));
+		modelMap.addAttribute("vorgaenge", vorgangDao.getVorgaenge(cmd));
 		if (cmd.suchtyp==Suchtyp.einfach && cmd.einfacheSuche==EinfacheSuche.offene)
 			modelMap.put("missbrauchsmeldungenAbgeschlossenenVorgaenge", vorgangDao.missbrauchsmeldungenAbgeschlossenenVorgaenge());
-		modelMap.put("maxPages", calculateMaxPages(cmd.getSize(), vorgangDao.countVorgang(cmd)));
+		modelMap.put("maxPages", calculateMaxPages(cmd.getSize(), vorgangDao.countVorgaenge(cmd)));
 
 		return "vorgang/suchen";
 	}
@@ -199,7 +199,7 @@ public class VorgangSuchenController {
 			cmd2.setSize(null);
 			
 			modelMap.addAttribute("geoService", geoService);
-			modelMap.addAttribute("vorgaenge", vorgangDao.listVorgang(cmd2));
+			modelMap.addAttribute("vorgaenge", vorgangDao.getVorgaenge(cmd2));
 			return "vorgang/suchenKarte";
 		} catch (Exception e) {
 			logger.error(e);
@@ -224,7 +224,7 @@ public class VorgangSuchenController {
 			cmd2.setPage(null);
 			cmd2.setSize(null);
 			
-			List<Object[]> vorgaenge = vorgangDao.listVorgang(cmd2);
+			List<Object[]> vorgaenge = vorgangDao.getVorgaenge(cmd2);
 			
 			HSSFWorkbook workbook = poiService.createSheet(PoiService.Template.vorgangListe, vorgaenge);
 			
