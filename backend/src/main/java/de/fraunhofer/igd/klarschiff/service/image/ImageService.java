@@ -90,7 +90,7 @@ public class ImageService {
       if(prevFilename == null) {
         filename = StringUtils.join(new String[] { "ks",
           vorgang.getId().toString(), middlePart, UUID.randomUUID().toString()
-        }, "_");
+        }, "_") + ".jpg";
       }
       else {
         filename = prevFilename;

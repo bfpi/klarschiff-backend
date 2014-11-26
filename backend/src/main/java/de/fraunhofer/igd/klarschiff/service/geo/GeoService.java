@@ -148,6 +148,8 @@ public class GeoService {
 				case warn:
 					dataStore = null;
 					logger.error("Verbindung zum WFS konnte nicht richtig initialisiert werden.", e);
+					LogUtil.info("Verbindung zum WFS konnte nicht richtig initialisiert werden.");
+                                        
 					break;
 				default:
 					throw e;
@@ -219,12 +221,21 @@ public class GeoService {
     	
 		Double[] features = geoServiceWfs.getGeoFeatures(ovi, oviBuffer, attribute.getTypeName(), attribute.getGeomPropertyName(), attribute.getPropertyName(), attribute.getPropertyValue());
 		
-		switch(attribute.getGeoMeasure()) {
+		/*switch(attribute.getGeoMeasure()) {
 			case abstandAusserhalb: return features[0];
 			case abstandInnerhalb: return features[1];
-			case flaechenGroesse: return features[2];
-			default: throw new RuntimeException();
-		}
+			case flaechenGroesse: return features[2];*/
+                        if (features[1]==null){
+                            return 0.0;
+                        }else{
+                            if (features[1] > 0){
+                                return 1.0;
+                            }else{
+                                return 0.0;
+                            }
+                        }
+			//default: throw new RuntimeException();
+		//}
 	}
 	
     

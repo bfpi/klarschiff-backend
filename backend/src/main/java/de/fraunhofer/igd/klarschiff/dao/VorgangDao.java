@@ -317,11 +317,7 @@ public class VorgangDao {
 			}
 			//Unterstützer
 			if (cmd.getErweitertUnterstuetzerAb()!=null) {
-				unStatus.add(EnumVorgangStatus.inBearbeitung);
-				query.addHavingConditions("(vo.typ!=:unTyp OR vo.erstsichtungErfolgt=:erstsichtungErfolgt OR vo.status IN (:unStatus) OR COUNT(DISTINCT un.id)>=:unterstuetzer)")
-					.addParameter("unTyp", EnumVorgangTyp.idee)
-					.addParameter("erstsichtungErfolgt", false)
-					.addParameter("unStatus", unStatus)
+				query.addHavingConditions("COUNT(DISTINCT un.id)>=:unterstuetzer")
 					.addParameter("unterstuetzer", cmd.getErweitertUnterstuetzerAb());
 			}
 			//Priorität

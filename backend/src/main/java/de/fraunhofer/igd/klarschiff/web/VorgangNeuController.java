@@ -122,16 +122,6 @@ public class VorgangNeuController {
 	@RequestMapping(method = RequestMethod.POST)
     public String submit(@ModelAttribute("cmd") VorgangNeuCommand cmd, BindingResult result, ModelMap model, HttpServletRequest request) {
 		Vorgang vorgang = cmd.getVorgang();
-		
-		if (cmd.getFoto()!=null && !cmd.getFoto().isEmpty()) 
-			try {
-				imageService.setImageForVorgang(cmd.getFoto(), cmd.getVorgang());
-				cmd.setFotoName(cmd.getFoto().getOriginalFilename());
-				cmd.setFoto(null);
-			} catch (Exception e) {
-				if (!cmd.getVorgang().getFotoExists()) cmd.setFotoName(null);
-				addErrorMessage(result, "foto", e.getMessage());
-			}
 			
 		cmd.validate(result, kategorieDao);
 
@@ -153,7 +143,19 @@ public class VorgangNeuController {
 		}
 		
 		vorgangDao.persist(vorgang);
-		
+
+		if (cmd.getFoto()!=null && !cmd.getFoto().isEmpty()) {
+			try {
+				imageService.setImageForVorgang(cmd.getFoto(), cmd.getVorgang());
+				cmd.setFotoName(cmd.getFoto().getOriginalFilename());
+				cmd.setFoto(null);
+			} catch (Exception e) {
+				if (!cmd.getVorgang().getFotoExists()) cmd.setFotoName(null);
+				addErrorMessage(result, "foto", e.getMessage());
+			}
+			vorgangDao.merge(vorgang);
+		}
+
 		if (StringUtils.isBlank(cmd.zustaendigkeit)) {
 			vorgang.setZustaendigkeit(classificationService.calculateZustaendigkeitforVorgang(vorgang).getId());
             vorgang.setZustaendigkeitFrontend(securityService.getZustaendigkeit(vorgang.getZustaendigkeit()).getL());
