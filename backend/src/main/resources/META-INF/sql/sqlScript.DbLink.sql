@@ -1033,14 +1033,15 @@ BEGIN
     -- räumliche Abfrage durchführen, die genau einen Datensatz (oder NULL) als Ergebnis 
     -- liefert, der auch gleich in die oben deklarierte Variable geschrieben wird
     SELECT (standortsuche.strasse || ' ' || standortsuche.hausnummer || 
-      COALESCE(standortsuche.hausnummerzusatz, '') || ' ' || 
-      COALESCE(standortsuche.zusatz, '')) AS adresse, 
+      COALESCE(standortsuche.hausnummerzusatz, '')) AS adresse, 
       ST_Distance(standortsuche.geom, NEW.ovi) AS distanz
     INTO ergebnis_adresse
     FROM klarschiff_vorgang, 
-      dblink('standortsuche_verbindung', 'SELECT strasse, hausnummer, hausnummerzusatz, ' ||
-        'zusatz, geom FROM standortsuche') AS standortsuche(strasse varchar, 
-        hausnummer varchar, hausnummerzusatz varchar, zusatz varchar, geom geometry)
+      dblink('standortsuche_verbindung', 'SELECT s.name, a.hausnummer, ' ||
+        'a.hausnummerzusatz, a.geom FROM adresse a ' ||
+        'INNER JOIN strasse s ON a.strasse_id = s.id')
+    AS standortsuche(strasse varchar, hausnummer varchar,
+      hausnummerzusatz varchar, geom geometry)
     WHERE standortsuche.hausnummer IS NOT null
       AND ST_DWithin(standortsuche.geom, NEW.ovi, 100) 
     ORDER BY ST_Distance(standortsuche.geom, NEW.ovi) LIMIT 1;
@@ -1051,7 +1052,8 @@ BEGIN
       ST_Distance(standortsuche.geom, NEW.ovi) AS distanz
     INTO ergebnis_strasse
     FROM klarschiff_vorgang, 
-      dblink('standortsuche_verbindung', 'SELECT strasse, geom FROM standortsuche WHERE strasse_id IS NOT NULL and hausnummer IS NULL') AS standortsuche(strasse varchar, geom geometry)
+      dblink('standortsuche_verbindung', 'SELECT name, geom FROM strasse')
+    AS standortsuche(strasse varchar, geom geometry)
     WHERE ST_DWithin(standortsuche.geom, NEW.ovi, 100) 
     ORDER BY ST_Distance(standortsuche.geom, NEW.ovi) LIMIT 1;
 
