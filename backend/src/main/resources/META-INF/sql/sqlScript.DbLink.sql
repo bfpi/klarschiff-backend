@@ -1116,25 +1116,11 @@ BEGIN
   IF (TG_OP = 'INSERT' OR (TG_OP = 'UPDATE' AND (NEW.flurstueckseigentum IS NULL OR NEW.flurstueckseigentum = ''))
     OR (TG_OP = 'UPDATE' AND (encode(NEW.ovi, 'base64') <> encode(OLD.ovi, 'base64'))))
   THEN
-    -- Verbindung zur Flurstückseigentumstabelle aufbauen
-    PERFORM dblink_connect('flurstueckseigentum_verbindung','hostaddr=${f_host} port=${f_port} ' ||
-      'dbname=daten_privat user=lesen password=selen');
-
-    -- räumliche Abfrage durchführen, die genau einen Datensatz (oder NULL) als Ergebnis 
-    -- liefert, der auch gleich in die oben deklarierte Variable geschrieben wird
-    SELECT eigentuemer.eigentum AS eigentum
-    INTO ergebnis
-    FROM klarschiff_vorgang, 
-      dblink('flurstueckseigentum_verbindung', 'SELECT eigentuemer, geom FROM alk.eigentuemer_klarschiff') AS eigentuemer(eigentum varchar, geom geometry)
-    WHERE ST_Covers(geom, NEW.ovi) LIMIT 1;
-
-    -- Verbindung zur Flurstückseigentumstabelle wieder schließen
-    PERFORM dblink_disconnect('flurstueckseigentum_verbindung');
-
+    -- räumliche Abfrage durchführen
     -- wenn das Ergebnis nicht NULL ist: Information über das Eigentum des Flürstücks zuweisen
-    IF ergebnis.eigentum IS NOT NULL THEN
-      NEW.flurstueckseigentum := ergebnis.eigentum;
-      -- ansonsten: "nicht zuordenbar" zuweisen
+    IF (SELECT eigentumsangabe FROM eigentumsangaben WHERE ST_Within(NEW.ovi, geometrie) LIMIT 1) IS NOT NULL THEN
+      NEW.flurstueckseigentum := eigentumsangabe FROM eigentumsangaben WHERE ST_Within(NEW.ovi, geometrie) LIMIT 1;
+    -- ansonsten: "nicht zuordenbar" zuweisen
     ELSE
       NEW.flurstueckseigentum := 'nicht zuordenbar';
     END IF;
