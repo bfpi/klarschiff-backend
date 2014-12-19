@@ -246,7 +246,7 @@ public class VorgangDao {
           case offeneIdeen:
             conds.add("vo.status IN ('" + EnumVorgangStatus.offen + "')");
             conds.add("vo.typ = '" + EnumVorgangTyp.idee + "'"
-                    + " AND un.count < " + settingsService.getVorgangIdeeUnterstuetzer()
+                    + " AND (un.count < " + settingsService.getVorgangIdeeUnterstuetzer() + " OR vo.id NOT IN (SELECT DISTINCT vorgang FROM klarschiff_unterstuetzer))"
                     + " AND vo.erstsichtung_erfolgt ");
             break;
           case abgeschlossene:
@@ -831,7 +831,7 @@ public class VorgangDao {
             .addWhereConditions("vo.erstsichtungErfolgt = TRUE")
             .addWhereConditions("ve.typ = 'zustaendigkeitAkzeptiert'")
             .addWhereConditions("ve.datum <= :datum").addParameter("datum", datum)
-            .addWhereConditions("(SELECT COUNT(*) FROM Unterstuetzer un WHERE un.vorgang = vo.id) < :unterstuetzer").addParameter("unterstuetzer", settingsService.getVorgangIdeeUnterstuetzer());
+            .addWhereConditions("((SELECT COUNT(*) FROM Unterstuetzer un WHERE un.vorgang = vo.id) < :unterstuetzer OR vo.id NOT IN (SELECT DISTINCT un.vorgang FROM Unterstuetzer un))").addParameter("unterstuetzer", settingsService.getVorgangIdeeUnterstuetzer());
         if (administrator == false)
             query.addWhereConditions("vo.zustaendigkeit = :zustaendigkeit").addParameter("zustaendigkeit", zustaendigkeit);
         query.orderBy("vo.zustaendigkeit, vo.id");
