@@ -185,9 +185,6 @@ public class FeatureService {
 					}
 				} else if (attribute.isGeoAttribute()){
 					Double value = geoService.calculateFeature(vorgang.getOvi(), attribute);
-                                        if (value!=null) logger.debug("createFeature fuer Vorgang Wert neu berechnen Ovi "+value.toString());
-                                        if (value==null) logger.debug("createFeature fuer Vorgang Wert neu berechnen Ovi null");
-                                        if (!(value > 0)) logger.debug("createFeature fuer Vorgang Wert neu berechnen Ovi 0 -> null");
 					if (value!=null && value > 0) instance.setValue(attribute, value);
 				} else throw new Exception("Unbekanntes Feature: "+attribute.getName());
 			}

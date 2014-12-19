@@ -40,7 +40,8 @@
 			</c:if>
 		</form>
         
-        <div class="dev" style="margin-top: 20px;">
+		<c:if test="${fx:showLogins()}">
+				<div class="dev" style="margin-top: 20px;">
 				Folgende Zugangsdaten können Sie nutzen:
                 <br/>
                 <br/>
@@ -54,8 +55,6 @@
 	       			</tbody>
 	       		</table>
 	       	</div>
-		
-		<c:if test="${fx:showLogins()}">
 	       	<div class="dev" style="margin-top: 20px;">
 				Dieses ist eine Übersicht der Benutzer im lokalem LDAP, welche zum Testen verwendet werden können:
 	       		<table>

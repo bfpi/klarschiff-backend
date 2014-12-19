@@ -10,8 +10,6 @@
 
 
 	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
 		<geotools.version>2.7.1</geotools.version>
 		<roo.version>1.1.1.RELEASE</roo.version>
 		<aspectj.version>1.6.11.M1</aspectj.version>
@@ -25,7 +23,6 @@
 		<postgresql.version>9.0-801.jdbc4</postgresql.version>
 		<postgis.version>[1.1.6,)</postgis.version>
 		<poi.version>3.7</poi.version>
-		<project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
 	 <netbeans.hint.deploy.server>Tomcat</netbeans.hint.deploy.server>
 	</properties>
 

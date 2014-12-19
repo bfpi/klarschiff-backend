@@ -39,7 +39,7 @@ import de.fraunhofer.igd.klarschiff.vo.Verlauf;
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
 
 /**
- * Der Controller dient als Schnittstelle für das Frontend
+ * Der Controller dient als Schnittstelle fÃ¼r das Frontend
  * @author Stefan Audersch (Fraunhofer IGD)
  */
 @RequestMapping("/service")
@@ -85,7 +85,7 @@ public class BackendController {
 	 * @param betreff Betreff
 	 * @param details Details
 	 * @param bild Foto base64 kodiert
-	 * @param resultHashOnSubmit <code>true</code> - gibt den Hash zum Bestätigen als Ergebnis zurück
+	 * @param resultHashOnSubmit <code>true</code> - gibt den Hash zum BestÃ¤tigen als Ergebnis zurÃ¼ck
 	 * @param response Response in das das Ergebnis direkt geschrieben wird
 	 */
 	@RequestMapping(value="/vorgang", method = RequestMethod.POST)
@@ -112,7 +112,7 @@ public class BackendController {
 			vorgang.setKategorie(kategorieDao.findKategorie(kategorie));
 			if (vorgang.getKategorie()==null 
 					|| vorgang.getKategorie().getParent()==null
-					|| vorgang.getKategorie().getParent().getTyp()!=vorgang.getTyp()) throw new BackendControllerException(4, "[kategorie] nicht korrekt", "Die Kategorie ist nicht gültig.");
+					|| vorgang.getKategorie().getParent().getTyp()!=vorgang.getTyp()) throw new BackendControllerException(4, "[kategorie] nicht korrekt", "Die Kategorie ist nicht gÃ¼ltig.");
 			
 			if (oviWkt==null) throw new BackendControllerException(5, "[oviWkt] fehlt", "Die Orstangabe fehlt.");
 			try {
@@ -123,7 +123,7 @@ public class BackendController {
 
 			if (StringUtils.isBlank(autorEmail)) throw new BackendControllerException(7, "[autorEmail] fehlt", "Die E-Mail-Adresse fehlt.");
 			if (!isMaxLength(autorEmail, 300)) throw new BackendControllerException(8, "[autorEmail] zu lang", "Die E-Mail-Adresse ist zu lang.");
-			if (!isEmail(autorEmail)) throw new BackendControllerException(9, "[autorEmail] nicht korrekt", "Die E-Mail-Adresse ist nicht gültig.");
+			if (!isEmail(autorEmail)) throw new BackendControllerException(9, "[autorEmail] nicht korrekt", "Die E-Mail-Adresse ist nicht gÃ¼ltig.");
 			vorgang.setAutorEmail(autorEmail);
 			vorgang.setHash(securityService.createHash(autorEmail+System.currentTimeMillis()));
 			
@@ -161,7 +161,7 @@ public class BackendController {
 	 * Die Methode verarbeitet den POST-Request auf der URL <code>/service/vorgangKOD</code><br/>
 	 * Beschreibung: erstellt einen neuen Vorgang des kommunalen Ordnungsdienstes,
 	 * im Gegensatz zum "normalen" Erstellen eines Vorgangs wird der Status
-	 * direkt auf offen gesetzt, damit ist keine Bestätigungs E-Mail notwendig.
+	 * direkt auf offen gesetzt, damit ist keine BestÃ¤tigungs E-Mail notwendig.
 	 * @param typ Vorgangstyp
 	 * @param kategorie Kategorie
 	 * @param oviWkt Position als WKT
@@ -202,7 +202,7 @@ public class BackendController {
 			vorgang.setKategorie(kategorieDao.findKategorie(kategorie));
 			if (vorgang.getKategorie()==null 
 					|| vorgang.getKategorie().getParent()==null
-					|| vorgang.getKategorie().getParent().getTyp()!=vorgang.getTyp()) throw new BackendControllerException(4, "[kategorie] nicht korrekt", "Die Kategorie ist nicht gültig.");
+					|| vorgang.getKategorie().getParent().getTyp()!=vorgang.getTyp()) throw new BackendControllerException(4, "[kategorie] nicht korrekt", "Die Kategorie ist nicht gÃ¼ltig.");
 			
 			if (oviWkt==null) throw new BackendControllerException(5, "[oviWkt] fehlt", "Die Orstangabe fehlt.");
 			try {
@@ -213,7 +213,7 @@ public class BackendController {
 
 			if (StringUtils.isBlank(autorEmail)) throw new BackendControllerException(7, "[autorEmail] fehlt", "Die E-Mail-Adresse fehlt.");
 			if (!isMaxLength(autorEmail, 300)) throw new BackendControllerException(8, "[autorEmail] zu lang", "Die E-Mail-Adresse ist zu lang.");
-			if (!isEmail(autorEmail)) throw new BackendControllerException(9, "[autorEmail] nicht korrekt", "Die E-Mail-Adresse ist nicht gültig.");
+			if (!isEmail(autorEmail)) throw new BackendControllerException(9, "[autorEmail] nicht korrekt", "Die E-Mail-Adresse ist nicht gÃ¼ltig.");
 			vorgang.setAutorEmail(autorEmail);
 			
 			if (!isMaxLength(betreff, 300)) throw new BackendControllerException(10, "[betreff] zu lang", "Der Betreff ist zu lang. Es sind maximal 300 Zeichen erlaubt.");
@@ -246,9 +246,9 @@ public class BackendController {
 	}
 
 	/**
-	 * Prüft ob der String eine gültige E-Mail-Adresse ist
+	 * PrÃ¼ft ob der String eine gÃ¼ltige E-Mail-Adresse ist
 	 * @param email String mit der E-Mail-Adresse
-	 * @return <code>true</code> - gültige E-Mail-Adresse
+	 * @return <code>true</code> - gÃ¼ltige E-Mail-Adresse
 	 */
 	private static boolean isEmail(String email)
 	{
@@ -258,9 +258,9 @@ public class BackendController {
 
 	
 	/**
-	 * Prüft ob der String zu lang ist
-	 * @param str String dessen Länge geprüft werden soll
-	 * @param maxLength maximale Länge
+	 * PrÃ¼ft ob der String zu lang ist
+	 * @param str String dessen LÃ¤nge geprÃ¼ft werden soll
+	 * @param maxLength maximale LÃ¤nge
 	 * @return <code>true</code> - String ist nicht zu lang
 	 */
 	private static boolean isMaxLength(String str, int maxLength)
@@ -272,8 +272,8 @@ public class BackendController {
 
 	/**
 	 * Die Methode verarbeitet den POST-Request auf der URL <code>/service/vorgangBestaetigung</code><br/>
-	 * Beschreibung: Vorgang bestätigen
-	 * @param hash Hash zum Bestätigen
+	 * Beschreibung: Vorgang bestÃ¤tigen
+	 * @param hash Hash zum BestÃ¤tigen
 	 * @return View die angezeigt werden soll
 	 */
 	@RequestMapping(value="/vorgangBestaetigung")
@@ -286,7 +286,7 @@ public class BackendController {
 
 			for (Verlauf verlauf : vorgang.getVerlauf()) verlauf.getTyp();
 			
-			if (vorgang.getStatus()!=EnumVorgangStatus.gemeldet)  throw new BackendControllerException(103, "Vorgang wurde bereits bestätigt");
+			if (vorgang.getStatus()!=EnumVorgangStatus.gemeldet)  throw new BackendControllerException(103, "Vorgang wurde bereits bestÃ¤tigt");
 
 			vorgang.setStatus(EnumVorgangStatus.offen);
 						
@@ -310,10 +310,10 @@ public class BackendController {
 
 	/**
 	 * Die Methode verarbeitet den POST-Request auf der URL <code>/service/unterstuetzer</code><br/>
-	 * Beschreibung: erstellt eine Unterstützung für ein Vorgang
+	 * Beschreibung: erstellt eine UnterstÃ¼tzung fÃ¼r ein Vorgang
 	 * @param vorgang Vorgang
 	 * @param email E-Mail-Adresse des Erstellers
-	 * @param resultHashOnSubmit <code>true</code> - gibt den Hash zum Bestätigen als Ergebnis zurück
+	 * @param resultHashOnSubmit <code>true</code> - gibt den Hash zum BestÃ¤tigen als Ergebnis zurÃ¼ck
 	 * @param response Response in das das Ergebnis direkt geschrieben wird
 	 */
 	@RequestMapping(value="/unterstuetzer", method = RequestMethod.POST)
@@ -326,16 +326,16 @@ public class BackendController {
 		if (resultHashOnSubmit==null) resultHashOnSubmit=false;
 		try {
 			Unterstuetzer unterstuetzer = new Unterstuetzer();
-			if (vorgang==null) throw new BackendControllerException(201, "[vorgang] fehlt", "Die Unterstützung ist keiner Meldung zugeordnet.");
+			if (vorgang==null) throw new BackendControllerException(201, "[vorgang] fehlt", "Die UnterstÃ¼tzung ist keiner Meldung zugeordnet.");
 			unterstuetzer.setVorgang(vorgangDao.findVorgang(vorgang));
-			if (unterstuetzer.getVorgang()==null) throw new BackendControllerException(202, "[vorgang] nicht korrekt", "Die Unterstützung ist keiner Meldung zugeordnet.");
+			if (unterstuetzer.getVorgang()==null) throw new BackendControllerException(202, "[vorgang] nicht korrekt", "Die UnterstÃ¼tzung ist keiner Meldung zugeordnet.");
 			
 			if (StringUtils.isBlank(email)) throw new BackendControllerException(203, "[email] fehlt", "Die E-Mail-Adresse fehlt.");
 			if (!isMaxLength(email, 300)) throw new BackendControllerException(204, "[email] zu lang", "Die E-Mail-Adresse ist zu lang.");
-			if (!isEmail(email)) throw new BackendControllerException(205, "[email] nicht korrekt", "Die E-Mail-Adresse ist nicht gültig.");
+			if (!isEmail(email)) throw new BackendControllerException(205, "[email] nicht korrekt", "Die E-Mail-Adresse ist nicht gÃ¼ltig.");
 			unterstuetzer.setHash(securityService.createHash(unterstuetzer.getVorgang().getId()+email));
-			if (vorgangDao.findUnterstuetzer(unterstuetzer.getHash())!=null) throw new BackendControllerException(206, "[email] wurde bereits für den [vorgang] verwendet", "Sie können die Meldung nicht mehrmals unterstützen.");
-			if (StringUtils.equalsIgnoreCase(unterstuetzer.getVorgang().getAutorEmail(), email)) throw new BackendControllerException(207, "[email] der autor des [vorgang] kann keine unterstützung für den [vorgang] abgeben", "Die Unterstützungsmeldung konnte nicht abgesetzt werden, da Sie Ihre eigene Meldung nicht unterstützen dürfen.");
+			if (vorgangDao.findUnterstuetzer(unterstuetzer.getHash())!=null) throw new BackendControllerException(206, "[email] wurde bereits fÃ¼r den [vorgang] verwendet", "Sie kÃ¶nnen die Meldung nicht mehrmals unterstÃ¼tzen.");
+			if (StringUtils.equalsIgnoreCase(unterstuetzer.getVorgang().getAutorEmail(), email)) throw new BackendControllerException(207, "[email] der autor des [vorgang] kann keine unterstÃ¼tzung fÃ¼r den [vorgang] abgeben", "Die UnterstÃ¼tzungsmeldung konnte nicht abgesetzt werden, da Sie Ihre eigene Meldung nicht unterstÃ¼tzen dÃ¼rfen.");
 			
 			unterstuetzer.setDatum(new Date());
 
@@ -355,8 +355,8 @@ public class BackendController {
 	
 	/**
 	 * Die Methode verarbeitet den POST-Request auf der URL <code>/service/unterstuetzerBestaetigung</code><br/>
-	 * Beschreibung: Unterstützung bestätigen
-	 * @param hash Hash zum Bestätigen
+	 * Beschreibung: UnterstÃ¼tzung bestÃ¤tigen
+	 * @param hash Hash zum BestÃ¤tigen
 	 * @return View die angezeigt werden soll
 	 */
 	@RequestMapping(value="/unterstuetzerBestaetigung")
@@ -367,7 +367,7 @@ public class BackendController {
 			Unterstuetzer unterstuetzer = vorgangDao.findUnterstuetzer(hash);
 			if (unterstuetzer==null) throw new BackendControllerException(302, "[hash] nicht korrekt");
 			
-			if (unterstuetzer.getDatumBestaetigung()!=null)  throw new BackendControllerException(303, "Unterstützer wurde bereits bestätigt");
+			if (unterstuetzer.getDatumBestaetigung()!=null)  throw new BackendControllerException(303, "UnterstÃ¼tzer wurde bereits bestÃ¤tigt");
 
 			unterstuetzer.setDatumBestaetigung(new Date());
 			
@@ -385,11 +385,11 @@ public class BackendController {
 	
 	/**
 	 * Die Methode verarbeitet den POST-Request auf der URL <code>/service/missbrauchsmeldung</code><br/>
-	 * Beschreibung: erstellt eine Missbrauchsmeldung für einen Vorgang
+	 * Beschreibung: erstellt eine Missbrauchsmeldung fÃ¼r einen Vorgang
 	 * @param vorgang Vorgang
 	 * @param text Text der Missbrauchsmeldung
 	 * @param email E-Mail-Adresse des Erstellers
-	 * @param resultHashOnSubmit <code>true</code> - gibt den Hash zum Bestätigen als Ergebnis zurück
+	 * @param resultHashOnSubmit <code>true</code> - gibt den Hash zum BestÃ¤tigen als Ergebnis zurÃ¼ck
 	 * @param response Response in das das Ergebnis direkt geschrieben wird
 	 */
 	@RequestMapping(value="/missbrauchsmeldung", method = RequestMethod.POST)
@@ -407,12 +407,12 @@ public class BackendController {
 			missbrauchsmeldung.setVorgang(vorgangDao.findVorgang(vorgang));
 			if (missbrauchsmeldung.getVorgang()==null) throw new BackendControllerException(402, "[vorgang] nicht korrekt", "Die Missbrauchsmeldung ist keiner Meldung zugeordnet.");
 
-			if (StringUtils.isBlank(text)) throw new BackendControllerException(403, "[text] fehlt", "Die Begründung fehlt.");
+			if (StringUtils.isBlank(text)) throw new BackendControllerException(403, "[text] fehlt", "Die BegrÃ¼ndung fehlt.");
 			missbrauchsmeldung.setText(text);
 			
 			if (StringUtils.isBlank(email)) throw new BackendControllerException(404, "[email] fehlt", "Die E-Mail-Adresse fehlt.");
 			if (!isMaxLength(email, 300)) throw new BackendControllerException(405, "[email] zu lang", "Die E-Mail-Adresse ist zu lang.");
-			if (!isEmail(email)) throw new BackendControllerException(406, "[email] nicht korrekt", "Die E-Mail-Adresse ist nicht gültig.");
+			if (!isEmail(email)) throw new BackendControllerException(406, "[email] nicht korrekt", "Die E-Mail-Adresse ist nicht gÃ¼ltig.");
             missbrauchsmeldung.setAutorEmail(email);
 			missbrauchsmeldung.setHash(securityService.createHash(missbrauchsmeldung.getVorgang().getId()+email+System.currentTimeMillis()));
 			
@@ -448,30 +448,30 @@ public class BackendController {
 			HttpServletResponse response) {
 		try {
 			LobHinweiseKritik lobHinweiseKritik = new LobHinweiseKritik();
-			if (vorgang==null) throw new BackendControllerException(401, "[vorgang] fehlt", "Lob, Hinweise oder Kritik kann/können keiner Meldung zugeordnet werden.");
+			if (vorgang==null) throw new BackendControllerException(401, "[vorgang] fehlt", "Lob, Hinweise oder Kritik kann/kÃ¶nnen keiner Meldung zugeordnet werden.");
 			lobHinweiseKritik.setVorgang(vorgangDao.findVorgang(vorgang));
-			if (lobHinweiseKritik.getVorgang()==null) throw new BackendControllerException(402, "[vorgang] nicht korrekt", "Lob, Hinweise oder Kritik kann/können keiner Meldung zugeordnet werden.");
+			if (lobHinweiseKritik.getVorgang()==null) throw new BackendControllerException(402, "[vorgang] nicht korrekt", "Lob, Hinweise oder Kritik kann/kÃ¶nnen keiner Meldung zugeordnet werden.");
 
 			if (StringUtils.isBlank(email)) throw new BackendControllerException(404, "[email] fehlt", "Die E-Mail-Adresse fehlt.");
 			if (!isMaxLength(email, 300)) throw new BackendControllerException(405, "[email] zu lang", "Die E-Mail-Adresse ist zu lang.");
-			if (!isEmail(email)) throw new BackendControllerException(406, "[email] nicht korrekt", "Die E-Mail-Adresse ist nicht gültig.");
+			if (!isEmail(email)) throw new BackendControllerException(406, "[email] nicht korrekt", "Die E-Mail-Adresse ist nicht gÃ¼ltig.");
             lobHinweiseKritik.setAutorEmail(email);
             
-            // aktuelle Zuständigkeit des Vorgangs bestimmen
+            // aktuelle ZustÃ¤ndigkeit des Vorgangs bestimmen
             String zustaendigkeit = lobHinweiseKritik.getVorgang().getZustaendigkeit();
             
-            // Empfänger gefunden?
+            // EmpfÃ¤nger gefunden?
             Boolean empfaengerGefunden = false;
             
-            // falls aktuelle Zuständigkeit des Vorgangs nicht NULL oder leer ist und gleichzeitig akzeptiert ist
+            // falls aktuelle ZustÃ¤ndigkeit des Vorgangs nicht NULL oder leer ist und gleichzeitig akzeptiert ist
             if (zustaendigkeit != null && zustaendigkeit != "" && lobHinweiseKritik.getVorgang().getZustaendigkeitStatus() == EnumZustaendigkeitStatus.akzeptiert) {
 
                 String empfaengerEmail = new String();
                 
-                // alle Nutzernamen dieser Zuständigkeit bestimmen
+                // alle Nutzernamen dieser ZustÃ¤ndigkeit bestimmen
                 List<String> allUserNamesForRole = securityService.getAllUserNamesForRole(zustaendigkeit);
                 
-                // denjenigen Nutzernamen aus dieser Zuständigkeit bestimmen, der gemäß dem Verlauf die letzte Bearbeitung am Vorgang durchgeführt hat
+                // denjenigen Nutzernamen aus dieser ZustÃ¤ndigkeit bestimmen, der gemÃ¤ÃŸ dem Verlauf die letzte Bearbeitung am Vorgang durchgefÃ¼hrt hat
                 String empfaenger = verlaufDao.findLastUserForVorgangAndZustaendigkeit(lobHinweiseKritik.getVorgang(), allUserNamesForRole);
                 
                 // falls dieser gefunden wurde
@@ -484,7 +484,7 @@ public class BackendController {
                     // falls der String mit dessen E-Mail-Adresse nicht NULL ist
                     if (empfaengerEmail != null && empfaengerEmail != "") {
                     
-                        // Empfänger-E-Mail-Adresse für Lob, Hinweise oder Kritik auf zuvor gefüllten String setzen
+                        // EmpfÃ¤nger-E-Mail-Adresse fÃ¼r Lob, Hinweise oder Kritik auf zuvor gefÃ¼llten String setzen
                         lobHinweiseKritik.setEmpfaengerEmail(empfaengerEmail);
                     
                         // Lob, Hinweise oder Kritik als E-Mail versenden
@@ -493,13 +493,13 @@ public class BackendController {
                 }
             }
             
-            // ansonsten: falls Empfänger zuvor nicht gefunden wurde und aktuelle Zuständigkeit des Vorgangs nicht NULL oder leer ist, aber eben auch nicht akzeptiert ist
+            // ansonsten: falls EmpfÃ¤nger zuvor nicht gefunden wurde und aktuelle ZustÃ¤ndigkeit des Vorgangs nicht NULL oder leer ist, aber eben auch nicht akzeptiert ist
             else if (empfaengerGefunden == false && zustaendigkeit != null && zustaendigkeit != "") {
 
                 String empfaengerEmail = new String();
                 Short zaehler = 0;
                 
-                // alle Empfänger redaktioneller E-Mails dieser Zuständigkeit bestimmen, die zugleich auch Lob, Hinweise oder Kritik als E-Mail empfangen sollen
+                // alle EmpfÃ¤nger redaktioneller E-Mails dieser ZustÃ¤ndigkeit bestimmen, die zugleich auch Lob, Hinweise oder Kritik als E-Mail empfangen sollen
                 List<RedaktionEmpfaenger> allEmpfaengerLobHinweiseKritikForZustaendigkeit = redaktionEmpfaengerDao.getEmpfaengerListLobHinweiseKritikForZustaendigkeit(lobHinweiseKritik.getVorgang().getZustaendigkeit());
                 
                 // falls diese gefunden wurden
@@ -519,7 +519,7 @@ public class BackendController {
                         // ansonsten
                         else {
                             
-                            // kommaseparierten String mit der aktuellen E-Mail-Adresse fortführen
+                            // kommaseparierten String mit der aktuellen E-Mail-Adresse fortfÃ¼hren
                             empfaengerEmail = empfaengerEmail + ", " + empfaengerLobHinweiseKritikForZustaendigkeit.getEmail();
                         }
                         zaehler++;
@@ -528,7 +528,7 @@ public class BackendController {
                         mailService.sendLobHinweiseKritikMail(lobHinweiseKritik.getVorgang(), email, empfaengerLobHinweiseKritikForZustaendigkeit.getEmail(), freitext);
                     }
                     
-                    // Empfänger-E-Mail-Adresse für Lob, Hinweise oder Kritik auf in vorhergehender Schleife gefüllten String setzen
+                    // EmpfÃ¤nger-E-Mail-Adresse fÃ¼r Lob, Hinweise oder Kritik auf in vorhergehender Schleife gefÃ¼llten String setzen
                     lobHinweiseKritik.setEmpfaengerEmail(empfaengerEmail);
                 }
             }
@@ -552,8 +552,8 @@ public class BackendController {
 	
 	/**
 	 * Die Methode verarbeitet den POST-Request auf der URL <code>/service/missbrauchsmeldungBestaetigung</code><br/>
-	 * Beschreibung: Vorgang bestätigen
-	 * @param hash Hash zum Bestätigen
+	 * Beschreibung: Vorgang bestÃ¤tigen
+	 * @param hash Hash zum BestÃ¤tigen
 	 * @return View die angezeigt werden soll
 	 */
 	@RequestMapping(value="/missbrauchsmeldungBestaetigung")
@@ -564,7 +564,7 @@ public class BackendController {
 			Missbrauchsmeldung missbrauchsmeldung = vorgangDao.findMissbrauchsmeldung(hash);
 			if (missbrauchsmeldung==null) throw new BackendControllerException(502, "[hash] nicht korrekt");
 			
-			if (missbrauchsmeldung.getDatumBestaetigung()!=null)  throw new BackendControllerException(503, "Missbrauchsmeldung wurde bereits bestätigt");
+			if (missbrauchsmeldung.getDatumBestaetigung()!=null)  throw new BackendControllerException(503, "Missbrauchsmeldung wurde bereits bestÃ¤tigt");
 
 			missbrauchsmeldung.setDatumBestaetigung(new Date());
 			
@@ -583,8 +583,8 @@ public class BackendController {
 	
 	/**
 	 * Die Methode verarbeitet den POST-Request auf der URL <code>/service/vorgangLoeschen</code><br/>
-	 * Beschreibung: Vorgang löschen
-	 * @param hash Hash zum Löschen
+	 * Beschreibung: Vorgang lÃ¶schen
+	 * @param hash Hash zum LÃ¶schen
 	 * @return View die angezeigt werden soll
 	 */
 	@RequestMapping(value="/vorgangLoeschen")
@@ -601,7 +601,7 @@ public class BackendController {
 				vorgang.setStatus(EnumVorgangStatus.geloescht);
 				vorgangDao.merge(vorgang);
 				
-			} else throw new BackendControllerException(103, "Vorgang kann nicht mehr gelöscht werden"); 
+			} else throw new BackendControllerException(103, "Vorgang kann nicht mehr gelÃ¶scht werden"); 
 			
 			return "backend/vorgangLoeschenOk";
 			
@@ -613,11 +613,11 @@ public class BackendController {
 
 	/**
 	 * 
-	 * @param oviWkt überwachte Fläche als WKT
-	 * @param probleme Probleme überwachen?
-	 * @param problemeKategorien Liste der überwachten Kategorien bei den Problemen
-	 * @param ideen Ideen überwachen?
-	 * @param ideenKategorien Liste der überwachten Kategorien bei den Ideen
+	 * @param oviWkt Ã¼berwachte FlÃ¤che als WKT
+	 * @param probleme Probleme Ã¼berwachen?
+	 * @param problemeKategorien Liste der Ã¼berwachten Kategorien bei den Problemen
+	 * @param ideen Ideen Ã¼berwachen?
+	 * @param ideenKategorien Liste der Ã¼berwachten Kategorien bei den Ideen
 	 * @param response
 	 */
 	@RequestMapping(value="/geoRss", method = RequestMethod.POST)

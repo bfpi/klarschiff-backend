@@ -49,7 +49,7 @@ import de.fraunhofer.igd.klarschiff.vo.VorgangHistoryClasses;
 import java.util.Date;
 
 /**
- * Controller für die Vorgangsbearbeitung
+ * Controller fÃ¼r die Vorgangsbearbeitung
  * @author Stefan Audersch (Fraunhofer IGD)
  */
 @SessionAttributes("cmd")
@@ -80,7 +80,7 @@ public class VorgangBearbeitenController {
 	SettingsService settingsService;
     
     /**
-	 * Liefert (in Systemkonfiguration festgelegte) Anzahl an Unterstützungen, die benötigt werden damit Idee Relevanz erlangt (z.B. in der Vorgangssuche
+	 * Liefert (in Systemkonfiguration festgelegte) Anzahl an UnterstÃ¼tzungen, die benÃ¶tigt werden damit Idee Relevanz erlangt (z.B. in der Vorgangssuche
 	 * automatisch erscheint). 
 	 */
 	@ModelAttribute("vorgangIdeenUnterstuetzer")
@@ -89,7 +89,7 @@ public class VorgangBearbeitenController {
     }
     
     /**
-	 * Liefert (in Systemkonfiguration festgelegte) maximale Zeichenanzahl für Statuskommentare zu Vorgängen
+	 * Liefert (in Systemkonfiguration festgelegte) maximale Zeichenanzahl fÃ¼r Statuskommentare zu VorgÃ¤ngen
 	 */
 	@ModelAttribute("vorgangStatusKommentarTextlaengeMaximal")
     public Integer vorgangStatusKommentarTextlaengeMaximal() {
@@ -97,7 +97,7 @@ public class VorgangBearbeitenController {
     }
 	
 	/**
-	 * Liefert alle vorhandenen Zuständigkeiten des aktuellen Benutzers
+	 * Liefert alle vorhandenen ZustÃ¤ndigkeiten des aktuellen Benutzers
 	 */
 	@ModelAttribute("currentZustaendigkeiten")
     public List<Role> currentZustaendigkeiten() {
@@ -105,7 +105,7 @@ public class VorgangBearbeitenController {
     }
 	
 	/**
-	 * Liefert alle im System vorhandenen Zuständigkeiten
+	 * Liefert alle im System vorhandenen ZustÃ¤ndigkeiten
 	 */
 	@ModelAttribute("allZustaendigkeiten")
     public List<Role> allZustaendigkeiten() {
@@ -121,7 +121,7 @@ public class VorgangBearbeitenController {
 	}
 	
 	/**
-	 * Liefert alle möglichen Ausprägungen für Vorgangs-Status-Typen 
+	 * Liefert alle mÃ¶glichen AusprÃ¤gungen fÃ¼r Vorgangs-Status-Typen 
 	 */
 	@ModelAttribute("allVorgangStatus")
     public EnumVorgangStatus[] allVorgangStatus() {
@@ -131,7 +131,7 @@ public class VorgangBearbeitenController {
     }
     
     /**
-	 * Liefert alle möglichen Ausprägungen für Vorgangs-Status-Typen (mit offenen!)
+	 * Liefert alle mÃ¶glichen AusprÃ¤gungen fÃ¼r Vorgangs-Status-Typen (mit offenen!)
 	 */
 	@ModelAttribute("allVorgangStatusMitOffenen")
     public EnumVorgangStatus[] allVorgangStatusMitOffenen() {
@@ -141,7 +141,7 @@ public class VorgangBearbeitenController {
     }
 
 	/**
-	 * Liefert alle möglichen Ausprägungen für Vorgangstypen 
+	 * Liefert alle mÃ¶glichen AusprÃ¤gungen fÃ¼r Vorgangstypen 
 	 */
 	@ModelAttribute("vorgangtypen")
     public Collection<EnumVorgangTyp> populateEnumVorgangTypen() {
@@ -149,7 +149,7 @@ public class VorgangBearbeitenController {
     }
 
 	/**
-	 * Liefert alle möglichen Ausprägungen für Prioritätsbezeichner 
+	 * Liefert alle mÃ¶glichen AusprÃ¤gungen fÃ¼r PrioritÃ¤tsbezeichner 
 	 */
 	@ModelAttribute("allPrioritaet")
     public Collection<EnumPrioritaet> allPrioritaet() {
@@ -165,8 +165,8 @@ public class VorgangBearbeitenController {
     }
 
 	/**
-	 * Aktualisiert Unterkategorie und Liste möglicher Hauptkategorien (abhängig von Vorgangstyp) in übergebenem
-	 * Model mit Daten aus übergebenem Commandobjekt 
+	 * Aktualisiert Unterkategorie und Liste mÃ¶glicher Hauptkategorien (abhÃ¤ngig von Vorgangstyp) in Ã¼bergebenem
+	 * Model mit Daten aus Ã¼bergebenem Commandobjekt 
 	 * @param model Model
 	 * @param cmd Command
 	 */
@@ -179,7 +179,7 @@ public class VorgangBearbeitenController {
 	}
 	
 	/**
-	 * Aktualisiert interne Kommentare in übergebenem Model mit Daten aus übergebenem Commandobjekt 
+	 * Aktualisiert interne Kommentare in Ã¼bergebenem Model mit Daten aus Ã¼bergebenem Commandobjekt 
 	 * @param model Model
 	 * @param cmd Command
 	 */
@@ -192,7 +192,7 @@ public class VorgangBearbeitenController {
 	}
 	
 	/**
-	 * Aktualisiert Lob, Hinweise oder Kritik in übergebenem Model mit Daten aus übergebenem Commandobjekt 
+	 * Aktualisiert Lob, Hinweise oder Kritik in Ã¼bergebenem Model mit Daten aus Ã¼bergebenem Commandobjekt 
 	 * @param model Model
 	 * @param cmd Command
 	 */
@@ -205,7 +205,7 @@ public class VorgangBearbeitenController {
 	}
 
 	/**
-	 * Ermittelt, ob bereits der Dispatcher für den Vorgang zuständig war. Fügt diese Informattion
+	 * Ermittelt, ob bereits der Dispatcher fÃ¼r den Vorgang zustÃ¤ndig war. FÃ¼gt diese Informattion
 	 * als <code>"isDispatcherInVorgangHistoryClasses"</code> zu Modell hinzu.
 	 * @param model Model
 	 * @param cmd Command
@@ -221,7 +221,7 @@ public class VorgangBearbeitenController {
 	 * Seitenbeschreibung: Formular zur Vorgangsbearbeitung oder Hinweis auf noch nicht aktivierte
 	 * Bearbeitbarkeit falls Vorgang noch im Status <code>gemeldet</code>
 	 * @param id Vorgangs-ID
-	 * @param model Model in dem ggf. Daten für die View abgelegt werden
+	 * @param model Model in dem ggf. Daten fÃ¼r die View abgelegt werden
 	 * @param request Request
 	 * @return View, die zum Rendern des Request verwendet wird
 	 */
@@ -240,7 +240,7 @@ public class VorgangBearbeitenController {
 	}
 
 	/**
-	 * Ermittelt Vorgang mit übergebener ID aus Backend-Datenbank
+	 * Ermittelt Vorgang mit Ã¼bergebener ID aus Backend-Datenbank
 	 * @param id Vorgangs-ID
 	 * @return
 	 */
@@ -253,7 +253,7 @@ public class VorgangBearbeitenController {
 	
 	/**
 	 * Die Methode verarbeitet den POST-Request auf der URL <code>/vorgang/{id}/bearbeiten</code><br/>
-	 * Funktionsbeschreibung: Die Wahl des <code>action</code> Parameters erlaubt folgende Funktionalitäten:
+	 * Funktionsbeschreibung: Die Wahl des <code>action</code> Parameters erlaubt folgende FunktionalitÃ¤ten:
 	 * <ul>
 	 * <li><code>akzeptieren</code></li>
 	 * <li><code>&uuml;bernehmen und akzeptieren</code></li>
@@ -278,7 +278,7 @@ public class VorgangBearbeitenController {
 	 * @param result BindingResult
 	 * @param id Vorgangs-ID
 	 * @param action Stringparameter zur funktionalen Steuerung
-	 * @param model Model in der ggf. Daten für die View abgelegt werden
+	 * @param model Model in der ggf. Daten fÃ¼r die View abgelegt werden
 	 * @param request HttpServletRequest-Objekt
 	 * @return View, die zum Rendern des Request verwendet wird
 	 */
@@ -299,7 +299,7 @@ public class VorgangBearbeitenController {
 		assertNotEmpty(cmd, result, Assert.EvaluateOn.ever, "vorgang.status", null);
         
         if (StringUtils.equals("wird nicht bearbeitet", cmd.getVorgang().getStatus().getText())) {
-            assertNotEmpty(cmd, result, Assert.EvaluateOn.ever, "vorgang.statusKommentar", "Für den Status „wird nicht bearbeitet“ müssen Sie einen Kommentar angeben!");
+            assertNotEmpty(cmd, result, Assert.EvaluateOn.ever, "vorgang.statusKommentar", "FÃ¼r den Status Â„wird nicht bearbeitetÂ“ mÃ¼ssen Sie einen Kommentar angeben!");
         }
         
 		assertMaxLength(cmd, result, Assert.EvaluateOn.ever, "vorgang.statusKommentar", vorgangStatusKommentarTextlaengeMaximal(), "Der Statuskommentar ist zu lang! Erlaubt sind hier maximal " + vorgangStatusKommentarTextlaengeMaximal().toString() + " Zeichen.");
@@ -424,10 +424,10 @@ public class VorgangBearbeitenController {
 	}
 	
 	/**
-	 * Ermittelt die Anzahl maximal benötigter Seiten aus:
-	 * @param size gewünschter Anzahl an Elementen (Suchergebnissen) pro Seite
+	 * Ermittelt die Anzahl maximal benÃ¶tigter Seiten aus:
+	 * @param size gewÃ¼nschter Anzahl an Elementen (Suchergebnissen) pro Seite
 	 * @param count gegebener Anzahl an darzustellender Elemente
-	 * @return maximal benötigte Seitenzahl
+	 * @return maximal benÃ¶tigte Seitenzahl
 	 */
 	private int calculateMaxPages(int size, long count)
     {
