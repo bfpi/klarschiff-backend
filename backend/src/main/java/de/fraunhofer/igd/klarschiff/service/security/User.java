@@ -62,6 +62,14 @@ public class User {
 		return AppContext.getApplicationContext().getBean(SecurityService.class).isUserAdmin(id);
 	}
     
+    /**
+	 * Ermittelt, ob der Benutzer ein Admin ist.
+	 * @return <code>true</code> - Admins
+	 */
+	public boolean getUserKoordinator() {
+		return AppContext.getApplicationContext().getBean(SecurityService.class).isUserKoordinator(id);
+	}    
+    
     public static List<String> toString(Collection<User> users) {
 		List<String> _users = new ArrayList<String>();
 		for (User user : users) _users.add(user.getName());

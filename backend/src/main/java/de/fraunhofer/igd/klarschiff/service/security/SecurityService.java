@@ -64,6 +64,7 @@ public class SecurityService {
 	String groupExtern = "extern";
 	String groupAdmin = "admin";
 	String groupDispatcher = "dispatcher";
+	String groupKoordinator = "koordinator";
 	
 	private ContextMapper<User> userContextMapper;
 	private ContextMapper<Role> roleContextMapper;
@@ -104,8 +105,8 @@ public class SecurityService {
 		List<Role> role = securityServiceLdap.getObjectListFromLdap(groupSearchBase, "(&(objectclass="+groupObjectClass+")("+StringUtils.replace(groupSearchFilter, "{0}", user.getDn())+")("+groupRoleAttribute+"="+groupAdmin+"))", roleContextMapper);
 		return (role.size()==0) ? false : true;
 	}
-	
-	
+
+    
 	/**
 	 * Ermittelt ob der aktuelle Benutzer ein Dispatcher ist.
 	 * @return <code>true</code> - der Benutzer ist ein Dispatcher
@@ -129,6 +130,18 @@ public class SecurityService {
 		return (role.size()==0) ? false : true;
 	}
 	
+    
+    /**
+	 * Ermittelt ob der Benutzer Koordinator-Rechte hat.
+	 * @param login Benutzer, für den überprüft werden soll, ob er Koordinator-Rechte hat.
+	 * @return <code>true</code> - der Benutzer hat Koordinator-Rechte
+	 */
+	public boolean isUserKoordinator(String login) {
+		User user = getUser(login);
+		if (user==null) return false;
+		List<Role> role = securityServiceLdap.getObjectListFromLdap(groupSearchBase, "(&(objectclass="+groupObjectClass+")("+StringUtils.replace(groupSearchFilter, "{0}", user.getDn())+")("+groupRoleAttribute+"="+groupKoordinator+"))", roleContextMapper);
+		return (role.size()==0) ? false : true;
+	}
 	
 	/**
 	 * Ermittelt für den aktuellen Benutzer die Benutzerdaten.
