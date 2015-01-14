@@ -207,16 +207,16 @@ public class VorgangDao {
 	}
 
 	
-  /**
-   * Fügt zu einem StringBuilder den WHERE-Teil einer SQL-Query zur Suche von
-   * Vorgängen anhand der Parameter im <code>VorgangSuchenCommand</code>
-   * hinzu.
-   *
-   * @param cmd Command mit den Parametern zur Suche
-   * @param sql StringBuilder an den angehängt wird
-   * @return StringBuilder an den angehängt wird mit WHERE
-   */
-  private StringBuilder addFilter(VorgangSuchenCommand cmd, StringBuilder sql) {
+    /**
+    * Fügt zu einem StringBuilder den WHERE-Teil einer SQL-Query zur Suche von
+    * Vorgängen anhand der Parameter im <code>VorgangSuchenCommand</code>
+    * hinzu.
+    *
+    * @param cmd Command mit den Parametern zur Suche
+    * @param sql StringBuilder an den angehängt wird
+    * @return StringBuilder an den angehängt wird mit WHERE
+    */
+    private StringBuilder addFilter(VorgangSuchenCommand cmd, StringBuilder sql) {
     List<EnumVorgangStatus> unStatus = new ArrayList<EnumVorgangStatus>(Arrays.asList(EnumVorgangStatus.closedVorgangStatus()));
 
     ArrayList<String> conds = new ArrayList<String>();
@@ -358,7 +358,102 @@ public class VorgangDao {
       sql.append(" WHERE (").append(StringUtils.join(conds, ") AND (")).append(")");
     }
     return sql;
-  }
+    }
+    
+    /**
+    * Fügt zu einem StringBuilder den WHERE-Teil einer SQL-Query zur Suche von
+    * Vorgängen anhand der Parameter im <code>VorgangDelegiertSuchenCommand</code>
+    * hinzu.
+    *
+    * @param cmd Command mit den Parametern zur Suche
+    * @param sql StringBuilder an den angehängt wird
+    * @return StringBuilder an den angehängt wird mit WHERE
+    */
+    private StringBuilder addFilter(VorgangDelegiertSuchenCommand cmd, StringBuilder sql) {
+
+    ArrayList<String> conds = new ArrayList<String>();
+    conds.add("vo.archiviert IS NULL OR NOT vo.archiviert");
+
+    if (cmd instanceof VorgangFeedDelegiertAnCommand) {
+        conds.add("vo.delegiert_an IN " + Role.toString(((VorgangFeedDelegiertAnCommand)cmd).getDelegiertAn()));
+    } else {
+        conds.add("vo.delegiert_an IN ('" + StringUtils.join(Role.toString(securityService.getCurrentDelegiertAn()), "', '") + "')");
+    }
+    
+    switch (cmd.getSuchtyp()) {
+      case einfach:
+        switch (cmd.getEinfacheSuche()) {
+          case offene:
+            conds.add("vo.status IN ('" + EnumVorgangStatus.inBearbeitung + "')");
+            break;
+          case abgeschlossene:
+            conds.add("vo.status IN ('" + StringUtils.join(EnumVorgangStatus.closedVorgangStatus(), "', '") + "')");
+            break;
+        }
+        break;
+      case erweitert:
+        //FullText
+        if (!StringUtils.isBlank(cmd.getErweitertFulltext())) {
+          String text = StringEscapeUtils.escapeSql("%" + cmd.getErweitertFulltext() + "%");
+          conds.add("vo.betreff ILIKE '" + text + "'"
+                  + " OR vo.details ILIKE '" + text + "'"
+                  + " OR vo.status_kommentar ILIKE '" + text + "'"
+                  + " OR vo.id IN (SELECT vorgang FROM klarschiff_kommentar "
+                  + "   WHERE NOT geloescht AND text ILIKE '" + text + "')"
+                  + " OR vo.kategorie IN (SELECT id FROM klarschiff_kategorie WHERE name ILIKE '" + text + "')"
+                  + " OR vo.kategorie IN (SELECT id FROM klarschiff_kategorie WHERE parent in ("
+                  + "SELECT id FROM klarschiff_kategorie WHERE name ILIKE '" + text + "'))");
+        }
+        //Nummer
+        if (cmd.getErweitertNummerAsLong() != null) {
+          conds.add("vo.id = " + cmd.getErweitertNummerAsLong());
+        }
+        //Kategorie
+        if (cmd.getErweitertKategorie() != null) {
+          conds.add("vo.kategorie = " + cmd.getErweitertKategorie().getId());
+          //Hauptkategorie
+        } else if (cmd.getErweitertHauptkategorie() != null) {
+          conds.add("vo.kategorie IN (SELECT id FROM klarschiff_kategorie WHERE parent = " + cmd.getErweitertHauptkategorie().getId() + ")");
+          //Typ
+        } else if (cmd.getErweitertVorgangTyp() != null) {
+          conds.add("vo.typ = '" + cmd.getErweitertVorgangTyp().name() + "'");
+        }
+        //Status
+         {
+          List<EnumVorgangStatus> inStatus = Arrays.asList(cmd.getErweitertVorgangStatus());
+          List<EnumVorgangStatus> notInStatus = new ArrayList<EnumVorgangStatus>(Arrays.asList(EnumVorgangStatus.values()));
+          notInStatus.removeAll(inStatus);
+          if (!inStatus.isEmpty()) {
+            conds.add("vo.status IN ('" + StringUtils.join(inStatus, "', '") + "')");
+          }
+          if (!notInStatus.isEmpty()) {
+            conds.add("vo.status NOT IN ('" + StringUtils.join(notInStatus, "', '") + "')");
+          }
+        }
+        //Datum
+        if (cmd.getErweitertDatumVon() != null) {
+          java.sql.Date datumVon = new java.sql.Date(DateUtils.truncate(cmd.getErweitertDatumVon(), Calendar.DAY_OF_MONTH).getTime());
+          conds.add("vo.datum >= '" + datumVon.toString() + "'");
+        }
+        if (cmd.getErweitertDatumBis() != null) {
+          java.sql.Date datumBis = new java.sql.Date(DateUtils.truncate(cmd.getErweitertDatumBis(), Calendar.DAY_OF_MONTH).getTime());
+          conds.add("vo.datum <= '" + datumBis.toString() + "'");
+        }
+        //Priorität
+        if (cmd.getErweitertPrioritaet() != null) {
+          conds.add("vo.prioritaet = '" + cmd.getErweitertPrioritaet().name() + "'");
+        }
+        //Stadtteil
+        if (cmd.getErweitertStadtteilgrenze() != null) {
+          conds.add("geometry_within(vo.ovi, (SELECT grenze FROM klarschiff_stadtteil_grenze WHERE id=" + cmd.getErweitertStadtteilgrenze() + "))");
+        }
+        break;
+    }
+    if (!conds.isEmpty()) {
+      sql.append(" WHERE (").append(StringUtils.join(conds, ") AND (")).append(")");
+    }
+    return sql;
+    }
 
 
 	/**
@@ -416,14 +511,14 @@ public class VorgangDao {
 	}
 	
 	
-  /**
-   * Ermittelt die Liste der Vorgänge zur Suche anhand der Parameter im
-   * <code>VorgangSuchenCommand</code>
-   *
-   * @param cmd Command mit den Parametern zur Suche
-   * @return Ergebnisliste der Vorgänge
-   */
-  public List<Object[]> getVorgaenge(VorgangSuchenCommand cmd) {
+    /**
+    * Ermittelt die Liste der Vorgänge zur Suche anhand der Parameter im
+    * <code>VorgangSuchenCommand</code>
+    *
+    * @param cmd Command mit den Parametern zur Suche
+    * @return Ergebnisliste der Vorgänge
+    */
+    public List<Object[]> getVorgaenge(VorgangSuchenCommand cmd) {
     StringBuilder sql = new StringBuilder();
     sql.append("SELECT vo.*,")
             .append(" verlauf1.datum AS aenderungsdatum,")
@@ -460,7 +555,63 @@ public class VorgangDao {
             .addScalar("unterstuetzer", StandardBasicTypes.LONG)
             .addScalar("missbrauchsmeldung", StandardBasicTypes.LONG)
             .list();
-  }
+    }
+	
+	/**
+    * Ermittelt die Liste der Vorgänge zur Suche anhand der Parameter im
+    * <code>VorgangDelegiertSuchenCommand</code>
+    *
+    * @param cmd Command mit den Parametern zur Suche
+    * @return Ergebnisliste der Vorgänge
+    */
+    public List<Object[]> getVorgaenge(VorgangDelegiertSuchenCommand cmd) {
+    StringBuilder sql = new StringBuilder();
+    sql.append("SELECT vo.*");
+    sql.append(" FROM klarschiff_vorgang vo");
+    // Für Sortierung
+    sql.append(" LEFT JOIN klarschiff_kategorie kat_unter ON vo.kategorie = kat_unter.id");
+    sql.append(" LEFT JOIN klarschiff_kategorie kat_haupt ON kat_unter.parent = kat_haupt.id");
+    // Änderungsdatum
+    sql.append(" INNER JOIN (SELECT vorgang, MAX(datum) AS datum FROM klarschiff_verlauf")
+            .append(" GROUP BY vorgang) verlauf1 ON vo.id = verlauf1.vorgang");
+
+    sql = addFilter(cmd, sql);
+    // ORDER
+    ArrayList orderBys = new ArrayList();
+    for (String field : cmd.getOrderString().split(",")) {
+      orderBys.add(field.trim() + " " + cmd.getOrderDirectionString());
+    }
+    if (!orderBys.isEmpty()) {
+      sql.append(" ORDER BY ").append(StringUtils.join(orderBys, ", "));
+    }
+    // LIMIT
+    if (cmd.getSize() != null) {
+      sql.append(" LIMIT ").append(cmd.getSize());
+    }
+    if (cmd.getPage() != null && cmd.getSize() != null) {
+      sql.append(" OFFSET ").append((cmd.getPage() - 1) * cmd.getSize());
+    }
+    return ((Session) em.getDelegate())
+            .createSQLQuery(sql.toString())
+            .addEntity("vo", Vorgang.class)
+            .list();
+    }
+
+    /**
+	 * Ermittelt die Ergebnisanzahl für eine definierte parametrisierte Anfrage nach Vorgängen. 
+	 * @param cmd Command mit den Parametern zur Suche
+	 * @return Anzahl der Vorgänge im Suchergebnis
+	 */
+    public long countVorgaenge(VorgangDelegiertSuchenCommand cmd) {
+      StringBuilder sql = new StringBuilder();
+      sql.append("SELECT count(vo.*) AS count FROM klarschiff_vorgang vo");
+      sql = addFilter(cmd, sql);
+      SQLQuery query = ((Session) em.getDelegate()).createSQLQuery(sql.toString());
+      for (BigInteger i: (List<BigInteger>) query.list()) {
+        return i.longValue();
+      }
+      return 0;
+    }
 
     /**
 	 * Ermittelt die Ergebnisanzahl für eine definierte parametrisierte Anfrage nach Vorgängen. 

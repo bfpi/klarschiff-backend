@@ -7,29 +7,54 @@
 	xmlns:vorgang="urn:jsptagdir:/WEB-INF/tags/vorgang"
 	xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu"
 	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+	xmlns:role="urn:jsptagdir:/WEB-INF/tags/role"
+	xmlns:form="http://www.springframework.org/tags/form"
 	xmlns:tiles="http://tiles.apache.org/tags-tiles" 
+	xmlns:sec="http://www.springframework.org/security/tags"
 	xmlns:fx="http://igd.fraunhofer.de/tags/elfunctions" 
 	version="2.0"
 	>
 	<jsp:directive.page contentType="text/html;charset=UTF-8"/>
+	
 
+	<!-- Datepicker-->
+	<c:url value="/script/calendar/jquery.ui.core.js" var="url"/>
+	<script src="${url}" type="text/javascript"><!-- //jquery.ui.datepicker --></script>
+	<c:url value="/script/calendar/jquery.ui.datepicker.js" var="url"/>
+	<script src="${url}" type="text/javascript"><!-- //jquery.ui.datepicker --></script>
+ 	<c:url value="/script/calendar/jquery.ui.datepicker-de.js" var="url"/>
+	<script src="${url}" type="text/javascript"><!-- //jquery.ui.datepicker-de --></script>
+ 
+ 
+	<c:url value="/script/calendar/css/jquery.ui.all.css" var="url"/>
+	<link rel="stylesheet" type="text/css" href="${url}"> <!-- styles.css --> </link>
+ 	
 	<!-- CONTENTTITLE -->
 	<div id="root_style_content_title">
 		Vorgänge
 	</div>
-	
+
 	<!-- TABMENU -->
 	<tiles:importAttribute name="tabmenu_item" ignore="true" toName="tabmenu_item"/>
 	<menu:tabmenuvorgang currentId="${tabmenu_item}"/>
-	
+		
 	<!-- CONTENT -->
 	<div id="root_style_content">
+		
+
+		<!-- einfache Suche -->
+		<c:if test="${cmdvorgangdelegiertsuchen.suchtyp == 'einfach'}">
+			<div style="text-align: right;">
+				<spring:url value="" var="url">
+					<spring:param name="suchtyp" value="erweitert" />
+				</spring:url>
+				zur <a href="${url}">erweiterten Suche</a> wechseln
+			</div>
 
 			<spring:url value="" var="url">
 				<spring:param name="einfacheSuche" value="offene" />
 			</spring:url>
 			<util:button url="${url}" disabled="${cmdvorgangdelegiertsuchen.einfacheSuche == 'offene'}" cssStyle="margin-right:5px;">
-				<util:img url="/images/status_offen_15.png" cssStyle="padding-right:3px;"/>
 				<util:img url="/images/status_inBearbeitung_15.png"/>
 				offene Vorgänge
 			</util:button>
@@ -43,9 +68,220 @@
 				abgeschlossene Vorgänge
 			</util:button>
 
+		</c:if>
+
+
+		<!-- erweiterte Suche -->
+		<c:if test="${cmdvorgangdelegiertsuchen.suchtyp == 'erweitert'}">
+
+			<div style="text-align: right;">
+				<spring:url value="" var="url">
+					<spring:param name="suchtyp" value="einfach" />
+				</spring:url>
+				zur <a href="${url}">einfachen Suche</a> wechseln
+			</div>
+
+			<div class="fieldset" style="margin-top:10px;">
+				<div class="fieldsettitle">Suchfilter</div>
+
+				<form:form method="GET" modelAttribute="cmdvorgangdelegiertsuchen" class="suche">	
+					<table>
+						<tr>
+							<td colspan="2">
+								<div>
+									<form:label path="erweitertFulltext" title="Die folgenden Felder werden durchsucht: Hauptkategorie, Unterkategorie, Betreff, Details, interne Kommentare und Statuskommentare.">Freitext</form:label>
+									<form:input path="erweitertFulltext" cssClass="inputtext" cssStyle="width:526px;" title="Die folgenden Felder werden durchsucht: Hauptkategorie, Unterkategorie, Betreff, Details, interne Kommentare und Statuskommentare."/>
+								</div>
+							</td>
+						</tr>
+ 						<tr>
+							<td valign="top">
+								<div>
+									<form:label path="erweitertVorgangStatus">Status</form:label>	
+									<div style="padding-left: 85px;">
+									<table>
+										<c:forEach items="${allVorgangStatus}" var="vorgangStatus">
+                                            <c:if test="${vorgangStatus.text == 'in Bearbeitung' || vorgangStatus.text == 'Duplikat' || vorgangStatus.text == 'wird nicht bearbeitet' || vorgangStatus.text == 'abgeschlossen'}">
+                                                <tr>
+                                                    <td><form:checkbox path="erweitertVorgangStatus" value="${vorgangStatus}" id="erweitertVorgangStatus_${vorgangStatus}"/></td>
+                                                    <td style="padding-top:4px;"><c:url value="/images/status_${vorgangStatus}_15.png" var="url"/><img alt="${vorgangStatus}" src="${url}"/></td>
+                                                    <td>${vorgangStatus.text}</td>
+                                                </tr>
+                                            </c:if>
+										</c:forEach>
+									</table>
+									</div>
+								</div>
+
+								<div style="padding-top: 10px;">
+									<form:label path="erweitertNummer">Nummer</form:label>
+									<form:input path="erweitertNummer" cssClass="inputtext" cssStyle="width:200px;"/>
+								</div>
+							</td>
+
+
+							<td style="padding-left:20px;" valign="top">
+								<div>
+						        	<form:label path="erweitertVorgangTyp">Typ</form:label>
+						            <form:select path="erweitertVorgangTyp" id="typ" onchange="updateHauptkategorie()">
+						            	<form:option value="" label="alle Typen" cssClass="info"/>
+						            	<c:forEach items="${vorgangtypen}" var="vorgangtyp">
+						            		<c:url value="/images/${vorgangtyp}_15.png" var="url"/>
+						            		<form:option value="${vorgangtyp}" label="${vorgangtyp.text}" cssStyle="background-image:url(${url});" cssClass="suffixiconsmall"/>
+						            	</c:forEach>
+						            </form:select>
+								</div>
+
+						        <div>
+						        	<form:label path="erweitertHauptkategorie">Hauptkategorie</form:label>
+						            <form:select path="erweitertHauptkategorie" id="hauptkategorie" disabled="true" onchange="updateUnterkategorie()">
+						            	<form:option value="" label="alle Hauptkategorien" cssClass="info"/>
+										<form:options items="${hauptkategorien}" itemValue="id" itemLabel="name"/>
+						            </form:select>
+						        </div>
+						        
+						        <div>
+						        	<form:label path="erweitertKategorie">Unterkategorie</form:label>
+						            <form:select path="erweitertKategorie" id="unterkategorie" disabled="true">
+						            	<form:option value="" label="alle Unterkategorien" cssClass="info"/>
+										<form:options items="${unterkategorien}" itemValue="id" itemLabel="name"/>
+						            </form:select>
+						        </div>
+								<c:url value="/kategorien" var="url"/>						
+								<script type="text/javascript">
+								
+								function isBlank(obj){
+									return(!obj || $.trim(obj) === "");
+								}
+				
+								function updateHauptkategorie()
+								{
+									var items = [];	  
+									items.push('<option value="" class="info">alle Hauptkategorien</option>');
+								
+									var value = $('select#typ')[0].value;
+									var node = $('select#hauptkategorie');
+									node.empty();
+									node.append(items.join(''));
+									node.attr("disabled", "disabled");
+									
+									//Json-Anfrage
+									$.ajaxSetup({ scriptCharset: "utf-8" , contentType: "application/json; charset=utf-8"});
+									$.getJSON('${url}/kategorieTyp?typ='+value, function(data) {
+										$.each(data, function(index, val) {
+											items.push($('<option></option>').val(val.id).html(val.nameEscapeHtml)[0].outerHTML);
+										});
+										node.empty();
+										node.append(items.join(''));
+										if (items.length>1) node.removeAttr("disabled"); 
+										updateUnterkategorie('');
+									});
+								}
+								
+								function updateUnterkategorie()
+								{
+									var value = $('select#hauptkategorie')[0].value;
+									var items = [];	  
+									items.push('<option value="" class="info">alle Unterkategorien</option>');
+								
+									var node = $('select#unterkategorie');
+									node.empty();
+									node.append(items.join(''));
+									node.attr("disabled", "disabled");
+									
+									//Json-Anfrage
+									$.ajaxSetup({ scriptCharset: "utf-8" , contentType: "application/json; charset=utf-8"});
+									$.getJSON('${url}/kategorie?kategorie='+value, function(data) {
+										$.each(data, function(index, val) {
+											items.push($('<option></option>').val(val.id).html(val.nameEscapeHtml)[0].outerHTML);
+										});
+										node.empty();
+										node.append(items.join(''));
+										if (items.length>1) node.removeAttr("disabled"); 
+									});
+								}
+								
+								function init()
+								{
+									typ = $('select#typ')[0].value;
+									hauptkategorie = $('select#hauptkategorie')[0].value;
+				
+									if (isBlank(typ)) {
+										updateHauptkategorie();
+									} else {
+										$('select#hauptkategorie').removeAttr("disabled");
+										if (isBlank(hauptkategorie)) {
+											updateUnterkategorie();
+										} else {
+											$('select#unterkategorie').removeAttr("disabled");
+										}
+									}
+								}
+								
+								init();
+								</script>
+
+								<div style="padding-top: 20px;">
+									<form:label path="erweitertDatumVon">Erstellung</form:label>
+									<form:input path="erweitertDatumVon" id="erweitertDatumVon" cssStyle="width:80px;" cssClass="inputtext"/>
+									<span class="label" style="padding-left:5px; padding-right:5px;">–</span>
+									<form:input path="erweitertDatumBis" id="erweitertDatumBis" cssStyle="width:80px;" cssClass="inputtext"/>
+									<script>
+										$(function() {
+											
+											var dates = $( "#erweitertDatumVon, #erweitertDatumBis" ).datepicker({
+												defaultDate: "+1w",
+												changeMonth: true,
+												numberOfMonths: 1,
+												dateFormat: 'dd.mm.yy',
+												onSelect: function( selectedDate ) {
+													var option = this.id == "erweitertDatumVon" ? "minDate" : "maxDate",
+														instance = $( this ).data( "datepicker" ),
+														date = $.datepicker.parseDate(
+															instance.settings.dateFormat ||
+															$.datepicker._defaults.dateFormat,
+															selectedDate, instance.settings );
+													dates.not( this ).datepicker( "option", option, date );
+													$( "#erweitertDatumVon" ).datepicker( $.datepicker.regional[ "de" ] );
+												}
+											});
+										});
+									</script>
+								</div>
+							
+								<div style="padding-top: 20px;">
+									<form:label path="erweitertPrioritaet">Priorität</form:label>
+									<form:select path="erweitertPrioritaet">
+						            	<form:option value="" label="" cssClass="info"/>
+										<form:options items="${allPrioritaeten}" itemValue="text"/>
+									</form:select>
+								</div>
+
+								<div style="padding-top: 10px;">
+									<form:label path="erweitertStadtteilgrenze">Ortsteil</form:label>
+									<form:select path="erweitertStadtteilgrenze">
+						            	<form:option value="" label="alle Ortsteile" cssClass="info"/>
+						            	<c:forEach items="${allStadtteile}" var="stadtteil">
+							            	<form:option value="${stadtteil[0]}" label="${stadtteil[1]}"/>
+						            	</c:forEach>
+									</form:select>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2" align="right">
+								<input type="submit" value="Suchen"/>
+							</td>
+						</tr>
+					</table>
+				</form:form>
+			</div>
+			
+				
+		</c:if>
+
 		<c:choose>
 			<c:when test="${not empty vorgaenge}">
-
 		        <table class="resulttable">
 		            <thead>
 		                <tr>
@@ -58,12 +294,11 @@
 		                </tr>
 		            </thead>
 			        <tbody>
-				  		<c:forEach items="${vorgaenge}" var="_vorgang" varStatus="rowCounter">
-				  			<c:set value="${_vorgang}" var="vorgang"/>
+				  		<c:forEach items="${vorgaenge}" var="vorgang" varStatus="rowCounter">
 		 		  			<c:url value="/vorgang/delegiert/${vorgang.id}/uebersicht" var="url"/>
 				        	<tr class="row ${(rowCounter.count%2==0)? 'odd' : 'even'}" onClick="location.href='${url}'" style="cursor:pointer;">
 				        		<td style="text-align: center;">
-									<span class="show-tooltip" title="Vorgangsnummer: ${vorgang.id}">${vorgang.id}</span>
+									<span  title="Vorgangsnummer: ${vorgang.id}">${vorgang.id}</span>
 								</td>
 				        		<td style="text-align: center;">
 				        			<c:url value="/images/${vorgang.typ}_15.png" var="url"/>
@@ -82,7 +317,7 @@
 				        			<c:url value="/images/${vorgang.typ}_${vorgang.status}_15.png" var="url"/>
 									<img alt="${vorgang.status}" src="${url}"  title="Status: ${vorgang.status.text}"/>
 								</td>
-								<td style="text-align: center;">
+                                <td style="text-align: center;">
 									${vorgang.adresse}
 								</td>
 				        	</tr>
@@ -91,7 +326,7 @@
 		
 			        <tfoot>
 		                <tr class="footer">
-		                    <td colspan="10">
+		                    <td colspan="9">
 		                        <c:if test="${not empty maxPages}">
 		                            <util:pagination maxPages="${maxPages}" page="${cmdvorgangdelegiertsuchen.page}" size="${cmdvorgangdelegiertsuchen.size}"/>
 		                        </c:if>
@@ -144,14 +379,13 @@
 					$(window).bind('load', resize());
 					window.onresize = resize;
 				</script>
-
 		        <div>
 			        Suchergebnis 
 			        <c:url value="/images/csv.png" var="img"/>
 			        <c:url value="/vorgang/delegiert/suchen/vorgaenge.xls" var="url"/>
 			        <util:button cssStyle="margin-right:10px;" url="${url}" img="${img}">als Excel-Tabelle exportieren</util:button>
-			       
-			       	<c:url value="/images/freigabeStatus_extern.png" var="img"/>
+
+			        <c:url value="/images/freigabeStatus_extern.png" var="img"/>
 			        <c:url value="/vorgang/delegiert/suchen/karte" var="url"/>
 			        <util:button cssStyle="margin-right:10px;" url="${url}" img="${img}">auf Karte anzeigen</util:button>
 
@@ -167,16 +401,16 @@
 				<div style="margin:20px 0px 0px 10px;">Die Suche ergab kein Resultat.</div>
 
 				<c:if test="${cmdvorgangdelegiertsuchen.einfacheSuche=='offene'}">
-					<div style="margin-top:10px;">
+			        <div style="margin-top:10px;">
 				        <c:url value="/images/rssfeed.png" var="img"/>
 				        <c:url value="/xmlfeeds/feedDelegiert/${fx:getCurrentUserLoginEncrypt()}" var="url"/>
 				        <util:button cssStyle="margin-right:10px;" url="${url}" img="${img}" openInNewWindow="true">als RSS-Feed abonnieren</util:button>
-					</div>
+			        </div>
 				</c:if>
 			</c:otherwise>
 		</c:choose>
-        
-	</div>
+    
+    </div>
 
 	
 	<!-- HELP -->
