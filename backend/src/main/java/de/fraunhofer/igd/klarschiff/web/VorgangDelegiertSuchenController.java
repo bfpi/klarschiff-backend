@@ -66,6 +66,14 @@ public class VorgangDelegiertSuchenController {
 	public EnumVorgangStatus[] allVorgangStatus() {
 		return EnumVorgangStatus.values();
 	}
+
+	/**
+	 * Liefert alle Ausprägungen für Vorgangs-Status-Typen, die auch für Externe (Delegiert) vorgesehen sind
+	 */
+	@ModelAttribute("allDelegiertVorgangStatus")
+	public EnumVorgangStatus[] allDelegiertVorgangStatus() {
+		return EnumVorgangStatus.delegiertVorgangStatus();
+	}
 	
 	/**
 	 * Liefert alle möglichen Ausprägungen für Vorgangstypen 

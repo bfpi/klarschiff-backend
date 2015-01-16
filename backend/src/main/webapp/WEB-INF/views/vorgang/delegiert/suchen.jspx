@@ -100,19 +100,16 @@
 									<form:label path="erweitertVorgangStatus">Status</form:label>	
 									<div style="padding-left: 85px;">
 									<table>
-										<c:forEach items="${allVorgangStatus}" var="vorgangStatus">
-                                            <c:if test="${vorgangStatus.text == 'in Bearbeitung' || vorgangStatus.text == 'Duplikat' || vorgangStatus.text == 'wird nicht bearbeitet' || vorgangStatus.text == 'abgeschlossen'}">
-                                                <tr>
-                                                    <td><form:checkbox path="erweitertVorgangStatus" value="${vorgangStatus}" id="erweitertVorgangStatus_${vorgangStatus}"/></td>
-                                                    <td style="padding-top:4px;"><c:url value="/images/status_${vorgangStatus}_15.png" var="url"/><img alt="${vorgangStatus}" src="${url}"/></td>
-                                                    <td>${vorgangStatus.text}</td>
-                                                </tr>
-                                            </c:if>
+										<c:forEach items="${allDelegiertVorgangStatus}" var="vorgangStatus">
+											<tr>
+												<td><form:checkbox path="erweitertVorgangStatus" value="${vorgangStatus}" onchange="updateStatus(this)" id="erweitertVorgangStatus_${vorgangStatus}"/></td>
+												<td style="padding-top:4px;"><c:url value="/images/status_${vorgangStatus}_15.png" var="url"/><img alt="${vorgangStatus}" src="${url}"/></td>
+												<td>${vorgangStatus.text}</td>
+											</tr>										
 										</c:forEach>
 									</table>
 									</div>
 								</div>
-
 								<div style="padding-top: 10px;">
 									<form:label path="erweitertNummer">Nummer</form:label>
 									<form:input path="erweitertNummer" cssClass="inputtext" cssStyle="width:200px;"/>

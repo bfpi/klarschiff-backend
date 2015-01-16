@@ -9,16 +9,16 @@ import org.apache.commons.lang.StringEscapeUtils;
  *
  */
 public enum EnumVorgangStatus implements EnumText {
-    gemeldet("gemeldet"),				//Ersteller hat seine E-Mail noch nicht bestätigt
-    offen("offen"),					//ErstellerEmail wurde bestätigt
-    inBearbeitung("in Bearbeitung"),			//wenn das erste mal die Zuständigkeit durch einen Sachbearbeiter akzeptiert wurde
+    gemeldet("gemeldet"),
+    offen("offen"),
+    inBearbeitung("in Bearbeitung"),
     wirdNichtBearbeitet("wird nicht bearbeitet"),
     duplikat("Duplikat"),
     abgeschlossen("abgeschlossen"),
     geloescht("gel&#246;scht");
 
     /**
-     * Gibt alle Status zurück bei denen der Vorgang noch offen ist.
+     * Gibt alle Status zurück, bei denen der Vorgang noch offen ist.
      * @return offen Status
      */
     public static EnumVorgangStatus[] openVorgangStatus() {
@@ -26,7 +26,7 @@ public enum EnumVorgangStatus implements EnumText {
     }
     
     /**
-     * Gibt alle Status zurück bei denen der Vorgang noch in Bearbeitung ist.
+     * Gibt alle Status zurück, bei denen der Vorgang noch in Bearbeitung ist.
      * @return inBearbeitung Status
      */
     public static EnumVorgangStatus[] inProgressVorgangStatus() {
@@ -39,6 +39,14 @@ public enum EnumVorgangStatus implements EnumText {
      */
     public static EnumVorgangStatus[] closedVorgangStatus() {
     	return new EnumVorgangStatus[] {wirdNichtBearbeitet, duplikat, abgeschlossen, geloescht};
+    }
+    
+    /**
+     * Gibt alle Status zurück, die auch für Externe (Delegiert) vorgesehen sind
+     * @return delegiert Status
+     */
+    public static EnumVorgangStatus[] delegiertVorgangStatus() {
+    	return new EnumVorgangStatus[] {inBearbeitung, wirdNichtBearbeitet, duplikat, abgeschlossen};
     }
     
     private String text;
