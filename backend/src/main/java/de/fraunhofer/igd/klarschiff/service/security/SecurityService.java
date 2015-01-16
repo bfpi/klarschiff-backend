@@ -1,5 +1,6 @@
 package de.fraunhofer.igd.klarschiff.service.security;
 
+import de.fraunhofer.igd.klarschiff.dao.AussendienstKoordinatorDao;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.PrintWriter;
@@ -46,6 +47,8 @@ public class SecurityService {
 	
 	@Autowired
 	VorgangDao vorgangDao;
+	@Autowired
+	AussendienstKoordinatorDao aussendienstKoordinatorDao;
 	
 	SecurityServiceLdap securityServiceLdap;
 	
@@ -65,6 +68,8 @@ public class SecurityService {
 	String groupAdmin = "admin";
 	String groupDispatcher = "dispatcher";
 	String groupKoordinator = "koordinator";
+	String groupAussendienst = "aussendienst";
+	String roleKoordinator = "koordinatoren";
 	
 	private ContextMapper<User> userContextMapper;
 	private ContextMapper<Role> roleContextMapper;
@@ -359,6 +364,24 @@ public class SecurityService {
 			return securityServiceLdap.getObjectListFromLdap(groupSearchBase, "(&(objectclass="+groupObjectClass+")("+groupRoleAttribute+"="+groupIntern+")"+dispatcherFilter+"("+StringUtils.replace(groupSearchFilter, "{0}", user.getDn())+"))", roleContextMapper);
 		}
 	}
+	
+	/**
+	 * Ermittelt die Liste der Zuständigkeiten für einen Benutzer
+	 * @param login Benutzer für den die Zuständigkeiten ermittelt werden sollen
+	 * @param inclDispatcher incl. der Dispatcherrolle?
+	 * @return Liste mit den Zuständigkeiten
+	 */
+	public List<Role> getAussendienstZustaendigkeiten(String login, boolean inclDispatcher) {
+		if (isUserAdmin(login)) {
+			return getAllZustaendigkeiten(inclDispatcher);
+		} else {
+			User user = getUser(login);
+			if (user==null) throw new RuntimeException();
+			String dispatcherFilter = inclDispatcher ? "" : "(!("+groupObjectId+"="+groupDispatcher+"))";
+
+			return securityServiceLdap.getObjectListFromLdap(groupSearchBase, "(&(objectclass="+groupObjectClass+")("+groupRoleAttribute+"="+groupIntern+")"+dispatcherFilter+"("+StringUtils.replace(groupSearchFilter, "{0}", user.getDn())+"))", roleContextMapper);
+		}
+	}
 
 	
 	/**
@@ -597,6 +620,27 @@ public class SecurityService {
 	public boolean mayCurrentUserEditKommentar(Kommentar kommentar) {
 		return this.getCurrentUser().getName().equals(kommentar.getNutzer());
 	}
+
+	/**
+	 * Ermittelt alle AussendienstTeams
+	 *
+	 * @return List der Aussendienst-Teams
+	 */
+	public List<Role> getAllAussendienstTeams() {
+		List<Role> allZustaendigkeiten = securityServiceLdap.getObjectListFromLdap(groupSearchBase, "(&(objectclass=" + groupObjectClass + ")(" + groupRoleAttribute + "=" + groupAussendienst + "))", roleContextMapper);
+
+		Collections.sort(allZustaendigkeiten, new Comparator<Role>() {
+			public int compare(Role r1, Role r2) {
+				return r1.getId().compareTo(r2.getId());
+			}
+		});
+
+		return allZustaendigkeiten;
+	}
+
+	public List<String> getAussendienstZustaendigkeiten(String login) {
+		return aussendienstKoordinatorDao.findAussendienstByLogin(login);
+	}
 	
 		
 	/* --------------- GET + SET ----------------------------*/
@@ -707,6 +751,16 @@ public class SecurityService {
 
 	public void setGroupAdmin(String groupAdmin) {
 		this.groupAdmin = groupAdmin;
+	}
+
+
+	public String getGroupKoordinator() {
+		return groupKoordinator;
+	}
+
+
+	public String getRoleKoordinator() {
+		return roleKoordinator;
 	}
 
 

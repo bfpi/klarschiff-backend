@@ -63,7 +63,7 @@ public class User {
 	}
     
     /**
-	 * Ermittelt, ob der Benutzer ein Admin ist.
+	 * Ermittelt, ob der Benutzer ein Koordinator ist.
 	 * @return <code>true</code> - Admins
 	 */
 	public boolean getUserKoordinator() {
@@ -74,6 +74,14 @@ public class User {
 		List<String> _users = new ArrayList<String>();
 		for (User user : users) _users.add(user.getName());
 		return _users;
+	}
+	
+	/**
+	 * Ermittelt die Zuständigkeiten des Benutzers.
+	 * @return Zuständigkeiten des Benutzers
+	 */
+	public List<String> getAussendienstZustaendigkeiten() {
+		return AppContext.getApplicationContext().getBean(SecurityService.class).getAussendienstZustaendigkeiten(id);
 	}
     
 	
