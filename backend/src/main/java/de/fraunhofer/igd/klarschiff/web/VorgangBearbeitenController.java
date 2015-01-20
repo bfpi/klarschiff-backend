@@ -1,5 +1,6 @@
 package de.fraunhofer.igd.klarschiff.web;
 
+import de.fraunhofer.igd.klarschiff.dao.AuftragDao;
 import static de.fraunhofer.igd.klarschiff.web.Assert.assertMaxLength;
 import static de.fraunhofer.igd.klarschiff.web.Assert.assertNotEmpty;
 
@@ -35,6 +36,7 @@ import de.fraunhofer.igd.klarschiff.service.security.Role;
 import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
 import de.fraunhofer.igd.klarschiff.service.settings.SettingsService;
 import de.fraunhofer.igd.klarschiff.tld.CustomFunctions;
+import de.fraunhofer.igd.klarschiff.vo.Auftrag;
 import de.fraunhofer.igd.klarschiff.vo.EnumFreigabeStatus;
 import de.fraunhofer.igd.klarschiff.vo.EnumPrioritaet;
 import de.fraunhofer.igd.klarschiff.vo.EnumVorgangStatus;
@@ -57,6 +59,9 @@ import java.util.Date;
 public class VorgangBearbeitenController {
 
 	Logger logger = Logger.getLogger(VorgangBearbeitenController.class);
+	
+	@Autowired
+	AuftragDao auftragDao;
 	
 	@Autowired
 	VorgangDao vorgangDao;
@@ -163,6 +168,14 @@ public class VorgangBearbeitenController {
     public List<StatusKommentarVorlage> allStatusKommentarVorlage() {
         return vorgangDao.findStatusKommentarVorlage();
     }
+
+	/**
+	 * Liefert alle Aussendienst-Teams für den aktuellen Koordinator
+	 */
+	@ModelAttribute("koordinatorAussendienstTeams")
+	public List<String> koordinatorAussendienstTeams() {
+		return securityService.getCurrentUser().getAussendienstZustaendigkeiten();
+	}
 
 	/**
 	 * Aktualisiert Unterkategorie und Liste möglicher Hauptkategorien (abhängig von Vorgangstyp) in übergebenem
@@ -407,6 +420,10 @@ public class VorgangBearbeitenController {
 		} else if (action.equals("wiederherstellen")) {
 			cmd.getVorgang().setArchiviert(false);
 			vorgangDao.merge(cmd.getVorgang());
+		} else if (action.equals("Auftrag zuweisen")) {
+			Auftrag auftrag = cmd.getVorgang().getAuftrag();
+			auftrag.setVorgang(cmd.getVorgang());
+			vorgangDao.merge(auftrag.getVorgang());
 		} else if (action.equals("setzen")) {
 			vorgangDao.merge(cmd.getVorgang());
 		} else if (action.equals("zur&uuml;cksetzen")) {

@@ -33,6 +33,8 @@ import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.PrecisionModel;
 import com.vividsolutions.jts.io.WKTReader;
 import com.vividsolutions.jts.io.WKTWriter;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import org.hibernate.annotations.Where;
 
 /**
@@ -267,6 +269,12 @@ public class Vorgang implements Serializable {
     private static WKTWriter wktWriter = new WKTWriter();
 
     /**
+     *Auftrag zu dem Vorgang
+     */
+    @OneToOne(mappedBy = "vorgang", cascade = CascadeType.ALL)
+    private Auftrag auftrag;
+
+    /**
      * Setzen der Position als WKT
      * @param oviWkt Position als WKT
      * @throws Exception
@@ -296,8 +304,6 @@ public class Vorgang implements Serializable {
     
 	
 	/* --------------- GET + SET ----------------------------*/
-
-
 	public Long getId() {
         return this.id;
     }
@@ -559,4 +565,12 @@ public class Vorgang implements Serializable {
 	public void setErstsichtungErfolgt(boolean erstsichtungErfolgt) {
 		this.erstsichtungErfolgt = erstsichtungErfolgt;
 	}
+
+  public Auftrag getAuftrag() {
+    return auftrag;
+  }
+
+  public void setAuftrag(Auftrag auftrag) {
+    this.auftrag = auftrag;
+  }
 }

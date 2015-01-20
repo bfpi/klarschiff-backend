@@ -638,6 +638,11 @@ public class SecurityService {
 		return allZustaendigkeiten;
 	}
 
+	/**
+	 * Ermittelt alle AussendienstTeams eines Koordinators
+	 *
+	 * @return List der Aussendienst-Teams
+	 */
 	public List<String> getAussendienstZustaendigkeiten(String login) {
 		return aussendienstKoordinatorDao.findAussendienstByLogin(login);
 	}
