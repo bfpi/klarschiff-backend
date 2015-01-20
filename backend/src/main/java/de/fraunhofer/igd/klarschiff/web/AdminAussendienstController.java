@@ -18,9 +18,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
- * Controller zum Bearbeiten der Trashmails im Adminbereich
+ * Controller zum Bearbeiten der Auﬂendienstteam-Koordinatoren im Adminbereich
  *
- * @author Stefan Audersch (Fraunhofer IGD)
+ * @author Robert Voﬂ (BFPI GmbH)
  */
 @RequestMapping("/admin")
 @Controller
@@ -65,7 +65,7 @@ public class AdminAussendienstController {
     if (!user.getUserKoordinator()) {
       return renderListe(model, request);
     }
-    
+
     model.addAttribute("benutzer", user);
 
     Iterator it = securityService.getAllAussendienstTeams().iterator();
@@ -99,17 +99,16 @@ public class AdminAussendienstController {
     if (!user.getUserKoordinator()) {
       return renderListe(model, request);
     }
-    
+
     String[] zugewiesene_teams = request.getParameterValues("zugewiesen[]");
     aussendienstKoordinatorDao.resetAussendienstByLogin(login);
     aussendienstKoordinatorDao.setTeamsForLogin(login, zugewiesene_teams);
-    
+
     return renderListe(model, request);
   }
 
   private String renderListe(Model model, HttpServletRequest request) {
-    model.addAttribute("benutzer", securityService.getAllUserForRole(securityService.getRoleKoordinator()));
+    model.addAttribute("benutzer", securityService.getAllUserForGroup(securityService.getGroupKoordinator()));
     return "admin/aussendienst";
   }
-
 }

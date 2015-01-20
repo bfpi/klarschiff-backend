@@ -69,7 +69,6 @@ public class SecurityService {
 	String groupDispatcher = "dispatcher";
 	String groupKoordinator = "koordinator";
 	String groupAussendienst = "aussendienst";
-	String roleKoordinator = "koordinatoren";
 	
 	private ContextMapper<User> userContextMapper;
 	private ContextMapper<Role> roleContextMapper;
@@ -234,23 +233,38 @@ public class SecurityService {
 	
 	
 	/**
+	 * Ermittelt alle Benutzer für eine gegebene Gruppe.
+	 * @param groupId Gruppe, für die die Benutzer ermittelt werden sollen
+	 * @return Liste von Benutzern
+	 */
+	public List<User> getAllUserForGroup(String groupId){
+		//alle UserLogins in den Gruppen ermitteln
+		return getUserFromLoginList(securityServiceLdap.getObjectListFromLdap(groupSearchBase, "(&(objectclass="+groupObjectClass+")("+groupRoleAttribute+"="+groupKoordinator+"))", userLoginContextMapper));
+	}
+	
+	/**
 	 * Ermittelt alle Benutzer für eine gegebene Rolle.
 	 * @param roleId Rolle, für die die Benutzer ermittelt werden sollen
 	 * @return Liste von Benutzern
 	 */
 	public List<User> getAllUserForRole(String roleId){
 		//alle UserLogins in den Rollen ermitteln
-		List<List<String>> usersLoginList = securityServiceLdap.getObjectListFromLdap(groupSearchBase, "(&(objectclass="+groupObjectClass+")("+groupObjectId+"="+roleId+"))", userLoginContextMapper);
+		return getUserFromLoginList(securityServiceLdap.getObjectListFromLdap(groupSearchBase, "(&(objectclass="+groupObjectClass+")("+groupObjectId+"="+roleId+"))", userLoginContextMapper));
+	}
+  
+	public List<User> getUserFromLoginList(List<List<String>> usersLoginList) {
 		//Set
 		Set<String> userLoginSet = new HashSet<String>();
-		for(List<String> list : usersLoginList)
+		for(List<String> list : usersLoginList) {
 			userLoginSet.addAll(list);
+		}
 		//User ermitteln
 		List<User> userList = new ArrayList<User>();
-		for(Iterator<String> iter = userLoginSet.iterator(); iter.hasNext(); )
+		for(Iterator<String> iter = userLoginSet.iterator(); iter.hasNext();) {
 			userList.add(getUser(iter.next()));
+		}
 		return userList;
-	}
+  }
 	
 	
 	/**
@@ -761,11 +775,6 @@ public class SecurityService {
 
 	public String getGroupKoordinator() {
 		return groupKoordinator;
-	}
-
-
-	public String getRoleKoordinator() {
-		return roleKoordinator;
 	}
 
 
