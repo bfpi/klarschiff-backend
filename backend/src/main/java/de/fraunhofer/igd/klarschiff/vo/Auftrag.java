@@ -40,14 +40,12 @@ public class Auftrag implements Serializable {
   /**
    * Team für den Auftrag
    */
-  @NotNull
   @Enumerated(EnumType.STRING)
   private String team;
 
   /**
    * Zeitpunkt der Bearbeitung
    */
-  @NotNull
   @Temporal(TemporalType.TIMESTAMP)
   @DateTimeFormat(style = "S-")
   private Date datum;
@@ -55,7 +53,6 @@ public class Auftrag implements Serializable {
   /**
    * Priorität
    */
-  @NotNull
   @Enumerated(EnumType.STRING)
   private EnumPrioritaet prioritaet;
 
