@@ -597,12 +597,6 @@
                             $('#aussendienst_datum').datepicker();
                         });
                     </script>
-                    <div>
-                      <form:label path="prioritaet" cssErrorClass="error">Priorität</form:label>
-                      <form:select path="prioritaet" id="team">
-                        <form:options items="${allPrioritaet}" itemLabel="text" htmlEscape="false" />
-                      </form:select>
-                    </div>
 
                     <input type="submit" value="Auftrag zuweisen" name="action" />
                   </form:form>

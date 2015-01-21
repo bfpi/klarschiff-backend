@@ -47,7 +47,7 @@ public class Auftrag implements Serializable {
    * Zeitpunkt der Bearbeitung
    */
   @Temporal(TemporalType.TIMESTAMP)
-  @DateTimeFormat(style = "S-")
+  @DateTimeFormat(style = "M-")
   private Date datum;
 
   /**
