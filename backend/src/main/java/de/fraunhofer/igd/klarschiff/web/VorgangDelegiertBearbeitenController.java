@@ -172,7 +172,7 @@ public class VorgangDelegiertBearbeitenController {
 		
 		action = StringEscapeUtils.escapeHtml(action);
 
-		assertMaxLength(cmd, result,  Assert.EvaluateOn.ever, "vorgang.statusKommentar", 500, "Der Statuskommentar ist zu lang");
+		assertMaxLength(cmd, result,  Assert.EvaluateOn.ever, "vorgang.statusKommentar", 500, "Die öffentliche Statusinformation ist zu lang.");
 		if (result.hasErrors()) {
 			cmd.setVorgang(getVorgang(id));
 			updateKommentarInModel(model, cmd);

@@ -182,6 +182,89 @@
 				</div>
 				<util:ddpanel name="zustaendigkeit"/>
 
+				
+				<!-- interne Kommentare -->
+				<div class="fieldset" id="kommentarpanel">
+					<div class="fieldsettitle closepanel " id="kommentartab"><div style="width:100%; height:15px;">interne Kommentare</div></div>
+					<div id="kommentarcontent">
+		
+						<form:form method="POST" modelAttribute="cmd">
+							
+				        	<form:label path="kommentar" cssErrorClass="error">neuer Kommentar</form:label>
+				        	<table cellpadding="0" cellspacing="0">
+				        		<tr>
+				        			<td valign="top">
+							            <form:textarea path="kommentar" cols="6" cssStyle="width:350px;height:100px"/>
+				        			</td>
+				        		
+				        			<td valign="bottom" style="padding-left:5px;">
+										<input type="submit" value="Kommentar anlegen" name="action"/>
+				        			</td>
+				        	
+				        		</tr>
+				        	</table>
+						</form:form>
+						
+				  		<c:forEach items="${kommentare}" var="kommentar" varStatus="s">
+				  			<div class="kommentar ${(s.index%2==0) ? 'odd' : 'even'}">
+				  				<div class="kommentarHeader">
+				  					${kommentar.nutzer};
+									angelegt: <fmt:formatDate value="${kommentar.datum}" pattern="dd.MM.yyyy, HH:mm"/> Uhr
+									<c:if test="${kommentar.anzBearbeitet > 0}">
+										; bearbeitet:
+										<fmt:formatDate value="${kommentar.zuletztBearbeitet}" pattern="dd.MM.yyyy, HH:mm"/> Uhr
+									</c:if>
+				  				</div>
+								<div class="kommentarText">
+									<c:if test="${fx:mayCurrentUserEditKommentar(kommentar)}">
+										<button name="action" title="Kommentar bearbeiten" class="kommentarEditButton">
+											<c:url value="/images/edit.png" var="url"/>
+											<img src="${url}" alt=""/>										
+										</button>
+										<form:form method="POST" modelAttribute="cmd" onsubmit="return confirm('Soll der Kommentar wirklich gelöscht werden?')">
+											<input type="hidden" name="id" value="${kommentar.id}" />
+											<button name="action" value="kommentarDelete" title="Kommentar löschen" class="kommentarDeleteButton">
+												<c:url value="/images/delete.png" var="url"/>
+												<img src="${url}" alt=""/>										
+											</button>
+										</form:form>
+									</c:if>
+					        		<span class="text">${fx:toHtml(kommentar.text)}</span>
+									<div class="clear"><!--  --></div>
+								</div>	
+								<div class="kommentarEdit" style="display:none;" >
+									<form:form method="POST" modelAttribute="cmd">
+										<input type="hidden" name="id" value="${kommentar.id}" />
+										<button name="action" title="Abbrechen" class="kommentarEditCancel">
+											<c:url value="/images/cancel.png" var="url"/>
+											<img src="${url}" alt=""/>										
+										</button>
+										<button name="action" title="Kommentar speichern" value="kommentarSave" class="kommentarEditSave">
+											<c:url value="/images/save.png" var="url"/>
+											<img src="${url}" alt=""/>										
+										</button>
+										<textarea name="kommentarEdit">${kommentar.text}</textarea>
+										<div class="clear"><!--  --></div>
+									</form:form>
+								</div>
+				  			</div>
+						</c:forEach>
+						<script type="text/javascript">
+							$(function() {
+								$('.kommentarEditButton, .kommentarEditCancel').click(function() {
+									$(this).closest(".kommentar").find(".kommentarText, .kommentarEdit").toggle();
+									return false;
+								});
+							});
+						</script>
+			            <c:if test="${not empty maxPagesKommentare and not empty kommentare}">
+				            <util:pagination maxPages="${maxPagesKommentare}" page="${cmd.page}" size="${cmd.size}" post="true"/>
+				            <br/>
+			            </c:if>
+					</div>	
+				</div>
+				<util:ddpanel name="kommentar"/>
+
 				<!-- Status -->
 				<c:if test="${cmd.vorgang.status!='gemeldet'}">
 					<div class="fieldset" id="statuspanel">
@@ -206,7 +289,7 @@
 									<table width="100%" cellpadding="0" cellspacing="0">
 										<tr>
 											<td valign="top" width="470px;">
-												<form:label path="statusKommentar" cssErrorClass="error">Kommentar</form:label>
+												<form:label path="statusKommentar" cssErrorClass="error">öffentliche Statusinformation</form:label>
 												<form:textarea path="statusKommentar" id="statusKommentar" cols="6" maxlength="${vorgangStatusKommentarTextlaengeMaximal}" cssStyle="width:350px;height:100px" onKeyUp="$('#zeichenAnzahl').html(verbleibendeZeichen(${vorgangStatusKommentarTextlaengeMaximal}, $('#statusKommentar')[0].value.length));"/>
                                                 <br/>
                                                 <label style="width:350px;margin-left:100px">Sie können noch <span id="zeichenAnzahl">${vorgangStatusKommentarTextlaengeMaximal}</span> Zeichen eingeben.</label>
@@ -397,89 +480,6 @@
 					</div>
 				</div>
 				<util:ddpanel name="vorgang"/>
-
-				
-				<!-- interne Kommentare -->
-				<div class="fieldset" id="kommentarpanel">
-					<div class="fieldsettitle closepanel " id="kommentartab"><div style="width:100%; height:15px;">interne Kommentare</div></div>
-					<div id="kommentarcontent">
-		
-						<form:form method="POST" modelAttribute="cmd">
-							
-				        	<form:label path="kommentar" cssErrorClass="error">neuer Kommentar</form:label>
-				        	<table cellpadding="0" cellspacing="0">
-				        		<tr>
-				        			<td valign="top">
-							            <form:textarea path="kommentar" cols="6" cssStyle="width:350px;height:100px"/>
-				        			</td>
-				        		
-				        			<td valign="bottom" style="padding-left:5px;">
-										<input type="submit" value="Kommentar anlegen" name="action"/>
-				        			</td>
-				        	
-				        		</tr>
-				        	</table>
-						</form:form>
-						
-				  		<c:forEach items="${kommentare}" var="kommentar" varStatus="s">
-				  			<div class="kommentar ${(s.index%2==0) ? 'odd' : 'even'}">
-				  				<div class="kommentarHeader">
-				  					${kommentar.nutzer};
-									angelegt: <fmt:formatDate value="${kommentar.datum}" pattern="dd.MM.yyyy, HH:mm"/> Uhr
-									<c:if test="${kommentar.anzBearbeitet > 0}">
-										; bearbeitet:
-										<fmt:formatDate value="${kommentar.zuletztBearbeitet}" pattern="dd.MM.yyyy, HH:mm"/> Uhr
-									</c:if>
-				  				</div>
-								<div class="kommentarText">
-									<c:if test="${fx:mayCurrentUserEditKommentar(kommentar)}">
-										<button name="action" title="Kommentar bearbeiten" class="kommentarEditButton">
-											<c:url value="/images/edit.png" var="url"/>
-											<img src="${url}" alt=""/>										
-										</button>
-										<form:form method="POST" modelAttribute="cmd" onsubmit="return confirm('Soll der Kommentar wirklich gelöscht werden?')">
-											<input type="hidden" name="id" value="${kommentar.id}" />
-											<button name="action" value="kommentarDelete" title="Kommentar löschen" class="kommentarDeleteButton">
-												<c:url value="/images/delete.png" var="url"/>
-												<img src="${url}" alt=""/>										
-											</button>
-										</form:form>
-									</c:if>
-					        		<span class="text">${fx:toHtml(kommentar.text)}</span>
-									<div class="clear"><!--  --></div>
-								</div>	
-								<div class="kommentarEdit" style="display:none;" >
-									<form:form method="POST" modelAttribute="cmd">
-										<input type="hidden" name="id" value="${kommentar.id}" />
-										<button name="action" title="Abbrechen" class="kommentarEditCancel">
-											<c:url value="/images/cancel.png" var="url"/>
-											<img src="${url}" alt=""/>										
-										</button>
-										<button name="action" title="Kommentar speichern" value="kommentarSave" class="kommentarEditSave">
-											<c:url value="/images/save.png" var="url"/>
-											<img src="${url}" alt=""/>										
-										</button>
-										<textarea name="kommentarEdit">${kommentar.text}</textarea>
-										<div class="clear"><!--  --></div>
-									</form:form>
-								</div>
-				  			</div>
-						</c:forEach>
-						<script type="text/javascript">
-							$(function() {
-								$('.kommentarEditButton, .kommentarEditCancel').click(function() {
-									$(this).closest(".kommentar").find(".kommentarText, .kommentarEdit").toggle();
-									return false;
-								});
-							});
-						</script>
-			            <c:if test="${not empty maxPagesKommentare and not empty kommentare}">
-				            <util:pagination maxPages="${maxPagesKommentare}" page="${cmd.page}" size="${cmd.size}" post="true"/>
-				            <br/>
-			            </c:if>
-					</div>	
-				</div>
-				<util:ddpanel name="kommentar"/>
                 
                 
                 <c:if test="${not empty allelobhinweisekritik}">

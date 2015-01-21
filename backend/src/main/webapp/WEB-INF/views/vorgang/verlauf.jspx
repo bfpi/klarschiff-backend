@@ -75,8 +75,8 @@
 							</c:when>
 							<c:when test="${verlaufItem.typ=='statusKommentar'}">
 								<c:choose>
-									<c:when test="${not empty verlaufItem.wertNeu}">Statuskommentar geändert</c:when>
-									<c:otherwise>Statuskommentar gelöscht</c:otherwise>
+									<c:when test="${not empty verlaufItem.wertNeu}">öffentliche Statusinformation geändert</c:when>
+									<c:otherwise>öffentliche Statusinformation gelöscht</c:otherwise>
 								</c:choose>
 							</c:when>
 							<c:when test="${verlaufItem.typ=='zustaendigkeitAkzeptiert'}">

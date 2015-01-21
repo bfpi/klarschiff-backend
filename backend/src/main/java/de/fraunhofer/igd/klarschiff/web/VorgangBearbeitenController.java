@@ -299,10 +299,10 @@ public class VorgangBearbeitenController {
 		assertNotEmpty(cmd, result, Assert.EvaluateOn.ever, "vorgang.status", null);
         
         if (StringUtils.equals("wird nicht bearbeitet", cmd.getVorgang().getStatus().getText())) {
-            assertNotEmpty(cmd, result, Assert.EvaluateOn.ever, "vorgang.statusKommentar", "Für den Status „wird nicht bearbeitet“ müssen Sie einen Kommentar angeben!");
+            assertNotEmpty(cmd, result, Assert.EvaluateOn.ever, "vorgang.statusKommentar", "Für den Status „wird nicht bearbeitet“ müssen Sie eine öffentliche Statusinformation angeben!");
         }
         
-		assertMaxLength(cmd, result, Assert.EvaluateOn.ever, "vorgang.statusKommentar", vorgangStatusKommentarTextlaengeMaximal(), "Der Statuskommentar ist zu lang! Erlaubt sind hier maximal " + vorgangStatusKommentarTextlaengeMaximal().toString() + " Zeichen.");
+		assertMaxLength(cmd, result, Assert.EvaluateOn.ever, "vorgang.statusKommentar", vorgangStatusKommentarTextlaengeMaximal(), "Die öffentliche Statusinformation ist zu lang! Erlaubt sind hier maximal " + vorgangStatusKommentarTextlaengeMaximal().toString() + " Zeichen.");
         
 		if (result.hasErrors()) {
 			cmd.setVorgang(getVorgang(id));

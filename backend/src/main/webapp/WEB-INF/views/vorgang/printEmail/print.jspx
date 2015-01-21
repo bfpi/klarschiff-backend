@@ -41,7 +41,7 @@
 		</div>
 
 <!-- Vorgangdaten -->
-		<div class="printTitle">Informationen über Vorgang</div>	
+		<div class="printTitle">Vorgangsdaten</div>	
 		<table class="result" border="0">
 			<tr>
 				<td class="label">Typ</td>
@@ -97,7 +97,7 @@
 				<td class="label">Status</td>
 				<td class="value"><div class="result">${vorgang.status.text}</div></td>	
 				<c:if test="${not empty vorgang.statusKommentar}">
-					<td class="label">Kommentar</td>									
+					<td class="label">öffentliche<br/>Statusinformation</td>									
 					<td class="value"><div class="result">${fx:toHtml(vorgang.statusKommentar)}</div></td>	
 				</c:if>
 			</tr>
@@ -157,7 +157,7 @@
 		</table>
 
 
-<!-- Kommentare -->
+<!-- interne Kommentare -->
 		<c:if test="${not empty vorgang.kommentare}">
 			<div class="printTitle">interne Kommentare</div>
 	  		<c:forEach items="${vorgang.kommentare}" var="kommentar">

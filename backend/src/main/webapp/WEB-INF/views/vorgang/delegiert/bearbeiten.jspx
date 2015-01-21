@@ -34,37 +34,7 @@
 		
 		<c:choose>
 			<c:when test="${not cmd.vorgang.archiviert}">
-				<div class="fieldset" id="statuspanel">
-					<div class="fieldsettitle closepanel" id="statustab"><div style="width:100%; height:15px;">Status</div></div>
-					<div id="statuscontent">
-						<form:form method="POST" modelAttribute="cmd.vorgang" >
-							<div>
-								<form:label path="status" cssErrorClass="error">Status</form:label>
-								<form:select path="status" cssErrorClass="error">
-					            	<form:option value="" label="Status wählen" cssClass="info"/>
-					            	<form:options items="${allVorgangStatus}" itemLabel="text" htmlEscape="false"/>
-								</form:select> 
-							</div>
-							<input type="submit" value="Änderungen übernehmen" name="action"/>
-						</form:form>
-					</div>
-				</div>
-                
-                <c:set value="${fx:role(cmd.vorgang.zustaendigkeit)}" var="zustaendigkeit"/>
-				<div class="fieldset" id="delegierenpanel">
-					<div class="fieldsettitle closepanel" id="delegierentab"><div style="width:100%; height:15px;">Zurückweisen</div></div>
-					<div id="delegierencontent">
-						<form:form method="POST" modelAttribute="cmd.vorgang" >
-							<div>
-								Vorgang an ${zustaendigkeit.description}<![CDATA[&nbsp;]]> 
-								<input type="submit" value="zur&#252;ckweisen" name="action"/>
-							</div>
-						</form:form>
-					</div>
-				</div>
-
-                
-				<!-- Kommentare -->
+                <!-- interne Kommentare -->
 				<div class="fieldset" id="kommentarpanel">
 					<div class="fieldsettitle closepanel " id="kommentartab"><div style="width:100%; height:15px;">interne Kommentare</div></div>
 					<div id="kommentarcontent">
@@ -145,6 +115,36 @@
 					</div>	
 				</div>
 				<util:ddpanel name="kommentar"/>
+                
+                
+				<div class="fieldset" id="statuspanel">
+					<div class="fieldsettitle closepanel" id="statustab"><div style="width:100%; height:15px;">Status</div></div>
+					<div id="statuscontent">
+						<form:form method="POST" modelAttribute="cmd.vorgang" >
+							<div>
+								<form:label path="status" cssErrorClass="error">Status</form:label>
+								<form:select path="status" cssErrorClass="error">
+					            	<form:option value="" label="Status wählen" cssClass="info"/>
+					            	<form:options items="${allVorgangStatus}" itemLabel="text" htmlEscape="false"/>
+								</form:select> 
+							</div>
+							<input type="submit" value="Änderungen übernehmen" name="action"/>
+						</form:form>
+					</div>
+				</div>
+                
+                <c:set value="${fx:role(cmd.vorgang.zustaendigkeit)}" var="zustaendigkeit"/>
+				<div class="fieldset" id="delegierenpanel">
+					<div class="fieldsettitle closepanel" id="delegierentab"><div style="width:100%; height:15px;">Zurückweisen</div></div>
+					<div id="delegierencontent">
+						<form:form method="POST" modelAttribute="cmd.vorgang" >
+							<div>
+								Vorgang an ${zustaendigkeit.description}<![CDATA[&nbsp;]]> 
+								<input type="submit" value="zur&#252;ckweisen" name="action"/>
+							</div>
+						</form:form>
+					</div>
+				</div>
                 
                 <c:if test="${not empty allelobhinweisekritik}">
                     <!-- Lob, Hinweise oder Kritik -->

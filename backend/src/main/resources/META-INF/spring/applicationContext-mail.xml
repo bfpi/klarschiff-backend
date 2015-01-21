@@ -188,7 +188,7 @@ Nummer   aktuelle Zuständigkeit     Typ       zugewiesen seit
 	</bean>
 	
 	<bean class="org.springframework.mail.SimpleMailMessage" id="kriteriumOffenInbearbeitungOhneStatusKommentarTemplate">
-		<property name="text"><value><![CDATA[Folgende Vorgänge mit dem Status „in Bearbeitung“ sind seit mindestens %tage% Tagen unverändert. Bitte geben Sie den Bürgerinnen und Bürgern jeweils eine kurze Info zum Bearbeitungsstand im Kommentarfeld zum Status oder schließen Sie den Vorgang ab, falls dies bislang einfach vergessen wurde:
+		<property name="text"><value><![CDATA[Folgende Vorgänge mit dem Status „in Bearbeitung“ sind seit mindestens %tage% Tagen unverändert. Bitte geben Sie den Bürgerinnen und Bürgern jeweils eine kurze Info zum Bearbeitungsstand mittels der öffentlichen Statusinformation oder schließen Sie den Vorgang ab, falls dies bislang einfach vergessen wurde:
 
 Nummer   aktuelle Zuständigkeit     Typ       unverändert seit
 ******   **********************     ***       ****************
@@ -196,7 +196,7 @@ Nummer   aktuelle Zuständigkeit     Typ       unverändert seit
 	</bean>
 	
 	<bean class="org.springframework.mail.SimpleMailMessage" id="kriteriumIdeeOffenOhneUnterstuetzungTemplate">
-		<property name="text"><value><![CDATA[Folgende Ideen mit dem Status „offen“ haben ihre Erstsichtung seit mindestens %tage% Tagen hinter sich, weisen aber bisher noch nicht die notwendige Anzahl von %unterstuetzungen% Unterstützungen auf. Falls Sie die jeweilige Idee abschließen möchten, so setzen Sie diese bitte auf den Status „wird nicht bearbeitet“ und geben Sie den Bürgerinnen und Bürgern eine kurze Begründung im Kommentarfeld zum Status:
+		<property name="text"><value><![CDATA[Folgende Ideen mit dem Status „offen“ haben ihre Erstsichtung seit mindestens %tage% Tagen hinter sich, weisen aber bisher noch nicht die notwendige Anzahl von %unterstuetzungen% Unterstützungen auf. Falls Sie die jeweilige Idee abschließen möchten, so setzen Sie diese bitte auf den Status „wird nicht bearbeitet“ und geben Sie den Bürgerinnen und Bürgern eine kurze Begründung mittels der öffentlichen Statusinformation:
 
 Nummer   aktuelle Zuständigkeit     Unterstützungen   Erstsichtungszeitpunkt
 ******   **********************     ***************   **********************
@@ -204,7 +204,7 @@ Nummer   aktuelle Zuständigkeit     Unterstützungen   Erstsichtungszeitpunkt
 	</bean>
 	
 	<bean class="org.springframework.mail.SimpleMailMessage" id="kriteriumWirdnichtbearbeitetOhneStatuskommentarTemplate">
-		<property name="text"><value><![CDATA[Folgende Vorgänge mit dem Status „wird nicht bearbeitet“ weisen bisher keine Info der Verwaltung auf. Bitte geben Sie den Bürgerinnen und Bürgern jeweils eine kurze Info zum Bearbeitungsstand im Kommentarfeld zum Status:
+		<property name="text"><value><![CDATA[Folgende Vorgänge mit dem Status „wird nicht bearbeitet“ weisen bisher keine Info der Verwaltung auf. Bitte geben Sie den Bürgerinnen und Bürgern jeweils eine kurze Info zum Bearbeitungsstand mittels der öffentlichen Statusinformation:
 
 Nummer   aktuelle Zuständigkeit     Typ       Status „wird nicht bearbeitet“ seit
 ******   **********************     ***       ***********************************

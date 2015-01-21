@@ -79,7 +79,7 @@
                                                 </c:if>
                                                 <c:if test="${not empty statistic.vorgaengeInbearbeitungOhneStatusKommentar}">
                                                     <c:url value="/vorgang/${statistic.vorgaengeInbearbeitungOhneStatusKommentar[0].id}/uebersicht" var="url"/>
-                                                    <img alt="in Bearbeitung" src="${urlStaticIcon}status_inBearbeitung_15.png" height="15" width="15" title="in Bearbeitung" class="statistic_icon"/> und seit 30 Tagen unverändert, aber ohne Statuskommentar:<br/><a href="${url}" title="Übersicht zu Vorgang #${statistic.vorgaengeInbearbeitungOhneStatusKommentar[0].id} aufrufen">#${statistic.vorgaengeInbearbeitungOhneStatusKommentar[0].id}</a>
+                                                    <img alt="in Bearbeitung" src="${urlStaticIcon}status_inBearbeitung_15.png" height="15" width="15" title="in Bearbeitung" class="statistic_icon"/> und seit 30 Tagen unverändert, aber ohne öffentliche Statusinformation:<br/><a href="${url}" title="Übersicht zu Vorgang #${statistic.vorgaengeInbearbeitungOhneStatusKommentar[0].id} aufrufen">#${statistic.vorgaengeInbearbeitungOhneStatusKommentar[0].id}</a>
                                                 </c:if>
                                                 <c:if test="${not empty statistic.vorgaengeIdeeOffenOhneUnterstuetzung}">
                                                     <c:url value="/vorgang/${statistic.vorgaengeIdeeOffenOhneUnterstuetzung[0].id}/uebersicht" var="url"/>
@@ -87,7 +87,7 @@
                                                 </c:if>
                                                 <c:if test="${not empty statistic.vorgaengeWirdnichtbearbeitetOhneStatuskommentar}">
                                                     <c:url value="/vorgang/${statistic.vorgaengeWirdnichtbearbeitetOhneStatuskommentar[0].id}/uebersicht" var="url"/>
-                                                    <img alt="wird nicht bearbeitet" src="${urlStaticIcon}status_wirdNichtBearbeitet_15.png" height="15" width="15" title="wird nicht bearbeitet" class="statistic_icon"/>, aber ohne Statuskommentar:<br/><a href="${url}" title="Übersicht zu Vorgang #${statistic.vorgaengeWirdnichtbearbeitetOhneStatuskommentar[0].id} aufrufen">#${statistic.vorgaengeWirdnichtbearbeitetOhneStatuskommentar[0].id}</a>
+                                                    <img alt="wird nicht bearbeitet" src="${urlStaticIcon}status_wirdNichtBearbeitet_15.png" height="15" width="15" title="wird nicht bearbeitet" class="statistic_icon"/>, aber ohne öffentliche Statusinformation:<br/><a href="${url}" title="Übersicht zu Vorgang #${statistic.vorgaengeWirdnichtbearbeitetOhneStatuskommentar[0].id} aufrufen">#${statistic.vorgaengeWirdnichtbearbeitetOhneStatuskommentar[0].id}</a>
                                                 </c:if>
                                                 <c:if test="${not empty statistic.vorgaengeNichtMehrOffenNichtAkzeptiert}">
                                                     <c:url value="/vorgang/${statistic.vorgaengeNichtMehrOffenNichtAkzeptiert[0].id}/uebersicht" var="url"/>
@@ -119,7 +119,7 @@
                                                     </c:forEach>
                                                 </c:if>
                                                 <c:if test="${not empty statistic.vorgaengeInbearbeitungOhneStatusKommentar}">
-                                                    <img alt="in Bearbeitung" src="${urlStaticIcon}status_inBearbeitung_15.png" height="15" width="15" title="in Bearbeitung" class="statistic_icon"/> und seit 30 Tagen unverändert, aber ohne Statuskommentar:<br/>
+                                                    <img alt="in Bearbeitung" src="${urlStaticIcon}status_inBearbeitung_15.png" height="15" width="15" title="in Bearbeitung" class="statistic_icon"/> und seit 30 Tagen unverändert, aber ohne öffentliche Statusinformation:<br/>
                                                     <c:forEach items="${statistic.vorgaengeInbearbeitungOhneStatusKommentar}" var="inbearbeitungOhneStatusKommentar" varStatus="loop">
                                                         <c:url value="/vorgang/${inbearbeitungOhneStatusKommentar.id}/uebersicht" var="url"/>
                                                         <c:choose>
@@ -153,7 +153,7 @@
                                                     </c:forEach>
                                                 </c:if>
                                                 <c:if test="${not empty statistic.vorgaengeWirdnichtbearbeitetOhneStatuskommentar}">
-                                                    <img alt="wird nicht bearbeitet" src="${urlStaticIcon}status_wirdNichtBearbeitet_15.png" height="15" width="15" title="wird nicht bearbeitet" class="statistic_icon"/>, aber ohne Statuskommentar:<br/>
+                                                    <img alt="wird nicht bearbeitet" src="${urlStaticIcon}status_wirdNichtBearbeitet_15.png" height="15" width="15" title="wird nicht bearbeitet" class="statistic_icon"/>, aber ohne öffentliche Statusinformation:<br/>
                                                     <c:forEach items="${statistic.vorgaengeWirdnichtbearbeitetOhneStatuskommentar}" var="wirdnichtbearbeitetOhneStatuskommentar" varStatus="loop">
                                                         <c:url value="/vorgang/${wirdnichtbearbeitetOhneStatuskommentar.id}/uebersicht" var="url"/>
                                                         <c:choose>

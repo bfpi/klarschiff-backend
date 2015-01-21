@@ -273,7 +273,7 @@ public class MailService {
 			str.append("\n");
 			
             if (vorgang.getStatusKommentar() != null && !vorgang.getStatusKommentar().isEmpty()) {
-				str.append("Kommentar: " );
+				str.append("öffentliche Statusinformation: " );
 				str.append(vorgang.getStatusKommentar());
 				str.append("\n");
 			}

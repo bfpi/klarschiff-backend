@@ -34,7 +34,7 @@
 
 		<!-- Vorganginfos -->
 		<div class="fieldset">
-			<div class="fieldsettitle">Informationen über Vorgang</div>
+			<div class="fieldsettitle">Vorgangsdaten</div>
 			
 			<table class="result">
 				<tr>
@@ -131,7 +131,7 @@
 					</c:if>
 					<c:if test="${not empty vorgang.statusKommentar}">
 						<td valign="top" style="padding-left: 20px;" class="label">
-							Kommentar
+							öffentliche Statusinformation
 						</td>
 						<td valign="top">
 							<div class="result" style="width:350px;">${fx:toHtml(vorgang.statusKommentar)}</div>
@@ -159,7 +159,7 @@
 			</tr>
 		</table>
 
-		<!-- Kommentare -->
+		<!-- interne Kommentare -->
 		<c:if test="${not empty kommentare}">
 			<div class="fieldset">
 				<div class="fieldsettitle">interne Kommentare</div>
