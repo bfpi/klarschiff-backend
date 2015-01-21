@@ -115,8 +115,11 @@ public class MailService {
 	 */
 	public void sendVorgangBestaetigungMail(Vorgang vorgang) {
 		SimpleMailMessage msg = new SimpleMailMessage(vorgangBestaetigungMailTemplate);
+		msg.setSubject(msg.getSubject());
 		msg.setTo(vorgang.getAutorEmail());
+		msg.setSubject(msg.getSubject().replaceAll("%id%", vorgang.getId().toString()));
 		String mailText = msg.getText();
+		mailText = mailText.replaceAll("%id%", vorgang.getId().toString());
 		mailText = mailText.replaceAll("%baseUrlFrontend%", getServerBaseUrlFrontend());
 		mailText = mailText.replaceAll("%hash%", vorgang.getHash());
 		StringBuilder str = new StringBuilder();
@@ -132,10 +135,12 @@ public class MailService {
 	 * @param unterstuetzer Unterstützung, zu der die Bestätigungsmail versendet werden soll.
 	 * @param email E-Mailadresse, an die die E-Mail versendet werden soll.
 	 */
-	public void sendUnterstuetzerBestaetigungMail(Unterstuetzer unterstuetzer, String email) {
+	public void sendUnterstuetzerBestaetigungMail(Unterstuetzer unterstuetzer, String email, Long vorgang) {
 		SimpleMailMessage msg = new SimpleMailMessage(unterstuetzungBestaetigungMailTemplate);
 		msg.setTo(email);
+		msg.setSubject(msg.getSubject().replaceAll("%id%", vorgang.toString()));
 		String mailText = msg.getText();
+		mailText = mailText.replaceAll("%id%", vorgang.toString());
 		mailText = mailText.replaceAll("%baseUrlFrontend%", getServerBaseUrlFrontend());
 		mailText = mailText.replaceAll("%hash%", unterstuetzer.getHash());
 		msg.setText(mailText);
@@ -148,10 +153,12 @@ public class MailService {
 	 * @param missbrauchsmeldung Missbrauchsmeldung, zu der die Bestätigungsemail versendet werden soll.
 	 * @param email E-Mailadresse, an die die E-Mail versendet werden soll.
 	 */
-	public void sendMissbrauchsmeldungBestaetigungMail(Missbrauchsmeldung missbrauchsmeldung, String email) {
+	public void sendMissbrauchsmeldungBestaetigungMail(Missbrauchsmeldung missbrauchsmeldung, String email, Long vorgang) {
 		SimpleMailMessage msg = new SimpleMailMessage(missbrauchsmeldungBestaetigungMailTemplate);
 		msg.setTo(email);
+		msg.setSubject(msg.getSubject().replaceAll("%id%", vorgang.toString()));
 		String mailText = msg.getText();
+		mailText = mailText.replaceAll("%id%", vorgang.toString());
 		mailText = mailText.replaceAll("%baseUrlFrontend%", getServerBaseUrlFrontend());
 		mailText = mailText.replaceAll("%hash%", missbrauchsmeldung.getHash());
 		msg.setText(mailText);
@@ -174,7 +181,7 @@ public class MailService {
 	{
 		try {
 			MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mailSender.createMimeMessage(), true);
-			mimeMessageHelper.setSubject(vorgangWeiterleitenMailTemplate.getSubject());
+			mimeMessageHelper.setSubject(vorgangWeiterleitenMailTemplate.getSubject().replaceAll("%id%", vorgang.getId().toString()));
 			mimeMessageHelper.setFrom(StringUtils.isBlank(sendAllMailsTo) ? fromEmail : sendAllMailsTo);
 			mimeMessageHelper.setTo(toEmail);
 
@@ -209,6 +216,7 @@ public class MailService {
 	{
 		try {
 			String mailText = vorgangWeiterleitenMailTemplate.getText();
+            mailText = mailText.replaceAll("%id%", vorgang.getId().toString());
 			mailText = mailText.replaceAll("%absender%", securityService.getCurrentUser().getName());
 			mailText = mailText.replaceAll("%text%", text);
 			StringBuilder str = new StringBuilder();
@@ -380,8 +388,10 @@ public class MailService {
 	public void sendInformErstellerMailInBearbeitung(Vorgang vorgang) {
 		SimpleMailMessage msg = new SimpleMailMessage(informErstellerMailInBearbeitungTemplate);
 		msg.setTo(vorgang.getAutorEmail());
+		msg.setSubject(msg.getSubject().replaceAll("%id%", vorgang.getId().toString()));
 
 		String mailtext = msg.getText();
+		mailtext = mailtext.replaceAll("%id%", vorgang.getId().toString());
 		StringBuilder str = new StringBuilder();
 		//Vorgang
 		str.append("Nummer        : "+vorgang.getId()+"\n");
@@ -412,8 +422,10 @@ public class MailService {
 	public void sendInformErstellerMailAbschluss(Vorgang vorgang) {
 		SimpleMailMessage msg = new SimpleMailMessage(informErstellerMailAbschlussTemplate);
 		msg.setTo(vorgang.getAutorEmail());
+		msg.setSubject(msg.getSubject().replaceAll("%id%", vorgang.getId().toString()));
 
 		String mailtext = msg.getText();
+		mailtext = mailtext.replaceAll("%id%", vorgang.getId().toString());
 		StringBuilder str = new StringBuilder();
 		//Vorgang
 		str.append("Nummer        : "+vorgang.getId()+"\n");

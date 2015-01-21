@@ -348,7 +348,7 @@ public class BackendController {
 			if (resultHashOnSubmit==true) sendOk(response, unterstuetzer.getHash());
 			else sendOk(response);
 
-			mailService.sendUnterstuetzerBestaetigungMail(unterstuetzer, email);
+			mailService.sendUnterstuetzerBestaetigungMail(unterstuetzer, email, vorgang);
 			
 		} catch (Exception e) {
 			logger.warn(e);
@@ -424,7 +424,7 @@ public class BackendController {
 
 			vorgangDao.persist(missbrauchsmeldung);
 			
-			mailService.sendMissbrauchsmeldungBestaetigungMail(missbrauchsmeldung, email);
+			mailService.sendMissbrauchsmeldungBestaetigungMail(missbrauchsmeldung, email, vorgang);
 
 			if (resultHashOnSubmit==true) sendOk(response, missbrauchsmeldung.getHash());
 			else sendOk(response);
