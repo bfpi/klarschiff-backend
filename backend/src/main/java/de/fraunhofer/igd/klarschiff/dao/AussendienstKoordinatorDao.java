@@ -36,11 +36,13 @@ public class AussendienstKoordinatorDao {
   }
 
   public boolean setTeamsForLogin(String login, String[] teams) {
-    for (String team : teams) {
-      AussendienstKoordinator ak = new AussendienstKoordinator();
-      ak.setKoordinator(login);
-      ak.setAussendienst(team);
-      em.merge(ak);
+    if(teams != null) {
+      for (String team : teams) {
+        AussendienstKoordinator ak = new AussendienstKoordinator();
+        ak.setKoordinator(login);
+        ak.setAussendienst(team);
+        em.merge(ak);
+      }
     }
     return true;
   }
