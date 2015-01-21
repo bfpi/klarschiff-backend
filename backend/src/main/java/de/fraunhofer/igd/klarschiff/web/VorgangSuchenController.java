@@ -28,12 +28,16 @@ import de.fraunhofer.igd.klarschiff.service.geo.GeoService;
 import de.fraunhofer.igd.klarschiff.service.poi.PoiService;
 import de.fraunhofer.igd.klarschiff.service.security.Role;
 import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
+import de.fraunhofer.igd.klarschiff.service.security.User;
 import de.fraunhofer.igd.klarschiff.service.settings.SettingsService;
+import de.fraunhofer.igd.klarschiff.vo.Auftrag;
 import de.fraunhofer.igd.klarschiff.vo.EnumPrioritaet;
 import de.fraunhofer.igd.klarschiff.vo.EnumVorgangStatus;
 import de.fraunhofer.igd.klarschiff.vo.EnumVorgangTyp;
+import de.fraunhofer.igd.klarschiff.vo.Vorgang;
 import de.fraunhofer.igd.klarschiff.web.VorgangSuchenCommand.EinfacheSuche;
 import de.fraunhofer.igd.klarschiff.web.VorgangSuchenCommand.Suchtyp;
+import java.util.Map;
 
 /**
  * Controller für die Vorgangsuche
@@ -90,6 +94,14 @@ public class VorgangSuchenController {
 	@ModelAttribute("allVorgangStatus")
 	public EnumVorgangStatus[] allVorgangStatus() {
 		return EnumVorgangStatus.values();
+	}
+
+	/**
+	 * Liefert alle möglichen Ausprägungen für Vorgangs-Status-Typen im Außendienst
+	 */
+	@ModelAttribute("allVorgangStatusAussendienst")
+	public EnumVorgangStatus[] allVorgangStatusAussendienst() {
+		return EnumVorgangStatus.aussendienstVorgangStatus();
 	}
 	
 	/**
@@ -176,10 +188,37 @@ public class VorgangSuchenController {
 		updateKategorieInModel(modelMap, cmd);
     	//Suchen
 		modelMap.addAttribute("vorgaenge", vorgangDao.getVorgaenge(cmd));
-		if (cmd.suchtyp==Suchtyp.einfach && cmd.einfacheSuche==EinfacheSuche.offene)
+		if (cmd.suchtyp==Suchtyp.einfach && cmd.einfacheSuche==EinfacheSuche.offene) {
 			modelMap.put("missbrauchsmeldungenAbgeschlossenenVorgaenge", vorgangDao.missbrauchsmeldungenAbgeschlossenenVorgaenge());
+    }
 		modelMap.put("maxPages", calculateMaxPages(cmd.getSize(), vorgangDao.countVorgaenge(cmd)));
-
+    
+    User user = securityService.getCurrentUser();
+    if(user.getUserKoordinator()) {
+      modelMap.put("aussendienst_optionen_berechtigungen", true);
+    }
+    if(user.getUserKoordinator() && cmd.getSuchtyp() == Suchtyp.aussendienst) {
+      modelMap.put("aussendienstTeams", securityService.getCurrentUser().getAussendienstZustaendigkeiten());
+      modelMap.put("prioritaeten", Arrays.asList(EnumPrioritaet.values()));
+    }
+    
+    if(cmd.getVorgangAuswaehlen() != null && cmd.getVorgangAuswaehlen().length > 0) {
+      List<Vorgang> vorgaenge = vorgangDao.findVorgaenge(cmd.getVorgangAuswaehlen());
+      for (Vorgang vorgang : vorgaenge) {
+        Auftrag auftrag;
+        if(vorgang.getAuftrag() == null) {
+          auftrag = new Auftrag();
+          auftrag.setVorgang(vorgang);
+        } else {
+          auftrag = vorgang.getAuftrag();
+        }
+        auftrag.setTeam(cmd.getAuftragTeam());
+        auftrag.setDatum(cmd.getAuftragDatum());
+        vorgang.setAuftrag(auftrag);
+        vorgangDao.merge(vorgang);
+      }
+    }
+    
 		return "vorgang/suchen";
 	}
 	

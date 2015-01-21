@@ -1,6 +1,5 @@
 package de.fraunhofer.igd.klarschiff.web;
 
-import de.fraunhofer.igd.klarschiff.dao.AuftragDao;
 import static de.fraunhofer.igd.klarschiff.web.Assert.assertMaxLength;
 import static de.fraunhofer.igd.klarschiff.web.Assert.assertNotEmpty;
 
@@ -59,9 +58,6 @@ import java.util.Date;
 public class VorgangBearbeitenController {
 
 	Logger logger = Logger.getLogger(VorgangBearbeitenController.class);
-	
-	@Autowired
-	AuftragDao auftragDao;
 	
 	@Autowired
 	VorgangDao vorgangDao;
