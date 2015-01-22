@@ -293,6 +293,11 @@
 			        <tbody>
 				  		<c:forEach items="${vorgaenge}" var="vorgang" varStatus="rowCounter">
 		 		  			<c:url value="/vorgang/delegiert/${vorgang.id}/uebersicht" var="url"/>
+                            <fmt:formatDate value="${vorgang.datum}" pattern="dd.MM.yyyy" var="erstellung_datum"/>
+                            <fmt:formatDate value="${vorgang.datum}" pattern="dd.MM.yyyy HH:mm:ss" var="erstellung_datum_uhrzeit"/>
+                            <fmt:formatDate value="${vorgang.datum}" pattern="HH:mm:ss" var="erstellung_uhrzeit"/>
+                            <jsp:useBean id="heute" class="java.util.Date" />
+                            <fmt:formatDate value="${heute}" pattern="dd.MM.yyyy" var="heute_datum"/>
 				        	<tr class="row ${(rowCounter.count%2==0)? 'odd' : 'even'}" onClick="location.href='${url}'" style="cursor:pointer;">
 				        		<td style="text-align: center;">
 									<span  title="Vorgangsnummer: ${vorgang.id}">${vorgang.id}</span>
@@ -301,9 +306,14 @@
 				        			<c:url value="/images/${vorgang.typ}_15.png" var="url"/>
 									<img alt="${vorgang.typ.text}" src="${url}" height="15" width="15"  title="Typ: ${vorgang.typ.text}"/>
 								</td>
-				        		<td style="text-align: center;">
-				        			<fmt:formatDate value="${vorgang.datum}" pattern="dd.MM.yyyy"/>
-								</td>
+                                <c:choose>
+                                    <c:when test="${erstellung_datum eq heute_datum}">
+                                        <td style="text-align: center;" title="${erstellung_datum_uhrzeit}">${erstellung_uhrzeit}</td>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <td style="text-align: center;" title="${erstellung_datum_uhrzeit}">${erstellung_datum}</td>
+                                    </c:otherwise>
+                                </c:choose>
 				        		<td>
 									${vorgang.kategorie.parent.name}
 								</td>
