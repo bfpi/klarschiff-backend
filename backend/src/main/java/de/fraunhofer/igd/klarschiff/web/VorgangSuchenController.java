@@ -214,6 +214,7 @@ public class VorgangSuchenController {
         }
         auftrag.setTeam(cmd.getAuftragTeam());
         auftrag.setDatum(cmd.getAuftragDatum());
+        auftrag.setPrioritaet(null);
         vorgang.setAuftrag(auftrag);
         vorgangDao.merge(vorgang);
       }

@@ -24,7 +24,7 @@ public class AussendienstKoordinatorDao {
     if (login == null) {
       return null;
     }
-    return em.createQuery("select aussendienst from AussendienstKoordinator ak where ak.koordinator=:login", String.class).setParameter("login", login).getResultList();
+    return em.createQuery("select aussendienst from AussendienstKoordinator ak where ak.koordinator=:login order by aussendienst", String.class).setParameter("login", login).getResultList();
   }
 
   @Transactional

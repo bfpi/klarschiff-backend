@@ -10,9 +10,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
+import javax.persistence.PrePersist;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.NotNull;
 import org.springframework.format.annotation.DateTimeFormat;
 
 /**
@@ -53,8 +53,20 @@ public class Auftrag implements Serializable {
   /**
    * Priorität
    */
+  private Integer prioritaet;
+
+  /**
+   * Status
+   */
   @Enumerated(EnumType.STRING)
-  private EnumPrioritaet prioritaet;
+  private EnumAuftragStatus status;
+
+  @PrePersist
+  public void prePersist() {
+    if (status == null) {
+      status = EnumAuftragStatus.nicht_abgehakt;
+    }
+  }
 
   /* --------------- GET + SET ----------------------------*/
   public Integer getId() {
@@ -89,11 +101,19 @@ public class Auftrag implements Serializable {
     this.datum = datum;
   }
 
-  public EnumPrioritaet getPrioritaet() {
+  public Integer getPrioritaet() {
     return prioritaet;
   }
 
-  public void setPrioritaet(EnumPrioritaet prioritaet) {
+  public void setPrioritaet(Integer prioritaet) {
     this.prioritaet = prioritaet;
+  }
+
+  public EnumAuftragStatus getStatus() {
+    return status;
+  }
+
+  public void setStatus(EnumAuftragStatus status) {
+    this.status = status;
   }
 }

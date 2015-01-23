@@ -1711,3 +1711,12 @@ table#aussendienst_zustaendigkeiten ul#aussendienstTeams li a,
 table#aussendienst_zustaendigkeiten ul#aktuellerBenutzer li a {
   float: right;
 }
+
+table.sortable tbody tr.sortable-highlight {
+  background-color: #ffe789;
+}
+
+table.sortable tbody tr td span.sorting-arrows {
+  cursor: pointer;
+  font-size: 15px;
+}
