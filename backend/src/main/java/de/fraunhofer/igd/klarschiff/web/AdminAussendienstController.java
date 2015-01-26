@@ -72,7 +72,7 @@ public class AdminAussendienstController {
     List<String> teams = new ArrayList<String>();
     while (it.hasNext()) {
       Role temp = (Role) it.next();
-      if (!user.getAussendienstZustaendigkeiten().contains(temp.getId())) {
+      if (!user.getAussendienstKoordinatorZustaendigkeiten().contains(temp.getId())) {
         teams.add(temp.getId());
       }
     }

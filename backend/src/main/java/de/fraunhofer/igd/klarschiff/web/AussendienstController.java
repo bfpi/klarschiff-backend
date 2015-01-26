@@ -50,7 +50,7 @@ public class AussendienstController {
    */
   @RequestMapping(value = "/aussendienst", method = RequestMethod.GET)
   public String aussendienst(ModelMap model, HttpServletRequest request) {
-    List<String> teams = securityService.getCurrentUser().getAussendienstZustaendigkeiten();
+    List<String> teams = securityService.getCurrentUser().getAussendienstKoordinatorZustaendigkeiten();
     return "redirect:/aussendienst/" + teams.get(0);
   }
 
@@ -80,7 +80,7 @@ public class AussendienstController {
 
     model.put("cmdaussendienst", cmd);
     model.put("team", team);
-    model.put("koordinatorAussendienstTeams", securityService.getCurrentUser().getAussendienstZustaendigkeiten());
+    model.put("koordinatorAussendienstTeams", securityService.getCurrentUser().getAussendienstKoordinatorZustaendigkeiten());
     List<Auftrag> auftraege = auftragDao.findAuftraegeByTeamAndDate(team, cmd.getDatum());
     model.put("auftraege", auftraege);
     List<Vorgang> vorgaenge = new ArrayList<Vorgang>();

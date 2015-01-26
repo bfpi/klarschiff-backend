@@ -198,7 +198,7 @@ public class VorgangSuchenController {
       modelMap.put("aussendienst_optionen_berechtigungen", true);
     }
     if(user.getUserKoordinator() && cmd.getSuchtyp() == Suchtyp.aussendienst) {
-      modelMap.put("aussendienstTeams", securityService.getCurrentUser().getAussendienstZustaendigkeiten());
+      modelMap.put("aussendienstTeams", securityService.getCurrentUser().getAussendienstKoordinatorZustaendigkeiten());
       modelMap.put("prioritaeten", Arrays.asList(EnumPrioritaet.values()));
     }
     

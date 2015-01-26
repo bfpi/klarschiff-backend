@@ -80,8 +80,8 @@ public class User {
 	 * Ermittelt die Zuständigkeiten des Benutzers.
 	 * @return Zuständigkeiten des Benutzers
 	 */
-	public List<String> getAussendienstZustaendigkeiten() {
-		return AppContext.getApplicationContext().getBean(SecurityService.class).getAussendienstZustaendigkeiten(id);
+	public List<String> getAussendienstKoordinatorZustaendigkeiten() {
+		return AppContext.getApplicationContext().getBean(SecurityService.class).getAussendienstKoordinatorZustaendigkeiten(id);
 	}
     
 	

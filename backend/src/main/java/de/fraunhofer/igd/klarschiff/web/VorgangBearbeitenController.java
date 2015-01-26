@@ -170,7 +170,7 @@ public class VorgangBearbeitenController {
 	 */
 	@ModelAttribute("koordinatorAussendienstTeams")
 	public List<String> koordinatorAussendienstTeams() {
-		return securityService.getCurrentUser().getAussendienstZustaendigkeiten();
+		return securityService.getCurrentUser().getAussendienstKoordinatorZustaendigkeiten();
 	}
 
 	/**
