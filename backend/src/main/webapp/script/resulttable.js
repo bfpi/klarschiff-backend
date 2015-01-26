@@ -12,8 +12,6 @@ $(function () {
     });
   }
   
-  window.onresize = resize;
-
   function width(elem) {
     if (elem.innerWidth) {
       return elem.innerWidth();
