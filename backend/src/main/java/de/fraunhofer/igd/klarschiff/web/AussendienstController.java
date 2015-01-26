@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
- * Controller für die Auftragslisten
+ * Controller für die Aussendienst-Verwaltung
  *
  * @author Robert Voß (BFPI GmbH)
  */
