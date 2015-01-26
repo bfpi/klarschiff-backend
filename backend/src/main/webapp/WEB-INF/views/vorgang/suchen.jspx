@@ -407,6 +407,14 @@
                               <util:sortedtableheadercolumn name="Adresse" id="5" currentOrderId="${cmdvorgangsuchen.order}" currentOrderDirection="${cmdvorgangsuchen.orderDirection}"/>
                         <util:sortedtableheadercolumn name="Unterstützer" id="6" currentOrderId="${cmdvorgangsuchen.order}" currentOrderDirection="${cmdvorgangsuchen.orderDirection}"/>
                         <util:sortedtableheadercolumn name="Zuständigkeit" id="7" currentOrderId="${cmdvorgangsuchen.order}" currentOrderDirection="${cmdvorgangsuchen.orderDirection}"/>
+                        <c:if test="${cmdvorgangsuchen.suchtyp == 'aussendienst'}">
+                          <th>
+                            Auftrag-Team
+                          </th>
+                          <th>
+                            Auftrag-Datum
+                          </th>
+                        </c:if>
                       </tr>
                   </thead>
                 <tbody>
@@ -454,7 +462,19 @@
                   <td>
                     <vorgang:zustaendigkeit vorgang="${vorgang}" statusAlignRight="true"/>
                   </td>
-                    </tr>
+                  <c:if test="${cmdvorgangsuchen.suchtyp == 'aussendienst'}">
+                    <td>
+                      <c:if test="${vorgang.auftrag != null}">
+                        ${vorgang.auftrag.team}
+                      </c:if>
+                    </td>
+                    <td>
+                      <c:if test="${vorgang.auftrag != null}">
+                        <fmt:formatDate value="${vorgang.auftrag.datum}" pattern="dd.MM.yyyy"/>
+                      </c:if>
+                    </td>
+                  </c:if>
+                </tr>
               </c:forEach>
                 </tbody>
 
