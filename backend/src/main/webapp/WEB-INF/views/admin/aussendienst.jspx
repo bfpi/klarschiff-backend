@@ -37,7 +37,7 @@
 						<tr class="${(rowCounter.count%2==0)? 'odd' : 'even'}" onClick="location.href='${url}'" style="cursor:pointer;">
 							<td>${user.id}</td>
 							<td>${user.name}</td>	
-              <td><ul><c:forEach items="${user.aussendienstZustaendigkeiten}" var="aussendienst"><li><span>${aussendienst}</span></li></c:forEach></ul></td>
+              <td><ul><c:forEach items="${user.aussendienstKoordinatorZustaendigkeiten}" var="aussendienst"><li><span>${aussendienst}</span></li></c:forEach></ul></td>
 						</tr>
 					</c:forEach>
 				</tbody>
