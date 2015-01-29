@@ -5,6 +5,8 @@
 	xmlns:spring="http://www.springframework.org/tags" 
 	xmlns:jsp="http://java.sun.com/JSP/Page" 
 	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu"
+	xmlns:tiles="http://tiles.apache.org/tags-tiles" 
 	version="2.0"
 	>
 	<jsp:directive.page contentType="text/html;charset=UTF-8"/>
@@ -28,6 +30,10 @@
 	<div id="root_style_content_title">
 		Aufträge
 	</div>
+  
+  <!-- TABMENU -->
+	<tiles:importAttribute name="tabmenu_item" ignore="true" toName="tabmenu_item"/>
+	<menu:tabmenuauftragsliste currentId="${team}"/>
 	
 	<!-- CONTENT -->
 	<div id="root_style_content">

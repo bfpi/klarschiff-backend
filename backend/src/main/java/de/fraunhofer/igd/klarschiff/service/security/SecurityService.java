@@ -654,17 +654,19 @@ public class SecurityService {
 
 	
 	/**
-	 * Ermittelt die Rollen zum Delegieren für einen Benutzer
+	 * Ermittelt die Außendienst-Teams, denen ein Benutzer zugeordnet ist
 	 * @param login Benutzer für den die Rollen ermittelt werden sollen
 	 * @return Liste mit den Rollen
 	 */
-	public String getAussendienstTeam(String login) {
+	public List<String> getAussendienstTeam(String login) {
 		User user = getUser(login);
-		List <Role> teams = securityServiceLdap.getObjectListFromLdap(groupSearchBase, "(&(objectclass="+groupObjectClass+")("+groupRoleAttribute+"="+groupAussendienst+")("+StringUtils.replace(groupSearchFilter, "{0}", user.getDn())+"))", roleContextMapper);
-		if(teams != null) {
-			return ((Role) teams.get(0)).getId();
+		List <Role> roles = securityServiceLdap.getObjectListFromLdap(groupSearchBase, "(&(objectclass="+groupObjectClass+")("+groupRoleAttribute+"="+groupAussendienst+")("+StringUtils.replace(groupSearchFilter, "{0}", user.getDn())+"))", roleContextMapper);
+		List<String> teams = new ArrayList<String>();
+		for(Role role : roles) {
+			teams.add(role.getId());
 		}
-		return null;
+		Collections.sort(teams);
+		return teams;
 	}
 
 	/**

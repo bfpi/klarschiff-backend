@@ -40,19 +40,33 @@ public class AuftragslisteController {
   SecurityService securityService;
 
   /**
-   * Die Methode verarbeitet den Request auf der URL
+   * Die Methode verarbeitet den GET-Request auf der URL
    * <code>/auftragsliste</code><br/>
    *
-   * @param cmd
    * @param model Model in dem ggf. Daten für die View abgelegt werden
    * @param request Request
    * @return View, die zum Rendern des Request verwendet wird
    */
-  @RequestMapping(value = "/auftragsliste")
-  public String liste(@ModelAttribute(value = "cmdauftragsliste") AuftragslisteCommand cmd,
-          ModelMap model, HttpServletRequest request) {
+  @RequestMapping(value = "/auftragsliste", method = RequestMethod.GET)
+  public String auftragsliste(ModelMap model, HttpServletRequest request) {
+    List<String> teams = securityService.getCurrentUser().getAussendienstTeams();
+    return "redirect:/auftragsliste/" + teams.get(0);
+  }
 
-    String team = securityService.getCurrentUser().getAussendienstTeam();
+  /**
+   * Die Methode verarbeitet den Request auf der URL
+   * <code>/auftragsliste</code><br/>
+   *
+   * @param cmd
+   * @param team
+   * @param model Model in dem ggf. Daten für die View abgelegt werden
+   * @param request Request
+   * @return View, die zum Rendern des Request verwendet wird
+   */
+  @RequestMapping(value = "/auftragsliste/{team}")
+  public String liste(@ModelAttribute(value = "cmdauftragsliste") AuftragslisteCommand cmd,
+          @PathVariable("team") String team, ModelMap model, HttpServletRequest request) {
+
     if (cmd.getDatum() == null) {
       Date d = new Date();
       d.setHours(0);
@@ -67,6 +81,9 @@ public class AuftragslisteController {
 
     List<Auftrag> auftraege = auftragDao.findAuftraegeByTeamAndDate(team, cmd.getDatum());
     model.put("auftraege", auftraege);
+    model.put("team", team);
+    model.put("aussendienstTeams", securityService.getCurrentUser().getAussendienstTeams());
+    model.put("allAuftragStatus", EnumAuftragStatus.values());
 
     return "auftragsliste/liste";
   }
@@ -99,15 +116,4 @@ public class AuftragslisteController {
       return "false";
     }
   }
-
-  /**
-   * Liefert alle möglichen Ausprägungen für Auftrag-Status-Typen
-   *
-   * @return
-   */
-  @ModelAttribute("allAuftragStatus")
-  public EnumAuftragStatus[] allAuftragStatus() {
-    return EnumAuftragStatus.values();
-  }
-
 }
