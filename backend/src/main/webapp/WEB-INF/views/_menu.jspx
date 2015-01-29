@@ -35,6 +35,9 @@
                     <sec:authorize access="hasRole('ROLE_KOORDINATOR')">
                         <menu:item label="Außendienst" url="/aussendienst" id="menu.aussendienst" currentId="${menu_item}"/>
                     </sec:authorize>
+                    <sec:authorize access="hasRole('ROLE_AUSSENDIENST')">
+                        <menu:item label="Auftragsliste" url="/auftragsliste" id="menu.auftragsliste" currentId="${menu_item}"/>
+                    </sec:authorize>
 				</sec:authorize>
 		
 				<sec:authorize access="hasRole('ROLE_INTERN') or hasRole('ROLE_EXTERN') or hasRole('ROLE_ADMIN')">		

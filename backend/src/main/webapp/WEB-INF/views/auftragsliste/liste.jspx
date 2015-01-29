@@ -5,10 +5,6 @@
 	xmlns:spring="http://www.springframework.org/tags" 
 	xmlns:jsp="http://java.sun.com/JSP/Page" 
 	xmlns:form="http://www.springframework.org/tags/form"
-	xmlns:map="urn:jsptagdir:/WEB-INF/tags/map"
-	xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu"
-	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
-	xmlns:tiles="http://tiles.apache.org/tags-tiles" 
 	version="2.0"
 	>
 	<jsp:directive.page contentType="text/html;charset=UTF-8"/>
@@ -20,32 +16,22 @@
  	<script src="${url}" type="text/javascript"><!-- //jquery.ui.datepicker --></script>
  	<c:url value="/script/jquery-ui/jquery.ui.datepicker-de.js" var="url"/>
  	<script src="${url}" type="text/javascript"><!-- //jquery.ui.datepicker-de --></script>
- 	<c:url value="/script/jquery-ui/jquery.ui.widget.js" var="url"/>
- 	<script src="${url}" type="text/javascript"><!-- //jjquery.ui.widget --></script>
- 	<c:url value="/script/jquery-ui/jquery.ui.mouse.js" var="url"/>
- 	<script src="${url}" type="text/javascript"><!-- //jquery.ui.mouse --></script>
- 	<c:url value="/script/jquery-ui/jquery.ui.sortable.js" var="url"/>
- 	<script src="${url}" type="text/javascript"><!-- //jquery.ui.sortable --></script>
  	<c:url value="/script/resulttable.js" var="url"/>
  	<script src="${url}" type="text/javascript"><!-- //resulttable --></script>
- 	<c:url value="/script/sortable_table.js" var="url"/>
- 	<script src="${url}" type="text/javascript"><!-- //sortable_table --></script>
- 
+ 	<c:url value="/script/form.js" var="url"/>
+ 	<script src="${url}" type="text/javascript"><!-- //form --></script>
+ 	
 	<c:url value="/script/jquery-ui/css/jquery.ui.all.css" var="url"/>
 	<link rel="stylesheet" type="text/css" href="${url}"> <!-- styles.css --> </link>
 
 	<!-- CONTENTTITLE -->
 	<div id="root_style_content_title">
-		Außendienst Auftragslisten 
+		Ihre Auftragsliste 
 	</div>
-	
-	<!-- TABMENU -->
-	<tiles:importAttribute name="tabmenu_item" ignore="true" toName="tabmenu_item"/>
-	<menu:tabmenuaussendienst currentId="${team}"/>
 	
 	<!-- CONTENT -->
 	<div id="root_style_content">
-    <form:form method="POST" modelAttribute="cmdaussendienst">
+    <form:form method="POST" modelAttribute="cmdauftragsliste">
 			<div>
         <form:label path="datum">Datum</form:label>
         <form:input path="datum" id="datum" cssClass="inputtext" />
@@ -61,8 +47,7 @@
 		<c:choose>
 			<c:when test="${not empty auftraege}">
 
-        <c:url value="/aussendienst/${team}/update_sorting" var="url"/>
-		    <table class="resulttable sortable" data-updateUrl="${url}">
+		    <table class="resulttable">
 		      <thead>
 		        <tr>
               <th>#</th>
@@ -71,7 +56,6 @@
               <th colspan="2">Haupt- und Unterkategorie</th>
               <th>Status</th>
               <th>Auftrag-Status</th>
-              <th colspan="2">Aktionen</th>
 		        </tr>
 		      </thead>
 			    <tbody>
@@ -99,67 +83,30 @@
 									<img alt="${vorgang.status}" src="${url}"  title="Status: ${vorgang.status.text}"/>
 								</td>
 				        <td style="font-size: 17px; text-align: center;">
-                  <c:if test="${not empty auftrag.status}">
-                    <c:choose>
-                      <c:when test="${auftrag.status == 'abgehakt'}">
-                        &#x2611;
-                      </c:when>
-                      <c:when test="${auftrag.status == 'nicht_abgehakt'}">
-                        &#x2610;
-                      </c:when>
-                      <c:when test="${auftrag.status == 'nicht_abarbeitbar'}">
-                        &#x2612;
-                      </c:when>
-                    </c:choose>
-                  </c:if>
+                  <c:url value="/auftragsliste/${auftrag.id}/update_status" var="url"/>
+                  <form:form method="POST" commandName="cmdauftragsliste"
+                             action="${url}" data-autosave="true">
+                    <form:select path="status">
+                      <c:forEach items="${allAuftragStatus}" var="option">
+                        <c:choose>
+                            <c:when test="${option eq auftrag.status}">
+                              <option value="${option}" selected="true">${option}</option>
+                            </c:when>
+                            <c:otherwise>
+                              <option value="${option}">${option}</option>
+                            </c:otherwise>
+                        </c:choose> 
+                      </c:forEach>
+                    </form:select>
+                  </form:form>
 								</td>
-                <td>
-                  <span class="sorting-arrows">&#x21C5;</span>
-                </td>
-                <td>
-                  <c:url value="/aussendienst/${team}/entfernen/${auftrag.id}" var="url"/>
-                  <a href="${url}" title="Aufgabe aus Auftragslisten entfernen">
-                    Löschen
-                  </a>
-                </td>
 				      </tr>
 						</c:forEach>
 			    </tbody>
-          <tfoot>
-            <tr class="footer">
-              <td colspan="9" style="text-align: right;">
-                <c:url value="/aussendienst/${team}/reset_sorting" var="url"/>
-                <form:form action="${url}" method="POST" modelAttribute="cmdaussendienst">
-                  <form:hidden path="datum" />
-                  <input type="submit" value="nach Erstellungsdatum sortieren"/>
-                </form:form>
-              </td>
-            </tr>
-          </tfoot>
 		    </table>
-
-        <map:multiview
-       		projection="${geoService.mapProjection}"
-       		tmsUrl="${geoService.mapTmsServer}" 
-       		tmsLayers="${geoService.mapTmsServerLayers}" 
-       		maxExtent="${geoService.mapMaxExtent}"
-       		restrictedExtent="${geoService.mapRestrictedExtent}"
-       		resolutions="${geoService.mapResolutions}"
-       		serverResolutions="${geoService.mapServerResolutions}"
-       		vorgaenge="${vorgaenge}"
-       		oviMargin="${geoService.mapOviMargin}" 
-       		cssStyle="height: 500px; width: 100%;"
-            wmsUrl="${geoService.wmsUrl}"
-            wmsTitle="${geoService.wmsTitle}"
-            wmsLayers="${geoService.wmsLayers}"
-            wmsFormat="${geoService.wmsFormat}"
-            wmsTransparent="${geoService.wmsTransparent}"
-            wmsMinScale="${geoService.wmsMinScale}"
-            wmsSingleTile="${geoService.wmsSingleTile}"
-       		/>
 			</c:when>
 			<c:otherwise>
-				<div style="margin:20px 0px 0px 10px;">An diesem Tag hat das Außendienst-Team keine Aufgaben.</div>
+				<div style="margin:20px 0px 0px 10px;">Ihr Team hat an diesem Tag keine Aufgaben</div>
 			</c:otherwise>
 		</c:choose>
 	</div>
@@ -179,9 +126,6 @@
           <td width="20px"></td>
           <td width="15"><div class="missbrauchsmeldungLegende" style="height:15px;"></div></td>
           <td style="vertical-align:top;"  title="Status: Missbrauch gemeldet">Missbrauch gemeldet</td>
-          <td width="20px"></td>
-          <td width="15"><span style="color: #000000; font-size: 17px;">&#x2611;</span></td>
-          <td style="vertical-align:top;" title="Status: abgehakt">abgehakt</td>
         </tr>
         <tr>
           <td><img alt="Idee" src="${url}idee_15.png" height="15" width="15" title="Typ: Idee"/></td>
@@ -192,17 +136,11 @@
           <td></td>
           <td><img alt="offen" src="${url}archiviert_15.png" height="15" width="15" title="archiviert"/></td>
           <td style="vertical-align:top;"  title="archiviert">archiviert</td>
-          <td></td>
-          <td><span style="color: #000000; font-size: 17px;">&#x2610;</span></td>
-          <td style="vertical-align:top;" title="Status: noch nicht abgehakt">noch nicht abgehakt</td>
         </tr>
         <tr>
           <td colspan="3"></td>
           <td><img alt="in Bearbeitung" src="${url}status_inBearbeitung_15.png" height="15" width="15" title="Status: in Bearbeitung"/></td>
           <td style="vertical-align:top;">in Bearbeitung</td>
-          <td colspan="4"></td>
-          <td><span style="color: #000000; font-size: 17px;">&#x2612;</span></td>
-          <td style="vertical-align:top;" title="Status: nicht abarbeitbar">nicht abarbeitbar</td>
         </tr>
         <tr>
           <td colspan="3"></td>
