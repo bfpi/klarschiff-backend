@@ -25,6 +25,7 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 
 import de.fraunhofer.igd.klarschiff.context.AppContext;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
  * VO für die Kategorien der Vorgänge. <br/>
@@ -78,6 +79,7 @@ public class Kategorie implements Serializable {
     /**
      * untergeordnete Kategorien
      */
+    @JsonIgnore
     @ManyToMany(cascade = CascadeType.ALL, mappedBy = "parent")
     @OrderBy(value="name")
     private List<de.fraunhofer.igd.klarschiff.vo.Kategorie> children = new ArrayList<de.fraunhofer.igd.klarschiff.vo.Kategorie>();
@@ -85,6 +87,7 @@ public class Kategorie implements Serializable {
     /**
      * Liste von intialen Zuständigkeiten für die Vorgänge mit der Kategorie
      */
+  @JsonIgnore
 	@ElementCollection(fetch=FetchType.EAGER)
     private List<String> initialZustaendigkeiten;
     

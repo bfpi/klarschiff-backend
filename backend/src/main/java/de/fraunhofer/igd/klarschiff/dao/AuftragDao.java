@@ -21,6 +21,23 @@ public class AuftragDao {
   EntityManager em;
 
   @Transactional
+  public List<Auftrag> alleAuftraege() {
+    return em.createQuery("SELECT a FROM Auftrag a, Vorgang v WHERE "
+            + "a.vorgang = v.id "
+            + "order by a.prioritaet, v.datum", Auftrag.class)
+            .getResultList();
+  }
+
+  @Transactional
+  public List<Auftrag> findAuftraegeByTeam(String team) {
+    return em.createQuery("SELECT a FROM Auftrag a, Vorgang v WHERE "
+            + "a.team = :team and a.vorgang = v.id "
+            + "order by a.prioritaet, v.datum", Auftrag.class)
+            .setParameter("team", team)
+            .getResultList();
+  }
+
+  @Transactional
   public List<Auftrag> findAuftraegeByTeamAndDate(String team, Date datum) {
     return em.createQuery("SELECT a FROM Auftrag a, Vorgang v WHERE "
             + "a.team = :team AND a.datum = :datum and a.vorgang = v.id "

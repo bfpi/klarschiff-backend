@@ -1,5 +1,6 @@
 package de.fraunhofer.igd.klarschiff.web;
 
+import de.fraunhofer.igd.klarschiff.dao.AuftragDao;
 import java.util.Date;
 import java.util.List;
 
@@ -24,7 +25,8 @@ import de.fraunhofer.igd.klarschiff.service.image.ImageService;
 import de.fraunhofer.igd.klarschiff.service.mail.MailService;
 import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
 import de.fraunhofer.igd.klarschiff.service.settings.SettingsService;
-import de.fraunhofer.igd.klarschiff.service.security.User;
+import de.fraunhofer.igd.klarschiff.vo.Auftrag;
+import de.fraunhofer.igd.klarschiff.vo.EnumAuftragStatus;
 import de.fraunhofer.igd.klarschiff.vo.EnumPrioritaet;
 import de.fraunhofer.igd.klarschiff.vo.EnumVerlaufTyp;
 import de.fraunhofer.igd.klarschiff.vo.EnumVorgangStatus;
@@ -37,6 +39,11 @@ import de.fraunhofer.igd.klarschiff.vo.RedaktionEmpfaenger;
 import de.fraunhofer.igd.klarschiff.vo.Unterstuetzer;
 import de.fraunhofer.igd.klarschiff.vo.Verlauf;
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.logging.Level;
+import org.codehaus.jackson.map.ObjectMapper;
 
 /**
  * Der Controller dient als Schnittstelle für das Frontend
@@ -52,6 +59,9 @@ public class BackendController {
 	
 	@Autowired
 	RedaktionEmpfaengerDao redaktionEmpfaengerDao;
+	
+	@Autowired
+	AuftragDao auftragDao;
 	
 	@Autowired
 	VorgangDao vorgangDao;
@@ -73,7 +83,8 @@ public class BackendController {
 
 	@Autowired
 	SettingsService settingsService;
-	
+  
+  ObjectMapper mapper = new ObjectMapper();
 
 	/**
 	 * Die Methode verarbeitet den POST-Request auf der URL <code>/service/vorgang</code><br/>
@@ -659,6 +670,133 @@ public class BackendController {
 		}
 	}
 	
+  /**
+   * Die Methode verarbeitet den GET-Request auf der URL
+   * <code>/auftraege</code><br/>
+   *
+   * @param response 
+   * @throws java.io.IOException 
+   */
+  @RequestMapping(value="/auftraege", method = RequestMethod.POST)
+	@ResponseBody
+	public void auftraege(
+      HttpServletResponse response) throws IOException {
+    
+    try {
+      List<Auftrag> auftraege = auftragDao.alleAuftraege();
+      sendOk(response, mapper.writeValueAsString(auftraege));
+    } catch (Exception ex) {
+      java.util.logging.Logger.getLogger(BackendController.class.getName()).log(Level.SEVERE, null, ex);
+      sendError(response, ex);
+    }
+  }
+	
+  /**
+   * Die Methode verarbeitet den GET-Request auf der URL
+   * <code>/auftraegeEinerGruppe</code><br/>
+   *
+   * @param team
+   * @param response 
+   * @throws java.io.IOException 
+   */
+  @RequestMapping(value="/auftraegeEinerGruppe", method = RequestMethod.POST)
+	@ResponseBody
+	public void auftraegeEinerGruppe(
+			@RequestParam(value = "team") String team,
+      HttpServletResponse response) throws IOException {
+    
+    try {
+      List<Auftrag> auftraege = auftragDao.findAuftraegeByTeam(team);
+      sendOk(response, mapper.writeValueAsString(auftraege));
+    } catch (Exception ex) {
+      java.util.logging.Logger.getLogger(BackendController.class.getName()).log(Level.SEVERE, null, ex);
+      sendError(response, ex);
+    }
+  }
+	
+  /**
+   * Die Methode verarbeitet den GET-Request auf der URL
+   * <code>/auftraegeEinerGruppeAm</code><br/>
+   *
+   * @param team
+   * @param datum
+   * @param response 
+   * @throws java.io.IOException 
+   */
+  @RequestMapping(value="/auftraegeEinerGruppeAm", method = RequestMethod.POST)
+	@ResponseBody
+	public void auftraegeEinerGruppeAm(
+			@RequestParam(value = "team") String team,
+			@RequestParam(value = "datum") String datum, 
+      HttpServletResponse response) throws IOException {
+    
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+    try {
+      List<Auftrag> auftraege = auftragDao.findAuftraegeByTeamAndDate(team, sdf.parse(datum));
+      
+      sendOk(response, mapper.writeValueAsString(auftraege));
+    } catch (ParseException ex) {
+      java.util.logging.Logger.getLogger(BackendController.class.getName()).log(Level.SEVERE, null, ex);
+      sendError(response, ex);
+    }
+  }
+	
+  /**
+   * Die Methode verarbeitet den GET-Request auf der URL
+   * <code>/auftrag</code><br/>
+   *
+   * @param id
+   * @param response 
+   * @throws java.io.IOException 
+   */
+  @RequestMapping(value="/auftrag", method = RequestMethod.POST)
+	@ResponseBody
+	public void auftrag(
+			@RequestParam(value = "id") Integer id,
+      HttpServletResponse response) throws IOException {
+    
+    try {
+      Auftrag auftrag = auftragDao.find(id);
+      sendOk(response, mapper.writeValueAsString(auftrag));
+    } catch (Exception ex) {
+      java.util.logging.Logger.getLogger(BackendController.class.getName()).log(Level.SEVERE, null, ex);
+      sendError(response, ex);
+    }
+  }
+	
+  /**
+   * Die Methode verarbeitet den GET-Request auf der URL
+   * <code>/setzeStatus</code><br/>
+   *
+   * @param id
+   * @param status
+   * @param response 
+   * @throws java.io.IOException 
+   */
+  @RequestMapping(value="/setzeStatus", method = RequestMethod.POST)
+	@ResponseBody
+	public void setzeStatus(
+			@RequestParam(value = "id") Integer id,
+			@RequestParam(value = "status") String status,
+      HttpServletResponse response) throws IOException {
+    
+    try {
+      Auftrag auftrag = auftragDao.find(id);
+      for(EnumAuftragStatus val : EnumAuftragStatus.values()) {
+        if(val.toString().equals(status)) {
+          auftrag.setStatus(val);
+          vorgangDao.merge(auftrag);
+          sendOk(response, mapper.writeValueAsString(auftrag));
+          return;
+        }
+      }
+      sendOk(response);
+    } catch (Exception ex) {
+      java.util.logging.Logger.getLogger(BackendController.class.getName()).log(Level.SEVERE, null, ex);
+      sendError(response, ex);
+    }
+  }
+          
 	
 	/**
 	 * Sendet eine Fehlermeldung

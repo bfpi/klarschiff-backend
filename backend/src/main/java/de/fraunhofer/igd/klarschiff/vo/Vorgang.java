@@ -35,6 +35,7 @@ import com.vividsolutions.jts.io.WKTReader;
 import com.vividsolutions.jts.io.WKTWriter;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.hibernate.annotations.Where;
 
 /**
@@ -124,6 +125,7 @@ public class Vorgang implements Serializable {
     /**
      * geographische Position/Ort
      */
+    @JsonIgnore
     @Type(type = "org.hibernatespatial.GeometryUserType")
     private Point ovi;
     
@@ -209,6 +211,7 @@ public class Vorgang implements Serializable {
 	/**
 	 * Liste der Kommentare
 	 */
+    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "vorgang")
     @Where(clause = "geloescht = 'false'")
     private List<Kommentar> kommentare = new ArrayList<Kommentar>();
@@ -216,6 +219,7 @@ public class Vorgang implements Serializable {
     /**
      * Liste der Verlaufseinträge
      */
+    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "vorgang")
     private List<Verlauf> verlauf = new ArrayList<Verlauf>();
 
@@ -228,12 +232,14 @@ public class Vorgang implements Serializable {
     /**
      * Liste der Unterstützungen
      */
+    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "vorgang")
     private List<Unterstuetzer> unterstuetzer = new ArrayList<Unterstuetzer>();
 
     /**
      * Liste der Missbrauchsmeldungen
      */
+    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "vorgang")
     @OrderBy("datum ASC")
     private List<Missbrauchsmeldung> missbrauchsmeldungen = new ArrayList<Missbrauchsmeldung>();
@@ -271,6 +277,7 @@ public class Vorgang implements Serializable {
     /**
      *Auftrag zu dem Vorgang
      */
+    @JsonIgnore
     @OneToOne(mappedBy = "vorgang", cascade = CascadeType.ALL)
     private Auftrag auftrag;
 
