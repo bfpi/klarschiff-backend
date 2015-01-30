@@ -36,6 +36,7 @@ import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
 import de.fraunhofer.igd.klarschiff.service.settings.SettingsService;
 import de.fraunhofer.igd.klarschiff.tld.CustomFunctions;
 import de.fraunhofer.igd.klarschiff.vo.Auftrag;
+import de.fraunhofer.igd.klarschiff.vo.EnumAuftragStatus;
 import de.fraunhofer.igd.klarschiff.vo.EnumFreigabeStatus;
 import de.fraunhofer.igd.klarschiff.vo.EnumPrioritaet;
 import de.fraunhofer.igd.klarschiff.vo.EnumVorgangStatus;
@@ -418,6 +419,7 @@ public class VorgangBearbeitenController {
 			vorgangDao.merge(cmd.getVorgang());
 		} else if (action.equals("Auftrag zuweisen")) {
 			Auftrag auftrag = cmd.getVorgang().getAuftrag();
+			auftrag.setStatus(EnumAuftragStatus.nicht_abgehakt);
 			auftrag.setVorgang(cmd.getVorgang());
 			vorgangDao.merge(auftrag.getVorgang());
 		} else if (action.equals("setzen")) {

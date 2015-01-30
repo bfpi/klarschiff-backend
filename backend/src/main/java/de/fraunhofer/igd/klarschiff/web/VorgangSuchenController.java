@@ -31,6 +31,7 @@ import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
 import de.fraunhofer.igd.klarschiff.service.security.User;
 import de.fraunhofer.igd.klarschiff.service.settings.SettingsService;
 import de.fraunhofer.igd.klarschiff.vo.Auftrag;
+import de.fraunhofer.igd.klarschiff.vo.EnumAuftragStatus;
 import de.fraunhofer.igd.klarschiff.vo.EnumPrioritaet;
 import de.fraunhofer.igd.klarschiff.vo.EnumVorgangStatus;
 import de.fraunhofer.igd.klarschiff.vo.EnumVorgangTyp;
@@ -215,6 +216,7 @@ public class VorgangSuchenController {
         auftrag.setTeam(cmd.getAuftragTeam());
         auftrag.setDatum(cmd.getAuftragDatum());
         auftrag.setPrioritaet(null);
+        auftrag.setStatus(EnumAuftragStatus.nicht_abgehakt);
         vorgang.setAuftrag(auftrag);
         vorgangDao.merge(vorgang);
       }
