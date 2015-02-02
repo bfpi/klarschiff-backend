@@ -70,7 +70,7 @@
               <th>Erstellung</th>
               <th colspan="2">Haupt- und Unterkategorie</th>
               <th>Status</th>
-              <th>Auftrag-Status</th>
+              <th>Auftragsstatus</th>
               <th colspan="2">Aktionen</th>
 		        </tr>
 		      </thead>
@@ -102,13 +102,13 @@
                   <c:if test="${not empty auftrag.status}">
                     <c:choose>
                       <c:when test="${auftrag.status == 'abgehakt'}">
-                        &#x2611;
+                        <span title="Abgehakt">&#x2611;</span>
                       </c:when>
                       <c:when test="${auftrag.status == 'nicht_abgehakt'}">
-                        &#x2610;
+                        <span title="Nicht abgehakt">&#x2610;</span>
                       </c:when>
                       <c:when test="${auftrag.status == 'nicht_abarbeitbar'}">
-                        &#x2612;
+                        <span title="Nicht abarbeitbar">&#x2612;</span>
                       </c:when>
                     </c:choose>
                   </c:if>
@@ -181,7 +181,7 @@
           <td style="vertical-align:top;"  title="Status: Missbrauch gemeldet">Missbrauch gemeldet</td>
           <td width="20px"></td>
           <td width="15"><span style="color: #000000; font-size: 17px;">&#x2611;</span></td>
-          <td style="vertical-align:top;" title="Status: abgehakt">abgehakt</td>
+          <td style="vertical-align:top;" title="Autragsstatus: abgehakt">abgehakt</td>
         </tr>
         <tr>
           <td><img alt="Idee" src="${url}idee_15.png" height="15" width="15" title="Typ: Idee"/></td>
@@ -194,7 +194,7 @@
           <td style="vertical-align:top;"  title="archiviert">archiviert</td>
           <td></td>
           <td><span style="color: #000000; font-size: 17px;">&#x2610;</span></td>
-          <td style="vertical-align:top;" title="Status: noch nicht abgehakt">noch nicht abgehakt</td>
+          <td style="vertical-align:top;" title="Autragsstatus: noch nicht abgehakt">nicht abgehakt</td>
         </tr>
         <tr>
           <td colspan="3"></td>
@@ -202,7 +202,7 @@
           <td style="vertical-align:top;">in Bearbeitung</td>
           <td colspan="4"></td>
           <td><span style="color: #000000; font-size: 17px;">&#x2612;</span></td>
-          <td style="vertical-align:top;" title="Status: nicht abarbeitbar">nicht abarbeitbar</td>
+          <td style="vertical-align:top;" title="Autragsstatus: nicht abarbeitbar">nicht abarbeitbar</td>
         </tr>
         <tr>
           <td colspan="3"></td>

@@ -61,7 +61,7 @@
               <th>Erstellung</th>
               <th colspan="2">Haupt- und Unterkategorie</th>
               <th>Status</th>
-              <th>Auftrag-Status</th>
+              <th>Auftragsstatus</th>
 		        </tr>
 		      </thead>
 			    <tbody>
