@@ -22,6 +22,7 @@ public class VorgangEmailCommand implements Serializable {
 	boolean sendKarte = true;
 	boolean sendFoto = true;
 	boolean sendKommentare = true;
+	boolean sendLobHinweiseKritik = true;
 	boolean sendMissbrauchsmeldungen = true;
 	
 	public Vorgang getVorgang() {
@@ -56,6 +57,12 @@ public class VorgangEmailCommand implements Serializable {
 	}
 	public void setSendKommentare(boolean sendKommentare) {
 		this.sendKommentare = sendKommentare;
+	}
+	public boolean getSendLobHinweiseKritik() {
+		return sendLobHinweiseKritik;
+	}
+	public void setSendLobHinweiseKritik(boolean sendLobHinweiseKritik) {
+		this.sendLobHinweiseKritik = sendLobHinweiseKritik;
 	}
 	public boolean getSendFoto() {
 		return sendFoto;

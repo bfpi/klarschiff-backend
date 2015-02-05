@@ -61,6 +61,9 @@
 	            <br/>
 	            <form:checkbox path="sendKommentare"/>
 	        	<form:label path="sendKommentare" cssErrorClass="error" cssStyle="display:inline;float:none;">interne Kommentare</form:label>
+	            <br/>
+	            <form:checkbox path="sendLobHinweiseKritik"/>
+	        	<form:label path="sendLobHinweiseKritik" cssErrorClass="error" cssStyle="display:inline;float:none;">Lob, Hinweise oder Kritik von Bürger/-innen</form:label>
 	        	<c:if test="${empty delegiert or not delegiert}">
 		            <br/>
 		            <form:checkbox path="sendMissbrauchsmeldungen"/>

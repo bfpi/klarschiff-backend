@@ -176,7 +176,7 @@ public class VorgangEmailController {
 			return "noMenu/vorgang/printEmail/email";
 		}			
 		
-		mailService.sendVorgangWeiterleitenMail(vorgangDao.findVorgang(id), cmd.getFromEmail(), cmd.getToEmail(), cmd.getText(), cmd.getSendAutor(), cmd.getSendKarte(), cmd.getSendKommentare(), cmd.getSendFoto(), cmd.getSendMissbrauchsmeldungen());
+		mailService.sendVorgangWeiterleitenMail(vorgangDao.findVorgang(id), cmd.getFromEmail(), cmd.getToEmail(), cmd.getText(), cmd.getSendAutor(), cmd.getSendKarte(), cmd.getSendKommentare(), cmd.getSendLobHinweiseKritik(), cmd.getSendFoto(), cmd.getSendMissbrauchsmeldungen());
 		return "noMenu/vorgang/printEmail/emailSubmit";
 	}
 
@@ -226,7 +226,7 @@ public class VorgangEmailController {
 		
 		// Subject und Body für die E-Mail ermittlen
 		String subject = mailService.getVorgangWeiterleitenMailTemplate().getSubject();
-        String body = mailService.composeVorgangWeiterleitenMail(vorgang, "", !delegiert, true, true, !delegiert);
+        String body = mailService.composeVorgangWeiterleitenMail(vorgang, "", !delegiert, true, true, true, !delegiert);
 		
 		// Text-Encoding ermitteln
 		String encoding = mailService.getMailtoMailclientEncoding();

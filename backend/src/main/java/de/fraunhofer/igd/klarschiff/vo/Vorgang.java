@@ -208,6 +208,12 @@ public class Vorgang implements Serializable {
 	 * Liste der Kommentare
 	 */
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "vorgang")
+    private List<LobHinweiseKritik> lobHinweiseKritik = new ArrayList<LobHinweiseKritik>();
+	
+	/**
+	 * Liste von Lob, Hinweisen oder Kritik zum Vorgang
+	 */
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "vorgang")
     @Where(clause = "geloescht = 'false'")
     private List<Kommentar> kommentare = new ArrayList<Kommentar>();
 
@@ -401,6 +407,14 @@ public class Vorgang implements Serializable {
 
 	public void setKommentare(List<Kommentar> kommentare) {
         this.kommentare = kommentare;
+    }
+
+	public List<LobHinweiseKritik> getLobHinweiseKritik() {
+        return this.lobHinweiseKritik;
+    }
+
+	public void setLobHinweiseKritik(List<LobHinweiseKritik> lobHinweiseKritik) {
+        this.lobHinweiseKritik = lobHinweiseKritik;
     }
 
 	public List<Verlauf> getVerlauf() {

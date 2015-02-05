@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import de.fraunhofer.igd.klarschiff.dao.KommentarDao;
+import de.fraunhofer.igd.klarschiff.dao.LobHinweiseKritikDao;
 import de.fraunhofer.igd.klarschiff.dao.VorgangDao;
 import de.fraunhofer.igd.klarschiff.service.geo.GeoService;
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
@@ -27,6 +28,9 @@ public class VorgangPrintController {
 
 	@Autowired
 	KommentarDao kommentarDao;
+
+	@Autowired
+	LobHinweiseKritikDao lobHinweiseKritikDao;
 	
 	@Autowired
 	GeoService geoService;
@@ -67,6 +71,7 @@ public class VorgangPrintController {
 	public String print(Long id, ModelMap model, HttpServletRequest request, boolean delegiert) {
 		Vorgang vorgang = vorgangDao.findVorgang(id);
 		model.put("geoService", geoService);
+		model.put("lobhinweisekritik", lobHinweiseKritikDao.findLobHinweiseKritikForVorgang(vorgang, null, null));
 		model.put("kommentare", kommentarDao.findKommentareForVorgang(vorgang, null, null));
 		if (delegiert) model.put("delegiert", true);
 		else model.put("missbrauchsmeldungen", vorgangDao.listMissbrauchsmeldung(vorgang));

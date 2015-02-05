@@ -175,6 +175,24 @@
 		</c:if>
 
 
+<!-- Lob, Hinweise oder Kritik von Bürger/-innen -->
+		<c:if test="${not empty vorgang.lobHinweiseKritik}">
+			<div class="printTitle">Lob, Hinweise oder Kritik von Bürger/-innen</div>
+	  		<c:forEach items="${vorgang.lobHinweiseKritik}" var="lobHinweisKritik">
+	  			<div class="verlauf">
+	  				<div class="verlaufHeader">
+	  					<span style="margin-right:10px;padding:0px;">${lobHinweisKritik.autorEmail}</span>
+		       			<fmt:formatDate value="${lobHinweisKritik.datum}" pattern="dd.MM.yyyy"/><![CDATA[&nbsp;&nbsp;]]>
+		       			<span style="font-size:0.8em; color:#666;"><fmt:formatDate value="${lobHinweisKritik.datum}" pattern="HH:mm"/></span>
+	  				</div>
+					<div class="verlaufText" >
+		        		${fx:toHtml(lobHinweisKritik.freitext)} 
+					</div>	
+	  			</div>
+			</c:forEach>
+		</c:if>
+
+
 <!-- Missbrauchsmeldungen -->			
 		<c:if test="${not empty missbrauchsmeldungen}">
 			<div class="printTitle"><b>Missbrauchsmeldungen</b></div>

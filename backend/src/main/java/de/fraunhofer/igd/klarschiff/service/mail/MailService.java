@@ -16,6 +16,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 
 import de.fraunhofer.igd.klarschiff.dao.KommentarDao;
+import de.fraunhofer.igd.klarschiff.dao.LobHinweiseKritikDao;
 import de.fraunhofer.igd.klarschiff.dao.RedaktionEmpfaengerDao;
 import de.fraunhofer.igd.klarschiff.dao.RedaktionKriterienDao;
 import de.fraunhofer.igd.klarschiff.dao.VerlaufDao;
@@ -25,6 +26,7 @@ import de.fraunhofer.igd.klarschiff.service.job.JobExecutorService;
 import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
 import de.fraunhofer.igd.klarschiff.service.settings.SettingsService;
 import de.fraunhofer.igd.klarschiff.vo.Kommentar;
+import de.fraunhofer.igd.klarschiff.vo.LobHinweiseKritik;
 import de.fraunhofer.igd.klarschiff.vo.Missbrauchsmeldung;
 import de.fraunhofer.igd.klarschiff.vo.RedaktionEmpfaenger;
 import de.fraunhofer.igd.klarschiff.vo.RedaktionKriterien;
@@ -53,6 +55,9 @@ public class MailService {
 	
 	@Autowired
 	KommentarDao kommentarDao;
+
+	@Autowired
+	LobHinweiseKritikDao lobHinweiseKritikDao;
 	
 	@Autowired
 	VorgangDao vorgangDao;
@@ -175,10 +180,11 @@ public class MailService {
 	 * @param sendAutor Soll der Autor mitgesendet werden?
 	 * @param sendKarte Soll ein Link für die Karte mitgesendet werden?
 	 * @param sendKommentare Sollen die Kommentare mitgesendet werden?
+	 * @param sendLobHinweiseKritik Sollen Lob, Hinweise oder Kritik von Bürger/-innen mitgesendet werden?
 	 * @param sendFoto Soll das Foto als Anhang mitgesendet werden?
 	 * @param sendMissbrauchsmeldungen sollen die Missbrauchsmeldungen mitgesendet werden?
 	 */
-	public void sendVorgangWeiterleitenMail(Vorgang vorgang, String fromEmail, String toEmail, String text, boolean sendAutor, boolean sendKarte, boolean sendKommentare, boolean sendFoto, boolean sendMissbrauchsmeldungen)
+	public void sendVorgangWeiterleitenMail(Vorgang vorgang, String fromEmail, String toEmail, String text, boolean sendAutor, boolean sendKarte, boolean sendKommentare, boolean sendLobHinweiseKritik, boolean sendFoto, boolean sendMissbrauchsmeldungen)
 	{
 		try {
 			MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mailSender.createMimeMessage(), true);
@@ -186,7 +192,7 @@ public class MailService {
 			mimeMessageHelper.setFrom(StringUtils.isBlank(sendAllMailsTo) ? fromEmail : sendAllMailsTo);
 			mimeMessageHelper.setTo(toEmail);
 
-			String mailText = composeVorgangWeiterleitenMail(vorgang, text, sendAutor, sendKarte, sendKommentare, sendMissbrauchsmeldungen);
+			String mailText = composeVorgangWeiterleitenMail(vorgang, text, sendAutor, sendKarte, sendKommentare, sendLobHinweiseKritik, sendMissbrauchsmeldungen);
 
 			mimeMessageHelper.setText(mailText);
 			
@@ -211,10 +217,11 @@ public class MailService {
 	 * @param sendAutor Soll der Autor in der E-Mail aufgenommen werden?
 	 * @param sendKarte Soll ein Link für die Karte in der E-Mail erzeugt werden?
 	 * @param sendKommentare Sollen die Kommentare in der E-Mail aufgenommen werden?
+     * @param sendLobHinweiseKritik Sollen Lob, Hinweise oder Kritik von Bürger/-innen mitgesendet werden?
 	 * @param sendMissbrauchsmeldungen sollen die Missbrauchsmeldungen in der E-Mail aufgenommen werden?
 	 * @return Text der erzeugten E-Mail
 	 */
-	public String composeVorgangWeiterleitenMail(Vorgang vorgang, String text, boolean sendAutor, boolean sendKarte, boolean sendKommentare, boolean sendMissbrauchsmeldungen) throws RuntimeException
+	public String composeVorgangWeiterleitenMail(Vorgang vorgang, String text, boolean sendAutor, boolean sendKarte, boolean sendKommentare, boolean sendLobHinweiseKritik, boolean sendMissbrauchsmeldungen) throws RuntimeException
 	{
 		try {
 			String mailText = vorgangWeiterleitenMailTemplate.getText();
@@ -312,6 +319,15 @@ public class MailService {
 				for (Kommentar kommentar : kommentarDao.findKommentareForVorgang(vorgang)) {
 					str.append("- " + kommentar.getNutzer() + " " + formatter.format(kommentar.getDatum()) +" -\n" );
 					str.append(kommentar.getText());
+					str.append("\n\n");
+				}
+			}
+			
+			if (sendLobHinweiseKritik) {
+				str.append("\nLob, Hinweise oder Kritik von Bürger/-innen\n*******************************************\n");
+				for (LobHinweiseKritik lobHinweiseKritik : lobHinweiseKritikDao.findLobHinweiseKritikForVorgang(vorgang)) {
+					str.append("- " + lobHinweiseKritik.getAutorEmail() + " " + formatter.format(lobHinweiseKritik.getDatum()) +" -\n" );
+					str.append(lobHinweiseKritik.getFreitext());
 					str.append("\n\n");
 				}
 			}
