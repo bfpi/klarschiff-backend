@@ -85,12 +85,14 @@
  
 			<tr>
 				<td class="label">Erstellung</td>									
-				<td class="value"><div class="result"><fmt:formatDate value="${vorgang.datum}" pattern="dd.MM.yyyy HH:mm"/></div></td>	
-
-				<c:if test="${not empty vorgang.autorEmail}">
-					<td class="label">Autor</td>									
-					<td class="value"><div class="result">${vorgang.autorEmail}</div></td>	
-				</c:if>
+				<td class="value"><div class="result"><fmt:formatDate value="${vorgang.datum}" pattern="dd.MM.yyyy HH:mm"/></div></td>
+                
+                <c:if test="${empty delegiert or not delegiert}">
+		            <c:if test="${not empty vorgang.autorEmail}">
+                        <td class="label">Autor</td>									
+                        <td class="value"><div class="result">${vorgang.autorEmail}</div></td>	
+                    </c:if>
+	        	</c:if>
 			</tr>
 
 			<tr>
