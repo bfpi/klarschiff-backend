@@ -172,20 +172,21 @@ public class MailService {
 	 * @param fromEmail E-Mailadresse des Absenders
 	 * @param toEmail E-Mailadresse des Empfängers
 	 * @param text Freitextfeld, der in die E-Mail aufgenommen wird.
+	 * @param sendAutor Soll der Autor mitgesendet werden?
 	 * @param sendKarte Soll ein Link für die Karte mitgesendet werden?
 	 * @param sendKommentare Sollen die Kommentare mitgesendet werden?
 	 * @param sendFoto Soll das Foto als Anhang mitgesendet werden?
 	 * @param sendMissbrauchsmeldungen sollen die Missbrauchsmeldungen mitgesendet werden?
 	 */
-	public void sendVorgangWeiterleitenMail(Vorgang vorgang, String fromEmail, String toEmail, String text, boolean sendKarte, boolean sendKommentare, boolean sendFoto, boolean sendMissbrauchsmeldungen)
+	public void sendVorgangWeiterleitenMail(Vorgang vorgang, String fromEmail, String toEmail, String text, boolean sendAutor, boolean sendKarte, boolean sendKommentare, boolean sendFoto, boolean sendMissbrauchsmeldungen)
 	{
 		try {
 			MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mailSender.createMimeMessage(), true);
-			mimeMessageHelper.setSubject(vorgangWeiterleitenMailTemplate.getSubject().replaceAll("%id%", vorgang.getId().toString()));
+			mimeMessageHelper.setSubject(vorgangWeiterleitenMailTemplate.getSubject());
 			mimeMessageHelper.setFrom(StringUtils.isBlank(sendAllMailsTo) ? fromEmail : sendAllMailsTo);
 			mimeMessageHelper.setTo(toEmail);
 
-			String mailText = composeVorgangWeiterleitenMail(vorgang, text, sendKarte, sendKommentare, sendMissbrauchsmeldungen);
+			String mailText = composeVorgangWeiterleitenMail(vorgang, text, sendAutor, sendKarte, sendKommentare, sendMissbrauchsmeldungen);
 
 			mimeMessageHelper.setText(mailText);
 			
@@ -207,12 +208,13 @@ public class MailService {
 	 * Erstellt den Text einer E-Mail zum Weiterleiten eines Vorganges
 	 * @param vorgang Vorgang zu dem die E-Mail erstellt werden soll.
 	 * @param text Freitextfeld, der in die E-Mail aufgenommen wird.
+	 * @param sendAutor Soll der Autor in der E-Mail aufgenommen werden?
 	 * @param sendKarte Soll ein Link für die Karte in der E-Mail erzeugt werden?
 	 * @param sendKommentare Sollen die Kommentare in der E-Mail aufgenommen werden?
 	 * @param sendMissbrauchsmeldungen sollen die Missbrauchsmeldungen in der E-Mail aufgenommen werden?
 	 * @return Text der erzeugten E-Mail
 	 */
-	public String composeVorgangWeiterleitenMail(Vorgang vorgang, String text, boolean sendKarte, boolean sendKommentare, boolean sendMissbrauchsmeldungen) throws RuntimeException
+	public String composeVorgangWeiterleitenMail(Vorgang vorgang, String text, boolean sendAutor, boolean sendKarte, boolean sendKommentare, boolean sendMissbrauchsmeldungen) throws RuntimeException
 	{
 		try {
 			String mailText = vorgangWeiterleitenMailTemplate.getText();
@@ -270,7 +272,7 @@ public class MailService {
 			str.append(formatter.format(vorgang.getDatum()));
 			str.append("\n");
 			
-            if (vorgang.getAutorEmail() != null && !vorgang.getAutorEmail().isEmpty()) {
+            if (sendAutor && vorgang.getAutorEmail() != null && !vorgang.getAutorEmail().isEmpty()) {
 				str.append("Autor: " );
 				str.append(vorgang.getAutorEmail());
 				str.append("\n");

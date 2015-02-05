@@ -9,7 +9,7 @@
 	xmlns:map="urn:jsptagdir:/WEB-INF/tags/map"
 	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
 	xmlns:foto="urn:jsptagdir:/WEB-INF/tags/foto"
-	xmlns:tiles="http://tiles.apache.org/tags-tiles"
+	xmlns:tiles="http://tiles.apache.org/tags-tiles" 
 	xmlns:fx="http://igd.fraunhofer.de/tags/elfunctions" 
 	version="2.0"
 	>
@@ -31,7 +31,7 @@
 	<div id="root_style_content">
 	
 		<vorgang:vorgangPrintEmail vorgang="${vorgang}"/>
-
+		
 		<!-- Vorganginfos -->
 		<div class="fieldset">
 			<div class="fieldsettitle">Vorgangsdaten</div>
@@ -42,7 +42,7 @@
 					<td class="value">
 						<div class="result">
 							<c:url value="/images/${vorgang.typ}_15.png" var="url"/>
-							<img alt="${vorgang.typ.text}" src="${url}" height="15" width="15" title="Typ: ${vorgang.typ.text}"/>
+							<img alt="${vorgang.typ.text}" src="${url}" height="15" width="15" />
 							<![CDATA[&nbsp;&nbsp;]]>
 							${vorgang.typ.text}
 						</div>
@@ -64,26 +64,27 @@
 					</td>					
 				</tr>			
 	
-				<c:if test="${not empty vorgang.betreff}"><tr>
+				<c:if test="${not empty vorgang.betreff}">
+				<tr>
 					<td class="label">Betreff</td>									
-					<td colspan="3">					
+					<td colspan="3">
 						<util:freigabestatus status="${vorgang.betreffFreigabeStatus}" cssStyle="float:left;"/>					
-						<div class="result" style="width:668px;margin-left:20px;">						
+						<div class="result" style="width:654px;margin-left:20px;">						
 						${vorgang.betreff}
 						</div>						
 					</td>								
 				</tr></c:if>
-			
-				<c:if test="${not empty vorgang.details}"><tr>
+				<c:if test="${not empty vorgang.details}">
+				<tr>
 					<td class="label">Details</td>					
 					<td colspan="3">
 						<util:freigabestatus status="${vorgang.detailsFreigabeStatus}" cssStyle="float:left;"/>					
-						<div class="result" style="width:668px;margin-left:20px;">						
+						<div class="result" style="width:654px;margin-left:20px;">						
 						${fx:toHtml(vorgang.details)}
 						</div>						
 					</td> 						
 				</tr></c:if>
-                <tr>
+				<tr>
                     <c:if test="${not empty vorgang.adresse}">
 					<td class="label">Adresse</td>
 						<td>
@@ -111,7 +112,7 @@
 				</tr>
 			</table>
 		</div>
-	
+
 		<!-- Status -->
 		<div class="fieldset">
 			<div class="fieldsettitle">Status</div>
@@ -158,7 +159,7 @@
 				</td>
 			</tr>
 		</table>
-
+	
 		<!-- interne Kommentare -->
 		<c:if test="${not empty kommentare}">
 			<div class="fieldset">
@@ -181,7 +182,7 @@
 	            </c:if>
 			</div>
 		</c:if>
-
+	
 		<!-- Karte, Foto -->	
 		<table width="100%" border="0" cellpadding="0" cellspacing="0">
 			<tr>
@@ -189,7 +190,7 @@
 					<div class="fieldset" style="height:220px;">
 						<div class="fieldsettitle">Karte</div>
 	        			<c:url value="/vorgang/delegiert/${vorgang.id}/karte" var="url"/>
-			        	<map:thumb
+ 			        	<map:thumb 
 			        		projection="${geoService.mapProjection}"
 			        		tmsUrl="${geoService.mapTmsServer}" 
 			        		tmsLayers="${geoService.mapTmsServerLayers}" 
@@ -202,7 +203,7 @@
 			        		cssStyle="height: 200px; width: 100%;"
 			        		onClick="${url}"
 			        		initOpenLayers="false"
-                            title="Klicken Sie für eine größere Ansicht auf die Karte."
+			        		title="Klicken Sie für eine größere Ansicht auf die Karte."
                             wmsUrl="${geoService.wmsUrl}"
                             wmsTitle="${geoService.wmsTitle}"
                             wmsLayers="${geoService.wmsLayers}"
@@ -210,12 +211,12 @@
                             wmsTransparent="${geoService.wmsTransparent}"
                             wmsMinScale="${geoService.wmsMinScale}"
                             wmsSingleTile="${geoService.wmsSingleTile}"
-			        		/>
+ 			        		/>  
 					</div>				
 				</td>
 				<td width="50%" style="vertical-align:top;padding-left:10px;">
 					<c:if test="${not empty vorgang.fotoNormal and vorgang.fotoFreigabeStatus!='geloescht'}">
-						<div class="fieldset" style="min-height:220px;">
+						<div class="fieldset" style="height:220px;">
 							<div class="fieldsettitle">Foto</div>
 							<table>
 								<tr>
@@ -225,21 +226,21 @@
 									</td>
 									<td valign="top">
 										<c:url value="/images/freigabeStatus_${vorgang.fotoFreigabeStatus}.png" var="url"/>
-										<img alt="" src="${url}" title="Freigabestatus für Foto: ${vorgang.fotoFreigabeStatus}"/>						
+										<img alt="" src="${url}"  title="Freigabestatus für Foto: ${vorgang.fotoFreigabeStatus}"/>						
 									</td>
 								</tr>
 							</table>
 						</div>
 					</c:if>						
-				</td>				
+				</td>
 			</tr>
-		</table>		
+		</table>
 		<script type="text/javascript">
 			initOpenLayers();
 		</script>
-	
+			
 	</div>
-	
+		
 	<!-- HELP -->
 	<div id="root_style_help">
 		<p>

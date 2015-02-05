@@ -94,7 +94,7 @@ Ihr Klarschiff-Team]]></value></property>
 	</bean>
 
 	<bean class="org.springframework.mail.SimpleMailMessage" id="vorgangWeiterleitenMailTemplate"
-	p:from="${mail.from}" p:subject="Klarschiff: weitergeleiteter Vorgang #%id%">
+	p:from="${mail.from}" p:subject="Klarschiff: weitergeleiteter Vorgang">
 		<property name="text"><value><![CDATA[Sehr geehrte Damen und Herren,
 
 der folgende Vorgang wurde durch die/den Klarschiff-Nutzer/-in %absender% an Sie weitergeleitet:

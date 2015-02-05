@@ -18,6 +18,7 @@ public class VorgangEmailCommand implements Serializable {
 	String toEmail;
 	String text;
 	
+	boolean sendAutor = true;
 	boolean sendKarte = true;
 	boolean sendFoto = true;
 	boolean sendKommentare = true;
@@ -76,5 +77,11 @@ public class VorgangEmailCommand implements Serializable {
 	}
 	public void setSendMissbrauchsmeldungen(boolean sendMissbrauchsmeldungen) {
 		this.sendMissbrauchsmeldungen = sendMissbrauchsmeldungen;
+	}
+	public boolean getSendAutor() {
+		return sendAutor;
+	}
+	public void setSendAutor(boolean sendAutor) {
+		this.sendAutor = sendAutor;
 	}
 }
