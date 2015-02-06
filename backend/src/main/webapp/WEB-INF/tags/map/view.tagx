@@ -148,9 +148,12 @@
                     "${wmsUrl}", {
                         layers: "${wmsLayers}",
                         format: "${wmsFormat}",
-                        transparent: "${wmsTransparent}",
-                        minScale: "${wmsMinScale}",
-                        singleTile: "${wmsSingleTile}"
+                        transparent: "${wmsTransparent}"
+                    }, {
+                        displayInLayerSwitcher: true,
+                        isBaseLayer: false,
+                        minScale: 1100,
+                        singleTile: Boolean("${wmsSingleTile}")
                     } );
                 map.addLayer(poiLayer);
         
