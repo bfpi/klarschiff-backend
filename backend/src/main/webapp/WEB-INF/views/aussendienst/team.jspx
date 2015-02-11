@@ -45,7 +45,7 @@
 	
 	<!-- CONTENT -->
 	<div id="root_style_content">
-    <form:form method="POST" modelAttribute="cmdaussendienst">
+    <form:form method="POST" action="/aussendienst/${team}" modelAttribute="cmdaussendienst">
 			<div>
         <form:label path="datum">Datum</form:label>
         <form:input path="datum" id="datum" cssClass="inputtext" />

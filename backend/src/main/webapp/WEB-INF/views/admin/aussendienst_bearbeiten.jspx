@@ -49,7 +49,7 @@
           <tr>
             <td>
               <ul id="aktuellerBenutzer">
-                <c:forEach items="${benutzer.aussendienstZustaendigkeiten}" var="aussendienst">
+                <c:forEach items="${benutzer.aussendienstKoordinatorZustaendigkeiten}" var="aussendienst">
                   <li>
                     <input type="hidden" name="zugewiesen[]" value="${aussendienst}" />
                     <span>${aussendienst}</span>
@@ -74,6 +74,7 @@
           </tr>
         </table>
         <input type="submit" value="speichern"/>
+        <input type="button" value="abbrechen" onclick="location.href='/admin/aussendienst'"/>
       </form:form>
     </div>
   </div>

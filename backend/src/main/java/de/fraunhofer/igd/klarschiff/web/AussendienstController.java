@@ -6,8 +6,11 @@ import de.fraunhofer.igd.klarschiff.service.geo.GeoService;
 import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
 import de.fraunhofer.igd.klarschiff.vo.Auftrag;
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
@@ -69,11 +72,11 @@ public class AussendienstController {
           @PathVariable("team") String team, ModelMap model, HttpServletRequest request) {
 
     if (cmd.getDatum() == null) {
-      Date d = new Date();
-      d.setHours(0);
-      d.setMinutes(0);
-      d.setSeconds(0);
-      long t = d.getTime();
+      Calendar cal = Calendar.getInstance();
+      cal.set(Calendar.HOUR_OF_DAY, 0);
+      cal.set(Calendar.MINUTE, 0);
+      cal.set(Calendar.SECOND, 0);
+      long t = cal.getTime().getTime();
       t -= t % 1000; // Millisekunden auf 0 setzen
       cmd.setDatum(new Date(t + (1000 * 60 * 60 * 24)));
     }
@@ -167,11 +170,12 @@ public class AussendienstController {
           ModelMap model, HttpServletRequest request) {
 
     Auftrag auftrag = auftragDao.find(auftrag_id);
+    String datum = new SimpleDateFormat("dd.MM.yyyy").format(auftrag.getDatum());
     if (auftrag.getTeam().equals(team)) {
       auftrag.getVorgang().setAuftrag(null);
       vorgangDao.remove(auftrag);
     }
-    return team(cmd, team, model, request);
+    return "redirect:/aussendienst/" + team +"?datum="+ datum;
   }
 
 }
