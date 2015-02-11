@@ -101,6 +101,7 @@ public class VorgangController {
 		Vorgang vorgang = vorgangDao.findVorgang(id);
 		model.put("vorgang", vorgang);
 		model.put("geoService", geoService);
+		model.put("mapExternName", geoService.getMapExternName());
 		model.put("mapExternUrl", geoService.getMapExternUrl(vorgang));
 		return "vorgang/karte";
 	}
@@ -131,6 +132,7 @@ public class VorgangController {
 		
 		model.put("vorgang", vorgang);
 		model.put("geoService", geoService);
+		model.put("mapExternName", geoService.getMapExternName());
 		model.put("mapExternUrl", geoService.getMapExternUrl(vorgang));
 		return "vorgang/karte";
 	}

@@ -77,6 +77,7 @@ public class GeoService {
 	String mapTmsServer;
 	String mapTmsServerLayers;
 	String mapExternProjection;
+	String mapExternName;
 	String mapExternUrl;
 	String mapExternExternUrl;
     
@@ -179,17 +180,24 @@ public class GeoService {
     
     
     /**
-     * Erstellung der URL zur Darstellung des Ortes eines Vorganges in einem externen System (z.B. GeoPort
-     * für die Darstellung im Intranet der Stadt). 
-     * Die URL kann über die Einstellungen konfiguriert werden und
-     * kann die folgenden Platzhalter beinhalten: <code>%x%</code>, <code>%y%</code> und <code>%id%</code>,    
-     * @param vorgang Vorgang für den die URL erzeugt werden soll
-     * @return Url für die externe Anzeige
+     * Erstellung der URL zur Darstellung des Ortes eines Vorganges in einem externen Web-Mapping-System
+     * Die URL kann über die Einstellungen konfiguriert werden
+     * und kann die folgenden Platzhalter beinhalten:
+     * <code>%xmin%</code>, <code>%ymin%</code>, <code>%xmax%</code>, <code>%ymax%</code>, <code>%x%</code>, <code>%y%</code>, <code>%id%</code>
+     * @param vorgang Vorgang, für den die URL erzeugt werden soll
+     * @return URL für die externe Anzeige
      * @see #mapExternUrl
      */
     public String getMapExternUrl(Vorgang vorgang) {
     	Point point = transformMapProjectionToMapExternProjection(vorgang.getOvi());
-    	return mapExternUrl.replaceAll("%x%", point.getX()+"").replaceAll("%y%", point.getY()+"").replaceAll("%id%", vorgang.getId()+"");
+        String x = String.valueOf((int) point.getX());
+        String y = String.valueOf((int) point.getY());
+        String xmin = String.valueOf((int) (point.getX() - 200));
+        String ymin = String.valueOf((int) (point.getY() - 200));
+        String xmax = String.valueOf((int) (point.getX() + 200));
+        String ymax = String.valueOf((int) (point.getY() + 200));
+        String id = String.valueOf(vorgang.getId());
+    	return mapExternUrl.replaceAll("%xmin%", xmin).replaceAll("%ymin%", ymin).replaceAll("%xmax%", xmax).replaceAll("%ymax%", ymax).replaceAll("%x%", x).replaceAll("%y%", y).replaceAll("%id%", id);
 	}
 
     
@@ -393,6 +401,12 @@ public class GeoService {
 	}
 	public void setMapExternProjection(String mapExternProjection) {
 		this.mapExternProjection = mapExternProjection;
+	}
+	public String getMapExternName() {
+		return mapExternName;
+	}
+	public void setMapExternName(String mapExternName) {
+		this.mapExternName = mapExternName;
 	}
 	public String getMapExternUrl() {
 		return mapExternUrl;

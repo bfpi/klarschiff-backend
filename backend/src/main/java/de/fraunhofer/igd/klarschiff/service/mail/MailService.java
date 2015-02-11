@@ -310,8 +310,8 @@ public class MailService {
 
 			if (sendKarte) {
 				str.append("\nKarte\n*****\n");
-				str.append("Aufruf in Klarschiff: "+geoService.getMapExternExternUrl(vorgang)+"\n\n");
-				str.append("Aufruf in Geoport.HRO: "+geoService.getMapExternUrl(vorgang)+"\n");
+				str.append("Aufruf in Klarschiff: " + geoService.getMapExternExternUrl(vorgang) + "\n\n");
+				str.append("Aufruf in " + geoService.getMapExternName() + ": " + geoService.getMapExternUrl(vorgang) + "\n");
 			}
 			
 			if (sendKommentare) {

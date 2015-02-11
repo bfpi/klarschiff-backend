@@ -25,6 +25,7 @@
 		p:mapTmsServer="${geo.map.tms.server}"
 		p:mapTmsServerLayers="${geo.map.tms.server.layers}"
 		p:mapExternProjection="${geo.map.extern.projection}"
+		p:mapExternName="${geo.map.extern.name}"
 		p:mapExternUrl="${geo.map.extern.url}"
 		p:mapExternExternUrl="${geo.map.extern.extern.url}"
 		p:wmsUrl="${geo.wms.url}"

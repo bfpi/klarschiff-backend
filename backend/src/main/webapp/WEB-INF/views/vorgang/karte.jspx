@@ -27,7 +27,8 @@
 	
 	<!-- CONTENT -->
 	<div id="root_style_content">
-		<vorgang:vorgangPrintEmail vorgang="${vorgang}"/>		
+		<vorgang:mapExternOeffnen vorgang="${vorgang}"/>
+		<vorgang:vorgangPrintEmail vorgang="${vorgang}"/>
 		<form method="POST">
 			<div class="fieldset" style="min-height:200px;">
 				<div class="fieldsettitle">Karte</div>
@@ -57,8 +58,6 @@
 			</div>
 			<input type="submit" value="Speichern"/>
 		</form>
-        <br/>
-        <div style="margin-top:10px;">Position in <a target="_blank" href="${mapExternUrl}">Geoport.HRO</a> anzeigen</div>
 	</div>
 	
 	<!-- HELP -->

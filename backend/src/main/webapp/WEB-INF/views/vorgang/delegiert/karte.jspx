@@ -44,7 +44,6 @@
         		ovi="${vorgang.oviWkt}"
         		oviMargin="${geoService.mapOviMargin}"
         		cssStyle="height: 500px; width: 100%;"
-        		mapExternUrl="${mapExternUrl}"
                 vorgangTyp="${vorgang.typ}"
 			    vorgangStatus="${vorgang.status}"
                 wmsUrl="${geoService.wmsUrl}"
