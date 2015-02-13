@@ -3,8 +3,6 @@ package de.fraunhofer.igd.klarschiff.web;
 import java.io.Serializable;
 import java.util.Date;
 
-import org.apache.commons.lang.StringUtils;
-
 import de.fraunhofer.igd.klarschiff.vo.EnumPrioritaet;
 import de.fraunhofer.igd.klarschiff.vo.EnumVorgangStatus;
 import de.fraunhofer.igd.klarschiff.vo.EnumVorgangTyp;
@@ -26,7 +24,7 @@ public class VorgangSuchenCommand implements Serializable {
 
 	/* --------------- Attribute ----------------------------*/
 	
-	public enum Suchtyp { einfach, erweitert }; 
+	public enum Suchtyp { einfach, erweitert, aussendienst }; 
 	public enum EinfacheSuche { offene, offeneIdeen, abgeschlossene };
 	
 	Integer page;
@@ -55,6 +53,10 @@ public class VorgangSuchenCommand implements Serializable {
 	String erweitertDelegiertAn;
 	Integer erweitertStadtteilgrenze;
 	String erweitertNummer;
+	boolean alleVorgaengeAuswaehlen;
+	Long[] vorgangAuswaehlen;
+	String auftragTeam;
+	Date auftragDatum;
 	
 	//NUR ADMIN dürfen andere Zuständigkeiten sehen
 	
@@ -252,5 +254,37 @@ public class VorgangSuchenCommand implements Serializable {
 
 	public void setErweitertStadtteilgrenze(Integer erweitertStadtteilgrenze) {
 		this.erweitertStadtteilgrenze = erweitertStadtteilgrenze;
+	}
+
+	public boolean isAlleVorgaengeAuswaehlen() {
+		return alleVorgaengeAuswaehlen;
+	}
+
+	public void setAlleVorgaengeAuswaehlen(boolean alleVorgaengeAuswaehlen) {
+		this.alleVorgaengeAuswaehlen = alleVorgaengeAuswaehlen;
+	}
+
+	public Long[] getVorgangAuswaehlen() {
+		return vorgangAuswaehlen;
+	}
+
+	public void setVorgangAuswaehlen(Long[] vorgangAuswaehlen) {
+		this.vorgangAuswaehlen = vorgangAuswaehlen;
+	}
+
+	public String getAuftragTeam() {
+		return auftragTeam;
+	}
+
+	public void setAuftragTeam(String auftragTeam) {
+		this.auftragTeam = auftragTeam;
+	}
+
+	public Date getAuftragDatum() {
+		return auftragDatum;
+	}
+
+	public void setAuftragDatum(Date auftragDatum) {
+		this.auftragDatum = auftragDatum;
 	}
 }

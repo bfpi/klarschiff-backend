@@ -15,6 +15,19 @@
 	version="2.0"
 	>
 	<jsp:directive.page contentType="text/html;charset=UTF-8"/>
+  
+  <!-- Datepicker - nur laden, wenn User Koordinator ist (für Auswahl der Außendiensteinheit) -->
+  <sec:authorize access="hasRole('ROLE_KOORDINATOR')">
+    <c:url value="/script/jquery-ui/jquery.ui.core.js" var="url"/>
+    <script src="${url}" type="text/javascript"><!-- //jquery.ui.datepicker --></script>
+    <c:url value="/script/jquery-ui/jquery.ui.datepicker.js" var="url"/>
+    <script src="${url}" type="text/javascript"><!-- //jquery.ui.datepicker --></script>
+    <c:url value="/script/jquery-ui/jquery.ui.datepicker-de.js" var="url"/>
+    <script src="${url}" type="text/javascript"><!-- //jquery.ui.datepicker-de --></script>
+
+    <c:url value="/script/jquery-ui/css/jquery.ui.all.css" var="url"/>
+    <link rel="stylesheet" type="text/css" href="${url}"> <!-- styles.css --> </link>
+  </sec:authorize>
 
 	<c:set value="${cmd.vorgang}" var="vorgang"/>
 
@@ -560,6 +573,44 @@
                     </c:otherwise>
                 </c:choose>
 
+				<!-- Außendiensteinheiten -->
+        <sec:authorize access="hasRole('ROLE_KOORDINATOR')">
+          <div class="fieldset" id="aussendienstpanel">
+            <div class="fieldsettitle closepanel" id="aussendiensttab"><div style="width:100%; height:15px;">Außendiensteinheit</div></div>
+            <div id="aussendienstcontent">
+              <c:choose>
+                <c:when test="${cmd.vorgang.zustaendigkeitStatus == 'akzeptiert' and cmd.vorgang.status != 'gemeldet' and cmd.vorgang.status != 'geloescht'}">
+                  <form:form method="POST" modelAttribute="cmd.vorgang.auftrag" >
+                    <div>
+                      <form:label path="team" cssErrorClass="error">Außendienst-Team</form:label>
+                      <form:select path="team" id="team">
+                        <form:option value="" label="Außendienst wählen" cssClass="info" />
+                        <form:options items="${koordinatorAussendienstTeams}" />
+                      </form:select>
+                    </div>
+                    <div>
+                      <form:label path="datum">Datum</form:label>
+                      <form:input path="datum" id="aussendienst_datum" cssClass="inputtext" />
+                    </div>
+                      <script type="text/javascript">
+                        $(function() {
+                            $('#aussendienst_datum').datepicker();
+                        });
+                    </script>
+
+                    <input type="submit" value="Auftrag zuweisen" name="action" />
+                  </form:form>
+                </c:when>
+                <c:otherwise>
+                  <c:url value="/images/" var="urlStaticIcon"/>
+                  Das Zuweisen einer Außendiensteinheit ist nur dann möglich, wenn der Vorgang <span class="statistic_accepted" title="akzeptiert">✔</span> ist und er gleichzeitig nicht <img alt="gemeldet" src="${urlStaticIcon}status_gemeldet_15.png" height="15" width="15" title="gemeldet" class="statistic_icon"/> oder <img alt="geloescht" src="${urlStaticIcon}status_geloescht_15.png" height="15" width="15" title="gelöscht" class="statistic_icon"/> ist.
+                </c:otherwise>
+              </c:choose>
+            </div>
+          </div>
+          <util:ddpanel name="aussendienst"/>
+        </sec:authorize>
+        
 				<!-- Priorität -->
 				<div class="fieldset" id="prioritaetpanel">
 					<div class="fieldsettitle closepanel" id="prioritaettab"><div style="width:100%; height:15px;">Priorität</div></div>

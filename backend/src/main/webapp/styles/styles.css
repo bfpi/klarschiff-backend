@@ -1709,3 +1709,30 @@ div.resultElement a:hover {
 .cboxIE #cboxMiddleRight {
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#00FFFFFF,endColorstr=#00FFFFFF);
 }
+
+table#aussendienst_zustaendigkeiten ul {
+  padding: 0;
+}
+
+table#aussendienst_zustaendigkeiten ul li {
+  list-style: outside none none;
+}
+
+table#aussendienst_zustaendigkeiten ul li a img {
+  height: 12px;
+  margin: 0 4px;
+}
+
+table#aussendienst_zustaendigkeiten ul#aussendienstTeams li a,
+table#aussendienst_zustaendigkeiten ul#aktuellerBenutzer li a {
+  float: right;
+}
+
+table.sortable tbody tr.sortable-highlight {
+  background-color: #ffe789;
+}
+
+table.sortable tbody tr td span.sorting-arrows {
+  cursor: move;
+  font-size: 15px;
+}

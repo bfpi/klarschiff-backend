@@ -18,15 +18,16 @@
 	
 
 	<!-- Datepicker-->
-	<c:url value="/script/calendar/jquery.ui.core.js" var="url"/>
+	<c:url value="/script/jquery-ui/jquery.ui.core.js" var="url"/>
 	<script src="${url}" type="text/javascript"><!-- //jquery.ui.datepicker --></script>
-	<c:url value="/script/calendar/jquery.ui.datepicker.js" var="url"/>
+	<c:url value="/script/jquery-ui/jquery.ui.datepicker.js" var="url"/>
 	<script src="${url}" type="text/javascript"><!-- //jquery.ui.datepicker --></script>
- 	<c:url value="/script/calendar/jquery.ui.datepicker-de.js" var="url"/>
+ 	<c:url value="/script/jquery-ui/jquery.ui.datepicker-de.js" var="url"/>
 	<script src="${url}" type="text/javascript"><!-- //jquery.ui.datepicker-de --></script>
+ 	<c:url value="/script/resulttable.js" var="url"/>
+ 	<script src="${url}" type="text/javascript"><!-- //resulttable --></script>
  
- 
-	<c:url value="/script/calendar/css/jquery.ui.all.css" var="url"/>
+	<c:url value="/script/jquery-ui/css/jquery.ui.all.css" var="url"/>
 	<link rel="stylesheet" type="text/css" href="${url}"> <!-- styles.css --> </link>
  	
 	<!-- CONTENTTITLE -->
@@ -49,6 +50,13 @@
 					<spring:param name="suchtyp" value="erweitert" />
 				</spring:url>
 				zur <a href="${url}">erweiterten Suche</a> wechseln
+        <c:if test="${aussendienst_optionen_berechtigungen}">
+          <br />
+          <spring:url value="" var="url">
+            <spring:param name="suchtyp" value="aussendienst" />
+          </spring:url>
+          zur <a href="${url}">Auswahl und Zuordnung für Außendienst</a> wechseln
+        </c:if>
 			</div>
 
 			<spring:url value="" var="url">
@@ -94,14 +102,27 @@
 		</c:if>
 
 
-		<!-- erweiterte Suche -->
-		<c:if test="${cmdvorgangsuchen.suchtyp == 'erweitert'}">
+		<!-- erweiterte oder Außendienstsuche -->
+		<c:if test="${cmdvorgangsuchen.suchtyp == 'erweitert' || cmdvorgangsuchen.suchtyp == 'aussendienst'}">
 
 			<div style="text-align: right;">
 				<spring:url value="" var="url">
 					<spring:param name="suchtyp" value="einfach" />
 				</spring:url>
 				zur <a href="${url}">einfachen Suche</a> wechseln
+        <br />
+        <c:if test="${cmdvorgangsuchen.suchtyp == 'erweitert' and aussendienst_optionen_berechtigungen}">
+					<spring:url value="" var="url">
+						<spring:param name="suchtyp" value="aussendienst" />
+					</spring:url>
+					zur <a href="${url}">Auswahl und Zuordnung für Außendienst</a> wechseln
+        </c:if>
+        <c:if test="${cmdvorgangsuchen.suchtyp == 'aussendienst'}">
+					<spring:url value="" var="url">
+						<spring:param name="suchtyp" value="erweitert" />
+					</spring:url>
+					zur <a href="${url}">erweiterten Suche</a> wechseln
+        </c:if>
 			</div>
 
 			<div class="fieldset" style="margin-top:10px;">
@@ -142,7 +163,13 @@
 									<form:label path="erweitertVorgangStatus">Status</form:label>	
 									<div style="padding-left: 85px;">
 									<table>
-										<c:forEach items="${allVorgangStatus}" var="vorgangStatus">
+                    <c:if test="${cmdvorgangsuchen.suchtyp == 'aussendienst'}">
+                      <c:set value="${allVorgangStatusAussendienst}" var="vorgangStatusListe"/>
+                    </c:if>
+                    <c:if test="${cmdvorgangsuchen.suchtyp != 'aussendienst'}">
+                      <c:set value="${allVorgangStatus}" var="vorgangStatusListe"/>
+                    </c:if>
+										<c:forEach items="${vorgangStatusListe}" var="vorgangStatus">
 											<tr>
 												<td><form:checkbox path="erweitertVorgangStatus" value="${vorgangStatus}" onchange="updateStatus(this)" id="erweitertVorgangStatus_${vorgangStatus}"/></td>
 												<td style="padding-top:4px;"><c:url value="/images/status_${vorgangStatus}_15.png" var="url"/><img alt="${vorgangStatus}" src="${url}"/></td>
@@ -360,161 +387,167 @@
 			
 				
 		</c:if>
-
-		<c:choose>
-			<c:when test="${not empty vorgaenge}">
-		        <table class="resulttable">
-		            <thead>
-		                <tr>
-		                	<util:sortedtableheadercolumn name="#" id="0" currentOrderId="${cmdvorgangsuchen.order}" currentOrderDirection="${cmdvorgangsuchen.orderDirection}"/>
-		                	<util:sortedtableheadercolumn name="Typ" id="1" currentOrderId="${cmdvorgangsuchen.order}" currentOrderDirection="${cmdvorgangsuchen.orderDirection}"/>
-		                	<util:sortedtableheadercolumn name="Erstellung" id="2" currentOrderId="${cmdvorgangsuchen.order}" currentOrderDirection="${cmdvorgangsuchen.orderDirection}"/>
-		                	<util:sortedtableheadercolumn name="Haupt- und Unterkategorie" id="3" colspan="2" currentOrderId="${cmdvorgangsuchen.order}" currentOrderDirection="${cmdvorgangsuchen.orderDirection}"/>
-		                	<util:sortedtableheadercolumn name="Status" id="4" currentOrderId="${cmdvorgangsuchen.order}" currentOrderDirection="${cmdvorgangsuchen.orderDirection}"/>
+    
+    <form:form method="GET" modelAttribute="cmdvorgangsuchen">
+        <c:choose>
+            <c:when test="${not empty vorgaenge}">
+                <table class="resulttable">
+                    <thead>
+                        <tr>
+                            <util:sortedtableheadercolumn name="#" id="0" currentOrderId="${cmdvorgangsuchen.order}" currentOrderDirection="${cmdvorgangsuchen.orderDirection}"/>
+                            <c:if test="${cmdvorgangsuchen.suchtyp == 'aussendienst'}">
+                                <th>
+                                    <form:checkbox path="alleVorgaengeAuswaehlen" id="alleVorgaengeAuswaehlen" />
+                                </th>
+                            </c:if>
+                            <util:sortedtableheadercolumn name="Typ" id="1" currentOrderId="${cmdvorgangsuchen.order}" currentOrderDirection="${cmdvorgangsuchen.orderDirection}"/>
+                            <util:sortedtableheadercolumn name="Erstellung" id="2" currentOrderId="${cmdvorgangsuchen.order}" currentOrderDirection="${cmdvorgangsuchen.orderDirection}"/>
+                            <util:sortedtableheadercolumn name="Haupt- und Unterkategorie" id="3" colspan="2" currentOrderId="${cmdvorgangsuchen.order}" currentOrderDirection="${cmdvorgangsuchen.orderDirection}"/>
+                            <util:sortedtableheadercolumn name="Status" id="4" currentOrderId="${cmdvorgangsuchen.order}" currentOrderDirection="${cmdvorgangsuchen.orderDirection}"/>
                             <util:sortedtableheadercolumn name="Adresse" id="5" currentOrderId="${cmdvorgangsuchen.order}" currentOrderDirection="${cmdvorgangsuchen.orderDirection}"/>
-		                	<util:sortedtableheadercolumn name="Unterstützer" id="6" currentOrderId="${cmdvorgangsuchen.order}" currentOrderDirection="${cmdvorgangsuchen.orderDirection}"/>
-		                	<util:sortedtableheadercolumn name="Zuständigkeit" id="7" currentOrderId="${cmdvorgangsuchen.order}" currentOrderDirection="${cmdvorgangsuchen.orderDirection}"/>
-		                </tr>
-		            </thead>
-			        <tbody>
-				  		<c:forEach items="${vorgaenge}" var="_vorgang" varStatus="rowCounter">
-				  			<c:set value="${_vorgang[0]}" var="vorgang"/>
-				  			<c:set value="${_vorgang[2]}" var="unterstuetzer"/>
-				  			<c:set value="${_vorgang[3]}" var="missbrauchsmeldung"/>
-		 		  			<c:url value="/vorgang/${vorgang.id}/uebersicht" var="url"/>
+                            <util:sortedtableheadercolumn name="Unterstützer" id="6" currentOrderId="${cmdvorgangsuchen.order}" currentOrderDirection="${cmdvorgangsuchen.orderDirection}"/>
+                            <util:sortedtableheadercolumn name="Zuständigkeit" id="7" currentOrderId="${cmdvorgangsuchen.order}" currentOrderDirection="${cmdvorgangsuchen.orderDirection}"/>
+                            <c:if test="${cmdvorgangsuchen.suchtyp == 'aussendienst'}">
+                                <th>
+                                    Auftrag-Team
+                                </th>
+                                <th>
+                                    Auftrag-Datum
+                                </th>
+                            </c:if>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <c:forEach items="${vorgaenge}" var="_vorgang" varStatus="rowCounter">
+                            <c:set value="${_vorgang[0]}" var="vorgang"/>
+                            <c:set value="${_vorgang[2]}" var="unterstuetzer"/>
+                            <c:set value="${_vorgang[3]}" var="missbrauchsmeldung"/>
+                            <c:url value="/vorgang/${vorgang.id}/uebersicht" var="url"/>
                             <fmt:formatDate value="${vorgang.datum}" pattern="dd.MM.yyyy" var="erstellung_datum"/>
                             <fmt:formatDate value="${vorgang.datum}" pattern="dd.MM.yyyy HH:mm:ss" var="erstellung_datum_uhrzeit"/>
                             <fmt:formatDate value="${vorgang.datum}" pattern="HH:mm:ss" var="erstellung_uhrzeit"/>
                             <jsp:useBean id="heute" class="java.util.Date" />
                             <fmt:formatDate value="${heute}" pattern="dd.MM.yyyy" var="heute_datum"/>
-				        	<tr class="row ${(missbrauchsmeldung>0)? 'missbrauchsmeldung' : ''} ${(rowCounter.count%2==0)? 'odd' : 'even'}" onClick="location.href='${url}'" style="cursor:pointer;">
-				        		<td style="text-align: center;">
-									<span  title="Vorgangsnummer: ${vorgang.id}">${vorgang.id}</span>
-								</td>
-				        		<td style="text-align: center;">
-				        			<c:url value="/images/${vorgang.typ}_15.png" var="url"/>
-									<img alt="${vorgang.typ.text}" src="${url}" height="15" width="15"  title="Typ: ${vorgang.typ.text}"/>
-								</td>
-                                <c:choose>
-                                    <c:when test="${erstellung_datum eq heute_datum}">
-                                        <td style="text-align: center;" title="${erstellung_datum_uhrzeit}">${erstellung_uhrzeit}</td>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <td style="text-align: center;" title="${erstellung_datum_uhrzeit}">${erstellung_datum}</td>
-                                    </c:otherwise>
-                                </c:choose>
-				        		<td>
-									${vorgang.kategorie.parent.name}
-								</td>
-				        		<td>
-									${vorgang.kategorie.name}
-								</td>
-				        		<td style="text-align: center;">
-				        			<c:url value="/images/${vorgang.typ}_${vorgang.status}_15.png" var="url"/>
-									<img alt="${vorgang.status}" src="${url}"  title="Status: ${vorgang.status.text}"/>
-									<c:if test="${vorgang.archiviert}">
-					        			<c:url value="/images/archiviert_15.png" var="url"/>
-										<img alt="archiviert" src="${url}" style="padding-left:5px;" title="archiviert"/>
-									</c:if>
-								</td>
+                            <tr class="row ${(missbrauchsmeldung>0)? 'missbrauchsmeldung' : ''} ${(rowCounter.count%2==0)? 'odd' : 'even'}" data-tr-click-target="${url}" style="cursor:pointer;">
                                 <td style="text-align: center;">
-									${vorgang.adresse}
-								</td>
-				        		<td style="text-align: center;">
-									${unterstuetzer}
-								</td>
-								<td>
-									<vorgang:zustaendigkeit vorgang="${vorgang}" statusAlignRight="true"/>
-								</td>
-				        	</tr>
-						</c:forEach>
-			        </tbody>
-		
-			        <tfoot>
-		                <tr class="footer">
-		                    <td colspan="9">
-		                        <c:if test="${not empty maxPages}">
-		                            <util:pagination maxPages="${maxPages}" page="${cmdvorgangsuchen.page}" size="${cmdvorgangsuchen.size}"/>
-		                        </c:if>
-		                    </td>
-		                </tr>
-			        </tfoot>
-		        </table>
-				<script type="text/javascript">
-					var max = 12;
-					var min = 8;
-					var fontSize;
-					var width1;
-					var width2;
-					
-					function width(elem) {
-						if (elem.innerWidth) {
-							return elem.innerWidth();
-						} else if (elem.offsetWidth) {
-							return elem.offsetWidth();
-						} else {
-							return 0;
-						}
-					}
-				
-					function getFontSize(elem) {
-						return parseFloat(elem.css('font-size'), 10); 
-					}
-				
-					function setFontSize(elem) {
-						elem.css('font-size', fontSize);
-					}
-						
-					function resize() {
-						fontSize = getFontSize($('table.resulttable'));
-						width1 = width($('div#root_style_content'));
-						width2 = width($('table.resulttable'));
-								
-						while(width1-20 <![CDATA[>]]> width2 <![CDATA[&&]]> fontSize <![CDATA[<]]> max) {
-							fontSize = fontSize + 0.5;
-							setFontSize($('table.resulttable'));
-							width2 = width($('table.resulttable'));
-						}
-						while(width1 <![CDATA[<]]> width2 <![CDATA[&&]]> fontSize <![CDATA[>]]> min) {
-							fontSize = fontSize - 0.5;
-							setFontSize($('table.resulttable'));
-							width2 = width($('table.resulttable'));
-						}
-					}
-				
-					$(window).bind('load', resize());
-					window.onresize = resize;
-				</script>
-		        <div>
-			        Suchergebnis 
-			        <c:url value="/images/csv.png" var="img"/>
-			        <c:url value="/vorgang/suchen/vorgaenge.xls" var="url"/>
-			        <util:button cssStyle="margin-right:10px;" url="${url}" img="${img}">als Excel-Tabelle exportieren</util:button>
-
-			        <c:url value="/images/freigabeStatus_extern.png" var="img"/>
-			        <c:url value="/vorgang/suchen/karte" var="url"/>
-			        <util:button cssStyle="margin-right:10px;" url="${url}" img="${img}">auf Karte anzeigen</util:button>
-
-					<c:if test="${cmdvorgangsuchen.suchtyp == 'einfach' and cmdvorgangsuchen.einfacheSuche=='offene'}">
-				        <c:url value="/images/rssfeed.png" var="img"/>
-				        <c:url value="/xmlfeeds/feed/${fx:getCurrentUserLoginEncrypt()}" var="url"/>
-				        <util:button cssStyle="margin-right:10px;" url="${url}" img="${img}" openInNewWindow="true">als RSS-Feed abonnieren</util:button>
-					</c:if>
-		        </div>
-
-			</c:when>
-			<c:otherwise>
-				<div style="margin:20px 0px 0px 10px;">Die Suche ergab kein Resultat.</div>
-				
-				<c:if test="${cmdvorgangsuchen.suchtyp=='einfach' and cmdvorgangsuchen.einfacheSuche=='offene'}">
-			        <div style="margin-top:10px;">
-				        <c:url value="/images/rssfeed.png" var="img"/>
-				        <c:url value="/xmlfeeds/feed/${fx:getCurrentUserLoginEncrypt()}" var="url"/>
-				        <util:button cssStyle="margin-right:10px;" url="${url}" img="${img}" openInNewWindow="true">als RSS-Feed abonnieren</util:button>
-			        </div>
-				</c:if>
-			</c:otherwise>
-		</c:choose>
+                                    <span  title="Vorgangsnummer: ${vorgang.id}">${vorgang.id}</span>
+                                </td>
+                                <c:if test="${cmdvorgangsuchen.suchtyp == 'aussendienst'}">
+                                    <td class="skip-tr-click" style="text-align: center;">
+                                        <form:checkbox path="vorgangAuswaehlen" value="${vorgang.id}" id="vorgang_${vorgang.id}" />
+                                    </td>
+                                </c:if>
+                                <td style="text-align: center;">
+                                    <c:url value="/images/${vorgang.typ}_15.png" var="url"/>
+                                    <img alt="${vorgang.typ.text}" src="${url}" height="15" width="15"  title="Typ: ${vorgang.typ.text}"/>
+                                </td>
+                                <td style="text-align: center;">
+                                    <c:choose>
+                                        <c:when test="${erstellung_datum eq heute_datum}">
+                                            <td style="text-align: center;" title="${erstellung_datum_uhrzeit}">${erstellung_uhrzeit}</td>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <td style="text-align: center;" title="${erstellung_datum_uhrzeit}">${erstellung_datum}</td>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </td>
+                                <td>
+                                    ${vorgang.kategorie.parent.name}
+                                </td>
+                                <td>
+                                    ${vorgang.kategorie.name}
+                                </td>
+                                <td style="text-align: center;">
+                                    <c:url value="/images/${vorgang.typ}_${vorgang.status}_15.png" var="url"/>
+                                    <img alt="${vorgang.status}" src="${url}"  title="Status: ${vorgang.status.text}"/>
+                                    <c:if test="${vorgang.archiviert}">
+                                        <c:url value="/images/archiviert_15.png" var="url"/>
+                                        <img alt="archiviert" src="${url}" style="padding-left:5px;" title="archiviert"/>
+                                    </c:if>
+                                </td>
+                                <td style="text-align: center;">
+                                    ${vorgang.adresse}
+                                </td>
+                                <td style="text-align: center;">
+                                    ${unterstuetzer}
+                                </td>
+                                <td>
+                                    <vorgang:zustaendigkeit vorgang="${vorgang}" statusAlignRight="true"/>
+                                </td>
+                                <c:if test="${cmdvorgangsuchen.suchtyp == 'aussendienst'}">
+                                    <td>
+                                        <c:if test="${vorgang.auftrag != null}">
+                                            ${vorgang.auftrag.team}
+                                        </c:if>
+                                    </td>
+                                    <td>
+                                        <c:if test="${vorgang.auftrag != null}">
+                                            <fmt:formatDate value="${vorgang.auftrag.datum}" pattern="dd.MM.yyyy"/>
+                                        </c:if>
+                                    </td>
+                                </c:if>
+                            </tr>
+                        </c:forEach>
+                    </tbody>
+                    <tfoot>
+                        <tr class="footer">
+                            <td colspan="9">
+                                <c:if test="${not empty maxPages}">
+                                    <util:pagination maxPages="${maxPages}" page="${cmdvorgangsuchen.page}" size="${cmdvorgangsuchen.size}"/>
+                                </c:if>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+                <div>
+                    Suchergebnis 
+                    <c:url value="/images/csv.png" var="img"/>
+                    <c:url value="/vorgang/suchen/vorgaenge.xls" var="url"/>
+                    <util:button cssStyle="margin-right:10px;" url="${url}" img="${img}">als Excel-Tabelle exportieren</util:button>
+                    <c:url value="/images/freigabeStatus_extern.png" var="img"/>
+                    <c:url value="/vorgang/suchen/karte" var="url"/>
+                    <util:button cssStyle="margin-right:10px;" url="${url}" img="${img}">auf Karte anzeigen</util:button>
+                    <c:if test="${cmdvorgangsuchen.suchtyp == 'einfach' and cmdvorgangsuchen.einfacheSuche=='offene'}">
+                        <c:url value="/images/rssfeed.png" var="img"/>
+                        <c:url value="/xmlfeeds/feed/${fx:getCurrentUserLoginEncrypt()}" var="url"/>
+                        <util:button cssStyle="margin-right:10px;" url="${url}" img="${img}" openInNewWindow="true">als RSS-Feed abonnieren</util:button>
+                    </c:if>
+                </div>
+                <c:if test="${cmdvorgangsuchen.suchtyp == 'aussendienst'}">
+                    <div class="fieldset" style="margin-top:10px;">
+                        <div class="fieldsettitle">Außendiensteinheit zuweisen</div>
+                        <div>
+                            <form:label path="auftragTeam" cssErrorClass="error">Außendienst-Team</form:label>
+                            <form:select path="auftragTeam" id="auftragTeam">
+                                <form:option value="" label="Außendienst wählen" cssClass="info" />
+                                <form:options items="${aussendienstTeams}" />
+                            </form:select>
+                        </div>
+                        <div>
+                            <form:label path="auftragDatum">Datum</form:label>
+                            <form:input path="auftragDatum" id="aussendienst_datum" cssClass="inputtext" />
+                        </div>
+                        <script type="text/javascript">
+                            $(function() {
+                                $('#aussendienst_datum').datepicker();
+                            });
+                        </script>
+                        <input type="submit" value="Aufträge zuweisen" name="action" />
+                    </div>
+                </c:if>
+            </c:when>
+            <c:otherwise>
+                <div style="margin:20px 0px 0px 10px;">Die Suche ergab kein Resultat.</div>
+                <c:if test="${cmdvorgangsuchen.suchtyp=='einfach' and cmdvorgangsuchen.einfacheSuche=='offene'}">
+                    <div style="margin-top:10px;">
+                        <c:url value="/images/rssfeed.png" var="img"/>
+                        <c:url value="/xmlfeeds/feed/${fx:getCurrentUserLoginEncrypt()}" var="url"/>
+                        <util:button cssStyle="margin-right:10px;" url="${url}" img="${img}" openInNewWindow="true">als RSS-Feed abonnieren</util:button>
+                    </div>
+                </c:if>
+            </c:otherwise>
+        </c:choose>
+    </form:form>
         
 	</div>
 

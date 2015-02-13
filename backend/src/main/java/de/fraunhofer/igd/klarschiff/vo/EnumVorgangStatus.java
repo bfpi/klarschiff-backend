@@ -42,6 +42,14 @@ public enum EnumVorgangStatus implements EnumText {
     }
     
     /**
+     * Gibt alle Status zurück, die für den Außendienst berücksichtigt werden
+     * @return geschlossen Status
+     */
+    public static EnumVorgangStatus[] aussendienstVorgangStatus() {
+    	return new EnumVorgangStatus[] {offen, inBearbeitung, wirdNichtBearbeitet, duplikat, abgeschlossen};
+    }
+    
+    /**
      * Gibt alle Status zurück, die auch für Externe (Delegiert) vorgesehen sind
      * @return delegiert Status
      */

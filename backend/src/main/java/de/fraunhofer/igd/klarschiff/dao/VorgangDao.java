@@ -151,6 +151,12 @@ public class VorgangDao {
 	}	
 	
 	@Transactional
+	public List<Vorgang> findVorgaenge(Long[] ids) {
+		if (ids == null) return null;
+    return em.createQuery("select o from Vorgang o where o.id in (:ids)", Vorgang.class).setParameter("ids", Arrays.asList(ids)).getResultList();
+	}	
+	
+	@Transactional
 	public Vorgang findVorgangByHash(String hash) {
 		if (hash == null) return null;
 		return em.createQuery("select o from Vorgang o where o.hash=:hash", Vorgang.class).setParameter("hash", hash).getSingleResult();
@@ -255,6 +261,10 @@ public class VorgangDao {
         }
         break;
       case erweitert:
+      case aussendienst:
+        if(cmd.getSuchtyp() == VorgangSuchenCommand.Suchtyp.aussendienst) {
+          conds.add("vo.zustaendigkeit_status = 'akzeptiert'");
+        }
         //FullText
         if (!StringUtils.isBlank(cmd.getErweitertFulltext())) {
           String text = StringEscapeUtils.escapeSql("%" + cmd.getErweitertFulltext() + "%");
@@ -286,7 +296,12 @@ public class VorgangDao {
         //Status
          {
           List<EnumVorgangStatus> inStatus = Arrays.asList(cmd.getErweitertVorgangStatus());
-          List<EnumVorgangStatus> notInStatus = new ArrayList<EnumVorgangStatus>(Arrays.asList(EnumVorgangStatus.values()));
+          List<EnumVorgangStatus> notInStatus;
+          if(cmd.getSuchtyp() == VorgangSuchenCommand.Suchtyp.aussendienst) {
+            notInStatus = new ArrayList<EnumVorgangStatus>(Arrays.asList(EnumVorgangStatus.aussendienstVorgangStatus()));
+          } else {
+            notInStatus = new ArrayList<EnumVorgangStatus>(Arrays.asList(EnumVorgangStatus.values()));
+          }
           notInStatus.removeAll(inStatus);
           if (!inStatus.isEmpty()) {
             conds.add("vo.status IN ('" + StringUtils.join(inStatus, "', '") + "')");
