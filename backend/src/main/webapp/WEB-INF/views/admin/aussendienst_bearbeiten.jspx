@@ -74,7 +74,8 @@
           </tr>
         </table>
         <input type="submit" value="speichern"/>
-        <input type="button" value="abbrechen" onclick="location.href='/admin/aussendienst'"/>
+        <c:url value="/admin/aussendienst" var="cancelurl"/>
+        <input type="button" value="abbrechen" onclick="location.href='${cancelurl}'"/>
       </form:form>
     </div>
   </div>

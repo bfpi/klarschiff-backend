@@ -36,7 +36,7 @@
 
 	<!-- CONTENTTITLE -->
 	<div id="root_style_content_title">
-		Außendienst
+		Au&amp;szlig;endienst
 	</div>
 	
 	<!-- TABMENU -->
@@ -45,7 +45,8 @@
 	
 	<!-- CONTENT -->
 	<div id="root_style_content">
-    <form:form method="POST" action="/aussendienst/${team}" modelAttribute="cmdaussendienst">
+    <c:url value="/aussendienst/${team}" var="formurl" />
+    <form:form method="POST" action="${formurl}" modelAttribute="cmdaussendienst">
 			<div>
         <form:label path="datum">Datum</form:label>
         <form:input path="datum" id="datum" cssClass="inputtext" />
@@ -119,7 +120,7 @@
                 <td>
                   <c:url value="/aussendienst/${team}/entfernen/${auftrag.id}" var="url"/>
                   <a href="${url}" title="Aufgabe aus Auftragslisten entfernen">
-                    Löschen
+                    L&amp;ouml;schen
                   </a>
                 </td>
 				      </tr>
@@ -159,7 +160,7 @@
        		/>
 			</c:when>
 			<c:otherwise>
-				<div style="margin:20px 0px 0px 10px;">An diesem Tag hat das Außendienst-Team keine Aufgaben.</div>
+				<div style="margin:20px 0px 0px 10px;">An diesem Tag hat das Au&amp;szlig;endienst-Team keine Aufgaben.</div>
 			</c:otherwise>
 		</c:choose>
 	</div>
@@ -216,8 +217,8 @@
         </tr>
         <tr>
           <td colspan="3"></td>
-          <td><img alt="gelöscht" src="${url}status_geloescht_15.png" height="15" width="15"  title="Status: gelöscht"/></td>
-          <td style="vertical-align:top;">gelöscht</td>
+          <td><img alt="gelÃ¶scht" src="${url}status_geloescht_15.png" height="15" width="15"  title="Status: gelÃ¶scht"/></td>
+          <td style="vertical-align:top;">gel&amp;ouml;cht</td>
         </tr>
       </table>
     </p>
