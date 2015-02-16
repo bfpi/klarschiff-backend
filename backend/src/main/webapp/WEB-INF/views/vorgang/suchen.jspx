@@ -441,16 +441,14 @@
                                     <c:url value="/images/${vorgang.typ}_15.png" var="url"/>
                                     <img alt="${vorgang.typ.text}" src="${url}" height="15" width="15"  title="Typ: ${vorgang.typ.text}"/>
                                 </td>
-                                <td style="text-align: center;">
-                                    <c:choose>
-                                        <c:when test="${erstellung_datum eq heute_datum}">
-                                            <td style="text-align: center;" title="${erstellung_datum_uhrzeit}">${erstellung_uhrzeit}</td>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <td style="text-align: center;" title="${erstellung_datum_uhrzeit}">${erstellung_datum}</td>
-                                        </c:otherwise>
-                                    </c:choose>
-                                </td>
+                                <c:choose>
+                                    <c:when test="${erstellung_datum eq heute_datum}">
+                                        <td style="text-align: center;" title="${erstellung_datum_uhrzeit}">${erstellung_uhrzeit}</td>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <td style="text-align: center;" title="${erstellung_datum_uhrzeit}">${erstellung_datum}</td>
+                                    </c:otherwise>
+                                </c:choose>
                                 <td>
                                     ${vorgang.kategorie.parent.name}
                                 </td>
