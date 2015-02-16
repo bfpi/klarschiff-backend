@@ -51,8 +51,6 @@ public class VorgangNeuController {
 	
 	@Autowired
 	SecurityService securityService;
-	//@Autowired
-	//VerlaufDao verlaufDao;
 	
 	@Autowired
 	ClassificationService classificationService;
@@ -106,7 +104,6 @@ public class VorgangNeuController {
 		cmd.getVorgang().setTyp(EnumVorgangTyp.problem);
         model.addAttribute("cmd", cmd);
         updateKategorieInModel(model, cmd);
-        //addDateTimeFormatPatterns(model);
 		return "vorgangneu/form";
 	}
 
@@ -134,8 +131,6 @@ public class VorgangNeuController {
 		vorgang.setStatus(EnumVorgangStatus.offen);
 		vorgang.setPrioritaet(EnumPrioritaet.mittel);
 		
-		//verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.erzeugt, null, null);
-
 		if (StringUtils.isNotBlank(cmd.zustaendigkeit)) {
 			vorgang.setZustaendigkeit(cmd.getZustaendigkeit());
 			vorgang.setZustaendigkeitFrontend(securityService.getZustaendigkeit(cmd.getZustaendigkeit()).getL());
@@ -160,9 +155,6 @@ public class VorgangNeuController {
 			vorgang.setZustaendigkeit(classificationService.calculateZustaendigkeitforVorgang(vorgang).getId());
             vorgang.setZustaendigkeitFrontend(securityService.getZustaendigkeit(vorgang.getZustaendigkeit()).getL());
 			vorgang.setZustaendigkeitStatus(EnumZustaendigkeitStatus.zugewiesen);
-			
-			//verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.zustaendigkeit, null, vorgang.getZustaendigkeit());
-			
 			vorgangDao.merge(vorgang);
 		}
 

@@ -40,8 +40,6 @@
 				<c:url value="/vorgang/suchen?neu=true" var="url"/>
 			</sec:authorize>
 			<button style="cursor:pointer; margin-right:10px;" onclick="location.href='${url}'">Vorgänge suchen</button>
-
-
 		</div>
 	</div>
 	

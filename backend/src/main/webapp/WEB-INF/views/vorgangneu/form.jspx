@@ -24,8 +24,7 @@
 		
 			<form:errors path="*" class="error" style="padding-top:2px" element="div"/>								
 	
-		
-			<div class="fieldset">
+            <div class="fieldset">
 				<div class="fieldsettitle">Standardangaben</div>
 
 		        <div>
@@ -129,7 +128,7 @@
 			</div>
 			
 			<div class="fieldset">
-				<div class="fieldsettitle">Weitere Angaben</div>
+				<div class="fieldsettitle">weitere Angaben</div>
 
 		        <div>
 		        	<form:label path="vorgang.betreff">Betreff<span class="naeherBeschreibungLabel"><![CDATA[&nbsp;]]></span></form:label>
@@ -145,7 +144,7 @@
 		        	<form:label path="vorgang.autorEmail">E-Mail-Adresse</form:label>
                     <c:set value="${fx:getCurrentUser()}" var="currentUser"/>
                     <c:choose>
-                        <c:when test="${not empty currentUser}">
+                        <c:when test="${not empty currentUser and empty param.speichern}">
                             <c:set value="${currentUser.email}" var="currentUserEmail"/>
                             <form:input value="${currentUserEmail}" path="vorgang.autorEmail" cssClass="inputtext" cssStyle="width:350px;"/>
                         </c:when>
@@ -261,7 +260,7 @@
 
 				function init()
 				{
-					typ = $('select#typ')[0].value;
+                    typ = $('select#typ')[0].value;
 					hauptkategorie = $('select#hauptkategorie')[0].value;
 
 					if (isBlank(typ)) {
@@ -303,7 +302,7 @@
 				init();
 				</script>
 
-			<input type="submit" value="Speichern"/>			
+			<input type="submit" value="Speichern" name="speichern"/>			
 		</form:form>
 	</div>
 	

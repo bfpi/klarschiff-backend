@@ -28,23 +28,22 @@ public class VorgangNeuCommand implements Serializable {
 	String zustaendigkeit;
 	String zustaendigkeitFrontend;
 	/**
-	 * Methode zum prüfen eines neuen Vorganges auf Vollständigkeit benötigter Attribute sowie Validität der 
-	 * E-Mail-Adresse<br/>
-	 * Prüft auf Vorhandensein von:<b> Typ, OVI-Position, Kategorie, Vorgang-Kategorie</b> und in 
-	 * Abhängigkeit von Kategorie: <b>Betreff</b> und/oder <b>Details</b> sowie auf gültigkeit der übergebenen <b>E-Mail-Adresse</b>.
-	 * <br/>
+	 * Methode zur Prüfung eines neuen Vorganges auf Vollständigkeit benötigter Attribute sowie Validität der E-Mail-Adresse<br/>
+	 * Prüft auf Vorhandensein von:<b> Typ, Hauptkategorie, Unterkategorie, Position, E-Mail-Adresse</b> und in 
+	 * Abhängigkeit der Unterkategorie: <b>Betreff</b> und/oder <b>Details</b> sowie auf Gültigkeit der übergebenen <b>E-Mail-Adresse</b>.<br/>
 	 * @param result Bindingresult mit den Fehlermeldungen
 	 * @param kategorieDao
 	 */
 	public void validate(BindingResult result, KategorieDao kategorieDao) {
 		if (StringUtils.equals("Bitte geben Sie einen Betreff an.",vorgang.getBetreff())) vorgang.setBetreff("");
 		if (StringUtils.equals("Bitte beschreiben Sie Ihre Meldung genauer.",vorgang.getDetails())) vorgang.setDetails("");
-		assertNotEmpty(this, result, Assert.EvaluateOn.ever, "vorgang.typ", "Bitte geben Sie den Typ Ihres Vorgangs an.");
-		assertNotEmpty(this, result, Assert.EvaluateOn.ever, "kategorie", "Bitte geben Sie eine Hauptkategorie an.");
-		assertNotEmpty(this, result, Assert.EvaluateOn.ever, "vorgang.kategorie", "Bitte geben Sie eine Unterkategorie an.");
-		assertNotEmpty(this, result, Assert.EvaluateOn.ever, "vorgang.oviWkt", "Bitte zeichnen Sie die Position Ihres Vorgangs in der Karte ein.");
+		assertNotEmpty(this, result, Assert.EvaluateOn.ever, "vorgang.typ", "Bitte geben Sie den Typ Ihres neuen Vorgangs an.");
+		assertNotEmpty(this, result, Assert.EvaluateOn.ever, "kategorie", "Bitte geben Sie eine Hauptkategorie für Ihren neuen Vorgang an.");
+		assertNotEmpty(this, result, Assert.EvaluateOn.ever, "vorgang.kategorie", "Bitte geben Sie eine Unterkategorie für Ihren neuen Vorgang an.");
+		assertNotEmpty(this, result, Assert.EvaluateOn.ever, "vorgang.oviWkt", "Bitte tragen Sie die Position Ihres neuen Vorgangs in der Karte ein.");
+		assertNotEmpty(this, result, Assert.EvaluateOn.ever, "vorgang.autorEmail", "Bitte geben Sie eine E-Mail-Adresse an.");
 
-		if (!StringUtils.isBlank(vorgang.getAutorEmail())) assertEmail(this, result, Assert.EvaluateOn.ever, "vorgang.autorEmail", "Die E-Mail-Adresse ist nicht gültig.");
+		if (!StringUtils.isBlank(vorgang.getAutorEmail())) assertEmail(this, result, Assert.EvaluateOn.ever, "vorgang.autorEmail", "Die angegebene E-Mail-Adresse ist nicht gültig.");
 		EnumNaehereBeschreibungNotwendig naehereBeschreibungNotwendig = kategorieDao.viewNaehereBeschreibung(kategorie, vorgang.getKategorie());
 		switch (naehereBeschreibungNotwendig) {
 		case betreff:
@@ -67,13 +66,13 @@ public class VorgangNeuCommand implements Serializable {
 	public void setVorgang(Vorgang vorgang) {
 		this.vorgang = vorgang;
 	}
+    
 	public Kategorie getKategorie() {
 		return kategorie;
 	}
 	public void setKategorie(Kategorie kategorie) {
 		this.kategorie = kategorie;
 	}
-
 
 	public MultipartFile getFoto() {
 		return foto;
@@ -82,14 +81,12 @@ public class VorgangNeuCommand implements Serializable {
 		this.foto = foto;
 	}
 
-
 	public String getFotoName() {
 		return fotoName;
 	}
 	public void setFotoName(String fotoName) {
 		this.fotoName = fotoName;
 	}
-
 
 	public String getZustaendigkeit() {
 		return zustaendigkeit;
