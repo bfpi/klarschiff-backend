@@ -55,7 +55,7 @@
           <spring:url value="" var="url">
             <spring:param name="suchtyp" value="aussendienst" />
           </spring:url>
-          zur <a href="${url}">Auswahl und Zuordnung für Außendienst</a> wechseln
+          zur <a href="${url}">Auswahl und Zuordnung für den Außendienst</a> wechseln
         </c:if>
 			</div>
 
@@ -115,7 +115,7 @@
 					<spring:url value="" var="url">
 						<spring:param name="suchtyp" value="aussendienst" />
 					</spring:url>
-					zur <a href="${url}">Auswahl und Zuordnung für Außendienst</a> wechseln
+					zur <a href="${url}">Auswahl und Zuordnung für den Außendienst</a> wechseln
         </c:if>
         <c:if test="${cmdvorgangsuchen.suchtyp == 'aussendienst'}">
 					<spring:url value="" var="url">
@@ -409,10 +409,10 @@
                             <util:sortedtableheadercolumn name="Zuständigkeit" id="7" currentOrderId="${cmdvorgangsuchen.order}" currentOrderDirection="${cmdvorgangsuchen.orderDirection}"/>
                             <c:if test="${cmdvorgangsuchen.suchtyp == 'aussendienst'}">
                                 <th>
-                                    Auftrag-Team
+                                    Team
                                 </th>
                                 <th>
-                                    Auftrag-Datum
+                                    Datum
                                 </th>
                             </c:if>
                         </tr>
@@ -473,12 +473,12 @@
                                     <vorgang:zustaendigkeit vorgang="${vorgang}" statusAlignRight="true"/>
                                 </td>
                                 <c:if test="${cmdvorgangsuchen.suchtyp == 'aussendienst'}">
-                                    <td>
+                                    <td style="text-align: center;">
                                         <c:if test="${vorgang.auftrag != null}">
                                             ${vorgang.auftrag.team}
                                         </c:if>
                                     </td>
-                                    <td>
+                                    <td style="text-align: center;">
                                         <c:if test="${vorgang.auftrag != null}">
                                             <fmt:formatDate value="${vorgang.auftrag.datum}" pattern="dd.MM.yyyy"/>
                                         </c:if>
@@ -513,11 +513,11 @@
                 </div>
                 <c:if test="${cmdvorgangsuchen.suchtyp == 'aussendienst'}">
                     <div class="fieldset" style="margin-top:10px;">
-                        <div class="fieldsettitle">Außendiensteinheit zuweisen</div>
+                        <div class="fieldsettitle">Außendiensteinheiten-Team zuweisen</div>
                         <div>
-                            <form:label path="auftragTeam" cssErrorClass="error">Außendienst-Team</form:label>
+                            <form:label path="auftragTeam" cssErrorClass="error">Team</form:label>
                             <form:select path="auftragTeam" id="auftragTeam">
-                                <form:option value="" label="Außendienst wählen" cssClass="info" />
+                                <form:option value="" label="Team wählen" cssClass="info" />
                                 <form:options items="${aussendienstTeams}" />
                             </form:select>
                         </div>

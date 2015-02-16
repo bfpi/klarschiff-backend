@@ -1,48 +1,52 @@
 <jsp:root 
-	xmlns:c="http://java.sun.com/jsp/jstl/core" 
-	xmlns:fn="http://java.sun.com/jsp/jstl/functions" 
-	xmlns:spring="http://www.springframework.org/tags" 
-	xmlns:jsp="http://java.sun.com/JSP/Page" 
-	xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu"
-	xmlns:tiles="http://tiles.apache.org/tags-tiles" 
-	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
-	version="2.0"
-	>
-	<jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    xmlns:c="http://java.sun.com/jsp/jstl/core" 
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions" 
+    xmlns:spring="http://www.springframework.org/tags" 
+    xmlns:jsp="http://java.sun.com/JSP/Page" 
+    xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu"
+    xmlns:tiles="http://tiles.apache.org/tags-tiles" 
+    xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+    version="2.0"
+>
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
 
-	<!-- CONTENTTITLE -->
-	<div id="root_style_content_title">
-		Außendienst
-	</div>
-	
-	<!-- TABMENU -->
-	<tiles:importAttribute name="tabmenu_item" ignore="true" toName="tabmenu_item"/>
-	<menu:tabmenuadmin currentId="${tabmenu_item}"/>
-	
-	<!-- CONTENT -->
-	<div id="root_style_content">
-		<div class="fieldset">
-			<div class="fieldsettitle">Außendienst</div>
-			<table class="resulttable">
-				<thead>
-					<tr>
-						<th>Login</th>
-						<th>Benutzer</th>
-						<th>Außendienst</th>
-					</tr>
-				</thead>
-				<tbody>
-          <c:forEach items="${benutzer}" var="user" varStatus="rowCounter">
-            <c:url value="/admin/aussendienst/${user.id}/bearbeiten" var="url"/>
-						<tr class="${(rowCounter.count%2==0)? 'odd' : 'even'}" onClick="location.href='${url}'" style="cursor:pointer;">
-							<td>${user.id}</td>
-							<td>${user.name}</td>	
-              <td><ul><c:forEach items="${user.aussendienstKoordinatorZustaendigkeiten}" var="aussendienst"><li><span>${aussendienst}</span></li></c:forEach></ul></td>
-						</tr>
-					</c:forEach>
-				</tbody>
-			</table>	
-		</div>
-	</div>
+    <!-- CONTENTTITLE -->
+    <div id="root_style_content_title">
+        Außendienst
+    </div>
+    
+    <!-- TABMENU -->
+    <tiles:importAttribute name="tabmenu_item" ignore="true" toName="tabmenu_item"/>
+    <menu:tabmenuadmin currentId="${tabmenu_item}"/>
+    
+    <!-- CONTENT -->
+    <div id="root_style_content">
+        <div class="fieldset">
+            <div class="fieldsettitle">Außendienst-Koordinatoren und Außendiensteinheiten-Teams</div>
+            <table class="resulttable">
+                <thead>
+                    <tr>
+                        <th>Außendienst-Koordinator (Login)</th>
+                        <th>Außendiensteinheiten-Teams</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <c:forEach items="${benutzer}" var="user" varStatus="rowCounter">
+                        <c:url value="/admin/aussendienst/${user.id}/bearbeiten" var="url"/>
+                        <tr class="${(rowCounter.count%2==0)? 'odd' : 'even'}" onClick="location.href='${url}'" style="cursor:pointer;" title="Verknüpfungen durchführen">
+                            <td>${user.name} (${user.id})</td>    
+                            <td>
+                                <ul>
+                                    <c:forEach items="${user.aussendienstKoordinatorZustaendigkeiten}" var="aussendienst">
+                                        <li><span>${aussendienst}</span></li>
+                                    </c:forEach>
+                                </ul>
+                            </td>
+                        </tr>
+                    </c:forEach>
+                </tbody>
+            </table>    
+        </div>
+    </div>
 
 </jsp:root>

@@ -60,13 +60,18 @@
               <th>Typ</th>
               <th>Erstellung</th>
               <th colspan="2">Haupt- und Unterkategorie</th>
-              <th>Status</th>
+              <th>Vorgangsstatus</th>
               <th>Auftragsstatus</th>
 		        </tr>
 		      </thead>
 			    <tbody>
 				  	<c:forEach items="${auftraege}" var="auftrag" varStatus="rowCounter">
 				  		<c:set value="${auftrag.vorgang}" var="vorgang"/>
+                        <fmt:formatDate value="${vorgang.datum}" pattern="dd.MM.yyyy" var="erstellung_datum"/>
+                        <fmt:formatDate value="${vorgang.datum}" pattern="dd.MM.yyyy HH:mm:ss" var="erstellung_datum_uhrzeit"/>
+                        <fmt:formatDate value="${vorgang.datum}" pattern="HH:mm:ss" var="erstellung_uhrzeit"/>
+                        <jsp:useBean id="heute" class="java.util.Date" />
+                        <fmt:formatDate value="${heute}" pattern="dd.MM.yyyy" var="heute_datum"/>
 				      <tr class="row ${(rowCounter.count%2==0)? 'odd' : 'even'}">
 				        <td class="id" style="text-align: center;">
 									<span class="show-tooltip" title="Vorgangsnummer: ${vorgang.id}" data-id="${vorgang.id}">${vorgang.id}</span>
@@ -75,9 +80,15 @@
 				        	<c:url value="/images/${vorgang.typ}_15.png" var="url"/>
 									<img alt="${vorgang.typ.text}" src="${url}" height="15" width="15"  title="Typ: ${vorgang.typ.text}"/>
 								</td>
-				        <td style="text-align: center;">
-				        	<fmt:formatDate value="${vorgang.datum}" pattern="dd.MM.yyyy"/>
-								</td>
+                                
+                                <c:choose>
+                                    <c:when test="${erstellung_datum eq heute_datum}">
+                                        <td style="text-align: center;" title="${erstellung_datum_uhrzeit}">${erstellung_uhrzeit}</td>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <td style="text-align: center;" title="${erstellung_datum_uhrzeit}">${erstellung_datum}</td>
+                                    </c:otherwise>
+                                </c:choose>
 				        <td>
 									${vorgang.kategorie.parent.name}
 								</td>
@@ -96,10 +107,10 @@
                       <c:forEach items="${allAuftragStatus}" var="option">
                         <c:choose>
                             <c:when test="${option eq auftrag.status}">
-                              <option value="${option}" selected="true">${option}</option>
+                              <option value="${option}" selected="true">${fn:replace(option, '_', ' ')}</option>
                             </c:when>
                             <c:otherwise>
-                              <option value="${option}">${option}</option>
+                              <option value="${option}">${fn:replace(option, '_', ' ')}</option>
                             </c:otherwise>
                         </c:choose> 
                       </c:forEach>
@@ -112,7 +123,7 @@
 		    </table>
 			</c:when>
 			<c:otherwise>
-				<div style="margin:20px 0px 0px 10px;">Ihr Team hat an diesem Tag keine Aufgaben</div>
+				<div style="margin:20px 0px 0px 10px;">Das Außendiensteinheiten-Team <span style="font-style:italic">${team}</span> hat am gewählten Tag keine Aufträge.</div>
 			</c:otherwise>
 		</c:choose>
 	</div>
@@ -132,6 +143,7 @@
           <td width="20px"></td>
           <td width="15"><div class="missbrauchsmeldungLegende" style="height:15px;"></div></td>
           <td style="vertical-align:top;"  title="Status: Missbrauch gemeldet">Missbrauch gemeldet</td>
+          <td width="20px"></td>
         </tr>
         <tr>
           <td><img alt="Idee" src="${url}idee_15.png" height="15" width="15" title="Typ: Idee"/></td>
@@ -142,11 +154,13 @@
           <td></td>
           <td><img alt="offen" src="${url}archiviert_15.png" height="15" width="15" title="archiviert"/></td>
           <td style="vertical-align:top;"  title="archiviert">archiviert</td>
+          <td></td>
         </tr>
         <tr>
           <td colspan="3"></td>
           <td><img alt="in Bearbeitung" src="${url}status_inBearbeitung_15.png" height="15" width="15" title="Status: in Bearbeitung"/></td>
           <td style="vertical-align:top;">in Bearbeitung</td>
+          <td colspan="4"></td>
         </tr>
         <tr>
           <td colspan="3"></td>
@@ -160,8 +174,8 @@
         </tr>
         <tr>
           <td colspan="3"></td>
-          <td><img alt="gelöscht" src="${url}status_geloescht_15.png" height="15" width="15"  title="Status: gelöscht"/></td>
-          <td style="vertical-align:top;">gelöscht</td>
+          <td><img alt="gelöscht" src="${url}status_geloescht_15.png" height="15" width="15"  title="Status: gelÃ¶scht"/></td>
+          <td style="vertical-align:top;">gelöcht</td>
         </tr>
       </table>
     </p>
