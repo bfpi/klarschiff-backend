@@ -3,7 +3,7 @@
 
     <display-name>backend</display-name>
     
-    <description>BÃ¼rgerbeteiligungsportal zum Melden und Bearbeiten von Problemen und Ideen, die sich auf den Ã¶ffentlichen Raum beziehen</description>
+    <description>Bürgerbeteiligungsportal zum Melden und Bearbeiten von Problemen und Ideen, die sich auf den öffentlichen Raum beziehen</description>
     
     <!-- Enable escaping of form submission contents -->
     <context-param>
