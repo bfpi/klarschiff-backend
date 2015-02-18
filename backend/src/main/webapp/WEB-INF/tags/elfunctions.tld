@@ -69,6 +69,21 @@
 	        <function-signature>java.lang.Object bean(java.lang.String)</function-signature>
 	</function>
 	<function>
+	        <name>title</name>
+	        <function-class>de.fraunhofer.igd.klarschiff.tld.CustomFunctions</function-class>
+	        <function-signature>java.lang.String title()</function-signature>
+	</function>
+	<function>
+	        <name>area</name>
+	        <function-class>de.fraunhofer.igd.klarschiff.tld.CustomFunctions</function-class>
+	        <function-signature>java.lang.String area()</function-signature>
+	</function>
+	<function>
+	        <name>demo</name>
+	        <function-class>de.fraunhofer.igd.klarschiff.tld.CustomFunctions</function-class>
+	        <function-signature>java.lang.Boolean demo()</function-signature>
+	</function>
+	<function>
 	        <name>version</name>
 	        <function-class>de.fraunhofer.igd.klarschiff.tld.CustomFunctions</function-class>
 	        <function-signature>java.lang.String version()</function-signature>

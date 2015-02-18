@@ -103,7 +103,7 @@ public class MailService {
 	public void sendLobHinweiseKritikMail(Vorgang vorgang, String absender, String empfaenger, String freitext) {
 		try {
 			MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mailSender.createMimeMessage(), true);
-			mimeMessageHelper.setSubject("Klarschiff: Lob, Hinweise oder Kritik von Bürger/-innen zu Vorgang " + vorgang.getId());
+			mimeMessageHelper.setSubject(settingsService.getContextAppTitle() + ": Lob, Hinweise oder Kritik von Bürger/-innen zu Vorgang " + vorgang.getId());
 			mimeMessageHelper.setFrom(absender);
 			mimeMessageHelper.setTo(empfaenger);
             mimeMessageHelper.setText(freitext);
@@ -122,8 +122,9 @@ public class MailService {
 		SimpleMailMessage msg = new SimpleMailMessage(vorgangBestaetigungMailTemplate);
 		msg.setSubject(msg.getSubject());
 		msg.setTo(vorgang.getAutorEmail());
-		msg.setSubject(msg.getSubject().replaceAll("%id%", vorgang.getId().toString()));
+		msg.setSubject(msg.getSubject().replaceAll("%id%", vorgang.getId().toString()).replaceAll("%title%", settingsService.getContextAppTitle()));
 		String mailText = msg.getText();
+		mailText = mailText.replaceAll("%title%", settingsService.getContextAppTitle());
 		mailText = mailText.replaceAll("%id%", vorgang.getId().toString());
 		mailText = mailText.replaceAll("%baseUrlFrontend%", getServerBaseUrlFrontend());
 		mailText = mailText.replaceAll("%hash%", vorgang.getHash());
@@ -143,8 +144,9 @@ public class MailService {
 	public void sendUnterstuetzerBestaetigungMail(Unterstuetzer unterstuetzer, String email, Long vorgang) {
 		SimpleMailMessage msg = new SimpleMailMessage(unterstuetzungBestaetigungMailTemplate);
 		msg.setTo(email);
-		msg.setSubject(msg.getSubject().replaceAll("%id%", vorgang.toString()));
+		msg.setSubject(msg.getSubject().replaceAll("%id%", vorgang.toString()).replaceAll("%title%", settingsService.getContextAppTitle()));
 		String mailText = msg.getText();
+		mailText = mailText.replaceAll("%title%", settingsService.getContextAppTitle());
 		mailText = mailText.replaceAll("%id%", vorgang.toString());
 		mailText = mailText.replaceAll("%baseUrlFrontend%", getServerBaseUrlFrontend());
 		mailText = mailText.replaceAll("%hash%", unterstuetzer.getHash());
@@ -161,8 +163,9 @@ public class MailService {
 	public void sendMissbrauchsmeldungBestaetigungMail(Missbrauchsmeldung missbrauchsmeldung, String email, Long vorgang) {
 		SimpleMailMessage msg = new SimpleMailMessage(missbrauchsmeldungBestaetigungMailTemplate);
 		msg.setTo(email);
-		msg.setSubject(msg.getSubject().replaceAll("%id%", vorgang.toString()));
+		msg.setSubject(msg.getSubject().replaceAll("%id%", vorgang.toString()).replaceAll("%title%", settingsService.getContextAppTitle()));
 		String mailText = msg.getText();
+		mailText = mailText.replaceAll("%title%", settingsService.getContextAppTitle());
 		mailText = mailText.replaceAll("%id%", vorgang.toString());
 		mailText = mailText.replaceAll("%baseUrlFrontend%", getServerBaseUrlFrontend());
 		mailText = mailText.replaceAll("%hash%", missbrauchsmeldung.getHash());
@@ -225,6 +228,7 @@ public class MailService {
 	{
 		try {
 			String mailText = vorgangWeiterleitenMailTemplate.getText();
+            mailText = mailText.replaceAll("%title%", settingsService.getContextAppTitle());
             mailText = mailText.replaceAll("%id%", vorgang.getId().toString());
 			mailText = mailText.replaceAll("%absender%", securityService.getCurrentUser().getName());
 			mailText = mailText.replaceAll("%text%", text);
@@ -310,7 +314,7 @@ public class MailService {
 
 			if (sendKarte) {
 				str.append("\nKarte\n*****\n");
-				str.append("Aufruf in Klarschiff: " + geoService.getMapExternExternUrl(vorgang) + "\n\n");
+				str.append("Aufruf in " + settingsService.getContextAppTitle() + ": " + geoService.getMapExternExternUrl(vorgang) + "\n\n");
 				str.append("Aufruf in " + geoService.getMapExternName() + ": " + geoService.getMapExternUrl(vorgang) + "\n");
 			}
 			
@@ -361,6 +365,7 @@ public class MailService {
 		
 		SimpleMailMessage msg = new SimpleMailMessage(informDispatcherMailTemplate);
 		msg.setTo(to);
+        msg.setSubject(msg.getSubject());
 		StringBuilder str = new StringBuilder();
 		for(Vorgang vorgang : newVorgaenge) {
 			str.append("Nummer        : "+vorgang.getId()+"\n");
@@ -385,6 +390,7 @@ public class MailService {
 		
 		SimpleMailMessage msg = new SimpleMailMessage(informExternMailTemplate);
 		msg.setTo(to);
+        msg.setSubject(msg.getSubject());
 		StringBuilder str = new StringBuilder();
 		for(Vorgang vorgang : newVorgaenge) {
 			str.append("Nummer        : "+vorgang.getId()+"\n");
@@ -406,10 +412,10 @@ public class MailService {
 	public void sendInformErstellerMailInBearbeitung(Vorgang vorgang) {
 		SimpleMailMessage msg = new SimpleMailMessage(informErstellerMailInBearbeitungTemplate);
 		msg.setTo(vorgang.getAutorEmail());
-		msg.setSubject(msg.getSubject().replaceAll("%id%", vorgang.getId().toString()));
+		msg.setSubject(msg.getSubject().replaceAll("%id%", vorgang.getId().toString()).replaceAll("%title%", settingsService.getContextAppTitle()));
 
 		String mailtext = msg.getText();
-		mailtext = mailtext.replaceAll("%id%", vorgang.getId().toString());
+		mailtext = mailtext.replaceAll("%id%", vorgang.getId().toString().replaceAll("%title%", settingsService.getContextAppTitle()));
 		StringBuilder str = new StringBuilder();
 		//Vorgang
 		str.append("Nummer        : "+vorgang.getId()+"\n");
@@ -440,10 +446,10 @@ public class MailService {
 	public void sendInformErstellerMailAbschluss(Vorgang vorgang) {
 		SimpleMailMessage msg = new SimpleMailMessage(informErstellerMailAbschlussTemplate);
 		msg.setTo(vorgang.getAutorEmail());
-		msg.setSubject(msg.getSubject().replaceAll("%id%", vorgang.getId().toString()));
+		msg.setSubject(msg.getSubject().replaceAll("%id%", vorgang.getId().toString()).replaceAll("%title%", settingsService.getContextAppTitle()));
 
 		String mailtext = msg.getText();
-		mailtext = mailtext.replaceAll("%id%", vorgang.getId().toString());
+		mailtext = mailtext.replaceAll("%id%", vorgang.getId().toString().replaceAll("%title%", settingsService.getContextAppTitle()));
 		StringBuilder str = new StringBuilder();
 		//Vorgang
 		str.append("Nummer        : "+vorgang.getId()+"\n");
@@ -501,7 +507,8 @@ public class MailService {
         //Gesamt-E-Mail initiieren, mit Adresse des Empfängers versehen und entsprechenden Platzhalter für Zuständigkeit ersetzen
 		SimpleMailMessage msg = new SimpleMailMessage(informRedaktionEmpfaengerMailTemplate);
 		msg.setTo(to);
-        msg.setText(msg.getText().replaceAll("%zustaendigkeit%", zustaendigkeit));
+		msg.setSubject(msg.getSubject().replaceAll("%title%", settingsService.getContextAppTitle()));
+        msg.setText(msg.getText().replaceAll("%zustaendigkeit%", zustaendigkeit).replaceAll("%title%", settingsService.getContextAppTitle()));
         
         //falls Liste der Vorgänge zu Redaktionskriterium 1 nicht leer ist...
         if (!CollectionUtils.isEmpty(vorgaengeOffenNichtAkzeptiert)) {

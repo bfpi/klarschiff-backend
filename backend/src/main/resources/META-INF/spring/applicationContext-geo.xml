@@ -38,5 +38,8 @@
 		p:oviBuffer="${geo.wfs.ovi.buffer}"
 		p:wfsCapabilitiesUrl="${geo.wfs.url}"
 		p:wfsExceptionHandling="${geo.wfs.wfs.exception.handling}"
+		p:wfsVorgaengeUrl="${geo.wfsvorgaenge.url}"
+		p:wfsVorgaengeFeatureNs="${geo.wfsvorgaenge.featurens}"
+		p:adressensucheUrl="${geo.adressensuche.url}"
 	/>
 </beans>

@@ -1,7 +1,7 @@
 /* author Stefan Audersch (Fraunhofer IGD) */
 /* @author Hani Samara (Fraunhofer IGD) */
 /* @author Frank Christiner (Fraunhofer IGD) */
-/* @author Markus Kröller (Fraunhofer IGD) */
+/* @author Markus KrÃ¶ller (Fraunhofer IGD) */
 /* @author Martin Gielow (Fraunhofer IGD) */
 
 .dev {
@@ -117,7 +117,7 @@ table.result td.label {
 table.result td.value {
 	vertical-align: top;
 }
-/* ######################### Zuständigkeit ######################### */
+/* ######################### ZustÃ¤ndigkeit ######################### */
 ul.formlist li.akzeptieren,ul.formlist li.automatisch,ul.formlist li.manuell
 	{
 	padding-top: 2px;
@@ -1288,6 +1288,18 @@ span.show-tooltip-text {
 
 /* ######################### HEADER ######################### */
 #root_style_header {
+    height:65px;
+	margin-bottom: 10px;
+	background-image: url("../images/header.png");
+	background-repeat: repeat-x;
+    color:#FFFFFF;
+	/* abgerundete Ecken */
+	-moz-border-radius: 5px; /* Mozilla */
+	-webkit-border-radius: 5px; /* Webkit */
+	-khtml-border-radius: 5px; /* KHTML */
+	border-radius: 5px; /* Opera */
+}
+#root_style_header_demo {
     height:65px;
 	margin-bottom: 10px;
     background-color:#FFCD05;

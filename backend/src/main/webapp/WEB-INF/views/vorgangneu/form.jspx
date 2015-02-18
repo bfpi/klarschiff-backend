@@ -76,6 +76,8 @@
                         wmsTransparent="${geoService.wmsTransparent}"
                         wmsMinScale="${geoService.wmsMinScale}"
                         wmsSingleTile="${geoService.wmsSingleTile}"
+                        wfsVorgaengeUrl="${geoService.wfsVorgaengeUrl}"
+                        wfsVorgaengeFeatureNs="${geoService.wfsVorgaengeFeatureNs}"
 		        		/>			
 		        </div>
                 
@@ -92,7 +94,7 @@
                                 var searchText = searchField.val();
                                 
                                 $.ajax({
-                                    url: '/pc/search/backend.php',
+                                    url: '${geoService.adressensucheUrl}',
                                     dataType: 'json',
                                     data: {
                                         searchtext : searchText

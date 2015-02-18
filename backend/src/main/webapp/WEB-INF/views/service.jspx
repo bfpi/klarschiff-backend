@@ -1,8 +1,10 @@
 <jsp:root 
-	xmlns:c="http://java.sun.com/jsp/jstl/core" 
-	xmlns:fn="http://java.sun.com/jsp/jstl/functions" 
-	xmlns:spring="http://www.springframework.org/tags" 
-	xmlns:jsp="http://java.sun.com/JSP/Page" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:fx="http://igd.fraunhofer.de/tags/elfunctions"
+    xmlns:sec="http://www.springframework.org/security/tags"
 	version="2.0"
 	>
 	<jsp:directive.page contentType="text/html;charset=UTF-8"/>
@@ -13,7 +15,39 @@
 	</div>
 	
 	<!-- CONTENT -->
-	<div id="root_style_content">
-	</div>
+    <c:choose>
+        <c:when test="${fx:demo()}">
+            <div id="root_style_content"></div>
+        </c:when>
+        <c:otherwise>
+            <div id="root_style_content">
+                <sec:authorize access="hasRole('ROLE_EXTERN')">
+                    Falls Sie Ihr Passwort für den Zugang zum Backend von ${fx:title()} ändern möchten, so rufen Sie bitte folgenden Link auf und folgen den Anweisungen auf der sich öffnenden Seite (Sie müssen sich dort zunächst mit Ihrem Benutzernamen und Ihrem bisherigen Passwort anmelden):<br/>
+                    <br/>
+                    <a href="https://geo.sv.rostock.de/pwm" target="_blank">Passwort ändern</a>
+                    <br/>
+                    <br/>
+                </sec:authorize>
+                Falls Ihnen das Benutzerhandbuch nicht weiterhilft beziehungsweise Sie Kommentare, Anregungen oder Kritik zum Backend von ${fx:title()}
+                äußern möchten, so wenden Sie sich bitte an:<br/>
+                <br/>
+                Matthias Meißer<br/>
+                Hansestadt Rostock<br/>
+                Kataster-, Vermessungs- und Liegenschaftsamt<br/>
+                Holbeinplatz 14<br/>					
+                18069 Rostock<br/>					
+                Telefon: +49 381 381-6221<br/>					
+                E-Mail: <a href="mailto:matthias.meisser@rostock.de">matthias.meisser@rostock.de</a><br/>
+                <br/>
+                Sebastian Schwarz<br/>
+                Hansestadt Rostock<br/>
+                Kataster-, Vermessungs- und Liegenschaftsamt<br/>
+                Holbeinplatz 14<br/>					
+                18069 Rostock<br/>					
+                Telefon: +49 381 381-6256<br/>					
+                E-Mail: <a href="mailto:sebastian.schwarz@rostock.de">sebastian.schwarz@rostock.de</a>
+            </div>
+        </c:otherwise>
+    </c:choose>
 	
 </jsp:root>

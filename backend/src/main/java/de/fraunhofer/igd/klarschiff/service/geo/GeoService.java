@@ -93,6 +93,11 @@ public class GeoService {
 	double oviBuffer = 10d;
 	WfsExceptionHandling wfsExceptionHandling = WfsExceptionHandling.error;
 	
+	String wfsVorgaengeUrl;
+	String wfsVorgaengeFeatureNs;
+	
+	String adressensucheUrl;
+	
 	DataStore dataStore; 
 	FilterFactory2 filterFactory;
 	
@@ -479,6 +484,24 @@ public class GeoService {
 	}
     public void setWfsExceptionHandling(WfsExceptionHandling wfsExceptionHandling) {
 		this.wfsExceptionHandling = wfsExceptionHandling;
+	}
+    public String getWfsVorgaengeUrl() {
+		return wfsVorgaengeUrl;
+	}
+    public void setWfsVorgaengeUrl(String wfsVorgaengeUrl) {
+		this.wfsVorgaengeUrl = wfsVorgaengeUrl;
+	}
+    public String getWfsVorgaengeFeatureNs() {
+		return wfsVorgaengeFeatureNs;
+	}
+    public void setWfsVorgaengeFeatureNs(String wfsVorgaengeFeatureNs) {
+		this.wfsVorgaengeFeatureNs = wfsVorgaengeFeatureNs;
+	}
+    public String getAdressensucheUrl() {
+		return adressensucheUrl;
+	}
+    public void setAdressensucheUrl(String adressensucheUrl) {
+		this.adressensucheUrl = adressensucheUrl;
 	}
     public String getMapRestrictedExtent() {
 		return mapRestrictedExtent;

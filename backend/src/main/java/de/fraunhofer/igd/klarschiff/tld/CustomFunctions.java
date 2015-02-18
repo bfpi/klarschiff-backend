@@ -25,7 +25,7 @@ import de.fraunhofer.igd.klarschiff.vo.Vorgang;
 import de.fraunhofer.igd.klarschiff.web.FehlerController;
 
 /**
- * Die Klasse stellt Funktionen für spezielle EL-funktionen für Klarschiff bereit.
+ * Die Klasse stellt Funktionen fÃ¼r spezielle EL-funktionen fÃ¼r Klarschiff bereit.
  * @author Stefan Audersch (Fraunhofer IGD)
  */
 public class CustomFunctions {
@@ -101,6 +101,33 @@ public class CustomFunctions {
 
 	
 	/**
+	 * Ermittelt den Titel von Klarschiff
+	 * @return Titel
+	 */
+	public static String title() {
+		return AppContext.getApplicationContext().getBean(SettingsService.class).getContextAppTitle();
+	}
+
+	
+	/**
+	 * Ermittelt das Gebiet, auf das sich Klarschiff bezieht
+	 * @return Gebiet
+	 */
+	public static String area() {
+		return AppContext.getApplicationContext().getBean(SettingsService.class).getContextAppArea();
+	}
+
+	
+	/**
+	 * Ermittelt, ob Klarschiff im Demo-Betrieb laufen soll
+	 * @return <code>true</code> Klarschiff soll im Demo-Betrieb laufen
+	 */
+	public static boolean demo() {
+		return AppContext.getApplicationContext().getBean(SettingsService.class).getContextAppDemo();
+	}
+
+	
+	/**
 	 * Ermittelt die Version von Klarschiff
 	 * @return Version
 	 */
@@ -110,8 +137,8 @@ public class CustomFunctions {
 	
 	
 	/**
-	 * Ermittelt ob die Logindaten auf der Loginseite angezeigt werden sollen.
-	 * @return <code>true</code> Logindaten sollen angezeigt werden
+	 * Ermittelt, ob die Login-Daten auf der Login-Seite angezeigt werden sollen
+	 * @return <code>true</code> Login-Daten sollen auf der Login-Seite angezeigt werden
 	 */
 	public static boolean showLogins() {
 		return AppContext.getApplicationContext().getBean(SettingsService.class).getShowLogins();
@@ -141,8 +168,8 @@ public class CustomFunctions {
 	
 	
 	/**
-	 * Zählt die offenen Missbrauchsmeldungen für einen Vorgang.
-	 * @param vorgang Vorgang für den die offenen Missbrauchsmeldungen gezählt werden sollen
+	 * ZÃ¤hlt die offenen Missbrauchsmeldungen fÃ¼r einen Vorgang.
+	 * @param vorgang Vorgang fÃ¼r den die offenen Missbrauchsmeldungen gezÃ¤hlt werden sollen
 	 * @return Anzahl der offenen Missbrauchsmeldungen
 	 */
 	public static long countMissbrauchsmeldungen(Vorgang vorgang){
@@ -162,8 +189,8 @@ public class CustomFunctions {
 	}
 
 	/**
-	 * Ermittelt den verschlüsselten Login des aktuellen Benutzer.
-	 * @return verschlüsselter Login des aktuellen Benutzers
+	 * Ermittelt den verschlÃ¼sselten Login des aktuellen Benutzer.
+	 * @return verschlÃ¼sselter Login des aktuellen Benutzers
 	 */
 	public static String getCurrentUserLoginEncrypt() {
 		return SecurityUtil.simpleEncrypt(((SecurityService)AppContext.getApplicationContext().getBean("securityService")).getCurrentUser().getId());
@@ -171,9 +198,9 @@ public class CustomFunctions {
 	
 	
 	/**
-	 * Ermittelt ob der aktuelle Benutzer für den Vorgang zuständig ist.
+	 * Ermittelt ob der aktuelle Benutzer fÃ¼r den Vorgang zustÃ¤ndig ist.
 	 * @param vorgang Vorgang der untersucht werden soll
-	 * @return <code>true</code> - der aktuelle Nutzer ist für den Vorgang zuständig
+	 * @return <code>true</code> - der aktuelle Nutzer ist fÃ¼r den Vorgang zustÃ¤ndig
 	 */
 	public static boolean isCurrentZustaendigForVorgang(Vorgang vorgang) {
 		return ((SecurityService)AppContext.getApplicationContext().getBean("securityService")).isCurrentZustaendigForVorgang(vorgang);
@@ -182,7 +209,7 @@ public class CustomFunctions {
 	/**
 	 * Ermittelt, ob der aktuelle Benutzer den Kommentar erstellt hat.
 	 * Dies geschieht anhand des Anzeigenamens.
-	 * @param kommentar Kommentar, der geprüft werden soll
+	 * @param kommentar Kommentar, der geprÃ¼ft werden soll
 	 * @return <code>true</code> - der aktuelle Benutzer hat den Kommentar erstellt
 	 */
 	public static boolean mayCurrentUserEditKommentar(Kommentar kommentar) {
@@ -190,10 +217,10 @@ public class CustomFunctions {
 	}
 	
 	/**
-	 * Fasst verschiedene Daten einer Exception und zusätzliche Daten für die Darstellung von Exceptions in der GUI in einer Map zusammen (z.B. exceptionId, 
+	 * Fasst verschiedene Daten einer Exception und zusÃ¤tzliche Daten fÃ¼r die Darstellung von Exceptions in der GUI in einer Map zusammen (z.B. exceptionId, 
 	 * exceptionText, showFehlerDetails, bugTrackingUrl).
 	 * @param exception Exception aus der die Daten ermittelt werden sollen
-	 * @return Map mit Daten über die Exception und zur anzeige der Exception in der GUI
+	 * @return Map mit Daten Ã¼ber die Exception und zur anzeige der Exception in der GUI
 	 */
 	public static Map<String, Object> processException(Throwable exception) {
 		return FehlerController.processException(exception);

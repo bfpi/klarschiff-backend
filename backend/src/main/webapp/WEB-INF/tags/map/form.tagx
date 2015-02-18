@@ -28,6 +28,8 @@
 	<jsp:directive.attribute name="wmsTransparent" type="java.lang.String" required="true" rtexprvalue="true"/>
 	<jsp:directive.attribute name="wmsMinScale" type="java.lang.String" required="true" rtexprvalue="true"/>
 	<jsp:directive.attribute name="wmsSingleTile" type="java.lang.String" required="true" rtexprvalue="true"/>
+	<jsp:directive.attribute name="wfsVorgaengeUrl" type="java.lang.String" required="true" rtexprvalue="true"/>
+	<jsp:directive.attribute name="wfsVorgaengeFeatureNs" type="java.lang.String" required="true" rtexprvalue="true"/>
 
 	<c:if test="${empty projection}">
 		<c:set var="projection" value="EPSG:25833"/>
@@ -156,9 +158,9 @@
                 vorgaenge = new OpenLayers.Layer.Vector("alle Vorgänge", {
                     protocol: new OpenLayers.Protocol.WFS({
                         version: "1.1.0",
-                        url: "/ows/klarschiff/wfs",
+                        url: "${wfsVorgaengeUrl}",
                         featureType: "vorgaenge",
-                        featureNS: "http://demo.klarschiff-hro.de/ows/klarschiff",
+                        featureNS: "${wfsVorgaengeFeatureNs}",
                         srsName: "EPSG:25833",
                     }),
                     strategies: [new OpenLayers.Strategy.BBOX(), clusterStrategy],

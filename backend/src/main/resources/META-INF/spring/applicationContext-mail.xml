@@ -46,8 +46,8 @@
     />
 
 	<bean class="org.springframework.mail.SimpleMailMessage" id="vorgangBestaetigungMailTemplate"
-	p:from="${mail.from}" p:subject="Klarschiff #%id%: Bestätigung">
-		<property name="text"><value><![CDATA[Sehr geehrte(r) Nutzer/-in von Klarschiff,
+	p:from="${mail.from}" p:subject="%title% #%id%: Bestätigung">
+		<property name="text"><value><![CDATA[Sehr geehrte(r) Nutzer/-in von %title%,
 
 um Ihre Meldungen zu bestätigen rufen Sie bitte folgende URL auf: %baseUrlFrontend%vorgangBestaetigung/?hash=%hash%
 
@@ -62,12 +62,12 @@ Meldung löschen: %baseUrlFrontend%vorgangLoeschen/?hash=%hash%
 Vielen Dank und mit freundlichen Grüßen
 
 
-Ihr Klarschiff-Team]]></value></property>
+Ihr %title%-Team]]></value></property>
 	</bean>
 
 	<bean class="org.springframework.mail.SimpleMailMessage" id="unterstuetzungBestaetigungMailTemplate"
-	p:from="${mail.from}" p:subject="Klarschiff #%id%: Unterstützung">
-		<property name="text"><value><![CDATA[Sehr geehrte(r) Nutzer/-in von Klarschiff,
+	p:from="${mail.from}" p:subject="%title% #%id%: Unterstützung">
+		<property name="text"><value><![CDATA[Sehr geehrte(r) Nutzer/-in von %title%,
 
 um Ihre Unterstützung zu bestätigen rufen Sie bitte folgende URL auf: %baseUrlFrontend%unterstuetzerBestaetigung/?hash=%hash%
 
@@ -76,12 +76,12 @@ Diese URL funktioniert für 24 Stunden und kann einmalig aufgerufen werden. Nach
 Vielen Dank und mit freundlichen Grüßen
 
 
-Ihr Klarschiff-Team]]></value></property>
+Ihr %title%-Team]]></value></property>
 	</bean>
 
 	<bean class="org.springframework.mail.SimpleMailMessage" id="missbrauchsmeldungBestaetigungMailTemplate"
-	p:from="${mail.from}" p:subject="Klarschiff #%id%: Missbrauchsmeldung">
-		<property name="text"><value><![CDATA[Sehr geehrte(r) Nutzer/-in von Klarschiff,
+	p:from="${mail.from}" p:subject="%title% #%id%: Missbrauchsmeldung">
+		<property name="text"><value><![CDATA[Sehr geehrte(r) Nutzer/-in von %title%,
 
 um Ihre Missbrauchsmeldung zu bestätigen rufen Sie bitte folgende URL auf: %baseUrlFrontend%missbrauchsmeldungBestaetigung/?hash=%hash%
   
@@ -90,14 +90,14 @@ Diese URL funktioniert für 24 Stunden und kann einmalig aufgerufen werden. Nach
 Vielen Dank und mit freundlichen Grüßen
 
 
-Ihr Klarschiff-Team]]></value></property>
+Ihr %title%-Team]]></value></property>
 	</bean>
 
 	<bean class="org.springframework.mail.SimpleMailMessage" id="vorgangWeiterleitenMailTemplate"
-	p:from="${mail.from}" p:subject="Klarschiff: weitergeleiteter Vorgang">
+	p:from="${mail.from}" p:subject="weitergeleiteter Vorgang">
 		<property name="text"><value><![CDATA[Sehr geehrte Damen und Herren,
 
-der folgende Vorgang wurde durch die/den Klarschiff-Nutzer/-in %absender% an Sie weitergeleitet:
+der folgende Vorgang wurde durch die/den %title%-Nutzer/-in %absender% an Sie weitergeleitet:
 
 Anmerkungen der/des Absenderin/Absenders
 ****************************************
@@ -110,12 +110,12 @@ Daten des weitergeleiteten Vorgangs
 Vielen Dank und mit freundlichen Grüßen
 
 
-Ihr Klarschiff-Team]]></value></property>
+Ihr %title%-Team]]></value></property>
 	</bean>
 
 	<bean class="org.springframework.mail.SimpleMailMessage" id="informDispatcherMailTemplate"
-	p:from="${mail.from}" p:subject="Klarschiff: nicht zuordenbare Vorgänge">
-		<property name="text"><value><![CDATA[Sehr geehrte(r) Dispatcher/-in von Vorgängen in Klarschiff,
+	p:from="${mail.from}" p:subject="nicht zuordenbare Vorgänge">
+		<property name="text"><value><![CDATA[Sehr geehrte(r) Dispatcher/-in von Vorgängen in %title%,
 
 innerhalb der letzten 24 Stunden wurden Ihnen in Ihrer Funktion als Dispatcher/-in automatisch Vorgänge überantwortet, die auch nach mehrfacher automatischer Zuständigkeitsfindung nicht eindeutig zugewiesen werden konnten. Bitte bearbeiten Sie diese Vorgänge oder weisen Sie die jeweils passende Zuständigkeit manuell zu: 
 
@@ -126,12 +126,12 @@ Daten der nicht zuordenbaren Vorgänge
 Vielen Dank und mit freundlichen Grüßen
 
 
-Ihr Klarschiff-Team]]></value></property>
+Ihr %title%-Team]]></value></property>
 	</bean>
 	
 	<bean class="org.springframework.mail.SimpleMailMessage" id="informExternMailTemplate"
-	p:from="${mail.from}" p:subject="Klarschiff: neue delegierte Vorgänge">
-		<property name="text"><value><![CDATA[Sehr geehrte(r) Bearbeiter/-in von Vorgängen in Klarschiff,
+	p:from="${mail.from}" p:subject="neue delegierte Vorgänge">
+		<property name="text"><value><![CDATA[Sehr geehrte(r) Bearbeiter/-in von Vorgängen in %title%,
 		
 innerhalb der letzten 24 Stunden wurden Vorgänge an Sie delegiert. Bitte bearbeiten Sie diese Vorgänge: 
 
@@ -142,12 +142,12 @@ Daten der neuen delegierten Vorgänge
 Vielen Dank und mit freundlichen Grüßen
 
 
-Ihr Klarschiff-Team]]></value></property>
+Ihr %title%-Team]]></value></property>
 	</bean>
 
 	<bean class="org.springframework.mail.SimpleMailMessage" id="informErstellerMailInBearbeitungTemplate"
-	p:from="${mail.from}" p:subject="Klarschiff #%id%: in Bearbeitung">
-		<property name="text"><value><![CDATA[Sehr geehrte(r) Nutzer/-in von Klarschiff,
+	p:from="${mail.from}" p:subject="%title% #%id%: in Bearbeitung">
+		<property name="text"><value><![CDATA[Sehr geehrte(r) Nutzer/-in von %title%,
 		
 hiermit teilen wir Ihnen mit, dass Ihre Meldung vom %datum% nun in Bearbeitung ist.
 
@@ -158,12 +158,12 @@ Nachfolgend können Sie nochmals die wichtigsten Daten Ihrer Meldung in kompakte
 Vielen Dank und mit freundlichen Grüßen
 
 
-Ihr Klarschiff-Team]]></value></property>
+Ihr %title%-Team]]></value></property>
 	</bean>
 
 	<bean class="org.springframework.mail.SimpleMailMessage" id="informErstellerMailAbschlussTemplate"
-	p:from="${mail.from}" p:subject="Klarschiff #%id%: abgeschlossen">
-		<property name="text"><value><![CDATA[Sehr geehrte(r) Nutzer/-in von Klarschiff,
+	p:from="${mail.from}" p:subject="%title% #%id%: abgeschlossen">
+		<property name="text"><value><![CDATA[Sehr geehrte(r) Nutzer/-in von %title%,
 		
 hiermit teilen wir Ihnen mit, dass die Bearbeitung Ihrer Meldung vom %datum% abgeschlossen ist, und zwar mit folgendem Status:
 
@@ -176,7 +176,7 @@ Nachfolgend können Sie nochmals die wichtigsten Daten Ihrer Meldung in kompakte
 Vielen Dank und mit freundlichen Grüßen
 
 
-Ihr Klarschiff-Team]]></value></property>
+Ihr %title%-Team]]></value></property>
 	</bean>
 	
 	<bean class="org.springframework.mail.SimpleMailMessage" id="kriteriumOffenNichtAkzeptiertTemplate">
@@ -236,10 +236,10 @@ Nummer   Typ       Status
 	</bean>
 	
 	<bean class="org.springframework.mail.SimpleMailMessage" id="informRedaktionEmpfaengerMailTemplate"
-	p:from="${mail.from}" p:subject="Klarschiff: wichtige redaktionelle Hinweise">
+	p:from="${mail.from}" p:subject="%title%: wichtige redaktionelle Hinweise">
 		<property name="text"><value><![CDATA[Sehr geehrte(r) Bearbeiter/-in,
 
-es gibt folgende wichtige Hinweise zum Bearbeitungsstand in Ihrer Klarschiff-Rolle %zustaendigkeit%:
+es gibt folgende wichtige Hinweise zum Bearbeitungsstand in Ihrer %title%-Rolle %zustaendigkeit%:
 		
 %kriteriumOffenNichtAkzeptiert%
 
@@ -255,10 +255,10 @@ es gibt folgende wichtige Hinweise zum Bearbeitungsstand in Ihrer Klarschiff-Rol
 
 %kriteriumOhneZustaendigkeit%
 
-Wir möchten Sie bitten diesen Hinweisen nachzugehen. Eine kurzfristige Reaktion auf die Vorgänge in Klarschiff trägt zum positiven Image der Verwaltung bei.
+Wir möchten Sie bitten diesen Hinweisen nachzugehen. Eine kurzfristige Reaktion auf die Vorgänge in %title% trägt zum positiven Image der Verwaltung bei.
 
 
-Diese E-Mail wird automatisch vom Klarschiff-System generiert.]]></value></property>
+Diese E-Mail wird automatisch vom %title%-System generiert.]]></value></property>
 	</bean>
 	
 </beans>

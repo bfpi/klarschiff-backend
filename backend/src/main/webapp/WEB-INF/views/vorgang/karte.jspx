@@ -54,6 +54,8 @@
                     wmsTransparent="${geoService.wmsTransparent}"
                     wmsMinScale="${geoService.wmsMinScale}"
                     wmsSingleTile="${geoService.wmsSingleTile}"
+                    wfsVorgaengeUrl="${geoService.wfsVorgaengeUrl}"
+                    wfsVorgaengeFeatureNs="${geoService.wfsVorgaengeFeatureNs}"
 	        		/>
 			</div>
 			<input type="submit" value="Speichern"/>

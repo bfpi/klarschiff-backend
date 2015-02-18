@@ -18,6 +18,9 @@ public class SettingsService {
 	boolean showLogins;
 	boolean showFehlerDetails;
 	String bugTrackingUrl;
+	String contextAppTitle;
+	String contextAppArea;
+	boolean contextAppDemo;
 	
 	/**
 	 * Erlaubt den Zugriff auf ein beliebiges Property aus der <code>settings.properties</code> wobei das Profil berücksichtigt wird.
@@ -101,6 +104,30 @@ public class SettingsService {
 
 	public void setBugTrackingUrl(String bugTrackingUrl) {
 		this.bugTrackingUrl = bugTrackingUrl;
+	}
+
+	public String getContextAppTitle() {
+		return contextAppTitle;
+	}
+
+	public void setContextAppTitle(String contextAppTitle) {
+		this.contextAppTitle = contextAppTitle;
+	}
+
+	public String getContextAppArea() {
+		return contextAppArea;
+	}
+
+	public void setContextAppArea(String contextAppArea) {
+		this.contextAppArea = contextAppArea;
+	}
+
+	public boolean getContextAppDemo() {
+		return contextAppDemo;
+	}
+
+	public void setContextAppDemo(boolean contextAppDemo) {
+		this.contextAppDemo = contextAppDemo;
 	}
 
 

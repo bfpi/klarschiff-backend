@@ -1,6 +1,7 @@
 <html 
 	xmlns:jsp="http://java.sun.com/JSP/Page" 
 	xmlns:c="http://java.sun.com/jsp/jstl/core" 
+	xmlns:fx="http://igd.fraunhofer.de/tags/elfunctions" 
 	xmlns:tiles="http://tiles.apache.org/tags-tiles" 
 >  
 	
@@ -13,8 +14,12 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=Edge" />	
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
+		<!-- Favicon -->
+		<c:url value="/favicon.ico" var="url" />
+		<LINK REL="SHORTCUT ICON" HREF="${url}"/>			
+		
 		<!-- Titel -->
-		<title>Klarschiff – Backend</title>
+		<title>${fx:title()}</title>
 		
 		<!-- Style -->
 		<c:url value="/styles/styles_frontend-connector.css" var="url"/>
@@ -23,9 +28,14 @@
 	
 	<body>
     	<!-- HEADER -->
-		<div id="root_style_header">
-            DEMO
-        </div>
+        <c:choose>
+            <c:when test="${fx:demo()}">
+                <div id="root_style_header_demo">DEMO</div>
+            </c:when>
+            <c:otherwise>
+                <div id="root_style_header"><![CDATA[&nbsp;]]></div>
+            </c:otherwise>
+        </c:choose>
 			
 		<div id="root_style_content">
    			<tiles:insertAttribute name="body"/>
