@@ -84,14 +84,6 @@ public class DbSyncService {
 		scriptValuesMap.setProperty("f_username", getFrontendDbUsername());
 		scriptValuesMap.setProperty("f_password", getFrontendDbPassword());
 		scriptValuesMap.setProperty("b_username", getBackendDbUsername());
-		try {
-			for(String extrascriptparam : settingsService.getPropertyValue("database.frontend.extrascriptparams").split(";")) {
-				String[] keyValue = extrascriptparam.split("=");
-				scriptValuesMap.setProperty(keyValue[0].trim(), keyValue[1].trim());
-			}
-		} catch (Exception e) {
-			logger.error("Der Parameter 'database.frontend.extrascriptparams' in der 'settings.properties' konnte nicht korrekt analysiert werden", e);
-		}
 	}
 	
 	

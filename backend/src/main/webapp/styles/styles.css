@@ -1606,7 +1606,7 @@ fieldset { /* abgerundete Ecken */
 	font-size: 0.9em;
 }
 
-/* ######################### ADRESSSUCHE ######################### */
+/* ######################### ADRESSENSUCHE ######################### */
 div.results {
     display:none;
     position:absolute;
@@ -1622,32 +1622,32 @@ div.results {
     z-index:1;
 }
 
-div.resultElement {
+div.resultElement, div.result-element {
     line-height:150%;
     cursor:pointer;
 }
 
-div.resultElement:hover {
+div.resultElement:hover, div.result-element:hover  {
     background-color:#E1E1E1;
 }
 
-div.resultElement span {
+div.resultElement span, div.result-element span  {
     float:right;
     padding-right:6px;
     color:#AAAAAA;
     font-size:75%;
     font-style:italic;
 }
-div.resultElement:hover span {
+div.resultElement:hover span, div.result-element:hover span {
     color:#000000;
 }
 
-div.resultElement a {
+div.resultElement a, div.result-element a {
     color: #164194;
     text-decoration:none;
 }
 
-div.resultElement a:hover {
+div.resultElement a:hover, div.result-element a:hover {
     color:#d81920;
 }
 

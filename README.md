@@ -29,7 +29,10 @@ The initiators of the **Klarschiff** project are offering a ready-to-use virtual
 
 Additionally, the initiators of the **Klarschiff** project are hosting a [demo version](http://demo.klarschiff-hro.de/backend) of the project on their servers. This demo version uses the code hosted here on GitHub, with `settings.properties` slightly adjusted to the local environment, of course.
 
-Apart from that demo, there is also a real-world productive version running on the initiators' servers which is accessible internally only.
+
+## In production
+
+**Klarschiff** is running as a real-world productive version named **Klarschiff.HRO** on the initiators' servers but is accessible internally only.
 
 
 ## License
