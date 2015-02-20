@@ -25,7 +25,7 @@
     	p:mailSender-ref="mailSender" 
 		p:serverBaseUrlBackend="${mail.server.baseurl.backend}"
 		p:serverBaseUrlFrontend="${mail.server.baseurl.frontend}"
-		p:sendAllMailsTo="${mail.sendAllMailsTo}"
+        p:sendAllMailsTo="${mail.sendAllMailsTo}"
 		p:mailtoMailclientEncoding="${mail.mailto.encoding}"
     	p:vorgangBestaetigungMailTemplate-ref="vorgangBestaetigungMailTemplate"
     	p:unterstuetzungBestaetigungMailTemplate-ref="unterstuetzungBestaetigungMailTemplate"

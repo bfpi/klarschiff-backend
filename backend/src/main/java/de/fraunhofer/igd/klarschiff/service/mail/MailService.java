@@ -36,7 +36,7 @@ import de.fraunhofer.igd.klarschiff.vo.Vorgang;
 import java.nio.file.Paths;
 
 /**
- * Die Klasse stellt einen Service bereit über den E-Mails erstellt und versendet werden können.
+ * Diese Klasse stellt einen Service bereit, über den E-Mails erstellt und versendet werden können.
  * @author Stefan Audersch (Fraunhofer IGD)
  */
 public class MailService {
@@ -97,8 +97,8 @@ public class MailService {
     
     
     /**
-	 * Versendet eine E-Mail mit Lob, Hiweisen oder Kritik zu einem Vorgang.
-	 * @param vorgang Vorgang, zu dem eine bestätigungsmail versendet werden soll.
+	 * Erstellt und versendet eine E-Mail mit Lob, Hinweise oder Kritik von Bürger/-innen zu einem Vorgang an den letzten Bearbeiter des Vorgangs
+	 * @param vorgang Vorgang, zu dem die E-Mail versendet werden soll
 	 */
 	public void sendLobHinweiseKritikMail(Vorgang vorgang, String absender, String empfaenger, String freitext) {
 		try {
@@ -115,8 +115,8 @@ public class MailService {
 	
 	
 	/**
-	 * Versendet eine E-Mail zur Bestätigung eines Vorganges.
-	 * @param vorgang Vorgang, zu dem eine bestätigungsmail versendet werden soll.
+	 * Erstellt und versendet eine E-Mail zur Bestätigung eines Vorganges
+	 * @param vorgang Vorgang, zu dem die E-Mail versendet werden soll
 	 */
 	public void sendVorgangBestaetigungMail(Vorgang vorgang) {
 		SimpleMailMessage msg = new SimpleMailMessage(vorgangBestaetigungMailTemplate);
@@ -137,9 +137,9 @@ public class MailService {
 	
 	
 	/**
-	 * Versendet eine E-Mail zur Bestätigung einer Unterstützung. 
-	 * @param unterstuetzer Unterstützung, zu der die Bestätigungsmail versendet werden soll.
-	 * @param email E-Mailadresse, an die die E-Mail versendet werden soll.
+	 * Erstellt und versendet eine E-Mail zur Bestätigung einer Unterstützung
+	 * @param unterstuetzer Unterstützung, zu der die E-Mail versendet werden soll
+	 * @param email E-Mail-Adresse, an die die E-Mail versendet werden soll
 	 */
 	public void sendUnterstuetzerBestaetigungMail(Unterstuetzer unterstuetzer, String email, Long vorgang) {
 		SimpleMailMessage msg = new SimpleMailMessage(unterstuetzungBestaetigungMailTemplate);
@@ -156,9 +156,9 @@ public class MailService {
 
 	
 	/**
-	 * Versendet eine E-Mail zur Bestätigung einer Missbrauchsmeldung.
-	 * @param missbrauchsmeldung Missbrauchsmeldung, zu der die Bestätigungsemail versendet werden soll.
-	 * @param email E-Mailadresse, an die die E-Mail versendet werden soll.
+	 * Erstellt und versendet eine E-Mail zur Bestätigung einer Missbrauchsmeldung
+	 * @param missbrauchsmeldung Missbrauchsmeldung, zu der die E-Mail versendet werden soll
+	 * @param email E-Mail-Adresse, an die die E-Mail versendet werden soll
 	 */
 	public void sendMissbrauchsmeldungBestaetigungMail(Missbrauchsmeldung missbrauchsmeldung, String email, Long vorgang) {
 		SimpleMailMessage msg = new SimpleMailMessage(missbrauchsmeldungBestaetigungMailTemplate);
@@ -175,25 +175,26 @@ public class MailService {
 		
 
 	/**
-	 * Erstellt und versendet eine E-Mail mit den Daten eines Vorganges
-	 * @param vorgang Vorgang zu dem die E-Mail erstellt werden soll.
-	 * @param fromEmail E-Mailadresse des Absenders
-	 * @param toEmail E-Mailadresse des Empfängers
-	 * @param text Freitextfeld, der in die E-Mail aufgenommen wird.
-	 * @param sendAutor Soll der Autor mitgesendet werden?
+	 * Erstellt und versendet eine E-Mail mit den Daten eines Vorgangs
+	 * @param vorgang Vorgang, zu dem die E-Mail versendet werden soll
+	 * @param fromEmail E-Mail-Adresse des Absenders
+	 * @param toEmail E-Mail-Adresse, an die die E-Mail versendet werden soll
+	 * @param text Freitext, der in die E-Mail aufgenommen wird
+	 * @param sendAutor Soll die Angabe des Autors mitgesendet werden?
 	 * @param sendKarte Soll ein Link für die Karte mitgesendet werden?
-	 * @param sendKommentare Sollen die Kommentare mitgesendet werden?
+	 * @param sendKommentare Sollen die internen Kommentare mitgesendet werden?
 	 * @param sendLobHinweiseKritik Sollen Lob, Hinweise oder Kritik von Bürger/-innen mitgesendet werden?
 	 * @param sendFoto Soll das Foto als Anhang mitgesendet werden?
-	 * @param sendMissbrauchsmeldungen sollen die Missbrauchsmeldungen mitgesendet werden?
+	 * @param sendMissbrauchsmeldungen Sollen die Missbrauchsmeldungen mitgesendet werden?
 	 */
 	public void sendVorgangWeiterleitenMail(Vorgang vorgang, String fromEmail, String toEmail, String text, boolean sendAutor, boolean sendKarte, boolean sendKommentare, boolean sendLobHinweiseKritik, boolean sendFoto, boolean sendMissbrauchsmeldungen)
 	{
 		try {
 			MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mailSender.createMimeMessage(), true);
 			mimeMessageHelper.setSubject(vorgangWeiterleitenMailTemplate.getSubject());
-			mimeMessageHelper.setFrom(StringUtils.isBlank(sendAllMailsTo) ? fromEmail : sendAllMailsTo);
+			mimeMessageHelper.setFrom(securityService.getCurrentUser().getEmail());
 			mimeMessageHelper.setTo(toEmail);
+			mimeMessageHelper.setBcc(securityService.getCurrentUser().getEmail());
 
 			String mailText = composeVorgangWeiterleitenMail(vorgang, text, sendAutor, sendKarte, sendKommentare, sendLobHinweiseKritik, sendMissbrauchsmeldungen);
 
@@ -214,7 +215,7 @@ public class MailService {
 
 	
 	/**
-	 * Erstellt den Text einer E-Mail zum Weiterleiten eines Vorganges
+	 * Erstellt den Text einer E-Mail zum Weiterleiten eines Vorgangs
 	 * @param vorgang Vorgang zu dem die E-Mail erstellt werden soll.
 	 * @param text Freitextfeld, der in die E-Mail aufgenommen wird.
 	 * @param sendAutor Soll der Autor in der E-Mail aufgenommen werden?
