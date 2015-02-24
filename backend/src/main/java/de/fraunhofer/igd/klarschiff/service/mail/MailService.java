@@ -106,6 +106,7 @@ public class MailService {
 			mimeMessageHelper.setSubject(settingsService.getContextAppTitle() + ": Lob, Hinweise oder Kritik von Bürger/-innen zu Vorgang " + vorgang.getId());
 			mimeMessageHelper.setFrom(absender);
 			mimeMessageHelper.setTo(empfaenger);
+            mimeMessageHelper.setBcc(absender);
             mimeMessageHelper.setText(freitext);
 			jobExecutorService.runJob(new MailSenderJob(this, mimeMessageHelper.getMimeMessage()));
 		} catch (Exception e) {
@@ -416,7 +417,8 @@ public class MailService {
 		msg.setSubject(msg.getSubject().replaceAll("%id%", vorgang.getId().toString()).replaceAll("%title%", settingsService.getContextAppTitle()));
 
 		String mailtext = msg.getText();
-		mailtext = mailtext.replaceAll("%id%", vorgang.getId().toString().replaceAll("%title%", settingsService.getContextAppTitle()));
+		mailtext = mailtext.replaceAll("%id%", vorgang.getId().toString());
+		mailtext = mailtext.replaceAll("%title%", settingsService.getContextAppTitle());
 		StringBuilder str = new StringBuilder();
 		//Vorgang
 		str.append("Nummer        : "+vorgang.getId()+"\n");
@@ -450,7 +452,8 @@ public class MailService {
 		msg.setSubject(msg.getSubject().replaceAll("%id%", vorgang.getId().toString()).replaceAll("%title%", settingsService.getContextAppTitle()));
 
 		String mailtext = msg.getText();
-		mailtext = mailtext.replaceAll("%id%", vorgang.getId().toString().replaceAll("%title%", settingsService.getContextAppTitle()));
+		mailtext = mailtext.replaceAll("%id%", vorgang.getId().toString());
+		mailtext = mailtext.replaceAll("%title%", settingsService.getContextAppTitle());
 		StringBuilder str = new StringBuilder();
 		//Vorgang
 		str.append("Nummer        : "+vorgang.getId()+"\n");
@@ -509,7 +512,8 @@ public class MailService {
 		SimpleMailMessage msg = new SimpleMailMessage(informRedaktionEmpfaengerMailTemplate);
 		msg.setTo(to);
 		msg.setSubject(msg.getSubject().replaceAll("%title%", settingsService.getContextAppTitle()));
-        msg.setText(msg.getText().replaceAll("%zustaendigkeit%", zustaendigkeit).replaceAll("%title%", settingsService.getContextAppTitle()));
+        msg.setText(msg.getText().replaceAll("%zustaendigkeit%", zustaendigkeit));
+        msg.setText(msg.getText().replaceAll("%title%", settingsService.getContextAppTitle()));
         
         //falls Liste der Vorgänge zu Redaktionskriterium 1 nicht leer ist...
         if (!CollectionUtils.isEmpty(vorgaengeOffenNichtAkzeptiert)) {
