@@ -114,7 +114,7 @@ public class Assert
 
 
 	/**
-	 * Fehler, wenn der Werte zu lang ist
+	 * Fehler, wenn der Wert zu lang ist
 	 * @param bean Bean mit den Werten
 	 * @param result Bindingresult mit den Fehlermeldungen
 	 * @param evaluateOn siehe EvaluateOn
@@ -136,7 +136,7 @@ public class Assert
 	
 	
 	/**
-	 * Fehler, wenn der Werte keine PLZ ist
+	 * Fehler, wenn der Wert keine PLZ ist
 	 * @param bean Bean mit den Werten
 	 * @param result Bindingresult mit den Fehlermeldungen
 	 * @param evaluateOn siehe EvaluateOn
@@ -150,7 +150,7 @@ public class Assert
 
 
 	/**
-	 * Fehler, wenn der Werte keine E-Mail-Adresse ist
+	 * Fehler, wenn der Wert keine E-Mail-Adresse ist
 	 * @param bean Bean mit den Werten
 	 * @param result Bindingresult mit den Fehlermeldungen
 	 * @param evaluateOn siehe EvaluateOn
@@ -159,8 +159,7 @@ public class Assert
 	 */
 	public static void assertEmail(Object bean, BindingResult result, EvaluateOn evaluateOn, String property, String errorMessage)
 	{
-//		assertPattern(bean, result, evaluateOn, property, ".+@.+\\.[a-z]+", errorMessage);
-		assertPattern(bean, result, evaluateOn, property, "[a-zA-Z0-9\\.-]+@[a-zA-Z0-9\\.-]+\\.[A-Za-z]+", errorMessage);
+		assertPattern(bean, result, evaluateOn, property, "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$", errorMessage);
 	}
 
 
