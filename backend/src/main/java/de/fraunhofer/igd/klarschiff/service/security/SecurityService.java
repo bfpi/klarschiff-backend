@@ -446,11 +446,13 @@ public class SecurityService {
 	 * @return Liste mit den Rollen
 	 */
 	public List<Role> getDelegiertAn(String login) {
-		if (isUserAdmin(login)) return getAllDelegiertAn();
-		User user = getUser(login);
-		if (user==null) throw new RuntimeException();
-		List <Role> delegiertAn = securityServiceLdap.getObjectListFromLdap(groupSearchBase, "(&(objectclass="+groupObjectClass+")("+groupRoleAttribute+"="+groupExtern+")("+StringUtils.replace(groupSearchFilter, "{0}", user.getDn())+"))", roleContextMapper);
-		return delegiertAn;
+		if (isUserAdmin(login)) {
+            return getAllDelegiertAn();
+        } else {
+            User user = getUser(login);
+			if (user==null) throw new RuntimeException();
+            return securityServiceLdap.getObjectListFromLdap(groupSearchBase, "(&(objectclass="+groupObjectClass+")("+groupRoleAttribute+"="+groupExtern+")("+StringUtils.replace(groupSearchFilter, "{0}", user.getDn())+"))", roleContextMapper);
+        }
 	}
 
 	
