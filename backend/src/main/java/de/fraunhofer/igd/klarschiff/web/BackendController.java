@@ -33,6 +33,7 @@ import de.fraunhofer.igd.klarschiff.vo.EnumVorgangStatus;
 import de.fraunhofer.igd.klarschiff.vo.EnumVorgangTyp;
 import de.fraunhofer.igd.klarschiff.vo.EnumZustaendigkeitStatus;
 import de.fraunhofer.igd.klarschiff.vo.GeoRss;
+import de.fraunhofer.igd.klarschiff.vo.Kategorie;
 import de.fraunhofer.igd.klarschiff.vo.LobHinweiseKritik;
 import de.fraunhofer.igd.klarschiff.vo.Missbrauchsmeldung;
 import de.fraunhofer.igd.klarschiff.vo.RedaktionEmpfaenger;
@@ -42,6 +43,7 @@ import de.fraunhofer.igd.klarschiff.vo.Vorgang;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import org.codehaus.jackson.map.ObjectMapper;
 
@@ -796,8 +798,175 @@ public class BackendController {
       sendError(response, ex);
     }
   }
-          
 	
+  /**
+   * Die Methode verarbeitet den GET-Request auf der URL
+   * <code>/kategorien</code><br/>
+   *
+   * @param response 
+   * @throws java.io.IOException 
+   */
+  @RequestMapping(value="/kategorien", method = RequestMethod.POST)
+	@ResponseBody
+	public void kategorien(
+      HttpServletResponse response) throws IOException {
+    
+    try {
+      List<Kategorie> kategorien = kategorieDao.findRootKategorien();
+      kategorien.addAll(kategorieDao.getKategorien());
+      sendOk(response, mapper.writeValueAsString(kategorien));
+    } catch (Exception ex) {
+      java.util.logging.Logger.getLogger(BackendController.class.getName()).log(Level.SEVERE, null, ex);
+      sendError(response, ex);
+    }
+  }
+	
+  /**
+   * Die Methode verarbeitet den GET-Request auf der URL
+   * <code>/kategorie</code><br/>
+   *
+   * @param id
+   * @param response 
+   * @throws java.io.IOException 
+   */
+  @RequestMapping(value="/kategorie", method = RequestMethod.POST)
+	@ResponseBody
+	public void kategorie(
+			@RequestParam(value = "id") Integer id,
+      HttpServletResponse response) throws IOException {
+    
+    try {
+      Kategorie kategorie = kategorieDao.findKategorie(Long.parseLong(id.toString()));
+      sendOk(response, mapper.writeValueAsString(kategorie));
+    } catch (Exception ex) {
+      java.util.logging.Logger.getLogger(BackendController.class.getName()).log(Level.SEVERE, null, ex);
+      sendError(response, ex);
+    }
+  }
+  
+  /**
+   * Die Methode verarbeitet den GET-Request auf der URL
+   * <code>/unterkategorien</code><br/>
+   *
+   * @param response 
+   * @throws java.io.IOException 
+   */
+  @RequestMapping(value="/unterkategorien", method = RequestMethod.GET)
+	@ResponseBody
+	public void unterkategorien(
+      HttpServletResponse response) throws IOException {
+    
+    try {
+      List<Kategorie> kategorien = kategorieDao.findUnterKategorien();
+      sendOk(response, mapper.writeValueAsString(kategorien));
+    } catch (Exception ex) {
+      java.util.logging.Logger.getLogger(BackendController.class.getName()).log(Level.SEVERE, null, ex);
+      sendError(response, ex);
+    }
+  }
+  
+  /**
+   * Die Methode verarbeitet den GET-Request auf der URL
+   * <code>/vorgaenge</code><br/>
+   *
+   * @param id
+   * @param ids
+   * @param category_id
+   * @param status
+   * @param date_from
+   * @param date_to
+   * @param updated_from 
+   * @param updated_to 
+   * @param agency_responsible 
+   * @param response 
+   * @throws java.io.IOException 
+   */
+  @RequestMapping(value="/vorgaenge", method = RequestMethod.GET)
+	@ResponseBody
+	public void vorgaenge(
+      @RequestParam(value = "id", required = false) Long id, 
+      @RequestParam(value = "ids", required = false) String ids, 
+      @RequestParam(value = "category_id", required = false) Long category_id, 
+      @RequestParam(value = "status", required = false) String status, 
+      @RequestParam(value = "date_from", required = false) String date_from, 
+      @RequestParam(value = "date_to", required = false) String date_to, 
+      @RequestParam(value = "updated_from", required = false) String updated_from, 
+      @RequestParam(value = "updated_to", required = false) String updated_to, 
+      @RequestParam(value = "agency_responsible", required = false) String agency_responsible, 
+      
+      HttpServletResponse response) throws IOException {
+    
+    try {
+      List<Vorgang> vorgaenge = new ArrayList<Vorgang>();
+      if(id != null) {
+        vorgaenge.add(vorgangDao.findVorgang(id));
+      } else {
+        VorgangSuchenCommand cmd = new VorgangSuchenCommand();
+        // Suchtyp aussendienst würde nur Vorgänge mit zustaendigkeit_status = 'akzeptiert' ausgeben
+        cmd.setSuchtyp(VorgangSuchenCommand.Suchtyp.erweitert);
+        // Sortieren nach ID
+        cmd.setOrder(0);
+        cmd.setOrderDirection(0);
+        
+        if(ids != null && ids.length() > 0) {
+          String[] idStrList = ids.split(",");
+          Long[] data = new Long[idStrList.length];
+          for (int i = 0; i < idStrList.length; i++) {
+            data[i] = Long.valueOf(idStrList[i]);
+          }
+          cmd.setVorgangAuswaehlen(data);
+        }
+
+        if(category_id != null) {
+          Kategorie kat = kategorieDao.findKategorie(category_id);
+          if(kat != null) {
+            if(kat.getParent() == null) {
+              cmd.setErweitertHauptkategorie(kat);
+            } else {
+              cmd.setErweitertKategorie(kat);
+            }
+          }
+        }
+
+        String[] status_list = status.split(",");
+        EnumVorgangStatus[] evs = new EnumVorgangStatus[status_list.length];
+
+        for (int i = 0; i < status_list.length; i++) {
+          evs[i] = EnumVorgangStatus.valueOf(status_list[i]);
+        }
+        cmd.setErweitertVorgangStatus(evs);
+
+        if(date_from != null) {
+          cmd.setErweitertDatumVon(getDateFromParam(date_from));
+        }
+        if(date_to != null) {
+          cmd.setErweitertDatumBis(getDateFromParam(date_to));
+        }
+        if(updated_from != null) {
+          cmd.setAktualisiertVon(getDateFromParam(updated_from));
+        }
+        if(updated_to != null) {
+          cmd.setAktualisiertBis(getDateFromParam(updated_to));
+        }
+        
+        if(agency_responsible != null) {
+          cmd.setAuftragTeam(agency_responsible);
+          cmd.setAuftragDatum(new Date());
+        }
+        
+        List<Object[]> vg = vorgangDao.getVorgaenge(cmd);
+        for(Object[] entry : vg) {
+    		  Vorgang vorgang = (Vorgang)entry[0];
+          vorgaenge.add(vorgang);
+        }
+      }
+      sendOk(response, mapper.writeValueAsString(vorgaenge));
+    } catch (Exception ex) {
+      java.util.logging.Logger.getLogger(BackendController.class.getName()).log(Level.SEVERE, null, ex);
+      sendError(response, ex);
+    }
+  }
+          
 	/**
 	 * Sendet eine Fehlermeldung
 	 */
@@ -850,4 +1019,10 @@ public class BackendController {
 			throw new RuntimeException(e);
 		}
 	}
+  
+  private Date getDateFromParam(String param) {
+    Date date = new Date();
+    date.setTime(Long.parseLong(param));
+    return date;
+  }
 }

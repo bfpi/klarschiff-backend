@@ -195,6 +195,11 @@ public class VorgangDao {
 	}
 
 	@Transactional
+	public List<Vorgang> listVorgang() {
+		return em.createQuery("select o from Vorgang o", Vorgang.class).getResultList();
+	}
+
+	@Transactional
 	public List<Vorgang> listVorgang(int firstResult, int maxResults) {
 		return em.createQuery("select o from Vorgang o", Vorgang.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
 	}
@@ -283,6 +288,10 @@ public class VorgangDao {
         if (cmd.getErweitertNummerAsLong() != null) {
           conds.add("vo.id = " + cmd.getErweitertNummerAsLong());
         }
+        if (cmd.getVorgangAuswaehlen() != null && cmd.getVorgangAuswaehlen().length > 0) {
+          conds.add("vo.id in (" + StringUtils.join(cmd.getVorgangAuswaehlen(), ",")  + ")");
+        }
+        
         //Kategorie
         if (cmd.getErweitertKategorie() != null) {
           conds.add("vo.kategorie = " + cmd.getErweitertKategorie().getId());
@@ -320,6 +329,13 @@ public class VorgangDao {
             conds.add("vo.zustaendigkeit = '" + cmd.getErweitertZustaendigkeit() + "'");
           }
         }
+        if (!StringUtils.isBlank(cmd.getAuftragTeam())) {
+          conds.add("auftrag.team = '" + cmd.getAuftragTeam() + "'");
+        }
+        if (cmd.getAuftragDatum() != null) {
+          java.sql.Date auftragDatum = new java.sql.Date(DateUtils.truncate(cmd.getAuftragDatum(), Calendar.DAY_OF_MONTH).getTime());
+          conds.add("auftrag.datum = '" + auftragDatum + "'");
+        }
         //DelegiertAn
         if (!StringUtils.isBlank(cmd.getErweitertDelegiertAn())) {
           conds.add("vo.delegiert_an = '" + cmd.getErweitertDelegiertAn() + "'");
@@ -332,6 +348,15 @@ public class VorgangDao {
         if (cmd.getErweitertDatumBis() != null) {
           java.sql.Date datumBis = new java.sql.Date(DateUtils.truncate(cmd.getErweitertDatumBis(), Calendar.DAY_OF_MONTH).getTime());
           conds.add("vo.datum <= '" + datumBis.toString() + "'");
+        }
+        //Datum
+        if (cmd.getAktualisiertVon() != null) {
+          java.sql.Date datumVon = new java.sql.Date(DateUtils.truncate(cmd.getAktualisiertVon(), Calendar.DAY_OF_MONTH).getTime());
+          conds.add("vo.version >= '" + datumVon.toString() + "'");
+        }
+        if (cmd.getAktualisiertBis() != null) {
+          java.sql.Date datumBis = new java.sql.Date(DateUtils.truncate(cmd.getAktualisiertBis(), Calendar.DAY_OF_MONTH).getTime());
+          conds.add("vo.version <= '" + datumBis.toString() + "'");
         }
         //Archiviert
         if (cmd.getErweitertArchiviert() != null) {
@@ -543,6 +568,8 @@ public class VorgangDao {
     // Für Sortierung
     sql.append(" LEFT JOIN klarschiff_kategorie kat_unter ON vo.kategorie = kat_unter.id");
     sql.append(" LEFT JOIN klarschiff_kategorie kat_haupt ON kat_unter.parent = kat_haupt.id");
+    // Für Auftrag
+    sql.append(" LEFT JOIN klarschiff_auftrag auftrag ON vo.id = auftrag.vorgang");
     // Änderungsdatum
     sql.append(" INNER JOIN (SELECT vorgang, MAX(datum) AS datum FROM klarschiff_verlauf")
             .append(" GROUP BY vorgang) verlauf1 ON vo.id = verlauf1.vorgang");
