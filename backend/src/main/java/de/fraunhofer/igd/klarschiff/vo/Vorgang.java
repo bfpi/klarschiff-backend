@@ -33,10 +33,15 @@ import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.PrecisionModel;
 import com.vividsolutions.jts.io.WKTReader;
 import com.vividsolutions.jts.io.WKTWriter;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.geotools.geometry.jts.JTS;
+import org.geotools.referencing.CRS;
 import org.hibernate.annotations.Where;
+import org.opengis.geometry.MismatchedDimensionException;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.operation.TransformException;
 
 /**
  * VO zum Abbilden eines Vorganges.
@@ -218,6 +223,7 @@ public class Vorgang implements Serializable {
 	/**
 	 * Liste von Lob, Hinweisen oder Kritik zum Vorgang
 	 */
+    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "vorgang")
     @Where(clause = "geloescht = 'false'")
     private List<Kommentar> kommentare = new ArrayList<Kommentar>();
@@ -305,6 +311,24 @@ public class Vorgang implements Serializable {
     public String getOviWkt() {
     	return (ovi==null) ? null : wktWriter.write(ovi);
     }
+
+    /**
+     * Lesen der Position als LatLong
+     * @return Position als LatLong
+     */
+    @Transient
+    public String getPositionWGS84() throws FactoryException, MismatchedDimensionException, TransformException {
+      if(ovi==null) {
+        return null;
+      }
+      
+      CoordinateReferenceSystem sourceCRS = CRS.decode("EPSG:25833");
+      CoordinateReferenceSystem targetCRS = CRS.decode("EPSG:4326");
+      Point p = ovi;
+      p = JTS.transform(p,CRS.findMathTransform(sourceCRS,targetCRS)).getCentroid();
+      return p.toString();
+    }
+    
     
     /**
      * Existiert ein Foto zum Vorgang?
@@ -593,5 +617,26 @@ public class Vorgang implements Serializable {
 
   public void setAuftrag(Auftrag auftrag) {
     this.auftrag = auftrag;
+  }
+
+  public String getAuftragTeam() {
+    if(getAuftrag() == null) {
+      return null;
+    }
+    return getAuftrag().getTeam();
+  }
+  
+  public Date getAuftragDatum() {
+    if(getAuftrag() == null) {
+      return null;
+    }
+    return getAuftrag().getDatum();
+  }
+  
+  public Integer getAuftragPrioritaet() {
+    if(getAuftrag() == null) {
+      return null;
+    }
+    return getAuftrag().getPrioritaet();
   }
 }

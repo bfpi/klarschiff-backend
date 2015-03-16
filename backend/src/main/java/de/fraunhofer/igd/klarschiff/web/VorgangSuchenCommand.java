@@ -45,6 +45,8 @@ public class VorgangSuchenCommand implements Serializable {
 	Kategorie erweitertKategorie;
 	Date erweitertDatumVon;
 	Date erweitertDatumBis;
+	Date aktualisiertVon;
+	Date aktualisiertBis;
 	EnumVorgangStatus[] erweitertVorgangStatus;
 	Boolean erweitertArchiviert;
 	String erweitertZustaendigkeit;
@@ -200,6 +202,22 @@ public class VorgangSuchenCommand implements Serializable {
 		this.erweitertDatumBis = erweitertDatumBis;
 	}
 
+  public Date getAktualisiertVon() {
+    return aktualisiertVon;
+  }
+
+  public void setAktualisiertVon(Date aktualisiertVon) {
+    this.aktualisiertVon = aktualisiertVon;
+  }
+
+  public Date getAktualisiertBis() {
+    return aktualisiertBis;
+  }
+
+  public void setAktualisiertBis(Date aktualisiertBis) {
+    this.aktualisiertBis = aktualisiertBis;
+  }
+  
 	public EnumVorgangStatus[] getErweitertVorgangStatus() {
 		return erweitertVorgangStatus;
 	}
