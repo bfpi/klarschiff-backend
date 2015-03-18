@@ -1,46 +1,45 @@
 <jsp:root 
-	xmlns:c="http://java.sun.com/jsp/jstl/core" 
-	xmlns:fn="http://java.sun.com/jsp/jstl/functions" 
-	xmlns:spring="http://www.springframework.org/tags" 
-	xmlns:jsp="http://java.sun.com/JSP/Page" 
-	version="2.0"
-	>
-	<jsp:directive.page contentType="text/html;charset=UTF-8"/>
+  xmlns:c="http://java.sun.com/jsp/jstl/core" 
+  xmlns:fn="http://java.sun.com/jsp/jstl/functions" 
+  xmlns:spring="http://www.springframework.org/tags" 
+  xmlns:jsp="http://java.sun.com/JSP/Page" 
+  version="2.0"
+  >
+  <jsp:directive.page contentType="text/html;charset=UTF-8"/>
 
-	<!-- CONTENTTITLE -->
-	<div id="root_style_content_title">
-		Impressum
-	</div>
-	
-	<!-- CONTENT -->
-	<div id="root_style_content">
-		<div style="position:relative">
-					Konzept und Betreuung:<br/>
-					<br/>
-					Hansestadt Greifswald<br/>
-					Kataster-, Vermessungs- und Liegenschaftsamt<br/>
-					Holbeinplatz 14<br/>					
-					18069 Greifswald<br/>					
-					Telefon: +49-381-3816281<br/>					
-					Telefax: +49-381-3816902<br/>					
-					E-Mail: <a href="mailto:klarschiff.hro@greifswald.de">klarschiff.hro@greifswald.de</a>
-            <div style="position:absolute;top:0px;left:350px">
-					Technische Realisierung:<br/>					
-					<br/>					
-					Fraunhofer IGD<br/>					
-                	Joachim-Jungius-Straße 11<br/>					
-					18059 Greifswald<br/>					
-					Telefon: +49-381-4024110<br/>					
-					Telefax: +49-381-4024199<br/>					
-					E-Mail: <a href="mailto:info@igd-r.fraunhofer.de">info@igd-r.fraunhofer.de</a>
-			</div>
-		</div>
-		<br/>
-		<br/>
-		Lizenzbestimmungen:<br/>
-		<br/>
-		Das Backend von Klarschiff ist unter der Freien-Software-Lizenz <a href="http://www.apache.org/licenses/LICENSE-2.0.html" target="_blank">Apache License v2.0</a> auf <a href="https://github.com/greifswald/klarschiff-backend" target="_blank">GitHub</a> veröffentlicht.
-	</div>
-	
+  <!-- CONTENTTITLE -->
+  <div id="root_style_content_title">
+    Impressum
+  </div>
+
+  <!-- CONTENT -->
+  <div id="root_style_content">
+    <div style="position:relative">
+      Konzept und Betreuung:<br/>
+      <br/>
+      Universitäts- und Hansestadt Greifswald<br/>
+      Haupt- und Personalamt<br/>
+      Abteilung Informations- und Kommunikationstechnik<br/>
+      Postfach 3153<br/>
+      17461 Greifswald<br/>
+      Telefon: +49-3834-8536-3100<br/>
+      E-Mail: <a href="mailto:presse@greifswald.de">presse@greifswald.de</a>
+      <div style="position:absolute;top:0px;left:350px">
+        Technische Realisierung:<br/>
+        <br/>
+        BFPI Büro für praktische Informatik GmbH<br/>
+        Alter Holzhafen 17a<br/>
+        23966 Wismar<br/>
+        Telefon: +49-3841-758-1210<br/>
+        Telefax: +49-3841-758-1211<br/>
+        E-Mail: <a href="mailto:info@bfpi.de">info@bfpi.de</a>
+      </div>
+    </div>
+    <br/>
+    <br/>
+    Lizenzbestimmungen:<br/>
+    <br/>
+    Das Backend von Klarschiff ist unter der Freien-Software-Lizenz <a href="http://www.apache.org/licenses/LICENSE-2.0.html" target="_blank">Apache License v2.0</a> auf <a href="https://github.com/greifswald/klarschiff-backend" target="_blank">GitHub</a> veröffentlicht.
+  </div>
 
 </jsp:root>
