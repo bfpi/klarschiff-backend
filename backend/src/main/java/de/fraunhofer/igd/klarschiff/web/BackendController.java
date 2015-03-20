@@ -100,7 +100,7 @@ public class BackendController {
 	 * @param kategorie Kategorie
 	 * @param oviWkt Position als WKT
 	 * @param positionWGS84
-	 * @param resultIdOnSubmit <code>true</code> - gibt die ID des Vorgangs als Ergebnis zurück
+	 * @param resultObjectOnSubmit <code>true</code> - gibt den neuen Vorgangs als Ergebnis zurück
 	 * @param resultHashOnSubmit <code>true</code> - gibt den Hash zum Bestätigen als Ergebnis zurück
 	 * @param typ Vorgangstyp
 	 * @param response Response in das das Ergebnis direkt geschrieben wird
@@ -117,7 +117,7 @@ public class BackendController {
 			@RequestParam(value = "kategorie", required = false) Long kategorie,
 			@RequestParam(value = "oviWkt", required = false) String oviWkt,
 			@RequestParam(value = "positionWGS84", required = false) String positionWGS84,
-			@RequestParam(value = "resultIdOnSubmit", required = false) Boolean resultIdOnSubmit, 
+			@RequestParam(value = "resultObjectOnSubmit", required = false) Boolean resultObjectOnSubmit, 
 			@RequestParam(value = "resultHashOnSubmit", required = false) Boolean resultHashOnSubmit, 
 			@RequestParam(value = "typ", required = false) String typ, 
       
@@ -126,8 +126,8 @@ public class BackendController {
 		if (resultHashOnSubmit == null) {
       resultHashOnSubmit = false;
     }
-		if (resultIdOnSubmit == null) {
-      resultIdOnSubmit = false;
+		if (resultObjectOnSubmit == null) {
+      resultObjectOnSubmit = false;
     }
 		try {
 			Vorgang vorgang = new Vorgang();
@@ -175,6 +175,10 @@ public class BackendController {
 			
 			vorgang.setDatum(new Date());
 			vorgang.setPrioritaet(EnumPrioritaet.mittel);
+      if(fotowunsch == null) {
+        fotowunsch = false;
+      }
+      vorgang.setFotowunsch(fotowunsch);
       
       Boolean intern = false;
       if(authCode != null && authCode.equals(settingsService.getPropertyValue("auth.kod_code")) && vorgang.autorIntern()) {
@@ -199,8 +203,8 @@ public class BackendController {
 
       if (resultHashOnSubmit) {
         sendOk(response, vorgang.getHash());
-      } else if (resultIdOnSubmit) {
-        sendOk(response, vorgang.getId().toString());
+      } else if (resultObjectOnSubmit) {
+        sendOk(response, mapper.writeValueAsString(vorgang));
       } else {
         sendOk(response);
       }
@@ -282,6 +286,7 @@ public class BackendController {
 	 * Beschreibung: erstellt eine Unterstützung für ein Vorgang
 	 * @param vorgang Vorgang
 	 * @param email E-Mail-Adresse des Erstellers
+	 * @param resultObjectOnSubmit <code>true</code> - gibt den neuen Vorgangs als Ergebnis zurück
 	 * @param resultHashOnSubmit <code>true</code> - gibt den Hash zum Bestätigen als Ergebnis zurück
 	 * @param response Response in das das Ergebnis direkt geschrieben wird
 	 */
@@ -290,6 +295,7 @@ public class BackendController {
 	public void unterstuetzer(
 			@RequestParam(value = "vorgang", required = false) Long vorgang, 
 			@RequestParam(value = "email", required = false) String email, 
+			@RequestParam(value = "resultObjectOnSubmit", required = false) Boolean resultObjectOnSubmit, 
 			@RequestParam(value = "resultHashOnSubmit", required = false) Boolean resultHashOnSubmit, 
 			HttpServletResponse response) {
 		if (resultHashOnSubmit==null) resultHashOnSubmit=false;
@@ -310,8 +316,13 @@ public class BackendController {
 
 			vorgangDao.persist(unterstuetzer);
 			
-			if (resultHashOnSubmit==true) sendOk(response, unterstuetzer.getHash());
-			else sendOk(response);
+      if (resultHashOnSubmit) {
+        sendOk(response, unterstuetzer.getHash());
+      } else if (resultObjectOnSubmit) {
+        sendOk(response, mapper.writeValueAsString(unterstuetzer));
+      } else {
+        sendOk(response);
+      }
 
 			mailService.sendUnterstuetzerBestaetigungMail(unterstuetzer, email, vorgang);
 			
