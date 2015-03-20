@@ -91,29 +91,44 @@ public class BackendController {
 	/**
 	 * Die Methode verarbeitet den POST-Request auf der URL <code>/service/vorgang</code><br/>
 	 * Beschreibung: erstellt einen neuen Vorgang
-	 * @param typ Vorgangstyp
-	 * @param kategorie Kategorie
-	 * @param oviWkt Position als WKT
+	 * @param authCode
 	 * @param autorEmail E-Mail-Adresse des Erstellers
 	 * @param betreff Betreff
-	 * @param details Details
 	 * @param bild Foto base64 kodiert
+	 * @param details Details
+	 * @param fotowunsch
+	 * @param kategorie Kategorie
+	 * @param oviWkt Position als WKT
+	 * @param positionWGS84
+	 * @param resultIdOnSubmit <code>true</code> - gibt die ID des Vorgangs als Ergebnis zurück
 	 * @param resultHashOnSubmit <code>true</code> - gibt den Hash zum Bestätigen als Ergebnis zurück
+	 * @param typ Vorgangstyp
 	 * @param response Response in das das Ergebnis direkt geschrieben wird
 	 */
 	@RequestMapping(value="/vorgang", method = RequestMethod.POST)
 	@ResponseBody
 	public void vorgang(
-			@RequestParam(value = "typ", required = false) String typ, 
-			@RequestParam(value = "kategorie", required = false) Long kategorie,
-			@RequestParam(value = "oviWkt", required = false) String oviWkt,
+			@RequestParam(value = "authCode", required = false) String authCode,
 			@RequestParam(value = "autorEmail", required = false) String autorEmail,
 			@RequestParam(value = "betreff", required = false) String betreff,
-			@RequestParam(value = "details", required = false) String details,
 			@RequestParam(value = "bild", required = false) String bild,
+			@RequestParam(value = "details", required = false) String details,
+			@RequestParam(value = "fotowunsch", required = false) Boolean fotowunsch, 
+			@RequestParam(value = "kategorie", required = false) Long kategorie,
+			@RequestParam(value = "oviWkt", required = false) String oviWkt,
+			@RequestParam(value = "positionWGS84", required = false) String positionWGS84,
+			@RequestParam(value = "resultIdOnSubmit", required = false) Boolean resultIdOnSubmit, 
 			@RequestParam(value = "resultHashOnSubmit", required = false) Boolean resultHashOnSubmit, 
+			@RequestParam(value = "typ", required = false) String typ, 
+      
 			HttpServletResponse response) {
-		if (resultHashOnSubmit==null) resultHashOnSubmit=false;
+    
+		if (resultHashOnSubmit == null) {
+      resultHashOnSubmit = false;
+    }
+		if (resultIdOnSubmit == null) {
+      resultIdOnSubmit = false;
+    }
 		try {
 			Vorgang vorgang = new Vorgang();
 			
@@ -127,13 +142,26 @@ public class BackendController {
 					|| vorgang.getKategorie().getParent()==null
 					|| vorgang.getKategorie().getParent().getTyp()!=vorgang.getTyp()) throw new BackendControllerException(4, "[kategorie] nicht korrekt", "Die Kategorie ist nicht gültig.");
 			
-			if (oviWkt==null) throw new BackendControllerException(5, "[oviWkt] fehlt", "Die Orstangabe fehlt.");
-			try {
-				vorgang.setOviWkt(oviWkt);
-			}catch (Exception e) {
-				throw new BackendControllerException(6, "[oviWkt] nicht korrekt", "Die Ortsangabe ist nicht korrekt.", e);
-			}
-
+      if (positionWGS84 == null || positionWGS84.length() == 0) {
+        throw new BackendControllerException(5, "[positionWGS84] fehlt", "Die Orstangabe fehlt.");
+      }
+      try {
+        vorgang.setPositionWGS84(positionWGS84);
+      } catch (Exception e) {
+        throw new BackendControllerException(6, "[positionWGS84] nicht korrekt", "Die Ortsangabe ist nicht korrekt.", e);
+      }
+      
+      if(vorgang.getOviWkt() == null) {
+        if (oviWkt == null || oviWkt.length() == 0) {
+          throw new BackendControllerException(5, "[oviWkt] fehlt", "Die Orstangabe fehlt.");
+        }
+        try {
+          vorgang.setOviWkt(oviWkt);
+        } catch (Exception e) {
+          throw new BackendControllerException(6, "[oviWkt] nicht korrekt", "Die Ortsangabe ist nicht korrekt.", e);
+        }
+      }
+      
 			if (StringUtils.isBlank(autorEmail)) throw new BackendControllerException(7, "[autorEmail] fehlt", "Die E-Mail-Adresse fehlt.");
 			if (!isMaxLength(autorEmail, 300)) throw new BackendControllerException(8, "[autorEmail] zu lang", "Die E-Mail-Adresse ist zu lang.");
 			if (!isEmail(autorEmail)) throw new BackendControllerException(9, "[autorEmail] nicht korrekt", "Die E-Mail-Adresse ist nicht gültig.");
@@ -146,9 +174,18 @@ public class BackendController {
 			vorgang.setDetails(details);
 			
 			vorgang.setDatum(new Date());
-			vorgang.setStatus(EnumVorgangStatus.gemeldet);
 			vorgang.setPrioritaet(EnumPrioritaet.mittel);
-						
+      
+      Boolean intern = false;
+      if(authCode != null && authCode.equals(settingsService.getPropertyValue("auth.kod_code")) && vorgang.autorIntern()) {
+        intern = true;
+        vorgang.setStatus(EnumVorgangStatus.offen);
+        
+        vorgang.setZustaendigkeit(classificationService.calculateZustaendigkeitforVorgang(vorgang).getId());
+        vorgang.setZustaendigkeitStatus(EnumZustaendigkeitStatus.zugewiesen);
+      } else {
+        vorgang.setStatus(EnumVorgangStatus.gemeldet);
+      }
 			vorgangDao.persist(vorgang);
 
 			if (bild!=null) {
@@ -160,104 +197,19 @@ public class BackendController {
 				vorgangDao.merge(vorgang);
 			}
 
-			if (resultHashOnSubmit==true) sendOk(response, vorgang.getHash());
-			else sendOk(response);
+      if (resultHashOnSubmit) {
+        sendOk(response, vorgang.getHash());
+      } else if (resultIdOnSubmit) {
+        sendOk(response, vorgang.getId().toString());
+      } else {
+        sendOk(response);
+      }
 
-			mailService.sendVorgangBestaetigungMail(vorgang);
+      if (!intern) {
+        mailService.sendVorgangBestaetigungMail(vorgang);
+      }
 		} catch (Exception e) {
 			logger.warn("Fehler bei BackendController.vorgang:", e);
-			sendError(response, e);
-		}
-	}
-
-	/**
-	 * Die Methode verarbeitet den POST-Request auf der URL <code>/service/vorgangKOD</code><br/>
-	 * Beschreibung: erstellt einen neuen Vorgang des kommunalen Ordnungsdienstes,
-	 * im Gegensatz zum "normalen" Erstellen eines Vorgangs wird der Status
-	 * direkt auf offen gesetzt, damit ist keine Bestätigungs E-Mail notwendig.
-	 * @param typ Vorgangstyp
-	 * @param kategorie Kategorie
-	 * @param oviWkt Position als WKT
-	 * @param autorEmail E-Mail-Adresse des Erstellers
-	 * @param betreff Betreff
-	 * @param details Details
-	 * @param bild Foto base64 kodiert
-	 * @param response Response in das das Ergebnis direkt geschrieben wird
-	 */
-	@RequestMapping(value="/vorgangKOD", method = RequestMethod.POST)
-	@ResponseBody
-	public void vorgangKOD(
-			@RequestParam(value = "typ", required = false) String typ, 
-			@RequestParam(value = "kategorie", required = false) Long kategorie,
-			@RequestParam(value = "oviWkt", required = false) String oviWkt,
-			@RequestParam(value = "autorEmail", required = false) String autorEmail,
-			@RequestParam(value = "betreff", required = false) String betreff,
-			@RequestParam(value = "details", required = false) String details,
-			@RequestParam(value = "bild", required = false) String bild,
-			@RequestParam(value = "authCode", required = false) String authCode,
-			HttpServletResponse response) {
-		try {
-      if (settingsService.getPropertyValue("kod.auth_code") == null) {
-        throw new BackendControllerException(13, "[authCode] nicht konfiguriert", "Es wurde kein kod.auth_code konfiguriert.");
-      }
-      logger.info("kod.auth_code" + settingsService.getPropertyValue("kod.auth_code"));
-      logger.info("param authCode" + authCode);
-      if (!settingsService.getPropertyValue("kod.auth_code").equals(authCode)) {
-        throw new BackendControllerException(12, "[authCode] nicht korrekt", "Falscher AuthCode");
-      }
-			Vorgang vorgang = new Vorgang();
-			
-			if (StringUtils.isBlank(typ)) throw new BackendControllerException(1, "[typ] fehlt", "Der Typ ist nicht angegeben.");
-			vorgang.setTyp(EnumVorgangTyp.valueOf(typ));
-			if (vorgang.getTyp()==null) throw new BackendControllerException(2, "[typ] nicht korrekt", "Der Typ ist nicht korrekt.");
-			
-			if (kategorie==null) throw new BackendControllerException(3, "[kategorie] fehlt", "Die Angaben zur Kategorie fehlen.");
-			vorgang.setKategorie(kategorieDao.findKategorie(kategorie));
-			if (vorgang.getKategorie()==null 
-					|| vorgang.getKategorie().getParent()==null
-					|| vorgang.getKategorie().getParent().getTyp()!=vorgang.getTyp()) throw new BackendControllerException(4, "[kategorie] nicht korrekt", "Die Kategorie ist nicht gültig.");
-			
-			if (oviWkt==null) throw new BackendControllerException(5, "[oviWkt] fehlt", "Die Orstangabe fehlt.");
-			try {
-				vorgang.setOviWkt(oviWkt);
-			}catch (Exception e) {
-				throw new BackendControllerException(6, "[oviWkt] nicht korrekt", "Die Ortsangabe ist nicht korrekt.", e);
-			}
-
-			if (StringUtils.isBlank(autorEmail)) throw new BackendControllerException(7, "[autorEmail] fehlt", "Die E-Mail-Adresse fehlt.");
-			if (!isMaxLength(autorEmail, 300)) throw new BackendControllerException(8, "[autorEmail] zu lang", "Die E-Mail-Adresse ist zu lang.");
-			if (!isEmail(autorEmail)) throw new BackendControllerException(9, "[autorEmail] nicht korrekt", "Die E-Mail-Adresse ist nicht gültig.");
-			vorgang.setAutorEmail(autorEmail);
-			
-			if (!isMaxLength(betreff, 300)) throw new BackendControllerException(10, "[betreff] zu lang", "Der Betreff ist zu lang. Es sind maximal 300 Zeichen erlaubt.");
-			vorgang.setBetreff(betreff);
-			
-			vorgang.setDetails(details);
-            
-			vorgang.setDatum(new Date());
-			vorgang.setStatus(EnumVorgangStatus.offen);
-			vorgang.setPrioritaet(EnumPrioritaet.mittel);
-						
-			vorgangDao.persist(vorgang);
-            
-            if (bild!=null) {
-				try {
-					imageService.setImageForVorgang(Base64.decode(bild.getBytes()), vorgang);
-				} catch (Exception e) {
-					throw new BackendControllerException(11, "[bild] nicht korrekt", "Das Bild ist fehlerhaft und kann nicht verarbeitewt werden.", e);
-				}
-				vorgangDao.merge(vorgang);
-			}
-
-			sendOk(response);
-
-			vorgang.setZustaendigkeit(classificationService.calculateZustaendigkeitforVorgang(vorgang).getId());
-			vorgang.setZustaendigkeitStatus(EnumZustaendigkeitStatus.zugewiesen);
-			vorgangDao.merge(vorgang);
-
-			sendOk(response, vorgang.getId().toString());
-		} catch (Exception e) {
-			logger.warn("Fehler bei BackendController.vorgangKOD:", e);
 			sendError(response, e);
 		}
 	}
@@ -447,13 +399,54 @@ public class BackendController {
 		}
 	}
 
+  /**
+   * Die Methode verarbeitet den GET-Request auf der URL <code>/service/kommentar</code><br/>
+   * Beschreibung: holt interne Kommentare zu einem Vorgang
+   * @param vorgang_id Vorgang-ID
+   * @param response Response in das das Ergebnis direkt geschrieben wird
+   */
+  @RequestMapping(value="/kommentar", method = RequestMethod.GET)
+  @ResponseBody
+  public void kommentar(
+      @RequestParam(value = "vorgang_id", required = false) Long vorgang_id,
+      HttpServletResponse response) {
+    
+    try {
+      Vorgang vorgang = vorgangDao.findVorgang(vorgang_id);
+      sendOk(response, mapper.writeValueAsString(vorgang.getKommentare()));
+    } catch (Exception ex) {
+      java.util.logging.Logger.getLogger(BackendController.class.getName()).log(Level.SEVERE, null, ex);
+      sendError(response, ex);
+    }
+  }
+
+  /**
+   * Die Methode verarbeitet den GET-Request auf der URL <code>/service/lobHinweiseKritik</code><br/>
+   * Beschreibung: holt Lob, Hinweise oder Kritik zu einem Vorgang
+   * @param vorgang_id Vorgang-ID
+   * @param response Response in das das Ergebnis direkt geschrieben wird
+   */
+  @RequestMapping(value="/lobHinweiseKritik", method = RequestMethod.GET)
+  @ResponseBody
+  public void lobHinweiseKritik(
+      @RequestParam(value = "vorgang_id", required = false) Long vorgang_id,
+      HttpServletResponse response) {
+
+    try {
+      Vorgang vorgang = vorgangDao.findVorgang(vorgang_id);
+      sendOk(response, mapper.writeValueAsString(vorgang.getLobHinweiseKritik()));
+    } catch (Exception ex) {
+      java.util.logging.Logger.getLogger(BackendController.class.getName()).log(Level.SEVERE, null, ex);
+      sendError(response, ex);
+    }
+  }
 	
 	/**
 	 * Die Methode verarbeitet den POST-Request auf der URL <code>/service/lobHinweiseKritik</code><br/>
 	 * Beschreibung: erstellt Lob, Hinweise oder Kritik zu einem Vorgang
 	 * @param vorgang Vorgang
 	 * @param email E-Mail-Adresse des Erstellers
-     * @param freitext Freitext
+	 * @param freitext Freitext
 	 * @param response Response in das das Ergebnis direkt geschrieben wird
 	 */
 	@RequestMapping(value="/lobHinweiseKritik", method = RequestMethod.POST)
