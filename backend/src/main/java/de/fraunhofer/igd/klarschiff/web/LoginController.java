@@ -47,8 +47,6 @@ public class LoginController {
     		ModelMap model, 
     		HttpServletRequest request) 
 	{
-		//securityService.getCurrentUser();
-		//securityService.findAllUsers();
 		if (request.getParameter("access_denied_error")!=null) model.addAttribute("accessDeniedError", true);
 		if (request.getParameter("login_error")!=null) model.addAttribute("loginError", true);
 		return "login";
