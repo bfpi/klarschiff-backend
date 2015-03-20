@@ -156,8 +156,8 @@ public class VorgangController {
 	/**
 	 * Die Methode verarbeitet den POST-Request auf der URL <code>/vorgang/{id}/foto</code><br/>
 	 * Funktionsbeschreibung: Dient in Abhängigkeit vom <code>action</code> Parameter der Annahme
-	 * der Fotodrehung (<code>action=fotoRotate</code>), der Fotobearbeitung (<code>action=fotoSave</code>) oder der Freigabestatusänderung
-	 * (<code>action.startsWith("freigabeStatus_Foto")</code>.
+	 * der Fotodrehung (<code>action=fotoRotate</code>), der Fotobearbeitung (<code>action=fotoSave</code>), der Freigabestatusänderung
+	 * (<code>action.startsWith("freigabeStatus_Foto")</code> oder des Fotowunsches (<code>action=fotowunsch</code>).
 	 * @param id Vorgangs-ID
 	 * @param model Model in dem ggf. Daten für die View abgelegt werden
 	 * @param request Request
@@ -192,6 +192,9 @@ public class VorgangController {
 			try {
 				imageService.setImageForVorgang(foto.getBytes(), vorgang);
 			} catch(Exception e) {}
+		} else if (action.equals("fotowunsch")) {
+			vorgang.setFotowunsch(!vorgang.getFotowunsch());
+			vorgangDao.merge(vorgang);
 		}
 		model.put("vorgang", vorgang);
 		return "vorgang/foto";

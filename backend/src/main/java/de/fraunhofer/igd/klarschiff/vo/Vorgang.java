@@ -31,8 +31,11 @@ import org.springframework.format.annotation.DateTimeFormat;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.PrecisionModel;
+import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
 import com.vividsolutions.jts.io.WKTWriter;
+import de.fraunhofer.igd.klarschiff.service.settings.SettingsService;
+import javax.persistence.Column;
 import javax.persistence.OneToOne;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.geotools.geometry.jts.JTS;
@@ -218,15 +221,15 @@ public class Vorgang implements Serializable {
 	 */
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "vorgang")
-    private List<LobHinweiseKritik> lobHinweiseKritik = new ArrayList<LobHinweiseKritik>();
+    @Where(clause = "geloescht = 'false'")
+    private List<Kommentar> kommentare = new ArrayList<Kommentar>();
 	
 	/**
 	 * Liste von Lob, Hinweisen oder Kritik zum Vorgang
 	 */
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "vorgang")
-    @Where(clause = "geloescht = 'false'")
-    private List<Kommentar> kommentare = new ArrayList<Kommentar>();
+    private List<LobHinweiseKritik> lobHinweiseKritik = new ArrayList<LobHinweiseKritik>();
 
     /**
      * Liste der Verlaufseintr‰ge
@@ -275,6 +278,12 @@ public class Vorgang implements Serializable {
      */
     Boolean archiviert;
     
+    /**
+     * ein Wunsch nach einem Foto wurde ge‰uﬂert
+     */
+    @Column( nullable = false, columnDefinition = "boolean default false")
+    Boolean fotowunsch;
+    
 	/* --------------- transient ----------------------------*/
     
     @Transient
@@ -285,6 +294,9 @@ public class Vorgang implements Serializable {
     
     @Transient
     private static WKTWriter wktWriter = new WKTWriter();
+    
+    @Transient
+    private static SettingsService settingsService = new SettingsService();
 
     /**
      *Auftrag zu dem Vorgang
@@ -327,6 +339,22 @@ public class Vorgang implements Serializable {
       Point p = ovi;
       p = JTS.transform(p,CRS.findMathTransform(sourceCRS,targetCRS)).getCentroid();
       return p.toString();
+    }
+
+    /**
+     * Schreiben der WGS84Position als LatLong
+     * @return Position als LatLong
+     */
+    @Transient
+    public void setPositionWGS84(String position) throws ParseException, FactoryException, MismatchedDimensionException, TransformException  {
+      if(position != null) {
+        Point p = (Point)wktReader.read(position);
+                
+        CoordinateReferenceSystem sourceCRS = CRS.decode("EPSG:4326");
+        CoordinateReferenceSystem targetCRS = CRS.decode("EPSG:25833");
+        p = JTS.transform(p,CRS.findMathTransform(sourceCRS,targetCRS)).getCentroid();
+        ovi = p;
+      }
     }
     
     
@@ -437,7 +465,26 @@ public class Vorgang implements Serializable {
 	public void setAutorEmail(String autorEmail) {
         this.autorEmail = autorEmail;
     }
-
+  
+  public Boolean autorIntern() {
+    if(this.autorEmail == null) {
+      return false;
+    }
+    return this.autorEmail.matches(settingsService.getPropertyValue("auth.internal_author_match"));
+  }
+  
+  public Integer getTrustLevel() {
+    int trust_level = 0;
+    
+    if(getStatus() != EnumVorgangStatus.gemeldet) {
+      trust_level = 1;
+      if(autorIntern()) {
+        trust_level = 2;
+      }
+    }
+    return trust_level;
+  }
+  
 	public List<Kommentar> getKommentare() {
         return this.kommentare;
     }
@@ -473,6 +520,13 @@ public class Vorgang implements Serializable {
 	public List<Unterstuetzer> getUnterstuetzer() {
         return this.unterstuetzer;
     }
+
+  public Integer getUnterstuetzerCount() {
+    if(this.unterstuetzer == null) {
+      return 0;
+    }
+    return this.unterstuetzer.size();
+  }
 
 	public void setUnterstuetzer(List<Unterstuetzer> unterstuetzer) {
         this.unterstuetzer = unterstuetzer;
@@ -603,6 +657,14 @@ public class Vorgang implements Serializable {
 		this.archiviert = archiviert;
 	}
 
+  public Boolean getFotowunsch() {
+    return fotowunsch;
+  }
+
+  public void setFotowunsch(boolean fotowunsch) {
+    this.fotowunsch = fotowunsch;
+  }
+  
 	public boolean getErstsichtungErfolgt() {
 		return erstsichtungErfolgt;
 	}
@@ -639,4 +701,5 @@ public class Vorgang implements Serializable {
     }
     return getAuftrag().getPrioritaet();
   }
+  
 }

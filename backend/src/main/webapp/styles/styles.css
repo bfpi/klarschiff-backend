@@ -794,6 +794,10 @@ button#uploadSubmitButton, button#uploadCancelButton {
 	height: 26px;
 }
 
+span.fotowunschWrap {
+  margin-right: 10px;
+}
+
 button#uploadButton, form#uploadForm {
   margin-left: 10px;
 }
