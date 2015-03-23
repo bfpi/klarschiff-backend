@@ -956,6 +956,7 @@ public class BackendController {
         if(agency_responsible != null) {
           cmd.setAuftragTeam(agency_responsible);
           cmd.setAuftragDatum(new Date());
+          cmd.setOrder(8);
         }
         
         List<Object[]> vg = vorgangDao.getVorgaenge(cmd);

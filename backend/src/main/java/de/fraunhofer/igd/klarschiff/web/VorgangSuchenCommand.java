@@ -72,6 +72,7 @@ public class VorgangSuchenCommand implements Serializable {
 			case 5: return "vo.adresse";
 			case 6: return "un.count";
 			case 7: return "vo.zustaendigkeit";
+			case 8: return "auftrag.prioritaet, vo.datum";
 			default: return "";
 		}
 	}
