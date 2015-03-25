@@ -123,6 +123,7 @@ public class VorgangDao {
 			if (vorgangOld.getBetreffFreigabeStatus() != vorgang.getBetreffFreigabeStatus()) verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.betreffFreigabeStatus, vorgangOld.getBetreffFreigabeStatus().getText(), vorgang.getBetreffFreigabeStatus().getText());
 			if (vorgangOld.getDetailsFreigabeStatus() != vorgang.getDetailsFreigabeStatus()) verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.detailsFreigabeStatus, vorgangOld.getDetailsFreigabeStatus().getText(), vorgang.getDetailsFreigabeStatus().getText());
 			if (vorgangOld.getFotoFreigabeStatus() != vorgang.getFotoFreigabeStatus()) verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.fotoFreigabeStatus, vorgangOld.getFotoFreigabeStatus().getText(), vorgang.getFotoFreigabeStatus().getText());
+			if (vorgangOld.getFotowunsch() != vorgang.getFotowunsch()) verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.fotowunsch, vorgangOld.getFotowunsch() ? "aktiv" : "inaktiv", vorgang.getFotowunsch() ? "aktiv" : "inaktiv");
 			//Typ
 			if (vorgangOld.getTyp() != vorgang.getTyp()) verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.typ, vorgangOld.getTyp().getText(), vorgang.getTyp().getText());
 			//Kategorie

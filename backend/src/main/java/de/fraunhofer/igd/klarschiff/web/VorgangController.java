@@ -193,6 +193,7 @@ public class VorgangController {
 				imageService.setImageForVorgang(foto.getBytes(), vorgang);
 			} catch(Exception e) {}
 		} else if (action.equals("fotowunsch")) {
+			verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.fotowunsch, vorgang.getFotowunsch() ? "aktiv" : "inaktiv", vorgang.getFotowunsch() ? "inaktiv" : "aktiv");
 			vorgang.setFotowunsch(!vorgang.getFotowunsch());
 			vorgangDao.merge(vorgang);
 		}
