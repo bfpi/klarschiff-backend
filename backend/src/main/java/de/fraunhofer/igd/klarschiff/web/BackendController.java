@@ -27,6 +27,7 @@ import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
 import de.fraunhofer.igd.klarschiff.service.settings.SettingsService;
 import de.fraunhofer.igd.klarschiff.vo.Auftrag;
 import de.fraunhofer.igd.klarschiff.vo.EnumAuftragStatus;
+import de.fraunhofer.igd.klarschiff.vo.EnumFreigabeStatus;
 import de.fraunhofer.igd.klarschiff.vo.EnumPrioritaet;
 import de.fraunhofer.igd.klarschiff.vo.EnumVerlaufTyp;
 import de.fraunhofer.igd.klarschiff.vo.EnumVorgangStatus;
@@ -374,6 +375,8 @@ public class BackendController {
     if (bild != null && bild.getBytes().length > 0) {
       try {
         imageService.setImageForVorgang(Base64.decode(bild.getBytes()), vorgang);
+        vorgang.setFotoFreigabeStatus(EnumFreigabeStatus.intern);
+        vorgang.setFotowunsch(false);
       } catch (Exception e) {
         throw new BackendControllerException(11, "[bild] nicht korrekt", "Das Bild ist fehlerhaft und kann nicht verarbeitewt werden.", e);
       }
