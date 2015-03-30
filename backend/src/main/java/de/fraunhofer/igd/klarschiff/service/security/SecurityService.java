@@ -58,6 +58,7 @@ public class SecurityService {
 	String userSearchBase;
 	String userObjectClass;
 	String userSearchFilter;
+	String userEmailFilter;
 	String groupSearchBase;
 	String groupObjectClass;
 	String groupSearchFilter;
@@ -174,6 +175,20 @@ public class SecurityService {
 			return null;
 		}
 	}
+  
+	/**
+	 * Ermittelt die Benutzerdaten für einen Benutzer anhand der EMail-Adresse.
+	 * @param email EMail des Benutzers für den die Benutzerdaten ermittelt werden sollen
+	 * @return Benutzerdaten für den Benutzer; <code>null</code> wenn die Benutzerdaten nicht ermittelt werden konnten
+	 */
+	public User getUserByEmail(String email) {
+		try {
+			List<User> users = securityServiceLdap.getObjectListFromLdap(userSearchBase, "(&(objectclass="+userObjectClass+")("+StringUtils.replace(userEmailFilter, "{0}", email)+"))", userContextMapper);
+			return users.get(0);
+		} catch (Exception e) {
+			return null;
+		}
+  }
 
 	
 	/**
@@ -722,6 +737,14 @@ public class SecurityService {
 	public void setUserSearchFilter(String userSearchFilter) {
 		this.userSearchFilter = userSearchFilter;
 	}
+
+  public String getUserEmailFilter() {
+    return userEmailFilter;
+  }
+
+  public void setUserEmailFilter(String userEmailFilter) {
+    this.userEmailFilter = userEmailFilter;
+  }
 
 	public String getGroupSearchBase() {
 		return groupSearchBase;

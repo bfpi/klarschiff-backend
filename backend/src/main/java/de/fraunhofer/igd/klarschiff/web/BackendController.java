@@ -120,7 +120,6 @@ public class BackendController {
 			@RequestParam(value = "resultObjectOnSubmit", required = false) Boolean resultObjectOnSubmit, 
 			@RequestParam(value = "resultHashOnSubmit", required = false) Boolean resultHashOnSubmit, 
 			@RequestParam(value = "typ", required = false) String typ, 
-      
 			HttpServletResponse response) {
     
 		if (resultHashOnSubmit == null) {
@@ -133,34 +132,8 @@ public class BackendController {
 			Vorgang vorgang = new Vorgang();
 			
 			if (StringUtils.isBlank(typ)) throw new BackendControllerException(1, "[typ] fehlt", "Der Typ ist nicht angegeben.");
-			vorgang.setTyp(EnumVorgangTyp.valueOf(typ));
-			if (vorgang.getTyp()==null) throw new BackendControllerException(2, "[typ] nicht korrekt", "Der Typ ist nicht korrekt.");
 			
 			if (kategorie==null) throw new BackendControllerException(3, "[kategorie] fehlt", "Die Angaben zur Kategorie fehlen.");
-			vorgang.setKategorie(kategorieDao.findKategorie(kategorie));
-			if (vorgang.getKategorie()==null 
-					|| vorgang.getKategorie().getParent()==null
-					|| vorgang.getKategorie().getParent().getTyp()!=vorgang.getTyp()) throw new BackendControllerException(4, "[kategorie] nicht korrekt", "Die Kategorie ist nicht gültig.");
-			
-      if (positionWGS84 == null || positionWGS84.length() == 0) {
-        throw new BackendControllerException(5, "[positionWGS84] fehlt", "Die Orstangabe fehlt.");
-      }
-      try {
-        vorgang.setPositionWGS84(positionWGS84);
-      } catch (Exception e) {
-        throw new BackendControllerException(6, "[positionWGS84] nicht korrekt", "Die Ortsangabe ist nicht korrekt.", e);
-      }
-      
-      if(vorgang.getOviWkt() == null) {
-        if (oviWkt == null || oviWkt.length() == 0) {
-          throw new BackendControllerException(5, "[oviWkt] fehlt", "Die Orstangabe fehlt.");
-        }
-        try {
-          vorgang.setOviWkt(oviWkt);
-        } catch (Exception e) {
-          throw new BackendControllerException(6, "[oviWkt] nicht korrekt", "Die Ortsangabe ist nicht korrekt.", e);
-        }
-      }
       
 			if (StringUtils.isBlank(autorEmail)) throw new BackendControllerException(7, "[autorEmail] fehlt", "Die E-Mail-Adresse fehlt.");
 			if (!isMaxLength(autorEmail, 300)) throw new BackendControllerException(8, "[autorEmail] zu lang", "Die E-Mail-Adresse ist zu lang.");
@@ -168,20 +141,17 @@ public class BackendController {
 			vorgang.setAutorEmail(autorEmail);
 			vorgang.setHash(securityService.createHash(autorEmail+System.currentTimeMillis()));
 			
-			if (!isMaxLength(betreff, 300)) throw new BackendControllerException(10, "[betreff] zu lang", "Der Betreff ist zu lang. Es sind maximal 300 Zeichen erlaubt.");
-			vorgang.setBetreff(betreff);
-			
-			vorgang.setDetails(details);
-			
 			vorgang.setDatum(new Date());
 			vorgang.setPrioritaet(EnumPrioritaet.mittel);
-      if(fotowunsch == null) {
+      if (fotowunsch == null) {
         fotowunsch = false;
       }
-      vorgang.setFotowunsch(fotowunsch);
+      
+      vorgangParameterUebernehmen(autorEmail, vorgang, typ, kategorie, positionWGS84, oviWkt,
+          betreff, details, fotowunsch, bild, false);
       
       Boolean intern = false;
-      if(authCode != null && authCode.equals(settingsService.getPropertyValue("auth.kod_code")) && vorgang.autorIntern()) {
+      if (authCode != null && authCode.equals(settingsService.getPropertyValue("auth.kod_code")) && vorgang.autorIntern()) {
         intern = true;
         vorgang.setStatus(EnumVorgangStatus.offen);
         
@@ -190,16 +160,8 @@ public class BackendController {
       } else {
         vorgang.setStatus(EnumVorgangStatus.gemeldet);
       }
+      
 			vorgangDao.persist(vorgang);
-
-			if (bild!=null) {
-				try {
-					imageService.setImageForVorgang(Base64.decode(bild.getBytes()), vorgang);
-				} catch (Exception e) {
-					throw new BackendControllerException(11, "[bild] nicht korrekt", "Das Bild ist fehlerhaft und kann nicht verarbeitewt werden.", e);
-				}
-				vorgangDao.merge(vorgang);
-			}
 
       if (resultHashOnSubmit) {
         sendOk(response, vorgang.getHash());
@@ -217,6 +179,207 @@ public class BackendController {
 			sendError(response, e);
 		}
 	}
+  
+  @RequestMapping(value="/vorgangAktualisieren", method = RequestMethod.POST)
+	@ResponseBody
+	public void vorgangAktualisieren(
+      @RequestParam(value = "id", required = false) Long id,
+			@RequestParam(value = "authCode", required = false) String authCode,
+			@RequestParam(value = "autorEmail", required = false) String autorEmail,
+			@RequestParam(value = "betreff", required = false) String betreff,
+			@RequestParam(value = "bild", required = false) String bild,
+			@RequestParam(value = "details", required = false) String details,
+			@RequestParam(value = "fotowunsch", required = false) Boolean fotowunsch, 
+			@RequestParam(value = "kategorie", required = false) Long kategorie,
+			@RequestParam(value = "oviWkt", required = false) String oviWkt,
+			@RequestParam(value = "positionWGS84", required = false) String positionWGS84,
+			@RequestParam(value = "typ", required = false) String typ, 
+      @RequestParam(value = "status", required = false) String status, 
+      @RequestParam(value = "statusKommentar", required = false) String statusKommentar,
+      @RequestParam(value = "prioritaet", required = false) Integer prioritaet,
+      @RequestParam(value = "delegiertAn", required = false) String delegiertAn,
+      @RequestParam(value = "auftragStatus", required = false) String auftragStatus,
+      @RequestParam(value = "auftragPrioritaet", required = false) Integer auftragPrioritaet,
+      
+			HttpServletResponse response) throws BackendControllerException {
+    
+    try {
+      if (id == null) {
+        if (StringUtils.isBlank(typ)) {
+          throw new BackendControllerException(1, "[id] fehlt", "Ohne id kann kein Vorgang aktualisiert werden.");
+        }
+      }
+			if (StringUtils.isBlank(autorEmail)) throw new BackendControllerException(7, "[autorEmail] fehlt", "Die E-Mail-Adresse fehlt.");
+			if (!isMaxLength(autorEmail, 300)) throw new BackendControllerException(8, "[autorEmail] zu lang", "Die E-Mail-Adresse ist zu lang.");
+			if (!isEmail(autorEmail)) throw new BackendControllerException(9, "[autorEmail] nicht korrekt", "Die E-Mail-Adresse ist nicht gültig.");
+
+      Vorgang vorgang = vorgangDao.findVorgang(id);
+      vorgangParameterUebernehmen(autorEmail, vorgang, typ, kategorie, positionWGS84, oviWkt,
+          betreff, details, fotowunsch, bild, true);
+
+      if (prioritaet != null) {
+        if ((prioritaet - 1) > EnumPrioritaet.values().length) {
+          throw new BackendControllerException(12, "[prioritaet] ungültig", "Die Priorität ist fehlerhaft und kann nicht verarbeitewt werden.");
+        }
+        
+        EnumPrioritaet ep = EnumPrioritaet.values()[prioritaet];
+        if(!vorgang.getPrioritaet().equals(ep)) {
+          verlaufDao.persist(verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.prioritaet, vorgang.getPrioritaet().getText(), ep.getText(), autorEmail));
+        }
+        vorgang.setPrioritaet(ep);
+      }
+
+      if (status != null) {
+        EnumVorgangStatus evs = EnumVorgangStatus.valueOf(status);
+        if(!vorgang.getStatus().equals(evs)) {
+          verlaufDao.persist(verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.status, vorgang.getStatus().getText(), evs.getText(), autorEmail));
+        }
+        vorgang.setStatus(evs);
+      }
+
+      if (statusKommentar != null) {
+        if(!vorgang.getStatusKommentar().equals(statusKommentar)) {
+          verlaufDao.persist(verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.statusKommentar, StringUtils.abbreviate(vorgang.getStatusKommentar(), 100), StringUtils.abbreviate(statusKommentar, 100), autorEmail));
+        }
+        vorgang.setStatusKommentar(statusKommentar);
+      }
+
+      if (delegiertAn != null || auftragStatus != null || auftragPrioritaet != null) {
+        if (authCode == null) {
+          throw new BackendControllerException(13, "[authCode] fehlt", "Der authCode fehlt.");
+        }
+        if (!authCode.equals(settingsService.getPropertyValue("auth.kod_code"))) {
+          throw new BackendControllerException(14, "[authCode] ungültig", "Der Übergebene authCode ist ungültig.");
+        }
+        
+        if (delegiertAn != null) {
+          if(!vorgang.getDelegiertAn().equals(delegiertAn)) {
+            verlaufDao.persist(verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.delegiertAn, vorgang.getDelegiertAn(), delegiertAn, autorEmail));
+          }
+          vorgang.setDelegiertAn(delegiertAn);
+        }
+
+        if (auftragStatus != null || auftragPrioritaet != null) {
+          Auftrag auftrag = vorgang.getAuftrag();
+          if (auftrag == null) {
+            throw new BackendControllerException(15, "[auftragStatus] ungültig", "Ohne Auftrag kann der auftragStatus nicht aktualisiert werden.");
+          }
+          
+          if (auftragStatus != null) {
+            auftrag.setStatus(EnumAuftragStatus.valueOf(auftragStatus));
+          }
+
+          if (auftragPrioritaet != null) {
+            auftrag.setPrioritaet(auftragPrioritaet);
+          }
+          vorgang.setAuftrag(auftrag);
+        }
+      }
+
+      vorgangDao.persist(vorgang);
+      sendOk(response, mapper.writeValueAsString(vorgang));
+    } catch (Exception e) {
+			logger.warn("Fehler bei BackendController.vorgang:", e);
+			sendError(response, e);
+		}
+  }
+  
+  private void vorgangParameterUebernehmen(
+      String autorEmail,
+      Vorgang vorgang,
+      String typ,
+      Long kategorie,
+      String positionWGS84,
+      String oviWkt,
+      String betreff,
+      String details,
+      Boolean fotowunsch,
+      String bild,
+      Boolean verlaufErgaenzen
+  ) throws BackendControllerException {
+    
+    if(verlaufErgaenzen == null) {
+      verlaufErgaenzen = false;
+    }
+    
+    if (typ != null) {
+      EnumVorgangTyp evt = EnumVorgangTyp.valueOf(typ);
+      if(verlaufErgaenzen && !vorgang.getTyp().equals(evt)) {
+        verlaufDao.persist(verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.typ, vorgang.getTyp().getText(), evt.getText(), autorEmail));
+      }
+      vorgang.setTyp(evt);
+      if (vorgang.getTyp() == null) {
+        throw new BackendControllerException(2, "[typ] nicht korrekt", "Der Typ ist nicht korrekt.");
+      }
+    }
+    
+    if (kategorie != null) {
+      Kategorie newKat = kategorieDao.findKategorie(kategorie);
+      
+      if(verlaufErgaenzen && !vorgang.getKategorie().getId().equals(newKat.getId())) {
+        verlaufDao.persist(verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.kategorie, vorgang.getKategorie().getParent().getName() + " / " + vorgang.getKategorie().getName(), newKat.getParent().getName() + " / " + newKat.getName(), autorEmail));
+      }
+      vorgang.setKategorie(newKat);
+      if (vorgang.getKategorie() == null 
+          || vorgang.getKategorie().getParent() == null
+          || vorgang.getKategorie().getParent().getTyp() != vorgang.getTyp()) {
+        throw new BackendControllerException(4, "[kategorie] nicht korrekt", "Die Kategorie ist nicht gültig.");
+      }
+    }
+    
+    if (positionWGS84 != null) {
+      try {
+        vorgang.setPositionWGS84(positionWGS84);
+      } catch (Exception e) {
+        throw new BackendControllerException(12, "[positionWGS84] nicht korrekt", "Die Ortsangabe ist nicht korrekt.", e);
+      }
+    }
+      
+    if (oviWkt != null) {
+      try {
+        vorgang.setOviWkt(oviWkt);
+      } catch (Exception e) {
+        throw new BackendControllerException(6, "[oviWkt] nicht korrekt", "Die Ortsangabe ist nicht korrekt.");
+      }
+    }
+    
+    if (vorgang.getOviWkt() == null) {
+      throw new BackendControllerException(5, "[position] nicht korrekt", "Keine gültige Ortsangabe.");
+    }
+    
+    if (betreff != null) {
+      if (!isMaxLength(betreff, 300)) {
+        throw new BackendControllerException(10, "[betreff] zu lang", "Der Betreff ist zu lang. Es sind maximal 300 Zeichen erlaubt.");
+      }
+      if(verlaufErgaenzen && !vorgang.getBetreff().equals(betreff)) {
+        verlaufDao.persist(verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.betreff, StringUtils.abbreviate(vorgang.getBetreff(), 100), StringUtils.abbreviate(betreff, 100), autorEmail));
+      }
+      vorgang.setBetreff(betreff);
+    }
+
+    if (details != null) {
+      if(verlaufErgaenzen && !vorgang.getDetails().equals(details)) {
+        verlaufDao.persist(verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.detail, StringUtils.abbreviate(vorgang.getDetails(), 100), StringUtils.abbreviate(details, 100), autorEmail));
+      }
+      vorgang.setDetails(details);
+    }
+    
+    if (fotowunsch != null) {
+      if(verlaufErgaenzen && vorgang.getFotowunsch() != fotowunsch) {
+        verlaufDao.persist(verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.fotowunsch, vorgang.getFotowunsch() ? "aktiv" : "inaktiv", vorgang.getFotowunsch() ? "inaktiv" : "aktiv", autorEmail));
+      }
+      vorgang.setFotowunsch(fotowunsch);
+    }
+    
+    if (bild != null && bild.getBytes().length > 0) {
+      try {
+        imageService.setImageForVorgang(Base64.decode(bild.getBytes()), vorgang);
+      } catch (Exception e) {
+        throw new BackendControllerException(11, "[bild] nicht korrekt", "Das Bild ist fehlerhaft und kann nicht verarbeitewt werden.", e);
+      }
+      vorgangDao.merge(vorgang);
+    }
+  }
 
 	/**
 	 * Prüft ob der String eine gültige E-Mail-Adresse ist
@@ -903,7 +1066,9 @@ public class BackendController {
     try {
       List<Vorgang> vorgaenge = new ArrayList<Vorgang>();
       if(id != null) {
-        vorgaenge.add(vorgangDao.findVorgang(id));
+        Vorgang vg = vorgangDao.findVorgang(id);
+        vg.setSecurityService(securityService);
+        vorgaenge.add(vg);
       } else {
         VorgangSuchenCommand cmd = new VorgangSuchenCommand();
         // Suchtyp aussendienst würde nur Vorgänge mit zustaendigkeit_status = 'akzeptiert' ausgeben
@@ -962,6 +1127,7 @@ public class BackendController {
         List<Object[]> vg = vorgangDao.getVorgaenge(cmd);
         for(Object[] entry : vg) {
     		  Vorgang vorgang = (Vorgang)entry[0];
+          vorgang.setSecurityService(securityService);
           vorgaenge.add(vorgang);
         }
       }

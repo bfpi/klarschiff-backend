@@ -34,6 +34,8 @@ import com.vividsolutions.jts.geom.PrecisionModel;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
 import com.vividsolutions.jts.io.WKTWriter;
+import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
+import de.fraunhofer.igd.klarschiff.service.security.User;
 import de.fraunhofer.igd.klarschiff.service.settings.SettingsService;
 import javax.persistence.Column;
 import javax.persistence.OneToOne;
@@ -297,6 +299,13 @@ public class Vorgang implements Serializable {
     
     @Transient
     private static SettingsService settingsService = new SettingsService();
+    
+    /**
+     * securityService wird benötigt, um das Trust-Level zu ermitteln
+     */
+    @JsonIgnore
+    @Transient
+    private SecurityService securityService;
 
     /**
      *Auftrag zu dem Vorgang
@@ -472,13 +481,34 @@ public class Vorgang implements Serializable {
     }
     return this.autorEmail.matches(settingsService.getPropertyValue("auth.internal_author_match"));
   }
+
+  public void setSecurityService(SecurityService securityService) {
+    this.securityService = securityService;
+  }
+  
+  public Boolean autorAussendienst() {
+    if(this.autorEmail == null || securityService == null) {
+      return false;
+    }
+    User user = securityService.getUserByEmail(this.autorEmail);
+    if(user == null) {
+      return false;
+    }
+    List<String> teams = user.getAussendienstTeams();
+    if(teams == null || teams.isEmpty()) {
+      return false;
+    }
+    return true;
+  }
   
   public Integer getTrustLevel() {
     int trust_level = 0;
     
     if(getStatus() != EnumVorgangStatus.gemeldet) {
       trust_level = 1;
-      if(autorIntern()) {
+      if(autorAussendienst()) {
+        trust_level = 3;
+      } else if(autorIntern()) {
         trust_level = 2;
       }
     }
@@ -525,7 +555,13 @@ public class Vorgang implements Serializable {
     if(this.unterstuetzer == null) {
       return 0;
     }
-    return this.unterstuetzer.size();
+    int unt = 0;
+    for(Unterstuetzer u : this.unterstuetzer) {
+      if(u.getDatumBestaetigung() != null) {
+        unt++;
+      }
+    }
+    return unt;
   }
 
 	public void setUnterstuetzer(List<Unterstuetzer> unterstuetzer) {
@@ -564,6 +600,17 @@ public class Vorgang implements Serializable {
 		this.status = status;
 		this.statusOrdinal = status;
 	}
+  
+  public Date getStatusDatum() {
+    for(int i = verlauf.size() - 1; i >= 0; i--) {
+      Verlauf v = verlauf.get(i);
+      if(v.getTyp() == EnumVerlaufTyp.erzeugt || v.getTyp() == EnumVerlaufTyp.status) {
+        return v.getDatum();
+      }
+    }
+    
+    return null;
+  }
 
 	public EnumZustaendigkeitStatus getZustaendigkeitStatus() {
 		return zustaendigkeitStatus;
@@ -693,6 +740,13 @@ public class Vorgang implements Serializable {
       return null;
     }
     return getAuftrag().getDatum();
+  }
+
+  public String getAuftragStatus() {
+    if(getAuftrag() == null) {
+      return null;
+    }
+    return getAuftrag().getStatus().getText();
   }
   
   public Integer getAuftragPrioritaet() {

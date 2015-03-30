@@ -38,6 +38,10 @@ public class VerlaufDao {
         em.persist(verlauf);
     }
 	
+	public Verlauf addVerlaufToVorgang(Vorgang vorgang, EnumVerlaufTyp typ, String wertAlt, String wertNeu) {
+		return addVerlaufToVorgang(vorgang, typ, wertAlt, wertNeu, null);
+	}
+    
 	/**
 	 * Fügt zu einem Vorgang neue Verlaufswerte hinzu, ohne diese in der DB zu speichern.
 	 * @param vorgang Vorgang zu dem die Verlaufswerte hinzugefügt werden sollen
@@ -46,12 +50,21 @@ public class VerlaufDao {
 	 * @param wertNeu Neuer Wert
 	 * @return Verlaufswerte
 	 */
-	public Verlauf addVerlaufToVorgang(Vorgang vorgang, EnumVerlaufTyp typ, String wertAlt, String wertNeu) {
+	public Verlauf addVerlaufToVorgang(Vorgang vorgang, EnumVerlaufTyp typ, String wertAlt, String wertNeu, String nutzer_email) {
 		Verlauf verlauf = new Verlauf();
 		verlauf.setVorgang(vorgang);
-		try {
-			verlauf.setNutzer(securityService.getCurrentUser().getName());
-		} catch (Exception e) {}
+		if(nutzer_email != null) {
+			User user = securityService.getUserByEmail(nutzer_email);
+			if(user != null) {
+				verlauf.setNutzer(user.getName());
+			} else {
+				verlauf.setNutzer(nutzer_email);
+			}
+		} else {
+			try {
+				verlauf.setNutzer(securityService.getCurrentUser().getName());
+			} catch (Exception e) {}
+		}
 		verlauf.setTyp(typ);
 		verlauf.setWertAlt(wertAlt);
 		verlauf.setWertNeu(wertNeu);

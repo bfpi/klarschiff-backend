@@ -97,6 +97,7 @@
     	p:userSearchBase="${ldap.userSearchBase}"
     	p:userObjectClass="${ldap.userObjectClass}"
     	p:userSearchFilter="${ldap.userSearchFilter}"
+    	p:userEmailFilter="${ldap.userEmailFilter}"
     	p:groupSearchBase="${ldap.groupSearchBase}"
     	p:groupObjectClass="${ldap.groupObjectClass}"
     	p:groupSearchFilter="${ldap.groupSearchFilter}"
