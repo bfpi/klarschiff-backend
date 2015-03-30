@@ -168,10 +168,10 @@ public class VorgangEmailController {
 		if (delegiert)
 			model.put("delegiert", true);
 		
-		assertNotEmpty(cmd, result, Assert.EvaluateOn.ever, "toEmail", null);
-		assertNotEmpty(cmd, result, Assert.EvaluateOn.ever, "text", null);
-		assertMaxLength(cmd, result,  Assert.EvaluateOn.ever, "text", 300, null);
-		assertEmail(cmd, result, Assert.EvaluateOn.firstPropertyError, "toEmail", null);
+		assertNotEmpty(cmd, result, Assert.EvaluateOn.ever, "toEmail", "Fehler: Empfängeradresse darf nicht leer sein.");
+		assertNotEmpty(cmd, result, Assert.EvaluateOn.ever, "text", "Fehler: Text darf nicht leer sein.");
+		assertMaxLength(cmd, result,  Assert.EvaluateOn.ever, "text", 300, "Fehler: Text darf nicht länger als 300 Zeichen sein.");
+		assertEmail(cmd, result, Assert.EvaluateOn.firstPropertyError, "toEmail", "Fehler: Empfängeradresse ist keine E-Mailadresse.");
 		if (result.hasErrors()) {
 			return "noMenu/vorgang/printEmail/email";
 		}			
