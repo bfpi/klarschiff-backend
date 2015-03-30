@@ -30,7 +30,7 @@
 		</div>
 
 		<form:form method="POST" modelAttribute="cmd">
-		
+		    <form:errors path="*" cssClass="error" element="div"/>
 	        <div>
 	        	<form:label path="fromName" cssErrorClass="error">Absender</form:label>
 	            <form:input path="fromName" cssClass="inputtext" cssStyle="width:370px;margin-left:20px" disabled="true"/>
@@ -46,8 +46,8 @@
 	            <form:input path="toEmail" cssClass="inputtext" cssStyle="width:370px;margin-left:20px"/>
 	        </div>
 	        <div>
-	        	<form:label path="text" cssErrorClass="error">Text</form:label>
-	            <form:textarea path="text" cssClass="inputtext" cols="6" cssStyle="width:370px;height:100px;margin-left:20px"/>
+	        	<form:label path="text" cssErrorClass="error">Text (300 Zeichen)</form:label>
+	            <form:textarea path="text" cssClass="inputtext" cols="6" cssStyle="width:370px;height:100px;margin-left:20px" maxlength="300"/>
 	        </div>
 	        <div>
 	        	Welche Daten sollen mitgesendet werden? 
