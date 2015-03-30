@@ -184,16 +184,16 @@ public class BackendController {
 	@ResponseBody
 	public void vorgangAktualisieren(
       @RequestParam(value = "id", required = false) Long id,
-			@RequestParam(value = "authCode", required = false) String authCode,
-			@RequestParam(value = "autorEmail", required = false) String autorEmail,
-			@RequestParam(value = "betreff", required = false) String betreff,
-			@RequestParam(value = "bild", required = false) String bild,
-			@RequestParam(value = "details", required = false) String details,
-			@RequestParam(value = "fotowunsch", required = false) Boolean fotowunsch, 
-			@RequestParam(value = "kategorie", required = false) Long kategorie,
-			@RequestParam(value = "oviWkt", required = false) String oviWkt,
-			@RequestParam(value = "positionWGS84", required = false) String positionWGS84,
-			@RequestParam(value = "typ", required = false) String typ, 
+      @RequestParam(value = "authCode", required = false) String authCode,
+      @RequestParam(value = "autorEmail", required = false) String autorEmail,
+      @RequestParam(value = "betreff", required = false) String betreff,
+      @RequestParam(value = "bild", required = false) String bild,
+      @RequestParam(value = "details", required = false) String details,
+      @RequestParam(value = "fotowunsch", required = false) Boolean fotowunsch, 
+      @RequestParam(value = "kategorie", required = false) Long kategorie,
+      @RequestParam(value = "oviWkt", required = false) String oviWkt,
+      @RequestParam(value = "positionWGS84", required = false) String positionWGS84,
+      @RequestParam(value = "typ", required = false) String typ, 
       @RequestParam(value = "status", required = false) String status, 
       @RequestParam(value = "statusKommentar", required = false) String statusKommentar,
       @RequestParam(value = "prioritaet", required = false) Integer prioritaet,
@@ -209,9 +209,9 @@ public class BackendController {
           throw new BackendControllerException(1, "[id] fehlt", "Ohne id kann kein Vorgang aktualisiert werden.");
         }
       }
-			if (StringUtils.isBlank(autorEmail)) throw new BackendControllerException(7, "[autorEmail] fehlt", "Die E-Mail-Adresse fehlt.");
-			if (!isMaxLength(autorEmail, 300)) throw new BackendControllerException(8, "[autorEmail] zu lang", "Die E-Mail-Adresse ist zu lang.");
-			if (!isEmail(autorEmail)) throw new BackendControllerException(9, "[autorEmail] nicht korrekt", "Die E-Mail-Adresse ist nicht gültig.");
+      if (StringUtils.isBlank(autorEmail)) throw new BackendControllerException(7, "[autorEmail] fehlt", "Die E-Mail-Adresse fehlt.");
+      if (!isMaxLength(autorEmail, 300)) throw new BackendControllerException(8, "[autorEmail] zu lang", "Die E-Mail-Adresse ist zu lang.");
+      if (!isEmail(autorEmail)) throw new BackendControllerException(9, "[autorEmail] nicht korrekt", "Die E-Mail-Adresse ist nicht gültig.");
 
       Vorgang vorgang = vorgangDao.findVorgang(id);
       vorgangParameterUebernehmen(autorEmail, vorgang, typ, kategorie, positionWGS84, oviWkt,
@@ -279,9 +279,9 @@ public class BackendController {
       vorgangDao.persist(vorgang);
       sendOk(response, mapper.writeValueAsString(vorgang));
     } catch (Exception e) {
-			logger.warn("Fehler bei BackendController.vorgang:", e);
-			sendError(response, e);
-		}
+      logger.warn("Fehler bei BackendController.vorgang:", e);
+      sendError(response, e);
+    }
   }
   
   private void vorgangParameterUebernehmen(

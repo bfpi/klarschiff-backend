@@ -738,13 +738,13 @@ public class SecurityService {
 		this.userSearchFilter = userSearchFilter;
 	}
 
-  public String getUserEmailFilter() {
-    return userEmailFilter;
-  }
+	public String getUserEmailFilter() {
+		return userEmailFilter;
+	}
 
-  public void setUserEmailFilter(String userEmailFilter) {
-    this.userEmailFilter = userEmailFilter;
-  }
+	public void setUserEmailFilter(String userEmailFilter) {
+		this.userEmailFilter = userEmailFilter;
+	}
 
 	public String getGroupSearchBase() {
 		return groupSearchBase;
