@@ -46,7 +46,7 @@
 	            <form:input path="toEmail" cssClass="inputtext" cssStyle="width:370px;margin-left:20px"/>
 	        </div>
 	        <div>
-	        	<form:label path="text" cssErrorClass="error">Text (300 Zeichen)</form:label>
+	        	<form:label path="text" cssErrorClass="error">Text (maximal 300 Zeichen!)</form:label>
 	            <form:textarea path="text" cssClass="inputtext" cols="6" cssStyle="width:370px;height:100px;margin-left:20px" maxlength="300"/>
 	        </div>
 	        <div>
