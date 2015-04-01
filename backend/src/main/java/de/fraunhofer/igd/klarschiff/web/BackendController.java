@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import de.fraunhofer.igd.klarschiff.dao.KategorieDao;
+import de.fraunhofer.igd.klarschiff.dao.KommentarDao;
 import de.fraunhofer.igd.klarschiff.dao.RedaktionEmpfaengerDao;
 import de.fraunhofer.igd.klarschiff.dao.VerlaufDao;
 import de.fraunhofer.igd.klarschiff.dao.VorgangDao;
@@ -24,6 +25,7 @@ import de.fraunhofer.igd.klarschiff.service.classification.ClassificationService
 import de.fraunhofer.igd.klarschiff.service.image.ImageService;
 import de.fraunhofer.igd.klarschiff.service.mail.MailService;
 import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
+import de.fraunhofer.igd.klarschiff.service.security.User;
 import de.fraunhofer.igd.klarschiff.service.settings.SettingsService;
 import de.fraunhofer.igd.klarschiff.vo.Auftrag;
 import de.fraunhofer.igd.klarschiff.vo.EnumAuftragStatus;
@@ -35,6 +37,7 @@ import de.fraunhofer.igd.klarschiff.vo.EnumVorgangTyp;
 import de.fraunhofer.igd.klarschiff.vo.EnumZustaendigkeitStatus;
 import de.fraunhofer.igd.klarschiff.vo.GeoRss;
 import de.fraunhofer.igd.klarschiff.vo.Kategorie;
+import de.fraunhofer.igd.klarschiff.vo.Kommentar;
 import de.fraunhofer.igd.klarschiff.vo.LobHinweiseKritik;
 import de.fraunhofer.igd.klarschiff.vo.Missbrauchsmeldung;
 import de.fraunhofer.igd.klarschiff.vo.RedaktionEmpfaenger;
@@ -67,6 +70,9 @@ public class BackendController {
 	AuftragDao auftragDao;
 	
 	@Autowired
+	KommentarDao kommentarDao;
+
+	@Autowired
 	VorgangDao vorgangDao;
 	
 	@Autowired
@@ -92,15 +98,15 @@ public class BackendController {
 	/**
 	 * Die Methode verarbeitet den POST-Request auf der URL <code>/service/vorgang</code><br/>
 	 * Beschreibung: erstellt einen neuen Vorgang
-	 * @param authCode
+	 * @param authCode Code zur Identifizierung des Clients
 	 * @param autorEmail E-Mail-Adresse des Erstellers
 	 * @param betreff Betreff
 	 * @param bild Foto base64 kodiert
 	 * @param details Details
-	 * @param fotowunsch
+	 * @param fotowunsch Fotowunsch
 	 * @param kategorie Kategorie
 	 * @param oviWkt Position als WKT
-	 * @param positionWGS84
+	 * @param positionWGS84 Position im WGS84 Format
 	 * @param resultObjectOnSubmit <code>true</code> - gibt den neuen Vorgangs als Ergebnis zurück
 	 * @param resultHashOnSubmit <code>true</code> - gibt den Hash zum Bestätigen als Ergebnis zurück
 	 * @param typ Vorgangstyp
@@ -181,6 +187,29 @@ public class BackendController {
 		}
 	}
   
+  /**
+   * Die Methode verarbeitet den POST-Request auf der URL <code>/service/vorgangAktualisieren</code><br/>
+   * Beschreibung: aktualisiert einen bestehenden Vorgang
+   * @param id Vorgang-ID
+   * @param authCode Code zur Identifizierung des Clients
+   * @param autorEmail E-Mail-Adresse des Erstellers
+   * @param betreff Betreff
+   * @param bild Foto base64 kodiert
+   * @param details Details
+   * @param fotowunsch Fotowunsch
+   * @param kategorie Kategorie
+   * @param oviWkt Position als WKT
+   * @param positionWGS84
+   * @param typ Vorgangstyp
+   * @param status Status
+   * @param statusKommentar Statuskommentar
+   * @param prioritaet Priorität
+   * @param delegiertAn Delegiert An
+   * @param auftragStatus Status des Auftrags
+   * @param auftragPrioritaet Priorität des Auftrags
+   * @param response Response in das das Ergebnis direkt geschrieben wird
+   * @throws BackendControllerException
+   */
   @RequestMapping(value="/vorgangAktualisieren", method = RequestMethod.POST)
 	@ResponseBody
 	public void vorgangAktualisieren(
@@ -215,6 +244,9 @@ public class BackendController {
       if (!isEmail(autorEmail)) throw new BackendControllerException(9, "[autorEmail] nicht korrekt", "Die E-Mail-Adresse ist nicht gültig.");
 
       Vorgang vorgang = vorgangDao.findVorgang(id);
+      if (vorgang == null) {
+        throw new BackendControllerException(200, "[id] unbekannt", "Es konnte kein Vorgang mit der übergebenen ID gefunden werden.");
+      }
       vorgangParameterUebernehmen(autorEmail, vorgang, typ, kategorie, positionWGS84, oviWkt,
           betreff, details, fotowunsch, bild, true);
 
@@ -468,7 +500,12 @@ public class BackendController {
 		try {
 			Unterstuetzer unterstuetzer = new Unterstuetzer();
 			if (vorgang==null) throw new BackendControllerException(201, "[vorgang] fehlt", "Die Unterstützung ist keiner Meldung zugeordnet.");
-			unterstuetzer.setVorgang(vorgangDao.findVorgang(vorgang));
+
+			Vorgang vorg = vorgangDao.findVorgang(vorgang);
+			if (vorg == null) {
+				throw new BackendControllerException(200, "[vorgang] ungültig", "Es konnte kein Vorgang mit der übergebenen ID gefunden werden.");
+			}
+			unterstuetzer.setVorgang(vorg);
 			if (unterstuetzer.getVorgang()==null) throw new BackendControllerException(202, "[vorgang] nicht korrekt", "Die Unterstützung ist keiner Meldung zugeordnet.");
 			
 			if (StringUtils.isBlank(email)) throw new BackendControllerException(203, "[email] fehlt", "Die E-Mail-Adresse fehlt.");
@@ -536,6 +573,7 @@ public class BackendController {
 	 * @param text Text der Missbrauchsmeldung
 	 * @param email E-Mail-Adresse des Erstellers
 	 * @param resultHashOnSubmit <code>true</code> - gibt den Hash zum Bestätigen als Ergebnis zurück
+	 * @param resultObjectOnSubmit <code>true</code> - gibt den neuen Vorgangs als Ergebnis zurück
 	 * @param response Response in das das Ergebnis direkt geschrieben wird
 	 */
 	@RequestMapping(value="/missbrauchsmeldung", method = RequestMethod.POST)
@@ -545,12 +583,18 @@ public class BackendController {
 			@RequestParam(value = "text", required = false) String text, 
 			@RequestParam(value = "email", required = false) String email, 
 			@RequestParam(value = "resultHashOnSubmit", required = false) Boolean resultHashOnSubmit, 
+			@RequestParam(value = "resultObjectOnSubmit", required = false) Boolean resultObjectOnSubmit,
 			HttpServletResponse response) {
 		if (resultHashOnSubmit==null) resultHashOnSubmit=false;
+		if (resultObjectOnSubmit==null) resultObjectOnSubmit=false;
 		try {
 			Missbrauchsmeldung missbrauchsmeldung = new Missbrauchsmeldung();
 			if (vorgang==null) throw new BackendControllerException(401, "[vorgang] fehlt", "Die Missbrauchsmeldung ist keiner Meldung zugeordnet.");
-			missbrauchsmeldung.setVorgang(vorgangDao.findVorgang(vorgang));
+			Vorgang vorg = vorgangDao.findVorgang(vorgang);
+			if (vorg == null) {
+				throw new BackendControllerException(200, "[vorgang] ungültig", "Es konnte kein Vorgang mit der übergebenen ID gefunden werden.");
+			}
+			missbrauchsmeldung.setVorgang(vorg);
 			if (missbrauchsmeldung.getVorgang()==null) throw new BackendControllerException(402, "[vorgang] nicht korrekt", "Die Missbrauchsmeldung ist keiner Meldung zugeordnet.");
 
 			if (StringUtils.isBlank(text)) throw new BackendControllerException(403, "[text] fehlt", "Die Begründung fehlt.");
@@ -568,8 +612,13 @@ public class BackendController {
 			
 			mailService.sendMissbrauchsmeldungBestaetigungMail(missbrauchsmeldung, email, vorgang);
 
-			if (resultHashOnSubmit==true) sendOk(response, missbrauchsmeldung.getHash());
-			else sendOk(response);
+			if (resultHashOnSubmit) {
+				sendOk(response, missbrauchsmeldung.getHash());
+			} else if (resultObjectOnSubmit) {
+				sendOk(response, mapper.writeValueAsString(missbrauchsmeldung));
+			} else {
+				sendOk(response);
+			}
 		} catch (Exception e) {
 			logger.warn(e);
 			sendError(response, e);
@@ -590,7 +639,76 @@ public class BackendController {
     
     try {
       Vorgang vorgang = vorgangDao.findVorgang(vorgang_id);
+      if (vorgang == null) {
+        throw new BackendControllerException(200, "[vorgang_id] ungültig", "Es konnte kein Vorgang mit der übergebenen ID gefunden werden.");
+      }
       sendOk(response, mapper.writeValueAsString(vorgang.getKommentare()));
+    } catch (Exception ex) {
+      java.util.logging.Logger.getLogger(BackendController.class.getName()).log(Level.SEVERE, null, ex);
+      sendError(response, ex);
+    }
+  }
+
+  /**
+   * Die Methode verarbeitet den GET-Request auf der URL <code>/service/kommentarAnlegen</code><br/>
+   * Beschreibung: legt neuen internen Kommentare zu einem Vorgang an
+   * @param vorgang_id Vorgang-ID
+   * @param authCode Code zur Identifizierung des Clients
+   * @param autorEmail E-Mail-Adresse des Erstellers
+   * @param text Kommentar-Text
+   * @param response Response in das das Ergebnis direkt geschrieben wird
+   */
+  @RequestMapping(value="/kommentar", method = RequestMethod.POST)
+  @ResponseBody
+  public void kommentar(
+      @RequestParam(value = "vorgang_id", required = false) Long vorgang_id,
+      @RequestParam(value = "authCode", required = false) String authCode,
+			@RequestParam(value = "autorEmail", required = false) String autorEmail,
+			@RequestParam(value = "text", required = false) String text,
+      HttpServletResponse response) {
+
+    try {
+      if (vorgang_id == null) {
+        throw new BackendControllerException(1, "[id] fehlt", "Ohne id kann kein Vorgang aktualisiert werden.");
+      }
+
+      Vorgang vorgang = vorgangDao.findVorgang(vorgang_id);
+      if (vorgang == null) {
+        throw new BackendControllerException(200, "[vorgang_id] ungültig", "Es konnte kein Vorgang mit der übergebenen ID gefunden werden.");
+      }
+
+      if (authCode == null || !authCode.equals(settingsService.getPropertyValue("auth.kod_code"))) {
+        throw new BackendControllerException(2, "[authCode] ungültig", "Der Übergebene authCode ist ungültig.");
+      }
+
+      if (StringUtils.isBlank(autorEmail)) {
+        throw new BackendControllerException(3, "[autorEmail] fehlt", "Die E-Mail-Adresse fehlt.");
+      }
+      if (!isMaxLength(autorEmail, 300)) {
+        throw new BackendControllerException(4, "[autorEmail] zu lang", "Die E-Mail-Adresse ist zu lang.");
+      }
+      if (!isEmail(autorEmail)) {
+        throw new BackendControllerException(5, "[autorEmail] nicht korrekt", "Die E-Mail-Adresse ist nicht gültig.");
+      }
+
+      if (StringUtils.isBlank(text)) {
+        throw new BackendControllerException(6, "[text] fehlt", "Es fehlt ein Text für den Kommentar.");
+      }
+
+      User user = securityService.getUserByEmail(autorEmail);
+
+      Kommentar kommentar = new Kommentar();
+      kommentar.setAnzBearbeitet(0);
+      kommentar.setDatum(new Date());
+      kommentar.setGeloescht(false);
+      kommentar.setNutzer(user.getName());
+      kommentar.setZuletztBearbeitet(new Date());
+      kommentar.setText(text);
+      kommentar.setVorgang(vorgang);
+
+      kommentarDao.merge(kommentar);
+
+			sendOk(response, mapper.writeValueAsString(kommentar));
     } catch (Exception ex) {
       java.util.logging.Logger.getLogger(BackendController.class.getName()).log(Level.SEVERE, null, ex);
       sendError(response, ex);
@@ -611,6 +729,9 @@ public class BackendController {
 
     try {
       Vorgang vorgang = vorgangDao.findVorgang(vorgang_id);
+      if (vorgang == null) {
+        throw new BackendControllerException(200, "[vorgang_id] ungültig", "Es konnte kein Vorgang mit der übergebenen ID gefunden werden.");
+      }
       sendOk(response, mapper.writeValueAsString(vorgang.getLobHinweiseKritik()));
     } catch (Exception ex) {
       java.util.logging.Logger.getLogger(BackendController.class.getName()).log(Level.SEVERE, null, ex);
@@ -636,7 +757,11 @@ public class BackendController {
 		try {
 			LobHinweiseKritik lobHinweiseKritik = new LobHinweiseKritik();
 			if (vorgang==null) throw new BackendControllerException(401, "[vorgang] fehlt", "Lob, Hinweise oder Kritik kann/können keiner Meldung zugeordnet werden.");
-			lobHinweiseKritik.setVorgang(vorgangDao.findVorgang(vorgang));
+			Vorgang vorg = vorgangDao.findVorgang(vorgang);
+			if (vorg == null) {
+				throw new BackendControllerException(200, "[vorgang] ungültig", "Es konnte kein Vorgang mit der übergebenen ID gefunden werden.");
+			}
+			lobHinweiseKritik.setVorgang(vorg);
 			if (lobHinweiseKritik.getVorgang()==null) throw new BackendControllerException(402, "[vorgang] nicht korrekt", "Lob, Hinweise oder Kritik kann/können keiner Meldung zugeordnet werden.");
 
 			if (StringUtils.isBlank(email)) throw new BackendControllerException(404, "[email] fehlt", "Die E-Mail-Adresse fehlt.");
@@ -729,7 +854,7 @@ public class BackendController {
 
 			vorgangDao.persist(lobHinweiseKritik);
 
-			sendOk(response);
+			sendOk(response, mapper.writeValueAsString(lobHinweiseKritik));
 		} catch (Exception e) {
 			logger.warn(e);
 			sendError(response, e);

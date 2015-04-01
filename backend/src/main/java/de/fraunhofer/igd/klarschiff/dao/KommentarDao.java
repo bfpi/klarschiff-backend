@@ -26,6 +26,12 @@ public class KommentarDao {
     public void persist(Kommentar kommentar) {
         em.persist(kommentar);
     }
+    
+	@Transactional
+	public void merge(Kommentar kommentar) {
+		em.merge(kommentar);
+		em.flush();
+	}
 	
 	@Transactional
 	public List<Kommentar> findKommentareForVorgang(Vorgang vorgang) {
