@@ -1173,6 +1173,7 @@ public class BackendController {
    * @param updated_from 
    * @param updated_to 
    * @param agency_responsible 
+   * @param negation 
    * @param response 
    * @throws java.io.IOException 
    */
@@ -1188,6 +1189,7 @@ public class BackendController {
       @RequestParam(value = "updated_from", required = false) String updated_from, 
       @RequestParam(value = "updated_to", required = false) String updated_to, 
       @RequestParam(value = "agency_responsible", required = false) String agency_responsible, 
+      @RequestParam(value = "negation", required = false) String negation, 
       
       HttpServletResponse response) throws IOException {
     
@@ -1204,6 +1206,10 @@ public class BackendController {
         // Sortieren nach ID
         cmd.setOrder(0);
         cmd.setOrderDirection(0);
+        
+        if(negation != null) {
+          cmd.setNegation(negation);
+        }
         
         if(ids != null && ids.length() > 0) {
           String[] idStrList = ids.split(",");

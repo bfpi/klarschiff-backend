@@ -59,6 +59,7 @@ public class VorgangSuchenCommand implements Serializable {
 	Long[] vorgangAuswaehlen;
 	String auftragTeam;
 	Date auftragDatum;
+	String negation;
 	
 	//NUR ADMIN dürfen andere Zuständigkeiten sehen
 	
@@ -306,4 +307,12 @@ public class VorgangSuchenCommand implements Serializable {
 	public void setAuftragDatum(Date auftragDatum) {
 		this.auftragDatum = auftragDatum;
 	}
+
+  public String getNegation() {
+    return negation;
+  }
+
+  public void setNegation(String negation) {
+    this.negation = negation;
+  }
 }

@@ -330,10 +330,17 @@ public class VorgangDao {
             conds.add("vo.zustaendigkeit = '" + cmd.getErweitertZustaendigkeit() + "'");
           }
         }
+        String cmd_negation = cmd.getNegation();
+        boolean filter_auftrag_datum = true;
         if (!StringUtils.isBlank(cmd.getAuftragTeam())) {
-          conds.add("auftrag.team = '" + cmd.getAuftragTeam() + "'");
+          if(cmd_negation != null && cmd_negation.length() > 0 && cmd_negation.contains("agency_responsible")) {
+            conds.add("auftrag.vorgang is null OR auftrag.team != '" + cmd.getAuftragTeam() + "'");
+            filter_auftrag_datum = false;
+          } else {
+            conds.add("auftrag.team = '" + cmd.getAuftragTeam() + "'");
+          }
         }
-        if (cmd.getAuftragDatum() != null) {
+        if (filter_auftrag_datum && cmd.getAuftragDatum() != null) {
           java.sql.Date auftragDatum = new java.sql.Date(DateUtils.truncate(cmd.getAuftragDatum(), Calendar.DAY_OF_MONTH).getTime());
           conds.add("auftrag.datum = '" + auftragDatum + "'");
         }
