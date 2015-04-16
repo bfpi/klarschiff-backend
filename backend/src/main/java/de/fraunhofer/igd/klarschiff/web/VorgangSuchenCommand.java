@@ -60,6 +60,7 @@ public class VorgangSuchenCommand implements Serializable {
 	String auftragTeam;
 	Date auftragDatum;
 	String negation;
+	String suchbereich;
 	
 	//NUR ADMIN dürfen andere Zuständigkeiten sehen
 	
@@ -314,5 +315,13 @@ public class VorgangSuchenCommand implements Serializable {
 
   public void setNegation(String negation) {
     this.negation = negation;
+  }
+
+  public String getSuchbereich() {
+    return suchbereich;
+  }
+
+  public void setSuchbereich(String suchbereich) {
+    this.suchbereich = suchbereich;
   }
 }

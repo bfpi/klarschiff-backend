@@ -391,6 +391,10 @@ public class VorgangDao {
         if (cmd.getErweitertStadtteilgrenze() != null) {
           conds.add("geometry_within(vo.ovi, (SELECT grenze FROM klarschiff_stadtteil_grenze WHERE id=" + cmd.getErweitertStadtteilgrenze() + "))");
         }
+
+        if(cmd.getSuchbereich() != null) {
+          conds.add("geometry_within(ST_Transform(vo.ovi, 4326), " + cmd.getSuchbereich() + ")");
+        }
         break;
     }
     // Unterstützer

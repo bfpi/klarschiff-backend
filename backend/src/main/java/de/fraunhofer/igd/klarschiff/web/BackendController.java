@@ -1174,6 +1174,7 @@ public class BackendController {
    * @param updated_to 
    * @param agency_responsible 
    * @param negation 
+   * @param restriction_area 
    * @param response 
    * @throws java.io.IOException 
    */
@@ -1190,6 +1191,7 @@ public class BackendController {
       @RequestParam(value = "updated_to", required = false) String updated_to, 
       @RequestParam(value = "agency_responsible", required = false) String agency_responsible, 
       @RequestParam(value = "negation", required = false) String negation, 
+      @RequestParam(value = "restriction_area", required = false) String restriction_area, 
       
       HttpServletResponse response) throws IOException {
     
@@ -1209,6 +1211,10 @@ public class BackendController {
         
         if(negation != null) {
           cmd.setNegation(negation);
+        }
+        
+        if(restriction_area != null) {
+          cmd.setSuchbereich(restriction_area);
         }
         
         if(ids != null && ids.length() > 0) {
