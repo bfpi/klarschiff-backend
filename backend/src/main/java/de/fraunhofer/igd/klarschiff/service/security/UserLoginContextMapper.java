@@ -24,7 +24,7 @@ public class UserLoginContextMapper implements IContextMapper<List<String>> {
 	
 	/**
 	 * Konstruktor zum Erzeugen des Mappers.
-	 * @param groupSearchFilter GroupSearchFilter über den der Name des Attributes ermittelt werden kann (z.B. member)
+	 * @param groupSearchFilter GroupSearchFilter Ã¼ber den der Name des Attributes ermittelt werden kann (z.B. member)
 	 */
 	public UserLoginContextMapper(String groupSearchFilter) {
 		userAttribut = groupSearchFilter.substring(0, groupSearchFilter.indexOf("="));

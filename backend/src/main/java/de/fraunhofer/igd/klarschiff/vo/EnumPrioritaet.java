@@ -1,7 +1,7 @@
 package de.fraunhofer.igd.klarschiff.vo;
 
 /**
- * Priorit‰t eines Vorganges
+ * Priorit√§t eines Vorganges
  * @author Stefan Audersch (Fraunhofer IGD)
  */
 public enum EnumPrioritaet implements EnumText {

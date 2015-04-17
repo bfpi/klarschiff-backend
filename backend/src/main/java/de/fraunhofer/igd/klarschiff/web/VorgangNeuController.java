@@ -34,7 +34,7 @@ import de.fraunhofer.igd.klarschiff.vo.Vorgang;
 
 
 /**
- * Controller zum Erstellen neuer Vorgänge im Backend-Interface
+ * Controller zum Erstellen neuer VorgÃ¤nge im Backend-Interface
  * @author Stefan Audersch (Fraunhofer IGD)
  */
 @SessionAttributes("cmd")
@@ -62,7 +62,7 @@ public class VorgangNeuController {
 	GeoService geoService;
 
 	/**
-	 * Liefert alle möglichen Ausprägungen für Vorgangstypen 
+	 * Liefert alle mÃ¶glichen AusprÃ¤gungen fÃ¼r Vorgangstypen 
 	 */
 	@ModelAttribute("vorgangtypen")
     public Collection<EnumVorgangTyp> populateEnumVorgangTypen() {
@@ -80,8 +80,8 @@ public class VorgangNeuController {
     }
 	
 	/**
-	 * Aktualisiert Unterkategorie und Liste möglicher Hauptkategorien (abhängig von Vorgangstyp) in übergebenem
-	 * Model mit Daten aus übergebenem Commandobjekt 
+	 * Aktualisiert Unterkategorie und Liste mÃ¶glicher Hauptkategorien (abhÃ¤ngig von Vorgangstyp) in Ã¼bergebenem
+	 * Model mit Daten aus Ã¼bergebenem Commandobjekt 
 	 * @param model Model
 	 * @param cmd Command
 	 */
@@ -95,7 +95,7 @@ public class VorgangNeuController {
 	/**
 	 * Die Methode verarbeitet den GET-Request auf der URL <code>/vorgangneu</code><br/>
 	 * Seitenbeschreibung: Darstellung des Formulars zur Vorgangerstellung im Backend
-	 * @param model Model in der ggf. Daten für die View abgelegt werden
+	 * @param model Model in der ggf. Daten fÃ¼r die View abgelegt werden
 	 * @return View, die zum Rendern des Request verwendet wird
 	 */
 	@RequestMapping(method = RequestMethod.GET)
@@ -109,12 +109,12 @@ public class VorgangNeuController {
 
 	/**
 	 * Die Methode verarbeitet den POST-Request auf der URL <code>/vorgangneu</code><br/>
-	 * Funktionsbeschreibung: Absenden des im Backend ausgefüllten Vorgangerstellungsformulars
+	 * Funktionsbeschreibung: Absenden des im Backend ausgefÃ¼llten Vorgangerstellungsformulars
 	 * @param cmd Command
 	 * @param result BindingResult
-	 * @param model Model in der ggf. Daten für die View abgelegt werden
+	 * @param model Model in der ggf. Daten fÃ¼r die View abgelegt werden
 	 * @param request HttpServletRequest-Objekt
-	 * @return submit View im Erfolgsfall / form view bei nötigen Korrekturen
+	 * @return submit View im Erfolgsfall / form view bei nÃ¶tigen Korrekturen
 	 */
 	@RequestMapping(method = RequestMethod.POST)
     public String submit(@ModelAttribute("cmd") VorgangNeuCommand cmd, BindingResult result, ModelMap model, HttpServletRequest request) {

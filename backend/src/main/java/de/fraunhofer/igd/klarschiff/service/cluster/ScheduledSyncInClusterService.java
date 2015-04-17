@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 import de.fraunhofer.igd.klarschiff.dao.JobDao;
 
 /**
- * Service, der die mit <code>@ScheduledSyncInCluster</code> annotierten Methoden identifiziert und die Ausführung der Jobs
+ * Service, der die mit <code>@ScheduledSyncInCluster</code> annotierten Methoden identifiziert und die AusfÃ¼hrung der Jobs
  * initialisiert. 
  * @author Stefan Audersch (Fraunhofer IGD)
  */
@@ -28,7 +28,7 @@ public class ScheduledSyncInClusterService implements ApplicationContextAware {
 	/**
 	 * Nachdem der ApplikationContext aufgebaut ist, werden alle Componenten im ApplicationContext nach Methode gescant, die
 	 * mit <code>@ScheduledSyncInCluster</code> annotiert sind. Die Methoden werden als Job initialisiert, die im Cluster
-	 * synchronisiert ausgeführt werden.
+	 * synchronisiert ausgefÃ¼hrt werden.
 	 */
 	public void setApplicationContext(ApplicationContext ctx) throws BeansException {
 		ThreadPoolTaskScheduler taskScheduler = ctx.getBean(ThreadPoolTaskScheduler.class);
@@ -49,7 +49,7 @@ public class ScheduledSyncInClusterService implements ApplicationContextAware {
 			    		runnable.prepare();
 			    		taskScheduler.schedule(runnable, new CronTrigger(scheduledSyncInCluster.cron()));
 			    	} catch (Exception e) {
-			    		throw new RuntimeException("ScheduledSyncInCluster kann nicht für "+bean.getClass().getName()+"."+method.getName()+" registriert werden.", e);
+			    		throw new RuntimeException("ScheduledSyncInCluster kann nicht fÃ¼r "+bean.getClass().getName()+"."+method.getName()+" registriert werden.", e);
 			    	}
 			        // do something
 			    }

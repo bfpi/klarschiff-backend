@@ -19,8 +19,8 @@ public class StreamUtil {
 	 * Kopiert einen Inputstream in einen Outputstream.
 	 * @param is Inputstream
 	 * @param os Outputstream
-	 * @param closeIs Inputstream nach dem Kopieren schlieﬂen?
-	 * @param closeOs Outputstream nach dem Kopieren schlieﬂen?
+	 * @param closeIs Inputstream nach dem Kopieren schlie√üen?
+	 * @param closeOs Outputstream nach dem Kopieren schlie√üen?
 	 * @param encoding verwendet Encoding zum Lesen des Inputstreams
 	 * @throws Exception
 	 */
@@ -42,8 +42,8 @@ public class StreamUtil {
 	 * Kopiert einen Inputstream in einen Outputstream.
 	 * @param is Inputstream
 	 * @param os Outputstream
-	 * @param closeIs Inputstream nach dem Kopieren schlieﬂen?
-	 * @param closeOs Outputstream nach dem Kopieren schlieﬂen?
+	 * @param closeIs Inputstream nach dem Kopieren schlie√üen?
+	 * @param closeOs Outputstream nach dem Kopieren schlie√üen?
 	 * @throws Exception
 	 */
 	public static void copyStreamContent(InputStream is, OutputStream os, boolean closeIs, boolean closeOs) throws Exception
@@ -62,9 +62,9 @@ public class StreamUtil {
 	 * Kopiert einen Inputstream in einen Outputstream.
 	 * @param is Inputstream
 	 * @param os Outputstream
-	 * @param closeIs Inputstream nach dem Kopieren schlieﬂen?
-	 * @param closeOs Outputstream nach dem Kopieren schlieﬂen?
-	 * @param autoFlush flush nach jedem Lesen eines Blockes auf dem Outputstream ausf¸hren?
+	 * @param closeIs Inputstream nach dem Kopieren schlie√üen?
+	 * @param closeOs Outputstream nach dem Kopieren schlie√üen?
+	 * @param autoFlush flush nach jedem Lesen eines Blockes auf dem Outputstream ausf√ºhren?
 	 * @throws Exception
 	 */
 	public static void copyStreamContent(InputStream is, OutputStream os, boolean closeIs, boolean closeOs, boolean autoFlush) throws Exception

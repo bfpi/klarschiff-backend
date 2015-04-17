@@ -6,7 +6,7 @@ import javax.persistence.Embeddable;
 /**
  * Primary-Key-Klasse, da die Tabelle 2 PKs hat. <br/>
  *
- * @author Robert Voﬂ (BFPI GmbH)
+ * @author Robert Vo√ü (BFPI GmbH)
  */
 @Embeddable
 public class AussendienstKoordinatorPK implements Serializable {

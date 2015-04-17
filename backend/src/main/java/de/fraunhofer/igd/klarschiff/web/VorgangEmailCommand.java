@@ -5,8 +5,8 @@ import java.io.Serializable;
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
 
 /**
- * Command für den Mailversand im Backend <br />
- * Beinhaltet ein Vorgangs-Objekt sowie Emaildetails (Absenderadresse und -name, Empfängeradresse und Mailtext).
+ * Command fÃ¼r den Mailversand im Backend <br />
+ * Beinhaltet ein Vorgangs-Objekt sowie Emaildetails (Absenderadresse und -name, EmpfÃ¤ngeradresse und Mailtext).
  * @author Stefan Audersch (Fraunhofer IGD)
  */
 @SuppressWarnings("serial")

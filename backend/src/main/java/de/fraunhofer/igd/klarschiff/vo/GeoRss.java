@@ -32,28 +32,28 @@ public class GeoRss {
 	private Long id;
 
 	/**
-	 * überwachte Fläche
+	 * Ã¼berwachte FlÃ¤che
 	 */
     @Type(type = "org.hibernatespatial.GeometryUserType")
     private MultiPolygon ovi;
 	
     /**
-     * Probleme überwachen?
+     * Probleme Ã¼berwachen?
      */
 	private boolean probleme;
 	
 	/**
-	 * Liste der überwachten Kategorien bei den Problemen
+	 * Liste der Ã¼berwachten Kategorien bei den Problemen
 	 */
 	private String problemeKategorien;
 	
 	/**
-	 * Ideen überwachen?
+	 * Ideen Ã¼berwachen?
 	 */
 	private boolean ideen;
 	
 	/**
-	 * Liste der überwachten Kategorien bei den Ideen
+	 * Liste der Ã¼berwachten Kategorien bei den Ideen
 	 */
 	private String ideenKategorien;
 
@@ -69,8 +69,8 @@ public class GeoRss {
     private static WKTWriter wktWriter = new WKTWriter();
 
     /**
-     * Setzen der überwachten Fläche als WKT
-     * @param oviWkt Fläche als WKT
+     * Setzen der Ã¼berwachten FlÃ¤che als WKT
+     * @param oviWkt FlÃ¤che als WKT
      * @throws Exception
      */
     @Transient
@@ -79,8 +79,8 @@ public class GeoRss {
     }
 
     /**
-     * Lesen der überwachten Fläche als WKT
-     * @return überwachte Fläche als WKT
+     * Lesen der Ã¼berwachten FlÃ¤che als WKT
+     * @return Ã¼berwachte FlÃ¤che als WKT
      */
     @Transient
     public String getOviWkt() {

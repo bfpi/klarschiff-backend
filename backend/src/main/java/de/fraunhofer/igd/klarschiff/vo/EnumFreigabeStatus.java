@@ -2,7 +2,7 @@ package de.fraunhofer.igd.klarschiff.vo;
 
 
 /**
- * Freigabestatus für Betreff, Details und Foto
+ * Freigabestatus fÃ¼r Betreff, Details und Foto
  * @author Stefan Audersch (Fraunhofer IGD)
  */
 public enum EnumFreigabeStatus implements EnumText {

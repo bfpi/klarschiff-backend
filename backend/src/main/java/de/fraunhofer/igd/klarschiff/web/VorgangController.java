@@ -26,7 +26,7 @@ import org.springframework.security.core.codec.Base64;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 /**
- * Controller für die Vorgangsübersicht und Detailansichten
+ * Controller fÃ¼r die VorgangsÃ¼bersicht und Detailansichten
  * @author Stefan Audersch (Fraunhofer IGD)
  */
 @Controller
@@ -55,11 +55,11 @@ public class VorgangController {
 	
 	/**
 	 * Die Methode verarbeitet den GET-Request auf der URL <code>/vorgang/{id}/uebersicht</code><br/>
-	 * Seitenbeschreibung: Übersichtsseite für den aktuellen Vorgang
+	 * Seitenbeschreibung: Ãœbersichtsseite fÃ¼r den aktuellen Vorgang
 	 * @param id Vorgangs-ID
 	 * @param page Seitenzahl
-	 * @param size Seitengröße
-	 * @param model Model in dem ggf. Daten für die View abgelegt werden
+	 * @param size SeitengrÃ¶ÃŸe
+	 * @param model Model in dem ggf. Daten fÃ¼r die View abgelegt werden
 	 * @param request Request
 	 * @return View, die zum Rendern des Request verwendet wird
 	 */
@@ -90,9 +90,9 @@ public class VorgangController {
 	
 	/**
 	 * Die Methode verarbeitet den GET-Request auf der URL <code>/vorgang/{id}/karte</code><br/>
-	 * Seitenbeschreibung: Kartenansicht für den aktuellen Vorgang
+	 * Seitenbeschreibung: Kartenansicht fÃ¼r den aktuellen Vorgang
 	 * @param id Vorgangs-ID
-	 * @param model Model in dem ggf. Daten für die View abgelegt werden
+	 * @param model Model in dem ggf. Daten fÃ¼r die View abgelegt werden
 	 * @param request Request
 	 * @return View, die zum Rendern des Request verwendet wird
 	 */
@@ -140,9 +140,9 @@ public class VorgangController {
 	
 	/**
 	 * Die Methode verarbeitet den GET-Request auf der URL <code>/vorgang/{id}/foto</code><br/>
-	 * Seitenbeschreibung: Fotoansicht für den aktuellen Vorgang
+	 * Seitenbeschreibung: Fotoansicht fÃ¼r den aktuellen Vorgang
 	 * @param id Vorgangs-ID
-	 * @param model Model in dem ggf. Daten für die View abgelegt werden
+	 * @param model Model in dem ggf. Daten fÃ¼r die View abgelegt werden
 	 * @param request Request
 	 * @return View, die zum Rendern des Request verwendet wird
 	 */
@@ -155,11 +155,11 @@ public class VorgangController {
    
 	/**
 	 * Die Methode verarbeitet den POST-Request auf der URL <code>/vorgang/{id}/foto</code><br/>
-	 * Funktionsbeschreibung: Dient in Abhängigkeit vom <code>action</code> Parameter der Annahme
-	 * der Fotodrehung (<code>action=fotoRotate</code>), der Fotobearbeitung (<code>action=fotoSave</code>), der Freigabestatusänderung
+	 * Funktionsbeschreibung: Dient in AbhÃ¤ngigkeit vom <code>action</code> Parameter der Annahme
+	 * der Fotodrehung (<code>action=fotoRotate</code>), der Fotobearbeitung (<code>action=fotoSave</code>), der FreigabestatusÃ¤nderung
 	 * (<code>action.startsWith("freigabeStatus_Foto")</code> oder des Fotowunsches (<code>action=fotowunsch</code>).
 	 * @param id Vorgangs-ID
-	 * @param model Model in dem ggf. Daten für die View abgelegt werden
+	 * @param model Model in dem ggf. Daten fÃ¼r die View abgelegt werden
 	 * @param request Request
 	 * @return View, die zum Rendern des Request verwendet wird
 	 */
@@ -203,11 +203,11 @@ public class VorgangController {
 
 	/**
 	 * Die Methode verarbeitet den GET-Request auf der URL <code>/vorgang/{id}/verlauf</code><br/>
-	 * Seitenbeschreibung: Verlaufsansicht für den aktuellen Vorgang
+	 * Seitenbeschreibung: Verlaufsansicht fÃ¼r den aktuellen Vorgang
 	 * @param id Vorgangs-ID
 	 * @param page Seitenzahl
-	 * @param size Seitengröße
-	 * @param model Model in dem ggf. Daten für die View abgelegt werden
+	 * @param size SeitengrÃ¶ÃŸe
+	 * @param model Model in dem ggf. Daten fÃ¼r die View abgelegt werden
 	 * @param request Request
 	 * @return View, die zum Rendern des Request verwendet wird
 	 */
@@ -223,10 +223,10 @@ public class VorgangController {
 	}
 	
 	/**
-	 * Ermittelt die Anzahl maximal benötigter Seiten aus:
-	 * @param size gewünschter Anzahl an Elementen (Suchergebnissen) pro Seite
+	 * Ermittelt die Anzahl maximal benÃ¶tigter Seiten aus:
+	 * @param size gewÃ¼nschter Anzahl an Elementen (Suchergebnissen) pro Seite
 	 * @param count gegebener Anzahl an darzustellender Elemente
-	 * @return maximal benötigte Seitenzahl
+	 * @return maximal benÃ¶tigte Seitenzahl
 	 */
 	private int calculateMaxPages(int size, long count)
     {

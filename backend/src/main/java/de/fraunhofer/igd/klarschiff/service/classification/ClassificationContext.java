@@ -7,8 +7,8 @@ import weka.core.FastVector;
 import weka.core.Instances;
 
 /**
- * Die Klasse hält den Kontext für den Klassifikator. Somit kann mit einer Instanz des Klassifikators noch gearbeitet werden,
- * währenddessen im Hintergrund der Klassifikator bereits neu initialisiert und trainiert wird.
+ * Die Klasse hÃ¤lt den Kontext fÃ¼r den Klassifikator. Somit kann mit einer Instanz des Klassifikators noch gearbeitet werden,
+ * wÃ¤hrenddessen im Hintergrund der Klassifikator bereits neu initialisiert und trainiert wird.
  * @author Stefan Audersch (Fraunhofer IGD)
  */
 public class ClassificationContext {

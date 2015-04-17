@@ -3,7 +3,7 @@ package de.fraunhofer.igd.klarschiff.repository;
 import org.hibernate.cfg.ImprovedNamingStrategy;
 
 /**
- * Die Klasse ist für die Benennung der Tabellen und Attribute in der DB verantwortlich.
+ * Die Klasse ist fÃ¼r die Benennung der Tabellen und Attribute in der DB verantwortlich.
  * @author Stefan Audersch (Fraunhofer IGD)
  */
 @SuppressWarnings("serial")
@@ -30,7 +30,7 @@ public class NamingStrategy extends ImprovedNamingStrategy {
 
 
 	/**
-	 * Die Tabellennamen für collections ergeben sich aus dem Klassennamen und einem davorgestellten
+	 * Die Tabellennamen fÃ¼r collections ergeben sich aus dem Klassennamen und einem davorgestellten
 	 * <code>klarschiff_</code>
 	 */
 	public String logicalCollectionTableName(String tableName, String ownerEntityTable, String associatedEntityTable, String propertyName) {

@@ -9,7 +9,7 @@ import java.io.UnsupportedEncodingException;
 public class StringUtil {
 	
 	/**
-	 * Ändert das Encoding eines Strings
+	 * Ã„ndert das Encoding eines Strings
 	 * @param str String
 	 * @param fromEncoding Encoding des Inputs
 	 * @param toEncoding Encoding des Output

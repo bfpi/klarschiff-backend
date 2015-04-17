@@ -41,7 +41,7 @@ import org.hibernate.Session;
 import org.hibernate.type.StandardBasicTypes;
 
 /**
- * Die Dao-Klasse erlaubt das Verwalten der Vorg‰nge in der DB.
+ * Die Dao-Klasse erlaubt das Verwalten der Vorg√§nge in der DB.
  * @author Stefan Audersch (Fraunhofer IGD)
  */
 @Repository
@@ -60,8 +60,8 @@ public class VorgangDao {
 	VerlaufDao verlaufDao;
 	
 	/**
-	 * Das Objekt wird in der DB gespeichert. Bei Vorg‰ngen wird gepr¸ft, ob diese sich ge‰ndert haben. Entsprechend werden die
-	 * Verlaufsdaten zum Vorgang erg‰nzt.
+	 * Das Objekt wird in der DB gespeichert. Bei Vorg√§ngen wird gepr√ºft, ob diese sich ge√§ndert haben. Entsprechend werden die
+	 * Verlaufsdaten zum Vorgang erg√§nzt.
 	 * @param o Das zu speichernde Objekt
 	 */
 	@Transactional
@@ -75,10 +75,10 @@ public class VorgangDao {
 	}
 
 	/**
-	 * Das Objekt wird in der DB gespeichert. Bei Vorg‰ngen wird ggf. gepr¸ft, ob diese sich ge‰ndert haben. Entsprechend werden die
-	 * Verlaufsdaten zum Vorgang erg‰nzt.
+	 * Das Objekt wird in der DB gespeichert. Bei Vorg√§ngen wird ggf. gepr√ºft, ob diese sich ge√§ndert haben. Entsprechend werden die
+	 * Verlaufsdaten zum Vorgang erg√§nzt.
 	 * @param o Das zu speichernde Objekt
-	 * @param checkForUpdateEnable Sollen Vorg‰nge auf ƒnderung gepr¸ft werden und somit ggf. der Verlauf erg‰nzt werden?
+	 * @param checkForUpdateEnable Sollen Vorg√§nge auf √Ñnderung gepr√ºft werden und somit ggf. der Verlauf erg√§nzt werden?
 	 */
 	@Transactional
 	public void merge(Object o, boolean checkForUpdateEnable) {
@@ -95,8 +95,8 @@ public class VorgangDao {
 	
 
 	/**
-	 * Pr¸ft einen Vorgang auf ƒnderungen und erg‰nzt den Verlauf
-	 * @param vorgang Vorgang der gepr¸ft werden soll
+	 * Pr√ºft einen Vorgang auf √Ñnderungen und erg√§nzt den Verlauf
+	 * @param vorgang Vorgang der gepr√ºft werden soll
 	 */
 	private void checkForUpdate(Vorgang vorgang) 
 	{
@@ -108,14 +108,14 @@ public class VorgangDao {
 			//Statuskommentar
 			if (!StringUtils.equals(vorgangOld.getStatusKommentar(), vorgang.getStatusKommentar()) && (!StringUtils.isBlank(vorgangOld.getStatusKommentar()) || !StringUtils.isBlank(vorgang.getStatusKommentar()))) 
 				verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.statusKommentar, StringUtils.abbreviate(vorgangOld.getStatusKommentar(), 100), StringUtils.abbreviate(vorgang.getStatusKommentar(), 100));
-			//Zust‰ndigkeit
+			//Zust√§ndigkeit
 			if (!StringUtils.equals(vorgangOld.getZustaendigkeit(),vorgang.getZustaendigkeit())) {
 				verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.zustaendigkeit, vorgangOld.getZustaendigkeit(), vorgang.getZustaendigkeit());
 				if (vorgang.getZustaendigkeitStatus()==EnumZustaendigkeitStatus.akzeptiert) 
 					verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.zustaendigkeitAkzeptiert, vorgangOld.getZustaendigkeitStatus().getText(), vorgang.getZustaendigkeitStatus().getText());
 			}
 			if (vorgangOld.getZustaendigkeitStatus() != vorgang.getZustaendigkeitStatus()) verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.zustaendigkeitAkzeptiert, vorgangOld.getZustaendigkeitStatus().getText(), vorgang.getZustaendigkeitStatus().getText());
-			//Zust‰ndigkeit beim ClassificationService registrieren
+			//Zust√§ndigkeit beim ClassificationService registrieren
 			if (vorgang.getZustaendigkeitStatus()==EnumZustaendigkeitStatus.akzeptiert &&
 					(vorgangOld.getZustaendigkeitStatus()!=EnumZustaendigkeitStatus.akzeptiert || !StringUtils.equals(vorgangOld.getZustaendigkeit(),vorgang.getZustaendigkeit()))) 
 				AppContext.getApplicationContext().getBean(ClassificationService.class).registerZustaendigkeitAkzeptiert(vorgang);
@@ -134,11 +134,11 @@ public class VorgangDao {
 			if (!StringUtils.equals(vorgangOld.getDetails(), vorgang.getDetails())) verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.detail, StringUtils.abbreviate(vorgangOld.getDetails(), 100), StringUtils.abbreviate(vorgang.getDetails(), 100));
 			//Adresse
 			if (!StringUtils.equals(vorgangOld.getAdresse(), vorgang.getAdresse())) verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.adresse, StringUtils.abbreviate(vorgangOld.getAdresse(), 100), StringUtils.abbreviate(vorgang.getAdresse(), 100));
-            //Flurst¸ckseigentum
+            //Flurst√ºckseigentum
 			if (!StringUtils.equals(vorgangOld.getFlurstueckseigentum(), vorgang.getFlurstueckseigentum())) verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.flurstueckseigentum, StringUtils.abbreviate(vorgangOld.getFlurstueckseigentum(), 100), StringUtils.abbreviate(vorgang.getFlurstueckseigentum(), 100));
 			//Delegieren
 			if (!StringUtils.equals(vorgangOld.getDelegiertAn(), vorgang.getDelegiertAn())) verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.delegiertAn, vorgangOld.getDelegiertAn(), vorgang.getDelegiertAn());
-			//Priorit‰t
+			//Priorit√§t
 			if (vorgangOld.getPrioritaet()!=vorgang.getPrioritaet()) verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.prioritaet, vorgangOld.getPrioritaet().getText(), vorgang.getPrioritaet().getText());
 			//Archiv
 			if (vorgangOld.getArchiviert() != vorgang.getArchiviert()) verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.archiv, vorgangOld.getArchiviert()+"", vorgang.getArchiviert()+"");
@@ -220,13 +220,13 @@ public class VorgangDao {
 
 	
     /**
-    * F¸gt zu einem StringBuilder den WHERE-Teil einer SQL-Query zur Suche von
-    * Vorg‰ngen anhand der Parameter im <code>VorgangSuchenCommand</code>
+    * F√ºgt zu einem StringBuilder den WHERE-Teil einer SQL-Query zur Suche von
+    * Vorg√§ngen anhand der Parameter im <code>VorgangSuchenCommand</code>
     * hinzu.
     *
     * @param cmd Command mit den Parametern zur Suche
-    * @param sql StringBuilder an den angeh‰ngt wird
-    * @return StringBuilder an den angeh‰ngt wird mit WHERE
+    * @param sql StringBuilder an den angeh√§ngt wird
+    * @return StringBuilder an den angeh√§ngt wird mit WHERE
     */
     private StringBuilder addFilter(VorgangSuchenCommand cmd, StringBuilder sql) {
     List<EnumVorgangStatus> unStatus = new ArrayList<EnumVorgangStatus>(Arrays.asList(EnumVorgangStatus.closedVorgangStatus()));
@@ -320,7 +320,7 @@ public class VorgangDao {
             conds.add("vo.status NOT IN ('" + StringUtils.join(notInStatus, "', '") + "')");
           }
         }
-        //Zust‰ndigkeit
+        //Zust√§ndigkeit
         if (!StringUtils.isBlank(cmd.getErweitertZustaendigkeit())) {
           if (cmd.getErweitertZustaendigkeit().equals("#mir zugewiesen#")) {
             conds.add("vo.zustaendigkeit IN ('" + StringUtils.join(
@@ -374,7 +374,7 @@ public class VorgangDao {
             conds.add("vo.archiviert IS NULL OR NOT vo.archiviert");
           }
         }
-        //Unterst¸tzer
+        //Unterst√ºtzer
         if (cmd.getErweitertUnterstuetzerAb() != null) {
           unStatus.add(EnumVorgangStatus.inBearbeitung);
           conds.add("vo.typ != '" + EnumVorgangTyp.idee + "' "
@@ -383,7 +383,7 @@ public class VorgangDao {
                   + " OR un.count >= " + cmd.getErweitertUnterstuetzerAb()
           );
         }
-        //Priorit‰t
+        //Priorit√§t
         if (cmd.getErweitertPrioritaet() != null) {
           conds.add("vo.prioritaet = '" + cmd.getErweitertPrioritaet().name() + "'");
         }
@@ -397,7 +397,7 @@ public class VorgangDao {
         }
         break;
     }
-    // Unterst¸tzer
+    // Unterst√ºtzer
     sql.append(" LEFT JOIN (SELECT vorgang, COUNT(DISTINCT id) FROM klarschiff_unterstuetzer")
             .append(" WHERE datum_bestaetigung IS NOT NULL GROUP BY vorgang) un")
             .append(" ON vo.id = un.vorgang");
@@ -413,13 +413,13 @@ public class VorgangDao {
     }
     
     /**
-    * F¸gt zu einem StringBuilder den WHERE-Teil einer SQL-Query zur Suche von
-    * Vorg‰ngen anhand der Parameter im <code>VorgangDelegiertSuchenCommand</code>
+    * F√ºgt zu einem StringBuilder den WHERE-Teil einer SQL-Query zur Suche von
+    * Vorg√§ngen anhand der Parameter im <code>VorgangDelegiertSuchenCommand</code>
     * hinzu.
     *
     * @param cmd Command mit den Parametern zur Suche
-    * @param sql StringBuilder an den angeh‰ngt wird
-    * @return StringBuilder an den angeh‰ngt wird mit WHERE
+    * @param sql StringBuilder an den angeh√§ngt wird
+    * @return StringBuilder an den angeh√§ngt wird mit WHERE
     */
     private StringBuilder addFilter(VorgangDelegiertSuchenCommand cmd, StringBuilder sql) {
 
@@ -491,7 +491,7 @@ public class VorgangDao {
           java.sql.Date datumBis = new java.sql.Date(DateUtils.truncate(cmd.getErweitertDatumBis(), Calendar.DAY_OF_MONTH).getTime());
           conds.add("vo.datum <= '" + datumBis.toString() + "'");
         }
-        //Priorit‰t
+        //Priorit√§t
         if (cmd.getErweitertPrioritaet() != null) {
           conds.add("vo.prioritaet = '" + cmd.getErweitertPrioritaet().name() + "'");
         }
@@ -509,10 +509,10 @@ public class VorgangDao {
 
 
 	/**
-	 * F¸gt die GroupBy-Terme zu einer HQL-Anfrage hinzu, wenn in der Anfrage nach dem Vorgang gruppiert werden soll. Die Parameter f¸r
-	 * die Projektion auf die Vorgangsattributte werden dabei zur HQL-Anfrage hinzugef¸gt.
-	 * @param query Hilfsobjekt f¸r HQL-Anfragen
-	 * @return ver‰ndertes Hilfsobjekt f¸r HQL-Anfragen
+	 * F√ºgt die GroupBy-Terme zu einer HQL-Anfrage hinzu, wenn in der Anfrage nach dem Vorgang gruppiert werden soll. Die Parameter f√ºr
+	 * die Projektion auf die Vorgangsattributte werden dabei zur HQL-Anfrage hinzugef√ºgt.
+	 * @param query Hilfsobjekt f√ºr HQL-Anfragen
+	 * @return ver√§ndertes Hilfsobjekt f√ºr HQL-Anfragen
 	 */
 	private HqlQueryHelper addGroupByVorgang(HqlQueryHelper query) {
 		return addGroupByVorgang(query, true);
@@ -520,11 +520,11 @@ public class VorgangDao {
 	
 	
 	/**
-	 * F¸gt die GroupBy-Terme zu einer HQL-Anfrage hinzu, wenn in der Anfrage nach dem Vorgang gruppiert werden soll. Die Parameter f¸r
-	 * die Projektion auf die Vorgangsattribute werden dabei ggf. zur HQL-Anfrage hinzugef¸gt.
-	 * @param query Hilfsobjekt f¸r HQL-Anfragen
+	 * F√ºgt die GroupBy-Terme zu einer HQL-Anfrage hinzu, wenn in der Anfrage nach dem Vorgang gruppiert werden soll. Die Parameter f√ºr
+	 * die Projektion auf die Vorgangsattribute werden dabei ggf. zur HQL-Anfrage hinzugef√ºgt.
+	 * @param query Hilfsobjekt f√ºr HQL-Anfragen
 	 * @param addSelectAttribute Sollen die Projektionen auf die Vorgangsattribute mit in die HQL-Anfrage aufgenommen werden?
-	 * @return ver‰ndertes Hilfsobjekt f¸r HQL-Anfragen
+	 * @return ver√§ndertes Hilfsobjekt f√ºr HQL-Anfragen
 	 */
 	protected HqlQueryHelper addGroupByVorgang(HqlQueryHelper query, boolean addSelectAttribute) {
 		if (addSelectAttribute) query.addSelectAttribute("vo");
@@ -564,11 +564,11 @@ public class VorgangDao {
 	
 	
     /**
-    * Ermittelt die Liste der Vorg‰nge zur Suche anhand der Parameter im
+    * Ermittelt die Liste der Vorg√§nge zur Suche anhand der Parameter im
     * <code>VorgangSuchenCommand</code>
     *
     * @param cmd Command mit den Parametern zur Suche
-    * @return Ergebnisliste der Vorg‰nge
+    * @return Ergebnisliste der Vorg√§nge
     */
     public List<Object[]> getVorgaenge(VorgangSuchenCommand cmd) {
     StringBuilder sql = new StringBuilder();
@@ -577,12 +577,12 @@ public class VorgangDao {
             .append(" COALESCE(un.count, 0) AS unterstuetzer,")
             .append(" COALESCE(mi.count, 0) AS missbrauchsmeldung");
     sql.append(" FROM klarschiff_vorgang vo");
-    // F¸r Sortierung
+    // F√ºr Sortierung
     sql.append(" LEFT JOIN klarschiff_kategorie kat_unter ON vo.kategorie = kat_unter.id");
     sql.append(" LEFT JOIN klarschiff_kategorie kat_haupt ON kat_unter.parent = kat_haupt.id");
-    // F¸r Auftrag
+    // F√ºr Auftrag
     sql.append(" LEFT JOIN klarschiff_auftrag auftrag ON vo.id = auftrag.vorgang");
-    // ƒnderungsdatum
+    // √Ñnderungsdatum
     sql.append(" INNER JOIN (SELECT vorgang, MAX(datum) AS datum FROM klarschiff_verlauf")
             .append(" GROUP BY vorgang) verlauf1 ON vo.id = verlauf1.vorgang");
 
@@ -612,20 +612,20 @@ public class VorgangDao {
     }
 	
 	/**
-    * Ermittelt die Liste der Vorg‰nge zur Suche anhand der Parameter im
+    * Ermittelt die Liste der Vorg√§nge zur Suche anhand der Parameter im
     * <code>VorgangDelegiertSuchenCommand</code>
     *
     * @param cmd Command mit den Parametern zur Suche
-    * @return Ergebnisliste der Vorg‰nge
+    * @return Ergebnisliste der Vorg√§nge
     */
     public List<Object[]> getVorgaenge(VorgangDelegiertSuchenCommand cmd) {
     StringBuilder sql = new StringBuilder();
     sql.append("SELECT vo.*");
     sql.append(" FROM klarschiff_vorgang vo");
-    // F¸r Sortierung
+    // F√ºr Sortierung
     sql.append(" LEFT JOIN klarschiff_kategorie kat_unter ON vo.kategorie = kat_unter.id");
     sql.append(" LEFT JOIN klarschiff_kategorie kat_haupt ON kat_unter.parent = kat_haupt.id");
-    // ƒnderungsdatum
+    // √Ñnderungsdatum
     sql.append(" INNER JOIN (SELECT vorgang, MAX(datum) AS datum FROM klarschiff_verlauf")
             .append(" GROUP BY vorgang) verlauf1 ON vo.id = verlauf1.vorgang");
 
@@ -652,9 +652,9 @@ public class VorgangDao {
     }
 
     /**
-	 * Ermittelt die Ergebnisanzahl f¸r eine definierte parametrisierte Anfrage nach Vorg‰ngen. 
+	 * Ermittelt die Ergebnisanzahl f√ºr eine definierte parametrisierte Anfrage nach Vorg√§ngen. 
 	 * @param cmd Command mit den Parametern zur Suche
-	 * @return Anzahl der Vorg‰nge im Suchergebnis
+	 * @return Anzahl der Vorg√§nge im Suchergebnis
 	 */
     public long countVorgaenge(VorgangDelegiertSuchenCommand cmd) {
       StringBuilder sql = new StringBuilder();
@@ -668,9 +668,9 @@ public class VorgangDao {
     }
 
     /**
-	 * Ermittelt die Ergebnisanzahl f¸r eine definierte parametrisierte Anfrage nach Vorg‰ngen. 
+	 * Ermittelt die Ergebnisanzahl f√ºr eine definierte parametrisierte Anfrage nach Vorg√§ngen. 
 	 * @param cmd Command mit den Parametern zur Suche
-	 * @return Anzahl der Vorg‰nge im Suchergebnis
+	 * @return Anzahl der Vorg√§nge im Suchergebnis
 	 */
     public long countVorgaenge(VorgangSuchenCommand cmd) {
       StringBuilder sql = new StringBuilder();
@@ -684,8 +684,8 @@ public class VorgangDao {
     }
 
 	/**
-	 * Ermittelt die Anzahl der offenen Missbrauchsmeldungen f¸r abgeschlosse Vorg‰nge.
-	 * Bei der Suche werden die Rollen des aktuellen Benutzers ber¸cksichtigt.
+	 * Ermittelt die Anzahl der offenen Missbrauchsmeldungen f√ºr abgeschlosse Vorg√§nge.
+	 * Bei der Suche werden die Rollen des aktuellen Benutzers ber√ºcksichtigt.
 	 * @return Anzahl der offenen Missbrauchsmeldungen
 	 */
 	public long missbrauchsmeldungenAbgeschlossenenVorgaenge() {
@@ -704,11 +704,11 @@ public class VorgangDao {
 	
 	
 	/**
-	 * Erzeugt das Grundger¸st der HQL-Anfrage zur Suche von Vorg‰ngen anhand der Parameter im <code>VorgangDelegiertSuchenCommand</code>
-	 * f¸r die Suche im Bereich f¸r Externe (Delegierte)
-	 * Die Rollen des aktuell angemeldeten Benutzers werden dabei ber¸cksichtigt.
+	 * Erzeugt das Grundger√ºst der HQL-Anfrage zur Suche von Vorg√§ngen anhand der Parameter im <code>VorgangDelegiertSuchenCommand</code>
+	 * f√ºr die Suche im Bereich f√ºr Externe (Delegierte)
+	 * Die Rollen des aktuell angemeldeten Benutzers werden dabei ber√ºcksichtigt.
 	 * @param cmd Command mit den Parametern zur Suche
-	 * @return vorbereitetes Hilfsobjekt f¸r HQL-Anfragen
+	 * @return vorbereitetes Hilfsobjekt f√ºr HQL-Anfragen
 	 */
 	private HqlQueryHelper prepareForDelegiertSuche(VorgangDelegiertSuchenCommand cmd) {
 		HqlQueryHelper query = new HqlQueryHelper();
@@ -739,10 +739,10 @@ public class VorgangDao {
 
 	
 	/**
-	 * Ermittelt die Liste der Vorg‰nge zur Suche anhand der Parameter im <code>VorgangDelegiertSuchenCommand</code>.
-	 * Die Rollen des aktuellen Benutzers werden dabei ber¸cksichtigt.
+	 * Ermittelt die Liste der Vorg√§nge zur Suche anhand der Parameter im <code>VorgangDelegiertSuchenCommand</code>.
+	 * Die Rollen des aktuellen Benutzers werden dabei ber√ºcksichtigt.
 	 * @param cmd Command mit den Parametern zur Suche
-	 * @return Ergebnisliste der Vorg‰nge
+	 * @return Ergebnisliste der Vorg√§nge
 	 * @see #prepareForDelegiertSuche(VorgangDelegiertSuchenCommand)
 	 */
 	@SuppressWarnings("unchecked")
@@ -763,10 +763,10 @@ public class VorgangDao {
 
 	
 	/**
-	 * Ermittelt die Ergebnisanzahl f¸r eine definierte parametrisierte Anfrage nach Vorg‰ngen. 
-	 * Die Rollen des aktuellen Benutzers werden dabei ber¸cksichtigt.
+	 * Ermittelt die Ergebnisanzahl f√ºr eine definierte parametrisierte Anfrage nach Vorg√§ngen. 
+	 * Die Rollen des aktuellen Benutzers werden dabei ber√ºcksichtigt.
 	 * @param cmd Command mit den Parametern zur Suche
-	 * @return Anzahl der Vorg‰nge im Suchergebnis
+	 * @return Anzahl der Vorg√§nge im Suchergebnis
 	 * @see #prepareForDelegiertSuche(VorgangDelegiertSuchenCommand)
 	 */
 	public long countVorgang(VorgangDelegiertSuchenCommand cmd) {
@@ -778,9 +778,9 @@ public class VorgangDao {
 
 	
 	/**
-	 * Ermittelt alle Vorg‰nge, die abgeschlossen sind und seit einem bestimmten Zeitraum nicht mehr bearbeitet wurden.
-	 * @param versionBefor Zeitpunkt, bis zu dem die letzte Bearbeitung h‰tte stattfinden m¸ssen
-	 * @return Ergebnisliste mit Vorg‰ngen
+	 * Ermittelt alle Vorg√§nge, die abgeschlossen sind und seit einem bestimmten Zeitraum nicht mehr bearbeitet wurden.
+	 * @param versionBefor Zeitpunkt, bis zu dem die letzte Bearbeitung h√§tte stattfinden m√ºssen
+	 * @return Ergebnisliste mit Vorg√§ngen
 	 * @see de.fraunhofer.igd.klarschiff.service.job.JobsService#archivVorgaenge()
 	 */
 	public List<Vorgang> findNotArchivVorgang(Date versionBefor) {
@@ -792,9 +792,9 @@ public class VorgangDao {
 
 	
 	/**
-	 * Ermittelt alle Vorg‰nge, die gemeldet, aber nach einem bestimmten Zeitraum noch nicht best‰tigt wurden.
-	 * @param datumBefor Zeitpunkt, bis zu dem die Vorg‰nge h‰tten best‰tigt werden m¸ssen
-	 * @return Ergebnisliste mit Vorg‰ngen
+	 * Ermittelt alle Vorg√§nge, die gemeldet, aber nach einem bestimmten Zeitraum noch nicht best√§tigt wurden.
+	 * @param datumBefor Zeitpunkt, bis zu dem die Vorg√§nge h√§tten best√§tigt werden m√ºssen
+	 * @return Ergebnisliste mit Vorg√§ngen
 	 * @see de.fraunhofer.igd.klarschiff.service.job.JobsService#removeUnbestaetigtVorgang()
 	 */
 	public List<Vorgang> findUnbestaetigtVorgang(Date datumBefor) {
@@ -806,9 +806,9 @@ public class VorgangDao {
 
 	
 	/**
-	 * Ermittelt alle Unterst¸tzungen, die eingegangen sind, aber nach einem bestimmten Zeitraum noch nicht best‰tigt wurden.
-	 * @param datumBefor Zeitpunkt, bis zu dem die Unterst¸tzungen h‰tten best‰tigt werden m¸ssen
-	 * @return Ergebnisliste mit Unterst¸tzungen
+	 * Ermittelt alle Unterst√ºtzungen, die eingegangen sind, aber nach einem bestimmten Zeitraum noch nicht best√§tigt wurden.
+	 * @param datumBefor Zeitpunkt, bis zu dem die Unterst√ºtzungen h√§tten best√§tigt werden m√ºssen
+	 * @return Ergebnisliste mit Unterst√ºtzungen
 	 * @see de.fraunhofer.igd.klarschiff.service.job.JobsService#removeUnbestaetigtUnterstuetzer()
 	 */
 	public List<Unterstuetzer> findUnbestaetigtUnterstuetzer(Date datumBefor) {
@@ -819,8 +819,8 @@ public class VorgangDao {
 	
 	
 	/**
-	 * Ermittelt alle Missbrauchsmeldungen, die eingegangen sind, aber nach einem bestimmten Zeitraum noch nicht best‰tigt wurden.
-	 * @param datumBefor Zeitpunkt, bis zu dem die Missbrauchsmeldungen h‰tten best‰tigt werden m¸ssen
+	 * Ermittelt alle Missbrauchsmeldungen, die eingegangen sind, aber nach einem bestimmten Zeitraum noch nicht best√§tigt wurden.
+	 * @param datumBefor Zeitpunkt, bis zu dem die Missbrauchsmeldungen h√§tten best√§tigt werden m√ºssen
 	 * @return Ergebnisliste mit Missbrauchsmeldungen
 	 * @see de.fraunhofer.igd.klarschiff.service.job.JobsService#removeUnbestaetigtMissbrauchsmeldung()
 	 */
@@ -840,9 +840,9 @@ public class VorgangDao {
 	
 	
 	/**
-	 * Ermittelt alle berechneten und gespeicherten Features f¸r einen Vorgang.
+	 * Ermittelt alle berechneten und gespeicherten Features f√ºr einen Vorgang.
 	 * @param vorgang Vorgang zu dem die Features ermittelt werden sollen
-	 * @return Ermittelte Features f¸r den gegebenen Vorgang
+	 * @return Ermittelte Features f√ºr den gegebenen Vorgang
 	 */
 	@Transactional
 	public VorgangFeatures findVorgangFeatures(Vorgang vorgang) {
@@ -855,9 +855,9 @@ public class VorgangDao {
 	}
 
 	/**
-	 * Ermittelt alle bisher gew‰hlten Zust‰ndigkeiten f¸r einen Vorgang
-	 * @param vorgang Vorgang f¸r den die bisher verwendeten Zust‰ndigkeiten ermittelt wurden
-	 * @return bisher verwendete Zust‰ndigkeiten f¸r ein Vorgang
+	 * Ermittelt alle bisher gew√§hlten Zust√§ndigkeiten f√ºr einen Vorgang
+	 * @param vorgang Vorgang f√ºr den die bisher verwendeten Zust√§ndigkeiten ermittelt wurden
+	 * @return bisher verwendete Zust√§ndigkeiten f√ºr ein Vorgang
 	 */
 	@Transactional
 	public VorgangHistoryClasses findVorgangHistoryClasses(Vorgang vorgang) {
@@ -871,9 +871,9 @@ public class VorgangDao {
 	
 	
 	/**
-	 * Ermittlet die aktuellsten Vorg‰nge, die eine akzeptierte Zust‰ndigkeit besitzen, um mit diesen den Zust‰ndigkeitsfinder zu trainieren
-	 * @param maxResults maximale Anzahl von Vorg‰ngen in der Ergebnisliste 
-	 * @return Vorg‰nge mit akzeptierten Zust‰ndigkeiten
+	 * Ermittlet die aktuellsten Vorg√§nge, die eine akzeptierte Zust√§ndigkeit besitzen, um mit diesen den Zust√§ndigkeitsfinder zu trainieren
+	 * @param maxResults maximale Anzahl von Vorg√§ngen in der Ergebnisliste 
+	 * @return Vorg√§nge mit akzeptierten Zust√§ndigkeiten
 	 */
 	@SuppressWarnings("unchecked")
 	public List<Vorgang> findVorgangForTrainClassificator(int maxResults) {
@@ -882,10 +882,10 @@ public class VorgangDao {
     
     
     /**
-	 * Ermittelt alle Vorg‰nge, bei denen ab einer bestimmten Zeit die Zust‰ndigkeit ge‰ndert wurde. 
-	 * @param lastChange Zeitpunkt ab dem die Zust‰ndigkeit ge‰ndert wurde
-	 * @param zustaendigkeit Zust‰ndigkeit
-	 * @return Liste mit Vorg‰ngen
+	 * Ermittelt alle Vorg√§nge, bei denen ab einer bestimmten Zeit die Zust√§ndigkeit ge√§ndert wurde. 
+	 * @param lastChange Zeitpunkt ab dem die Zust√§ndigkeit ge√§ndert wurde
+	 * @param zustaendigkeit Zust√§ndigkeit
+	 * @return Liste mit Vorg√§ngen
 	 * @see de.fraunhofer.igd.klarschiff.service.job.JobsService#informDispatcher()
 	 */
 	@SuppressWarnings("unchecked")
@@ -900,10 +900,10 @@ public class VorgangDao {
 	
 	
 	/**
-	 * Ermittelt alle Vorg‰nge, bei denen ab einer bestimmten Zeit delegiert wurde.
-	 * @param lastChange Zeitpunkt ab dem die Vorg‰nge delegiert wurden
+	 * Ermittelt alle Vorg√§nge, bei denen ab einer bestimmten Zeit delegiert wurde.
+	 * @param lastChange Zeitpunkt ab dem die Vorg√§nge delegiert wurden
 	 * @param delegiertAn Delegiert an
-	 * @return Liste mit Vorg‰ngen
+	 * @return Liste mit Vorg√§ngen
  	 * @see de.fraunhofer.igd.klarschiff.service.job.JobsService#informExtern()
 	 */
 	@SuppressWarnings("unchecked")
@@ -918,9 +918,9 @@ public class VorgangDao {
     
     
     /**
-	 * Ermittelt alle Vorg‰nge, die ab einer bestimmten Zeit den Status "in Bearbeitung" erhalten haben.
-	 * @param lastChange Zeitpunkt, ab dem die Vorg‰nge den Status "in Bearbeitung" erhalten haben.
-	 * @return Liste mit Vorg‰ngen
+	 * Ermittelt alle Vorg√§nge, die ab einer bestimmten Zeit den Status "in Bearbeitung" erhalten haben.
+	 * @param lastChange Zeitpunkt, ab dem die Vorg√§nge den Status "in Bearbeitung" erhalten haben.
+	 * @return Liste mit Vorg√§ngen
 	 */
 	@SuppressWarnings("unchecked")
 	public List<Vorgang> findInProgressVorgaenge(Date lastChange) {
@@ -937,9 +937,9 @@ public class VorgangDao {
 
 	
 	/**
-	 * Ermittelt alle Vorg‰nge, die ab einer bestimmten Zeit abgeschlossen wurden.
-	 * @param lastChange Zeitpunkt, ab dem die Vorg‰nge abgeschlossen wurden.
-	 * @return Liste mit Vorg‰ngen
+	 * Ermittelt alle Vorg√§nge, die ab einer bestimmten Zeit abgeschlossen wurden.
+	 * @param lastChange Zeitpunkt, ab dem die Vorg√§nge abgeschlossen wurden.
+	 * @return Liste mit Vorg√§ngen
 	 */
 	@SuppressWarnings("unchecked")
 	public List<Vorgang> findClosedVorgaenge(Date lastChange) {
@@ -956,9 +956,9 @@ public class VorgangDao {
 
 	
 	/**
-	 * Ermittelt die Zust‰ndigkeit f¸r einen Vorgang
+	 * Ermittelt die Zust√§ndigkeit f√ºr einen Vorgang
 	 * @param vorgangId Id des Vorgangs
-	 * @return Zust‰ndigkeit des Vorgangs
+	 * @return Zust√§ndigkeit des Vorgangs
 	 */
 	public String getZustaendigkeitForVorgang(Long vorgangId) {
 		return em.createQuery("SELECT vo.zustaendigkeit FROM Vorgang vo WHERE vo.id=:id", String.class).setParameter("id", vorgangId).getSingleResult();
@@ -966,7 +966,7 @@ public class VorgangDao {
 
 	
 	/**
-	 * Ermittelt f¸r einen Vorgang an wen dieser delegiert wurde
+	 * Ermittelt f√ºr einen Vorgang an wen dieser delegiert wurde
 	 * @param vorgangId Id des Vorgangs
 	 * @return Delegiert an
 	 */
@@ -976,11 +976,11 @@ public class VorgangDao {
     
     
     /**
-	 * Ermittelt alle Vorg‰nge mit dem Status 'offen', die seit einem bestimmten Datum einer bestimmten Zust‰ndigkeit zugewiesen sind, bisher aber nicht akzeptiert wurden.
-	 * @param administrator Zust‰ndigkeit ignorieren?
-	 * @param zustaendigkeit Zust‰ndigkeit, der die Vorg‰nge zugewiesen sind
-	 * @param datum Datum, seit dem die Vorg‰nge zugewiesen sind
-	 * @return Liste mit Vorg‰ngen
+	 * Ermittelt alle Vorg√§nge mit dem Status 'offen', die seit einem bestimmten Datum einer bestimmten Zust√§ndigkeit zugewiesen sind, bisher aber nicht akzeptiert wurden.
+	 * @param administrator Zust√§ndigkeit ignorieren?
+	 * @param zustaendigkeit Zust√§ndigkeit, der die Vorg√§nge zugewiesen sind
+	 * @param datum Datum, seit dem die Vorg√§nge zugewiesen sind
+	 * @return Liste mit Vorg√§ngen
 	 */
 	@SuppressWarnings("unchecked")
     public List<Vorgang> findVorgaengeOffenNichtAkzeptiert(Boolean administrator, String zustaendigkeit, Date datum) {
@@ -998,11 +998,11 @@ public class VorgangDao {
     
     
     /**
-	 * Ermittelt alle Vorg‰nge mit dem Status 'in Bearbeitung', die einer bestimmten Zust‰ndigkeit zugewiesen sind und seit einem bestimmten Datum nicht mehr ver‰ndert wurden, bisher aber keine Info der Verwaltung aufweisen.
-	 * @param administrator Zust‰ndigkeit ignorieren?
-	 * @param zustaendigkeit Zust‰ndigkeit, der die Vorg‰nge zugewiesen sind
-	 * @param datum Datum, seit dem die Vorg‰nge zugewiesen sind
-	 * @return Liste mit Vorg‰ngen
+	 * Ermittelt alle Vorg√§nge mit dem Status 'in Bearbeitung', die einer bestimmten Zust√§ndigkeit zugewiesen sind und seit einem bestimmten Datum nicht mehr ver√§ndert wurden, bisher aber keine Info der Verwaltung aufweisen.
+	 * @param administrator Zust√§ndigkeit ignorieren?
+	 * @param zustaendigkeit Zust√§ndigkeit, der die Vorg√§nge zugewiesen sind
+	 * @param datum Datum, seit dem die Vorg√§nge zugewiesen sind
+	 * @return Liste mit Vorg√§ngen
 	 */
 	@SuppressWarnings("unchecked")
     public List<Vorgang> findVorgaengeInbearbeitungOhneStatusKommentar(Boolean administrator, String zustaendigkeit, Date datum) {
@@ -1020,11 +1020,11 @@ public class VorgangDao {
     
     
     /**
-	 * Ermittelt alle Vorg‰nge des Typs 'idee' mit dem Status 'offen', die ihre Erstsichtung seit einem bestimmten Datum hinter sich haben, bisher aber noch nicht die Zahl der notwendigen Unterst¸tzungen aufweisen.
-	 * @param administrator Zust‰ndigkeit ignorieren?
-	 * @param zustaendigkeit Zust‰ndigkeit, der die Vorg‰nge zugewiesen sind
+	 * Ermittelt alle Vorg√§nge des Typs 'idee' mit dem Status 'offen', die ihre Erstsichtung seit einem bestimmten Datum hinter sich haben, bisher aber noch nicht die Zahl der notwendigen Unterst√ºtzungen aufweisen.
+	 * @param administrator Zust√§ndigkeit ignorieren?
+	 * @param zustaendigkeit Zust√§ndigkeit, der die Vorg√§nge zugewiesen sind
 	 * @param datum Datum, seit dem die Erstsichtung abgeschlossen ist
-	 * @return Liste mit Vorg‰ngen
+	 * @return Liste mit Vorg√§ngen
 	 */
 	@SuppressWarnings("unchecked")
     public List<Vorgang> findVorgaengeIdeeOffenOhneUnterstuetzung(Boolean administrator, String zustaendigkeit, Date datum) {
@@ -1045,10 +1045,10 @@ public class VorgangDao {
     
     
     /**
-	 * Ermittelt alle Vorg‰nge mit dem Status 'wird nicht bearbeitet', die bisher keine Info der Verwaltung aufweisen.
-	 * @param administrator Zust‰ndigkeit ignorieren?
-	 * @param zustaendigkeit Zust‰ndigkeit, der die Vorg‰nge zugewiesen sind
-	 * @return Liste mit Vorg‰ngen
+	 * Ermittelt alle Vorg√§nge mit dem Status 'wird nicht bearbeitet', die bisher keine Info der Verwaltung aufweisen.
+	 * @param administrator Zust√§ndigkeit ignorieren?
+	 * @param zustaendigkeit Zust√§ndigkeit, der die Vorg√§nge zugewiesen sind
+	 * @return Liste mit Vorg√§ngen
 	 */
 	@SuppressWarnings("unchecked")
     public List<Vorgang> findVorgaengeWirdnichtbearbeitetOhneStatuskommentar(Boolean administrator, String zustaendigkeit) {
@@ -1065,10 +1065,10 @@ public class VorgangDao {
     
     
     /**
-	 * Ermittelt alle Vorg‰nge, die zwar nicht mehr den Status 'offen' aufweisen, bisher aber dennoch nicht akzeptiert wurden.
-	 * @param administrator Zust‰ndigkeit ignorieren?
-	 * @param zustaendigkeit Zust‰ndigkeit, der die Vorg‰nge zugewiesen sind
-	 * @return Liste mit Vorg‰ngen
+	 * Ermittelt alle Vorg√§nge, die zwar nicht mehr den Status 'offen' aufweisen, bisher aber dennoch nicht akzeptiert wurden.
+	 * @param administrator Zust√§ndigkeit ignorieren?
+	 * @param zustaendigkeit Zust√§ndigkeit, der die Vorg√§nge zugewiesen sind
+	 * @return Liste mit Vorg√§ngen
 	 */
 	@SuppressWarnings("unchecked")
     public List<Vorgang> findVorgaengeNichtMehrOffenNichtAkzeptiert(Boolean administrator, String zustaendigkeit) {
@@ -1085,10 +1085,10 @@ public class VorgangDao {
     
     
     /**
-	 * Ermittelt alle Vorg‰nge, die ihre Erstsichtung bereits hinter sich haben, deren Betreff, Details oder Foto bisher aber noch nicht freigegeben wurden.
-	 * @param administrator Zust‰ndigkeit ignorieren?
-	 * @param zustaendigkeit Zust‰ndigkeit, der die Vorg‰nge zugewiesen sind
-	 * @return Liste mit Vorg‰ngen
+	 * Ermittelt alle Vorg√§nge, die ihre Erstsichtung bereits hinter sich haben, deren Betreff, Details oder Foto bisher aber noch nicht freigegeben wurden.
+	 * @param administrator Zust√§ndigkeit ignorieren?
+	 * @param zustaendigkeit Zust√§ndigkeit, der die Vorg√§nge zugewiesen sind
+	 * @return Liste mit Vorg√§ngen
 	 */
 	@SuppressWarnings("unchecked")
     public List<Vorgang> findVorgaengeOhneRedaktionelleFreigaben(Boolean administrator, String zustaendigkeit) {
@@ -1106,9 +1106,9 @@ public class VorgangDao {
     
     
     /**
-	 * Ermittelt alle Vorg‰nge, die auf Grund von Kommunikationsfehlern im System keine Eintr‰ge in den Datenfeldern 'zustaendigkeit' und/oder 'zustaendigkeit_status' aufweisen.
-	 * @param administrator Zust‰ndigkeit ignorieren?
-	 * @return Liste mit Vorg‰ngen
+	 * Ermittelt alle Vorg√§nge, die auf Grund von Kommunikationsfehlern im System keine Eintr√§ge in den Datenfeldern 'zustaendigkeit' und/oder 'zustaendigkeit_status' aufweisen.
+	 * @param administrator Zust√§ndigkeit ignorieren?
+	 * @return Liste mit Vorg√§ngen
 	 */
 	@SuppressWarnings("unchecked")
     public List<Vorgang> findVorgaengeOhneZustaendigkeit(Boolean administrator) {

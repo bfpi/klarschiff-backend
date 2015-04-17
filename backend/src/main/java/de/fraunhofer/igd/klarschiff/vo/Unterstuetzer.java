@@ -16,7 +16,7 @@ import javax.validation.constraints.Size;
 import org.springframework.format.annotation.DateTimeFormat;
 
 /**
- * VO zum Abbilden der Unterstützer/Unterstützungen
+ * VO zum Abbilden der UnterstÃ¼tzer/UnterstÃ¼tzungen
  * @author Stefan Audersch (Fraunhofer IGD)
  */
 @SuppressWarnings("serial")
@@ -26,26 +26,26 @@ public class Unterstuetzer implements Serializable {
 	/* --------------- Attribute ----------------------------*/
 
 	/**
-	 * Id der Unterstützung
+	 * Id der UnterstÃ¼tzung
 	 */
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 
 	/**
-	 * Vorgang zu dem die Unterstützung gehört
+	 * Vorgang zu dem die UnterstÃ¼tzung gehÃ¶rt
 	 */
 	@ManyToOne
     private Vorgang vorgang;
 	
 	/**
-	 * Hash zum Bestatigen der Unterstützung
+	 * Hash zum Bestatigen der UnterstÃ¼tzung
 	 */
 	@Size(max = 32)
     private String hash;
     
 	/**
-	 * Erstellungszeit der Unterstützung
+	 * Erstellungszeit der UnterstÃ¼tzung
 	 */
     @NotNull
     @Temporal(TemporalType.TIMESTAMP)
@@ -53,7 +53,7 @@ public class Unterstuetzer implements Serializable {
     private Date datum;
 
     /**
-     * Bestätigungszeit der Unterstützung
+     * BestÃ¤tigungszeit der UnterstÃ¼tzung
      */
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(style = "S-")

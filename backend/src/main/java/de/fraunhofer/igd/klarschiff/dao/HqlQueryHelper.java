@@ -102,11 +102,11 @@ public class HqlQueryHelper {
 	}
 
 	/**
-	 * Erzeugt eine gültige HQL-Anfrage
+	 * Erzeugt eine gÃ¼ltige HQL-Anfrage
 	 * @return HQL-Anfrage
 	 */
 	public String getHqlQuery() {
-		if (selectAttributes.size()<1) throw new RuntimeException("Es sind keine Attributte für die Projektion angegeben");
+		if (selectAttributes.size()<1) throw new RuntimeException("Es sind keine Attributte fÃ¼r die Projektion angegeben");
 		if (fromTables.size()<1) throw new RuntimeException("Es sind keine Tabellen angegeben");
 
 		StringBuilder str = new StringBuilder();

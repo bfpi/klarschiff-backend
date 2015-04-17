@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 
 
 /**
- * Die Klasse stellt einen Service bereit über den auf verschiedene Properties zugegriffen werden kann.
+ * Die Klasse stellt einen Service bereit Ã¼ber den auf verschiedene Properties zugegriffen werden kann.
  * @author Stefan Audersch (Fraunhofer IGD)
  */
 @Service
@@ -23,7 +23,7 @@ public class SettingsService {
 	boolean contextAppDemo;
 	
 	/**
-	 * Erlaubt den Zugriff auf ein beliebiges Property aus der <code>settings.properties</code> wobei das Profil berücksichtigt wird.
+	 * Erlaubt den Zugriff auf ein beliebiges Property aus der <code>settings.properties</code> wobei das Profil berÃ¼cksichtigt wird.
 	 * @param name Name der Property
 	 * @return Wert der Property
 	 */

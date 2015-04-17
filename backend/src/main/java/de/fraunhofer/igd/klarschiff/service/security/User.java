@@ -7,8 +7,8 @@ import java.util.List;
 import de.fraunhofer.igd.klarschiff.context.AppContext;
 
 /**
- * Bean zum Abbilden der Daten eines Benutzers aus dem LDAP. die Bean enth‰lt zus‰tzlich weitere Funktionen,
- * um auf die Rollen des Benutzers leicht zugreifen zu kˆnnen.
+ * Bean zum Abbilden der Daten eines Benutzers aus dem LDAP. die Bean enth√§lt zus√§tzlich weitere Funktionen,
+ * um auf die Rollen des Benutzers leicht zugreifen zu k√∂nnen.
  * @see ContextMapper 
  * @author Stefan Audersch (Fraunhofer IGD)
  */
@@ -20,8 +20,8 @@ public class User {
 	
 	
 	/**
-	 * Ermittelt die Zust‰ndigkeiten des Benutzers.
-	 * @return Zust‰ndigkeiten des Benutzers
+	 * Ermittelt die Zust√§ndigkeiten des Benutzers.
+	 * @return Zust√§ndigkeiten des Benutzers
 	 */
 	public List<Role> getZustaendigkeiten() {
 		return AppContext.getApplicationContext().getBean(SecurityService.class).getZustaendigkeiten(id, true);
@@ -77,16 +77,16 @@ public class User {
 	}
 	
 	/**
-	 * Ermittelt die Zust‰ndigkeiten des Benutzers.
-	 * @return Zust‰ndigkeiten des Benutzers
+	 * Ermittelt die Zust√§ndigkeiten des Benutzers.
+	 * @return Zust√§ndigkeiten des Benutzers
 	 */
 	public List<String> getAussendienstKoordinatorZustaendigkeiten() {
 		return AppContext.getApplicationContext().getBean(SecurityService.class).getAussendienstKoordinatorZustaendigkeiten(id);
 	}
 	
 	/**
-	 * Ermittelt die Zust‰ndigkeiten des Benutzers.
-	 * @return Zust‰ndigkeiten des Benutzers
+	 * Ermittelt die Zust√§ndigkeiten des Benutzers.
+	 * @return Zust√§ndigkeiten des Benutzers
 	 */
 	public List<String> getAussendienstTeams() {
 		return AppContext.getApplicationContext().getBean(SecurityService.class).getAussendienstTeam(id);

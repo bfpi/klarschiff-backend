@@ -1,7 +1,7 @@
 package de.fraunhofer.igd.klarschiff.service.classification;
 
 /**
- * Die Klasse dient als Hilfsklasse für die Abbildung des Ergebnisses vom Klassifikator.
+ * Die Klasse dient als Hilfsklasse fÃ¼r die Abbildung des Ergebnisses vom Klassifikator.
  * @author Stefan Audersch (Fraunhofer IGD)
  */
 public class ClassificationResultEntry {
@@ -17,14 +17,14 @@ public class ClassificationResultEntry {
 	/* --------------- GET + SET ----------------------------*/
 
 	/**
-	 * @return Name der Klasse (bzw. Zuständigkeit)
+	 * @return Name der Klasse (bzw. ZustÃ¤ndigkeit)
 	 */
 	public String getClassValue() {
 		return classValue;
 	}
 	
 	/**
-	 * @return Relevanz für die entsprechende Klasse (Zuständigkeit)
+	 * @return Relevanz fÃ¼r die entsprechende Klasse (ZustÃ¤ndigkeit)
 	 */
 	public Double getWeight() {
 		return weight;

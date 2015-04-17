@@ -71,7 +71,7 @@ public class Vorgang implements Serializable {
     private Long id;
 
 	/**
-	 * Zeitpunkt der letzten ƒnderung
+	 * Zeitpunkt der letzten √Ñnderung
 	 */
 	@Version
 	@Temporal(TemporalType.TIMESTAMP)
@@ -106,7 +106,7 @@ public class Vorgang implements Serializable {
     private String adresse;
     
     /**
-	 * Information ¸ber das Eigentum des Fl¸rst¸cks, in dem der Vorgang liegt
+	 * Information √ºber das Eigentum des Fl√ºrst√ºcks, in dem der Vorgang liegt
 	 */
 	@Size(max = 300)
     private String flurstueckseigentum;
@@ -146,7 +146,7 @@ public class Vorgang implements Serializable {
     private String autorEmail;
 
     /**
-     * Hash zum Best‰tigen des Vorganges
+     * Hash zum Best√§tigen des Vorganges
      */
 	@Size(max = 32)
     private String hash;
@@ -160,7 +160,7 @@ public class Vorgang implements Serializable {
     
     /**
      * Vorgangsstatus als Integer. (Das erlaubt das einfachere Sortieren 
-     * der Vorg‰nge in der Ergebnistabelle mit Hilfe einer angepassten DB-Anfrage)
+     * der Vorg√§nge in der Ergebnistabelle mit Hilfe einer angepassten DB-Anfrage)
      */
     @SuppressWarnings("unused")
 	@NotNull
@@ -198,18 +198,18 @@ public class Vorgang implements Serializable {
     private EnumFreigabeStatus fotoFreigabeStatus = EnumFreigabeStatus.intern;;
     
     /**
-     * Zust‰ndigkeit (Id der Rolle) f¸r den Vorgang
+     * Zust√§ndigkeit (Id der Rolle) f√ºr den Vorgang
      */
     String zustaendigkeit;
     
     /**
-     * Status der Zust‰ndigkeit
+     * Status der Zust√§ndigkeit
      */
 	@Enumerated(EnumType.STRING)
     EnumZustaendigkeitStatus zustaendigkeitStatus;
     
     /**
-     * Zust‰ndigkeit f¸r Frontend (also ausf¸hrlicher Standort bzw. Name des Amtes; Locality der Rolle) f¸r den Vorgang
+     * Zust√§ndigkeit f√ºr Frontend (also ausf√ºhrlicher Standort bzw. Name des Amtes; Locality der Rolle) f√ºr den Vorgang
      */
     String zustaendigkeitFrontend;
 
@@ -234,7 +234,7 @@ public class Vorgang implements Serializable {
     private List<LobHinweiseKritik> lobHinweiseKritik = new ArrayList<LobHinweiseKritik>();
 
     /**
-     * Liste der Verlaufseintr‰ge
+     * Liste der Verlaufseintr√§ge
      */
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "vorgang")
@@ -247,7 +247,7 @@ public class Vorgang implements Serializable {
     private Kategorie kategorie;
 
     /**
-     * Liste der Unterst¸tzungen
+     * Liste der Unterst√ºtzungen
      */
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "vorgang")
@@ -262,26 +262,26 @@ public class Vorgang implements Serializable {
     private List<Missbrauchsmeldung> missbrauchsmeldungen = new ArrayList<Missbrauchsmeldung>();
     
     /**
-     * Priorit‰t
+     * Priorit√§t
      */
     @NotNull
 	@Enumerated(EnumType.STRING)
     EnumPrioritaet prioritaet;
     
     /**
-     * Priorit‰t als Integer. (Das erlaubt das einfachere Sortieren 
-     * der Vorg‰nge in der Ergebnistabelle mit Hilfe einer angepassten DB-Anfrage)
+     * Priorit√§t als Integer. (Das erlaubt das einfachere Sortieren 
+     * der Vorg√§nge in der Ergebnistabelle mit Hilfe einer angepassten DB-Anfrage)
      */
     @NotNull
     EnumPrioritaet prioritaetOrdinal;
     
     /**
-     * Flag zum Markieren archivierte Vorg‰nge
+     * Flag zum Markieren archivierte Vorg√§nge
      */
     Boolean archiviert;
     
     /**
-     * ein Wunsch nach einem Foto wurde ge‰uﬂert
+     * ein Wunsch nach einem Foto wurde ge√§u√üert
      */
     @Column( nullable = false, columnDefinition = "boolean default false")
     Boolean fotowunsch;
@@ -301,7 +301,7 @@ public class Vorgang implements Serializable {
     private static SettingsService settingsService = new SettingsService();
     
     /**
-     * securityService wird benˆtigt, um das Trust-Level zu ermitteln
+     * securityService wird ben√∂tigt, um das Trust-Level zu ermitteln
      */
     @JsonIgnore
     @Transient

@@ -63,7 +63,7 @@ public class VorgangFeedController {
 		
 		User user = securityService.getUser(login);
 		
-		//Command für die Suche zusammenstellen
+		//Command fÃ¼r die Suche zusammenstellen
 		VorgangFeedCommand cmd = new VorgangFeedCommand();
     	cmd.setSize(50);
     	cmd.setOrder(2);
@@ -87,7 +87,7 @@ public class VorgangFeedController {
     	
     	//Title
     	elem = new Element("title");
-    	elem.addContent("Klarschiff: zu bearbeitende Vorgänge");
+    	elem.addContent("Klarschiff: zu bearbeitende VorgÃ¤nge");
     	channel.addContent(elem);
         
         //Atom:Link
@@ -104,7 +104,7 @@ public class VorgangFeedController {
     	
     	//Description
     	elem = new Element("description");
-    	elem.addContent("Übersicht Ihrer 50 aktuellsten zu bearbeitenden Vorgänge im Bürgerbeteiligungsportal Klarschiff");
+    	elem.addContent("Ãœbersicht Ihrer 50 aktuellsten zu bearbeitenden VorgÃ¤nge im BÃ¼rgerbeteiligungsportal Klarschiff");
     	channel.addContent(elem);
     	
     	//Language
@@ -124,7 +124,7 @@ public class VorgangFeedController {
     	elem.addContent(settingsService.getPropertyValue("mail.server.baseurl.backend")+"images/rssfeedImage.png");
     	image.addContent(elem);
     	elem = new Element("title");
-    	elem.addContent("Klarschiff: zu bearbeitende Vorgänge");
+    	elem.addContent("Klarschiff: zu bearbeitende VorgÃ¤nge");
     	image.addContent(elem);
     	elem = new Element("link");
     	elem.addContent(settingsService.getPropertyValue("mail.server.baseurl.backend")+"xmlfeeds/feed/"+loginCrypt);
@@ -139,7 +139,7 @@ public class VorgangFeedController {
     		channel.addContent( item);
 
         	elem = new Element("title");
-        	elem.addContent("#" + vorgang.getId() + " " + vorgang.getTyp().getText() + " (" + vorgang.getKategorie().getParent().getName() + " – " + vorgang.getKategorie().getName() + ")");
+        	elem.addContent("#" + vorgang.getId() + " " + vorgang.getTyp().getText() + " (" + vorgang.getKategorie().getParent().getName() + " Â– " + vorgang.getKategorie().getName() + ")");
         	item.addContent(elem);
 
         	StringBuilder str = new StringBuilder();
@@ -149,16 +149,16 @@ public class VorgangFeedController {
             str.append("<b>Adresse: </b>");
         	str.append(vorgang.getAdresse());
         	str.append("<br/>");
-            str.append("<b>Flurstückseigentum: </b>");
+            str.append("<b>FlurstÃ¼ckseigentum: </b>");
         	str.append(vorgang.getFlurstueckseigentum());
         	str.append("<br/>");
-        	str.append("<b>Unterstützungen:</b> ");
+        	str.append("<b>UnterstÃ¼tzungen:</b> ");
         	str.append(unterstuetzer);
         	str.append("<br/>");
         	str.append("<b>Missbrauchsmeldungen:</b> ");
         	str.append(missbrauchsmeldungen);
         	str.append("<br/>");
-        	str.append("<b>Zuständigkeit: </b>");
+        	str.append("<b>ZustÃ¤ndigkeit: </b>");
         	str.append(securityService.getZustaendigkeit(vorgang.getZustaendigkeit()).getDescription());
         	str.append(" (");
         	str.append(vorgang.getZustaendigkeitStatus().getText());
@@ -168,7 +168,7 @@ public class VorgangFeedController {
         		str.append(securityService.getZustaendigkeit(vorgang.getDelegiertAn()).getDescription());
         	}
             str.append("<br/>");
-            str.append("<a href=\"" + settingsService.getPropertyValue("mail.server.baseurl.backend")+"vorgang/"+vorgang.getId()+"/uebersicht" + "\" target=\"_blank\">Vorgang in Klarschiff öffnen</a>");
+            str.append("<a href=\"" + settingsService.getPropertyValue("mail.server.baseurl.backend")+"vorgang/"+vorgang.getId()+"/uebersicht" + "\" target=\"_blank\">Vorgang in Klarschiff Ã¶ffnen</a>");
 
         	elem = new Element("description");
         	elem.addContent(new CDATA(str.toString()));
@@ -217,7 +217,7 @@ public class VorgangFeedController {
 		String login = SecurityUtil.simpleDecrypt(loginCrypt);
 		User user = securityService.getUser(login);
 		
-		//Command für die Suche zusammenstellen
+		//Command fÃ¼r die Suche zusammenstellen
 		VorgangFeedDelegiertAnCommand cmd = new VorgangFeedDelegiertAnCommand();
     	cmd.setSize(50);
     	cmd.setOrder(2);
@@ -240,7 +240,7 @@ public class VorgangFeedController {
     	
     	//Title
     	elem = new Element("title");
-    	elem.addContent("Klarschiff: zu bearbeitende Vorgänge");
+    	elem.addContent("Klarschiff: zu bearbeitende VorgÃ¤nge");
     	channel.addContent(elem);
         
         //Atom:Link
@@ -257,7 +257,7 @@ public class VorgangFeedController {
     	
     	//Description
     	elem = new Element("description");
-    	elem.addContent("Übersicht Ihrer 50 aktuellsten zu bearbeitenden Vorgänge im Bürgerbeteiligungsportal Klarschiff");
+    	elem.addContent("Ãœbersicht Ihrer 50 aktuellsten zu bearbeitenden VorgÃ¤nge im BÃ¼rgerbeteiligungsportal Klarschiff");
     	channel.addContent(elem);
     	
     	//Language
@@ -277,7 +277,7 @@ public class VorgangFeedController {
     	elem.addContent(settingsService.getPropertyValue("mail.server.baseurl.backend")+"images/rssfeedImage.png");
     	image.addContent(elem);
     	elem = new Element("title");
-    	elem.addContent("Klarschiff: zu bearbeitende Vorgänge");
+    	elem.addContent("Klarschiff: zu bearbeitende VorgÃ¤nge");
     	image.addContent(elem);
     	elem = new Element("link");
     	elem.addContent(settingsService.getPropertyValue("mail.server.baseurl.backend")+"xmlfeeds/feed/"+loginCrypt);
@@ -288,7 +288,7 @@ public class VorgangFeedController {
     		channel.addContent( item);
 
         	elem = new Element("title");
-        	elem.addContent("#" + vorgang.getId() + " " + vorgang.getTyp().getText() + " (" + vorgang.getKategorie().getParent().getName() + " – " + vorgang.getKategorie().getName() + ")");
+        	elem.addContent("#" + vorgang.getId() + " " + vorgang.getTyp().getText() + " (" + vorgang.getKategorie().getParent().getName() + " Â– " + vorgang.getKategorie().getName() + ")");
         	item.addContent(elem);
 
         	StringBuilder str = new StringBuilder();
@@ -298,7 +298,7 @@ public class VorgangFeedController {
             str.append("<b>Adresse: </b>");
         	str.append(vorgang.getAdresse());
         	str.append("<br/>");
-        	str.append("<b>Zuständigkeit: </b>");
+        	str.append("<b>ZustÃ¤ndigkeit: </b>");
         	str.append(securityService.getZustaendigkeit(vorgang.getZustaendigkeit()).getDescription());
         	str.append(" (");
         	str.append(vorgang.getZustaendigkeitStatus().getText());
@@ -308,7 +308,7 @@ public class VorgangFeedController {
         		str.append(securityService.getZustaendigkeit(vorgang.getDelegiertAn()).getDescription());
         	}
             str.append("<br/>");
-            str.append("<a href=\"" + settingsService.getPropertyValue("mail.server.baseurl.backend")+"vorgang/delegiert/"+vorgang.getId()+"/uebersicht" + "\" target=\"_blank\">Vorgang in Klarschiff öffnen</a>");
+            str.append("<a href=\"" + settingsService.getPropertyValue("mail.server.baseurl.backend")+"vorgang/delegiert/"+vorgang.getId()+"/uebersicht" + "\" target=\"_blank\">Vorgang in Klarschiff Ã¶ffnen</a>");
 
         	elem = new Element("description");
         	elem.addContent(new CDATA(str.toString()));

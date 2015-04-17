@@ -20,7 +20,7 @@ import javax.validation.constraints.NotNull;
 import org.springframework.format.annotation.DateTimeFormat;
 
 /**
- * VO zum Abbilden des Verlaufes für einen Vorgang
+ * VO zum Abbilden des Verlaufes fÃ¼r einen Vorgang
  * @author Stefan Audersch (Fraunhofer IGD)
  */
 @SuppressWarnings("serial")
@@ -37,7 +37,7 @@ public class Verlauf implements Serializable {
 	private Long id;
 
 	/**
-	 * Vorgang zu dem der Verlaufeintrag gehört
+	 * Vorgang zu dem der Verlaufeintrag gehÃ¶rt
 	 */
     @ManyToOne(cascade=CascadeType.PERSIST)
     @JoinColumn
@@ -64,12 +64,12 @@ public class Verlauf implements Serializable {
     private EnumVerlaufTyp typ;
 
     /**
-     * alter Wert (ist abhängig von Typ des Verlaufeintrages)
+     * alter Wert (ist abhÃ¤ngig von Typ des Verlaufeintrages)
      */
     private String wertAlt;
 
     /**
-     * alter Wert (ist abhängig von Typ des Verlaufeintrages)
+     * alter Wert (ist abhÃ¤ngig von Typ des Verlaufeintrages)
      */
     private String wertNeu;
 

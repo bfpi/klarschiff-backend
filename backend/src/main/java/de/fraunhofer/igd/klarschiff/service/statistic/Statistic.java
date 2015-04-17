@@ -5,7 +5,7 @@ import java.util.List;
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
 
 /**
- * Die Klasse stellt eine Bean zum Ablegen der ermittelten Daten für die Statistik bereit.
+ * Die Klasse stellt eine Bean zum Ablegen der ermittelten Daten fÃ¼r die Statistik bereit.
  * @author Stefan Audersch (Fraunhofer IGD)
  */
 public class Statistic {

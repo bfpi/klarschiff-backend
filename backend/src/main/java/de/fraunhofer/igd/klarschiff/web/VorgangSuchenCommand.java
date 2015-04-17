@@ -10,11 +10,11 @@ import de.fraunhofer.igd.klarschiff.vo.Kategorie;
 
 
 /**
- * Command für die Vorgangsuche. <br />
- * Beinhaltet Suchfelder für einfache und erweiterte Suche sowie Attribute für die 
+ * Command fÃ¼r die Vorgangsuche. <br />
+ * Beinhaltet Suchfelder fÃ¼r einfache und erweiterte Suche sowie Attribute fÃ¼r die 
  * Ergebnisdarstellung: <br/>
  * <code>page</code>: die aktuelle Seitenzahl<br/>
- * <code>size</code>: die konfigurierte Anzahl von Einträgen pro Seite<br/>
+ * <code>size</code>: die konfigurierte Anzahl von EintrÃ¤gen pro Seite<br/>
  * <code>order</code>: die Spalte nach der sortiert wird<br/>
  * <code>orderDirection</code>: die Sortierreihenfolge (1:absteigend,default:aufsteigend)
  * @author Stefan Audersch (Fraunhofer IGD)
@@ -62,7 +62,7 @@ public class VorgangSuchenCommand implements Serializable {
 	String negation;
 	String suchbereich;
 	
-	//NUR ADMIN dürfen andere Zuständigkeiten sehen
+	//NUR ADMIN dÃ¼rfen andere ZustÃ¤ndigkeiten sehen
 	
 	public String getOrderString() {
 		switch(order) {

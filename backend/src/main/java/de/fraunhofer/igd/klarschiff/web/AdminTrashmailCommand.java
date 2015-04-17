@@ -3,7 +3,7 @@ package de.fraunhofer.igd.klarschiff.web;
 import java.io.Serializable;
 
 /**
- * Command für Trashmails im Adminbereich
+ * Command fÃ¼r Trashmails im Adminbereich
  * @author Stefan Audersch (Fraunhofer IGD)
  */
 @SuppressWarnings("serial")

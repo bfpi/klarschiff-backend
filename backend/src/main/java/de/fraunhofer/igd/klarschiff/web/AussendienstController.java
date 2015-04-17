@@ -24,9 +24,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
- * Controller für die Aussendienst-Verwaltung
+ * Controller fÃ¼r die Aussendienst-Verwaltung
  *
- * @author Robert Voß (BFPI GmbH)
+ * @author Robert VoÃŸ (BFPI GmbH)
  */
 @Controller
 public class AussendienstController {
@@ -47,7 +47,7 @@ public class AussendienstController {
    * Die Methode verarbeitet den GET-Request auf der URL
    * <code>/aussendienst</code><br/>
    *
-   * @param model Model in dem ggf. Daten für die View abgelegt werden
+   * @param model Model in dem ggf. Daten fÃ¼r die View abgelegt werden
    * @param request Request
    * @return View, die zum Rendern des Request verwendet wird
    */
@@ -63,7 +63,7 @@ public class AussendienstController {
    *
    * @param cmd
    * @param team
-   * @param model Model in dem ggf. Daten für die View abgelegt werden
+   * @param model Model in dem ggf. Daten fÃ¼r die View abgelegt werden
    * @param request Request
    * @return View, die zum Rendern des Request verwendet wird
    */
@@ -101,7 +101,7 @@ public class AussendienstController {
    *
    * @param cmd
    * @param team
-   * @param model Model in dem ggf. Daten für die View abgelegt werden
+   * @param model Model in dem ggf. Daten fÃ¼r die View abgelegt werden
    * @param request Request
    * @return View, die zum Rendern des Request verwendet wird
    */
@@ -137,7 +137,7 @@ public class AussendienstController {
    *
    * @param cmd
    * @param team
-   * @param model Model in dem ggf. Daten für die View abgelegt werden
+   * @param model Model in dem ggf. Daten fÃ¼r die View abgelegt werden
    * @param request Request
    * @return View, die zum Rendern des Request verwendet wird
    */
@@ -160,7 +160,7 @@ public class AussendienstController {
    * @param cmd
    * @param team
    * @param auftrag_id
-   * @param model Model in dem ggf. Daten für die View abgelegt werden
+   * @param model Model in dem ggf. Daten fÃ¼r die View abgelegt werden
    * @param request Request
    * @return View, die zum Rendern des Request verwendet wird
    */

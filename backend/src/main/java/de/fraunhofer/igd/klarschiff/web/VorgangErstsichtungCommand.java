@@ -5,7 +5,7 @@ import java.io.Serializable;
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
 
 /**
- * Command für die Erstsichtung im Backend <br />
+ * Command fÃ¼r die Erstsichtung im Backend <br />
  * Beinhaltet lediglich ein Vorgangs-Objekt.
  * @author Stefan Audersch (Fraunhofer IGD)
  */

@@ -10,8 +10,8 @@ import javax.annotation.PreDestroy;
 import org.springframework.stereotype.Service;
 
 /**
- * Die Klasse stellt einen Service zum Ausführen von Jobs bereit. Die Jobs werden dabei durch eine Pool verwaltet,
- * so dass nicht beliebig viele Jobs zur gleichen Zeit ausgeführt werden. Dieses wird beispielsweise für das Versenden 
+ * Die Klasse stellt einen Service zum AusfÃ¼hren von Jobs bereit. Die Jobs werden dabei durch eine Pool verwaltet,
+ * so dass nicht beliebig viele Jobs zur gleichen Zeit ausgefÃ¼hrt werden. Dieses wird beispielsweise fÃ¼r das Versenden 
  * von E-Mails verwendet.
  * @author Stefan Audersch (Fraunhofer IGD)
  */
@@ -45,8 +45,8 @@ public class JobExecutorService {
 	
 	
 	/**
-	 * Ausführen eines Jobs im Pool
-	 * @param job Job, der ausgeführt werden soll.
+	 * AusfÃ¼hren eines Jobs im Pool
+	 * @param job Job, der ausgefÃ¼hrt werden soll.
 	 */
 	public void runJob(Runnable job) {
 		threadPool.execute(job);

@@ -8,10 +8,10 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Die Dao-Klasse erlaubt die Verwaltung der Auﬂendienst-Koordinatoren in der
+ * Die Dao-Klasse erlaubt die Verwaltung der Au√üendienst-Koordinatoren in der
  * DB.
  *
- * @author Robert Voﬂ (BFPI GmbH)
+ * @author Robert Vo√ü (BFPI GmbH)
  */
 @Repository
 public class AussendienstKoordinatorDao {
