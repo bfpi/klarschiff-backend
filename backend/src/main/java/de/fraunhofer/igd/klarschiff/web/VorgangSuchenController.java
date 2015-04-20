@@ -187,21 +187,6 @@ public class VorgangSuchenController {
 			modelMap.put("cmdvorgangsuchen", cmd);
 		}
 		updateKategorieInModel(modelMap, cmd);
-    	//Suchen
-		modelMap.addAttribute("vorgaenge", vorgangDao.getVorgaenge(cmd));
-		if (cmd.suchtyp==Suchtyp.einfach && cmd.einfacheSuche==EinfacheSuche.offene) {
-			modelMap.put("missbrauchsmeldungenAbgeschlossenenVorgaenge", vorgangDao.missbrauchsmeldungenAbgeschlossenenVorgaenge());
-    }
-		modelMap.put("maxPages", calculateMaxPages(cmd.getSize(), vorgangDao.countVorgaenge(cmd)));
-    
-    User user = securityService.getCurrentUser();
-    if(user.getUserKoordinator()) {
-      modelMap.put("aussendienst_optionen_berechtigungen", true);
-    }
-    if(user.getUserKoordinator() && cmd.getSuchtyp() == Suchtyp.aussendienst) {
-      modelMap.put("aussendienstTeams", securityService.getCurrentUser().getAussendienstKoordinatorZustaendigkeiten());
-      modelMap.put("prioritaeten", Arrays.asList(EnumPrioritaet.values()));
-    }
     
     if(cmd.getVorgangAuswaehlen() != null && cmd.getVorgangAuswaehlen().length > 0) {
       List<Vorgang> vorgaenge = vorgangDao.findVorgaenge(cmd.getVorgangAuswaehlen());
@@ -220,6 +205,24 @@ public class VorgangSuchenController {
         vorgang.setAuftrag(auftrag);
         vorgangDao.merge(vorgang);
       }
+      cmd.setVorgangAuswaehlen(null);
+      cmd.setAuftragTeam(null);
+      cmd.setAuftragDatum(null);
+    }
+	//Suchen
+		modelMap.addAttribute("vorgaenge", vorgangDao.getVorgaenge(cmd));
+		if (cmd.suchtyp==Suchtyp.einfach && cmd.einfacheSuche==EinfacheSuche.offene) {
+			modelMap.put("missbrauchsmeldungenAbgeschlossenenVorgaenge", vorgangDao.missbrauchsmeldungenAbgeschlossenenVorgaenge());
+    }
+		modelMap.put("maxPages", calculateMaxPages(cmd.getSize(), ((List) modelMap.get("vorgaenge")).size()));
+
+    User user = securityService.getCurrentUser();
+    if(user.getUserKoordinator()) {
+      modelMap.put("aussendienst_optionen_berechtigungen", true);
+    }
+    if(user.getUserKoordinator() && cmd.getSuchtyp() == Suchtyp.aussendienst) {
+      modelMap.put("aussendienstTeams", securityService.getCurrentUser().getAussendienstKoordinatorZustaendigkeiten());
+      modelMap.put("prioritaeten", Arrays.asList(EnumPrioritaet.values()));
     }
     
 		return "vorgang/suchen";
