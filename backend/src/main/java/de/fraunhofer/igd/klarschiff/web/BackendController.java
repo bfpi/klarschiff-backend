@@ -154,6 +154,7 @@ public class BackendController {
         fotowunsch = false;
       }
       
+      vorgang.setStatus(EnumVorgangStatus.gemeldet);
       vorgangParameterUebernehmen(autorEmail, vorgang, typ, kategorie, positionWGS84, oviWkt,
           betreff, details, fotowunsch, bild, false);
       
@@ -161,14 +162,15 @@ public class BackendController {
       if (authCode != null && authCode.equals(settingsService.getPropertyValue("auth.kod_code")) && vorgang.autorIntern()) {
         intern = true;
         vorgang.setStatus(EnumVorgangStatus.offen);
+        vorgangDao.persist(vorgang);
         
         vorgang.setZustaendigkeit(classificationService.calculateZustaendigkeitforVorgang(vorgang).getId());
         vorgang.setZustaendigkeitStatus(EnumZustaendigkeitStatus.zugewiesen);
+        
+        vorgangDao.merge(vorgang);
       } else {
-        vorgang.setStatus(EnumVorgangStatus.gemeldet);
+        vorgangDao.persist(vorgang);
       }
-      
-			vorgangDao.persist(vorgang);
 
       if (resultHashOnSubmit) {
         sendOk(response, vorgang.getHash());
@@ -405,14 +407,14 @@ public class BackendController {
     }
     
     if (bild != null && bild.getBytes().length > 0) {
+      vorgangDao.persist(vorgang);
       try {
         imageService.setImageForVorgang(Base64.decode(bild.getBytes()), vorgang);
         vorgang.setFotoFreigabeStatus(EnumFreigabeStatus.intern);
         vorgang.setFotowunsch(false);
       } catch (Exception e) {
-        throw new BackendControllerException(11, "[bild] nicht korrekt", "Das Bild ist fehlerhaft und kann nicht verarbeitewt werden.", e);
+        throw new BackendControllerException(11, "[bild] nicht korrekt", "Das Bild ist fehlerhaft und kann nicht verarbeitet werden.", e);
       }
-      vorgangDao.merge(vorgang);
     }
   }
 
