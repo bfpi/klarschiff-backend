@@ -133,12 +133,12 @@ public class BackendController {
 			}
 
 			if (StringUtils.isBlank(autorEmail)) throw new BackendControllerException(7, "[autorEmail] fehlt", "Die E-Mail-Adresse fehlt.");
-			if (!isMaxLength(autorEmail, 300)) throw new BackendControllerException(8, "[autorEmail] zu lang", "Die E-Mail-Adresse ist zu lang.");
+			if (!isShortEnough(autorEmail, 300)) throw new BackendControllerException(8, "[autorEmail] zu lang", "Die E-Mail-Adresse ist zu lang.");
 			if (!isEmail(autorEmail)) throw new BackendControllerException(9, "[autorEmail] nicht korrekt", "Die E-Mail-Adresse ist nicht gültig.");
 			vorgang.setAutorEmail(autorEmail);
 			vorgang.setHash(securityService.createHash(autorEmail+System.currentTimeMillis()));
 			
-			if (!isMaxLength(betreff, 300)) throw new BackendControllerException(10, "[betreff] zu lang", "Der Betreff ist zu lang. Es sind maximal 300 Zeichen erlaubt.");
+			if (!isShortEnough(betreff, 300)) throw new BackendControllerException(10, "[betreff] zu lang", "Der Betreff ist zu lang. Es sind maximal 300 Zeichen erlaubt.");
 			vorgang.setBetreff(betreff);
 			
 			vorgang.setDetails(details);
@@ -223,11 +223,11 @@ public class BackendController {
 			}
 
 			if (StringUtils.isBlank(autorEmail)) throw new BackendControllerException(7, "[autorEmail] fehlt", "Die E-Mail-Adresse fehlt.");
-			if (!isMaxLength(autorEmail, 300)) throw new BackendControllerException(8, "[autorEmail] zu lang", "Die E-Mail-Adresse ist zu lang.");
+			if (!isShortEnough(autorEmail, 300)) throw new BackendControllerException(8, "[autorEmail] zu lang", "Die E-Mail-Adresse ist zu lang.");
 			if (!isEmail(autorEmail)) throw new BackendControllerException(9, "[autorEmail] nicht korrekt", "Die E-Mail-Adresse ist nicht gültig.");
 			vorgang.setAutorEmail(autorEmail);
 			
-			if (!isMaxLength(betreff, 300)) throw new BackendControllerException(10, "[betreff] zu lang", "Der Betreff ist zu lang. Es sind maximal 300 Zeichen erlaubt.");
+			if (!isShortEnough(betreff, 300)) throw new BackendControllerException(10, "[betreff] zu lang", "Der Betreff ist zu lang. Es sind maximal 300 Zeichen erlaubt.");
 			vorgang.setBetreff(betreff);
 			
 			vorgang.setDetails(details);
@@ -261,27 +261,31 @@ public class BackendController {
 	}
 
 	/**
-	 * Prüft ob der String eine gültige E-Mail-Adresse ist
+	 * Prüft, ob der mitgegebene String eine gültige E-Mail-Adresse ist
 	 * @param email String mit der E-Mail-Adresse
-	 * @return <code>true</code> - gültige E-Mail-Adresse
+	 * @return <code>true</code>, falls E-Mail-Adresse gültig, <code>false</code>, falls  nicht
 	 */
 	private static boolean isEmail(String email)
 	{
-		if (!Assert.matches(email, "^\\S+@\\S+\\.[A-Za-z]{2,6}$")) return false;
-		else return true;
+		if (!Assert.matches(email, "^\\S+@\\S+\\.[A-Za-z]{2,6}$"))
+            return false;
+		else
+            return true;
 	}
 
 	
 	/**
-	 * Prüft ob der String zu lang ist
-	 * @param str String dessen Länge geprüft werden soll
+	 * Prüft, ob der mitgegebene String kurz genug ist
+	 * @param str String, dessen Länge geprüft werden soll
 	 * @param maxLength maximale Länge
-	 * @return <code>true</code> - String ist nicht zu lang
+	 * @return <code>true</code>, falls String kurz genug oder leer, <code>false</code>, falls  nicht
 	 */
-	private static boolean isMaxLength(String str, int maxLength)
+	private static boolean isShortEnough(String str, int maxLength)
 	{
-		if (str==null || str.length()<=maxLength) return true;
-		else return true;
+		if (str==null || str.length() <= maxLength)
+            return true;
+		else
+            return false;
 	}
 
 
@@ -346,7 +350,7 @@ public class BackendController {
 			if (unterstuetzer.getVorgang()==null) throw new BackendControllerException(202, "[vorgang] nicht korrekt", "Die Unterstützung ist keiner Meldung zugeordnet.");
 			
 			if (StringUtils.isBlank(email)) throw new BackendControllerException(203, "[email] fehlt", "Die E-Mail-Adresse fehlt.");
-			if (!isMaxLength(email, 300)) throw new BackendControllerException(204, "[email] zu lang", "Die E-Mail-Adresse ist zu lang.");
+			if (!isShortEnough(email, 300)) throw new BackendControllerException(204, "[email] zu lang", "Die E-Mail-Adresse ist zu lang.");
 			if (!isEmail(email)) throw new BackendControllerException(205, "[email] nicht korrekt", "Die E-Mail-Adresse ist nicht gültig.");
 			unterstuetzer.setHash(securityService.createHash(unterstuetzer.getVorgang().getId()+email));
 			if (vorgangDao.findUnterstuetzer(unterstuetzer.getHash())!=null) throw new BackendControllerException(206, "[email] wurde bereits für den [vorgang] verwendet", "Sie können die Meldung nicht mehrmals unterstützen.");
@@ -426,7 +430,7 @@ public class BackendController {
 			missbrauchsmeldung.setText(text);
 			
 			if (StringUtils.isBlank(email)) throw new BackendControllerException(404, "[email] fehlt", "Die E-Mail-Adresse fehlt.");
-			if (!isMaxLength(email, 300)) throw new BackendControllerException(405, "[email] zu lang", "Die E-Mail-Adresse ist zu lang.");
+			if (!isShortEnough(email, 300)) throw new BackendControllerException(405, "[email] zu lang", "Die E-Mail-Adresse ist zu lang.");
 			if (!isEmail(email)) throw new BackendControllerException(406, "[email] nicht korrekt", "Die E-Mail-Adresse ist nicht gültig.");
             missbrauchsmeldung.setAutorEmail(email);
 			missbrauchsmeldung.setHash(securityService.createHash(missbrauchsmeldung.getVorgang().getId()+email+System.currentTimeMillis()));
@@ -468,7 +472,7 @@ public class BackendController {
 			if (lobHinweiseKritik.getVorgang()==null) throw new BackendControllerException(402, "[vorgang] nicht korrekt", "Lob, Hinweise oder Kritik kann/können keiner Meldung zugeordnet werden.");
 
 			if (StringUtils.isBlank(email)) throw new BackendControllerException(404, "[email] fehlt", "Die E-Mail-Adresse fehlt.");
-			if (!isMaxLength(email, 300)) throw new BackendControllerException(405, "[email] zu lang", "Die E-Mail-Adresse ist zu lang.");
+			if (!isShortEnough(email, 300)) throw new BackendControllerException(405, "[email] zu lang", "Die E-Mail-Adresse ist zu lang.");
 			if (!isEmail(email)) throw new BackendControllerException(406, "[email] nicht korrekt", "Die E-Mail-Adresse ist nicht gültig.");
             lobHinweiseKritik.setAutorEmail(email);
             
