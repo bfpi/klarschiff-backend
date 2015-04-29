@@ -419,7 +419,7 @@ public class BackendController {
   }
 
 	/**
-	 * Pr�ft, ob der mitgegebene String eine g�ltige E-Mail-Adresse ist
+	 * Prüft, ob der mitgegebene String eine gültige E-Mail-Adresse ist
 	 * @param email String mit der E-Mail-Adresse
 	 * @return <code>true</code>, falls E-Mail-Adresse gültig, <code>false</code>, falls  nicht
 	 */
@@ -433,13 +433,13 @@ public class BackendController {
 
 	
 	/**
-	 * Pr�ft, ob der mitgegebene String kurz genug ist
-	 * @param str String, dessen L�nge gepr�ft werden soll
-	 * @param maxLength maximale L�nge
+	 * Prüft, ob der mitgegebene String kurz genug ist
+	 * @param str String, dessen Länge geprüft werden soll
+	 * @param maxLength maximale Länge
 	 * @return <code>true</code>, falls String kurz genug oder leer, <code>false</code>, falls  nicht
 	 */
 	private static boolean isShortEnough(String str, int maxLength) {
-    return str == null || str.length() <= maxLength
+    return str == null || str.length() <= maxLength;
 	}
 
 
@@ -512,7 +512,7 @@ public class BackendController {
 			
 			if (StringUtils.isBlank(email)) throw new BackendControllerException(203, "[email] fehlt", "Die E-Mail-Adresse fehlt.");
 			if (!isShortEnough(email, 300)) throw new BackendControllerException(204, "[email] zu lang", "Die E-Mail-Adresse ist zu lang.");
-			if (!isEmail(email)) throw new BackendControllerException(205, "[email] nicht korrekt", "Die E-Mail-Adresse ist nicht g�ltig.");
+			if (!isEmail(email)) throw new BackendControllerException(205, "[email] nicht korrekt", "Die E-Mail-Adresse ist nicht gültig.");
 			unterstuetzer.setHash(securityService.createHash(unterstuetzer.getVorgang().getId()+email));
 			if (vorgangDao.findUnterstuetzer(unterstuetzer.getHash())!=null) throw new BackendControllerException(206, "[email] wurde bereits für den [vorgang] verwendet", "Sie können die Meldung nicht mehrmals unterstützen.");
 			if (StringUtils.equalsIgnoreCase(unterstuetzer.getVorgang().getAutorEmail(), email)) throw new BackendControllerException(207, "[email] der autor des [vorgang] kann keine unterstützung für den [vorgang] abgeben", "Die Unterstützungsmeldung konnte nicht abgesetzt werden, da Sie Ihre eigene Meldung nicht unterstützen dürfen.");
@@ -604,7 +604,7 @@ public class BackendController {
 			
 			if (StringUtils.isBlank(email)) throw new BackendControllerException(404, "[email] fehlt", "Die E-Mail-Adresse fehlt.");
 			if (!isShortEnough(email, 300)) throw new BackendControllerException(405, "[email] zu lang", "Die E-Mail-Adresse ist zu lang.");
-			if (!isEmail(email)) throw new BackendControllerException(406, "[email] nicht korrekt", "Die E-Mail-Adresse ist nicht g�ltig.");
+			if (!isEmail(email)) throw new BackendControllerException(406, "[email] nicht korrekt", "Die E-Mail-Adresse ist nicht gültig.");
             missbrauchsmeldung.setAutorEmail(email);
 			missbrauchsmeldung.setHash(securityService.createHash(missbrauchsmeldung.getVorgang().getId()+email+System.currentTimeMillis()));
 			
@@ -768,7 +768,7 @@ public class BackendController {
 
 			if (StringUtils.isBlank(email)) throw new BackendControllerException(404, "[email] fehlt", "Die E-Mail-Adresse fehlt.");
 			if (!isShortEnough(email, 300)) throw new BackendControllerException(405, "[email] zu lang", "Die E-Mail-Adresse ist zu lang.");
-			if (!isEmail(email)) throw new BackendControllerException(406, "[email] nicht korrekt", "Die E-Mail-Adresse ist nicht g�ltig.");
+			if (!isEmail(email)) throw new BackendControllerException(406, "[email] nicht korrekt", "Die E-Mail-Adresse ist nicht gültig.");
             lobHinweiseKritik.setAutorEmail(email);
             
             // aktuelle Zuständigkeit des Vorgangs bestimmen
