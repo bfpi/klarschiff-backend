@@ -1,7 +1,7 @@
 package de.fraunhofer.igd.klarschiff.util;
 
 /**
- * Die Klasse stellt Funktionen für die Arbeit mit Zahlenwerte bereit.
+ * Die Klasse stellt Funktionen fÃ¼r die Arbeit mit Zahlenwerte bereit.
  * @author Stefan Audersch (Fraunhofer IGD)
  */
 public class NumberUtil {

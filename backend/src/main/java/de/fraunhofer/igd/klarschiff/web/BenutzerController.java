@@ -13,7 +13,7 @@ import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
 import de.fraunhofer.igd.klarschiff.util.SqlScriptUtil;
 
 /**
- * Controller für die Benutzerübersicht
+ * Controller fÃ¼r die BenutzerÃ¼bersicht
  * @author Sebastian Schwarz (Hansestadt Rostock)
  */
 @RequestMapping("/benutzer")
@@ -26,8 +26,8 @@ public class BenutzerController {
 	
 	/**
 	 * Die Methode verarbeitet den GET-Request auf der URL <code>/benutzer</code><br/>
-	 * Seitenbeschreibung: Übersicht über die Benutzer
-	 * @param model Model in dem ggf. Daten für die View abgelegt werden
+	 * Seitenbeschreibung: Ãœbersicht Ã¼ber die Benutzer
+	 * @param model Model in dem ggf. Daten fÃ¼r die View abgelegt werden
 	 * @param request Request
 	 * @return View, die zum Rendern des Request verwendet wird
 	 */

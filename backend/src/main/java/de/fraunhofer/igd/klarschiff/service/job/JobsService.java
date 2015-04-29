@@ -68,7 +68,7 @@ public class JobsService {
 	
 
 	/**
-	 * Dieser Job lˆscht alle Vorg‰nge, die gemeldet, aber nach einem bestimmten Zeitraum noch nicht best‰tigt wurden.
+	 * Dieser Job l√∂scht alle Vorg√§nge, die gemeldet, aber nach einem bestimmten Zeitraum noch nicht best√§tigt wurden.
 	 */
 	@Transactional
 	@ScheduledSyncInCluster(cron="0 43 * * * *", name="unbestaetigte Vorgaenge loeschen")
@@ -82,7 +82,7 @@ public class JobsService {
 
 	
 	/**
-	 * Dieser Job lˆscht alle Unterst¸tzungen, die eingegangen sind, aber nach einem bestimmten Zeitraum noch nicht best‰tigt wurden.
+	 * Dieser Job l√∂scht alle Unterst√ºtzungen, die eingegangen sind, aber nach einem bestimmten Zeitraum noch nicht best√§tigt wurden.
 	 */
 	@Transactional
 	@ScheduledSyncInCluster(cron="0 46 * * * *", name="unbestaetigte Unterstuetzungen loeschen")
@@ -96,7 +96,7 @@ public class JobsService {
 
 	
 	/**
-	 * Dieser Job lˆscht alle Missbrauchsmeldungen, die eingegangen sind, aber nach einem bestimmten Zeitraum noch nicht best‰tigt wurden.
+	 * Dieser Job l√∂scht alle Missbrauchsmeldungen, die eingegangen sind, aber nach einem bestimmten Zeitraum noch nicht best√§tigt wurden.
 	 */
 	@Transactional
 	@ScheduledSyncInCluster(cron="0 49 * * * *", name="unbestaetigte Missbrauchsmeldungen loeschen")
@@ -110,7 +110,7 @@ public class JobsService {
 
 	
 	/**
-	 * Dieser Job aktualisiert den Klassifikator f¸r den Zust‰ndigkeitsfinder.
+	 * Dieser Job aktualisiert den Klassifikator f√ºr den Zust√§ndigkeitsfinder.
 	 */
 	@Scheduled(cron="0 52 * * * *")
 	public void reBuildClassifier() {
@@ -124,7 +124,7 @@ public class JobsService {
     
     
     /**
-	 * Dieser Job archiviert alle Vorg‰nge, die abgeschlossen sind und seit einem bestimmten Zeitraum nicht mehr bearbeitet wurden.
+	 * Dieser Job archiviert alle Vorg√§nge, die abgeschlossen sind und seit einem bestimmten Zeitraum nicht mehr bearbeitet wurden.
 	 */
 	@Transactional
 	@ScheduledSyncInCluster(cron="0 40 00 * * *", name="abgeschlossene Vorgaenge archivieren")
@@ -139,7 +139,7 @@ public class JobsService {
     
     
     /**
-	 * Dieser Job informiert die Empf‰nger redaktioneller E-Mails.
+	 * Dieser Job informiert die Empf√§nger redaktioneller E-Mails.
 	 */
 	@ScheduledSyncInCluster(cron="0 40 01 * * *", name="Empfaenger redaktioneller E-Mails informieren")
 	public void informRedaktionEmpfaenger() {
@@ -168,25 +168,25 @@ public class JobsService {
             //Liste aller Redaktionskriterien erstellen
             List<RedaktionKriterien> kriterienAlle = redaktionKriterienDao.getKriterienList();
             
-            //Liste aller Empf‰nger redaktioneller E-Mails erstellen
+            //Liste aller Empf√§nger redaktioneller E-Mails erstellen
             List<RedaktionEmpfaenger> empfaengerAlle = redaktionEmpfaengerDao.getEmpfaengerList();
             
-            //Liste aller Empf‰nger durchgehen
+            //Liste aller Empf√§nger durchgehen
             for (RedaktionEmpfaenger empfaenger : empfaengerAlle) {
                 
-                //Ist der aktuelle Empf‰nger als Admininstrator definiert?
+                //Ist der aktuelle Empf√§nger als Admininstrator definiert?
                 if (empfaenger.getZustaendigkeit().toLowerCase().contains("admin".toLowerCase()))
                     administrator = true;
                 else
                     administrator = false;
                     
-                //pr¸fe Zeitstempel des letzten E-Mail-Versands an aktuellen Empf‰nger: soll ¸berhaupt eine E-Mail geschickt werden?
+                //pr√ºfe Zeitstempel des letzten E-Mail-Versands an aktuellen Empf√§nger: soll √ºberhaupt eine E-Mail geschickt werden?
                 if ( (empfaenger.getLetzteMail() == null) || (Days.daysBetween(new DateTime(empfaenger.getLetzteMail()), new DateTime(jetzt)).getDays() >= empfaenger.getTageZwischenMails()) ) {
             
                     //Liste aller Redaktionskriterien durchgehen
                     for (RedaktionKriterien kriterium : kriterienAlle) {
                     
-                        //alle Redaktionskriterien der Stufe des Empf‰ngers entsprechend zuweisen
+                        //alle Redaktionskriterien der Stufe des Empf√§ngers entsprechend zuweisen
                         if (kriterium.getStufe() == empfaenger.getStufe()) {
                             tageOffenNichtAkzeptiert = kriterium.getTageOffenNichtAkzeptiert();
                             tageInbearbeitungOhneStatusKommentar = kriterium.getTageInbearbeitungOhneStatusKommentar();
@@ -202,52 +202,52 @@ public class JobsService {
                     //'datum' berechnen durch Subtrahieren von 'tageOffenNichtAkzeptiert' vom aktuellen Datum
                     datum = DateUtils.addDays(jetzt, -(tageOffenNichtAkzeptiert));
                 
-                    //finde alle Vorg‰nge mit dem Status 'offen' f¸r die Zust‰ndigkeit des aktuellen Empf‰ngers, die seit mindestens 'datum' zugewiesen sind, bisher aber nicht akzeptiert wurden
+                    //finde alle Vorg√§nge mit dem Status 'offen' f√ºr die Zust√§ndigkeit des aktuellen Empf√§ngers, die seit mindestens 'datum' zugewiesen sind, bisher aber nicht akzeptiert wurden
                     vorgaengeOffenNichtAkzeptiert = vorgangDao.findVorgaengeOffenNichtAkzeptiert(administrator, empfaenger.getZustaendigkeit(), datum);
                     
                     //'datum' berechnen durch Subtrahieren von 'tageInbearbeitungOhneStatusKommentar' vom aktuellen Datum
                     datum = DateUtils.addDays(jetzt, -(tageInbearbeitungOhneStatusKommentar));
                 
-                    //finde alle Vorg‰nge mit dem Status 'offen' f¸r die Zust‰ndigkeit des aktuellen Empf‰ngers, die seit mindestens 'datum' zugewiesen sind, bisher aber nicht akzeptiert wurden
+                    //finde alle Vorg√§nge mit dem Status 'offen' f√ºr die Zust√§ndigkeit des aktuellen Empf√§ngers, die seit mindestens 'datum' zugewiesen sind, bisher aber nicht akzeptiert wurden
                     vorgaengeInbearbeitungOhneStatusKommentar = vorgangDao.findVorgaengeInbearbeitungOhneStatusKommentar(administrator, empfaenger.getZustaendigkeit(), datum);
                     
                     //'datum' berechnen durch Subtrahieren von 'tageIdeeOffenOhneUnterstuetzung' vom aktuellen Datum
                     datum = DateUtils.addDays(jetzt, -(tageIdeeOffenOhneUnterstuetzung));
                 
-                    //finde alle Vorg‰nge des Typs 'idee' mit dem Status 'offen', die ihre Erstsichtung seit mindestens 'datum' hinter sich haben, bisher aber noch nicht die Zahl der notwendigen Unterst¸tzungen aufweisen
+                    //finde alle Vorg√§nge des Typs 'idee' mit dem Status 'offen', die ihre Erstsichtung seit mindestens 'datum' hinter sich haben, bisher aber noch nicht die Zahl der notwendigen Unterst√ºtzungen aufweisen
                     vorgaengeIdeeOffenOhneUnterstuetzung = vorgangDao.findVorgaengeIdeeOffenOhneUnterstuetzung(administrator, empfaenger.getZustaendigkeit(), datum);
                     
                     //falls dies gemacht werden soll...
                     if ( sollVorgaengeWirdnichtbearbeitetOhneStatuskommentar == true ) {
-                        //finde alle Vorg‰nge mit dem Status 'wird nicht bearbeitet', die bisher keine Info der Verwaltung aufweisen
+                        //finde alle Vorg√§nge mit dem Status 'wird nicht bearbeitet', die bisher keine Info der Verwaltung aufweisen
                         vorgaengeWirdnichtbearbeitetOhneStatuskommentar = vorgangDao.findVorgaengeWirdnichtbearbeitetOhneStatuskommentar(administrator, empfaenger.getZustaendigkeit());
                     }
                      
                     //falls dies gemacht werden soll...
                     if ( sollVorgaengeNichtMehrOffenNichtAkzeptiert == true ) {
-                        //finde alle Vorg‰nge, die zwar nicht mehr den Status 'offen' aufweisen, bisher aber dennoch nicht akzeptiert wurden
+                        //finde alle Vorg√§nge, die zwar nicht mehr den Status 'offen' aufweisen, bisher aber dennoch nicht akzeptiert wurden
                         vorgaengeNichtMehrOffenNichtAkzeptiert = vorgangDao.findVorgaengeNichtMehrOffenNichtAkzeptiert(administrator, empfaenger.getZustaendigkeit());
                     }
                     
                     //falls dies gemacht werden soll...
                     if ( sollVorgaengeOhneRedaktionelleFreigaben == true ) {
-                        //finde alle Vorg‰nge, die ihre Erstsichtung bereits hinter sich haben, deren Betreff, Details oder Foto bisher aber noch nicht freigegeben wurden
+                        //finde alle Vorg√§nge, die ihre Erstsichtung bereits hinter sich haben, deren Betreff, Details oder Foto bisher aber noch nicht freigegeben wurden
                         vorgaengeOhneRedaktionelleFreigaben = vorgangDao.findVorgaengeOhneRedaktionelleFreigaben(administrator, empfaenger.getZustaendigkeit());
                     }
                     
                     //falls dies gemacht werden soll...
                     if ( sollVorgaengeOhneZustaendigkeit == true ) {
-                        //finde alle Vorg‰nge, die auf Grund von Kommunikationsfehlern im System keine Eintr‰ge in den Datenfeldern 'zustaendigkeit' und/oder 'zustaendigkeit_status' aufweisen
+                        //finde alle Vorg√§nge, die auf Grund von Kommunikationsfehlern im System keine Eintr√§ge in den Datenfeldern 'zustaendigkeit' und/oder 'zustaendigkeit_status' aufweisen
                         vorgaengeOhneZustaendigkeit = vorgangDao.findVorgaengeOhneZustaendigkeit(administrator);
                     }
                     
-                    //falls Vorg‰nge existieren...
+                    //falls Vorg√§nge existieren...
                     if ( (!vorgaengeOffenNichtAkzeptiert.isEmpty()) || (!vorgaengeInbearbeitungOhneStatusKommentar.isEmpty()) || (!vorgaengeIdeeOffenOhneUnterstuetzung.isEmpty()) || (!vorgaengeWirdnichtbearbeitetOhneStatuskommentar.isEmpty()) || (!vorgaengeNichtMehrOffenNichtAkzeptiert.isEmpty()) || (!vorgaengeOhneRedaktionelleFreigaben.isEmpty()) || (!vorgaengeOhneZustaendigkeit.isEmpty()) ) {
                     
-                        //setzte Zeitstempel des letzten E-Mail-Versands an aktuellen Empf‰nger auf aktuellen Zeitstempel
+                        //setzte Zeitstempel des letzten E-Mail-Versands an aktuellen Empf√§nger auf aktuellen Zeitstempel
                         empfaenger.setLetzteMail(jetzt);
                         
-                        //sende E-Mail an aktuellen Empf‰nger
+                        //sende E-Mail an aktuellen Empf√§nger
                         mailService.sendInformRedaktionEmpfaengerMail(tageOffenNichtAkzeptiert, tageInbearbeitungOhneStatusKommentar, tageIdeeOffenOhneUnterstuetzung, vorgaengeOffenNichtAkzeptiert, vorgaengeInbearbeitungOhneStatusKommentar, vorgaengeIdeeOffenOhneUnterstuetzung, vorgaengeWirdnichtbearbeitetOhneStatuskommentar, vorgaengeNichtMehrOffenNichtAkzeptiert, vorgaengeOhneRedaktionelleFreigaben, vorgaengeOhneZustaendigkeit, empfaenger.getEmail(), empfaenger.getZustaendigkeit());
                     }
                 }
@@ -261,19 +261,19 @@ public class JobsService {
 
 	
 	/**
-	 * Dieser Job informiert externe Nutzer mittels E-Mail ¸ber diejenigen Vorg‰nge, die innerhalb der letzten 24 Stunden an sie delegiert wurden.
+	 * Dieser Job informiert externe Nutzer mittels E-Mail √ºber diejenigen Vorg√§nge, die innerhalb der letzten 24 Stunden an sie delegiert wurden.
 	 */
 	@ScheduledSyncInCluster(cron="0 00 05 * * *", name="externe Nutzer ueber neue Vorgaenge informieren")
 	public void informExtern() {
 		Date date = DateUtils.addDays(new Date(), -1);
 
-		// f¸r alle delegiertAn
+		// f√ºr alle delegiertAn
 		for(Role delegiertAn : securityService.getAllDelegiertAn()) {
 
-			// finde alle Vorg‰nge, deren DelegiertAn in den letzten 24 Stunden ge‰ndert wurde und deren DelegiertAn gleich delegiertAn ist
+			// finde alle Vorg√§nge, deren DelegiertAn in den letzten 24 Stunden ge√§ndert wurde und deren DelegiertAn gleich delegiertAn ist
 			List<Vorgang> vorgaenge = vorgangDao.findVorgaengeForDelegiertAn(date, delegiertAn.getId());
             
-            // falls Vorg‰nge gefunden wurden
+            // falls Vorg√§nge gefunden wurden
             if (!vorgaenge.isEmpty() && vorgaenge != null) {
 
                 // sende E-Mail
@@ -284,13 +284,13 @@ public class JobsService {
 	
 	
 	/**
-	 * Dieser Job informiert die Dispatcher mittels E-Mail ¸ber diejenigen Vorg‰nge, die innerhalb der letzten 24 Stunden durch wiederholtes automatisches Zuweisung keiner Zust‰ndigkeit zugeordnet werden konnten und somit letztendlich der Dispatcher-Gruppe zugewiesen wurden.
+	 * Dieser Job informiert die Dispatcher mittels E-Mail √ºber diejenigen Vorg√§nge, die innerhalb der letzten 24 Stunden durch wiederholtes automatisches Zuweisung keiner Zust√§ndigkeit zugeordnet werden konnten und somit letztendlich der Dispatcher-Gruppe zugewiesen wurden.
 	 */
 	@ScheduledSyncInCluster(cron="0 05 05 * * *", name="Dispatcher ueber neue Vorgaenge informieren")
 	public void informDispatcher() {
 		Date date = DateUtils.addDays(new Date(), -1);
 		
-		// finde alle Vorg‰nge, deren Zust‰ndigkeit in den letzten 24 Stunden ge‰ndert wurde und deren Zust‰ndigkeit gleich dispatcher ist
+		// finde alle Vorg√§nge, deren Zust√§ndigkeit in den letzten 24 Stunden ge√§ndert wurde und deren Zust√§ndigkeit gleich dispatcher ist
 		List<Vorgang> vorgaenge = vorgangDao.findVorgaengeForZustaendigkeit(date, securityService.getDispatcherZustaendigkeitId());
 		
 		// sende E-Mail
@@ -299,13 +299,13 @@ public class JobsService {
     
     
     /**
-	 * Dieser Job informiert die Ersteller von Vorg‰ngen dar¸ber, dass ihre Vorg‰nge innerhalb der letzten 24 Stunden in Bearbeitung genommen wurden.
+	 * Dieser Job informiert die Ersteller von Vorg√§ngen dar√ºber, dass ihre Vorg√§nge innerhalb der letzten 24 Stunden in Bearbeitung genommen wurden.
 	 */
 	@ScheduledSyncInCluster(cron="0 05 10 * * *", name="Ersteller ueber Statusaenderungen nach in Bearbeitung informieren")
 	public void informErstellerInBearbeitung() {
 		Date date = DateUtils.addDays(new Date(), -1);
 		
-		// finde alle Vorg‰nge, deren Status sich innerhalb der letzten 24 Stunden auf inBearbeitung ge‰ndert hat und die eine autorEmail aufweisen
+		// finde alle Vorg√§nge, deren Status sich innerhalb der letzten 24 Stunden auf inBearbeitung ge√§ndert hat und die eine autorEmail aufweisen
 		List<Vorgang> vorgaenge = vorgangDao.findInProgressVorgaenge(date);
 		
 		// sende E-Mail
@@ -315,13 +315,13 @@ public class JobsService {
 
 	
 	/**
-	 * Dieser Job informiert die Ersteller von Vorg‰ngen dar¸ber, dass ihre Vorg‰nge innerhalb der letzten 24 Stunden abgeschlossen wurden.
+	 * Dieser Job informiert die Ersteller von Vorg√§ngen dar√ºber, dass ihre Vorg√§nge innerhalb der letzten 24 Stunden abgeschlossen wurden.
 	 */
 	@ScheduledSyncInCluster(cron="0 10 10 * * *", name="Ersteller ueber Vorgangsabschluesse informieren")
 	public void informErstellerAbschluss() {
 		Date date = DateUtils.addDays(new Date(), -1);
 		
-		// finde alle Vorg‰nge, die innerhalb der letzten 24 Stunden abgeschlossen wurden und die eine autorEmail aufweisen
+		// finde alle Vorg√§nge, die innerhalb der letzten 24 Stunden abgeschlossen wurden und die eine autorEmail aufweisen
 		List<Vorgang> vorgaenge = vorgangDao.findClosedVorgaenge(date);
 		
 		// sende E-Mail

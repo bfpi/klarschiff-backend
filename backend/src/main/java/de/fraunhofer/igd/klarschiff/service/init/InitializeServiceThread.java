@@ -60,13 +60,13 @@ public class InitializeServiceThread extends Thread {
 
 	
 	/**
-	 * Methode zum Ausführen des Thread. Hierbei werden die folgenden Schritte vorgenommen:<br/>
-	 * - Arbeitsverzeichnis für ApacheDS wird gesetzt und Inhalt des Verzeichnis wird ggf. gelöscht.<br/>
+	 * Methode zum AusfÃ¼hren des Thread. Hierbei werden die folgenden Schritte vorgenommen:<br/>
+	 * - Arbeitsverzeichnis fÃ¼r ApacheDS wird gesetzt und Inhalt des Verzeichnis wird ggf. gelÃ¶scht.<br/>
 	 * - Der Thread wartet eine definierte Zeit, bis andere Komponenten geladen wurden.<br/>
-	 * - Die Werte für die Enums werden, wenn sie noch nicht vorhanden sind, in der DB gespeichert.<br/>
-	 * - Es wird mit der Anfrage <code>SELECT COUNT(*) FROM Kategorie</code> geprüft, ob bereits Werte in der DB gespeichert sind.<br/>
+	 * - Die Werte fÃ¼r die Enums werden, wenn sie noch nicht vorhanden sind, in der DB gespeichert.<br/>
+	 * - Es wird mit der Anfrage <code>SELECT COUNT(*) FROM Kategorie</code> geprÃ¼ft, ob bereits Werte in der DB gespeichert sind.<br/>
 	 * - Die Objekte aus der <code>initObjectList</code> werden in der DB gespeichert.<br/>
-	 * - Das SQL-Script mit den Trigger und Triggerfunktionen zur Synchronisation der Frontend- und BackendDB wird ausgeführt.
+	 * - Das SQL-Script mit den Trigger und Triggerfunktionen zur Synchronisation der Frontend- und BackendDB wird ausgefÃ¼hrt.
 	 */
 	@SuppressWarnings({ "static-access" })
 	public void run()
@@ -86,15 +86,15 @@ public class InitializeServiceThread extends Thread {
 			session.setFlushMode(FlushMode.COMMIT);
 
 			try {
-				//sqlScriptFrontendDb ausführen
+				//sqlScriptFrontendDb ausfÃ¼hren
 				initializeService.getDbSyncService().executeSqlScriptFrontendDb(initializeService.getExecuteSqlScriptFrontendDb());
 
-				//sqlScriptDbLink ausführen
+				//sqlScriptDbLink ausfÃ¼hren
 				initializeService.getDbSyncService().executeSqlScriptDbLink(session, initializeService.getExecuteSqlScriptDbLink());
 				
 				transaction = session.beginTransaction();			
-				//Tabellen mit initialen Daten füllen
-				LogUtil.info("Initiale Daten werden überprüft und ggf. in die DB geschrieben ...");
+				//Tabellen mit initialen Daten fÃ¼llen
+				LogUtil.info("Initiale Daten werden Ã¼berprÃ¼ft und ggf. in die DB geschrieben ...");
 				_initializeEnum();
 				_initialize(initializeService.getInitObjectList());
 	  			transaction.commit();
@@ -110,7 +110,7 @@ public class InitializeServiceThread extends Thread {
 	
 
 	/**
-	 * Löscht das aktuell gesetzte Arbeitverzeichnis für ApacheDS 
+	 * LÃ¶scht das aktuell gesetzte Arbeitverzeichnis fÃ¼r ApacheDS 
 	 */
 	private void removeApacheDSWorkDir() {
 		try {
@@ -125,7 +125,7 @@ public class InitializeServiceThread extends Thread {
 	
 	
 	/**
-	 * Setzt ein eindeutiges Arbeitverzeichnis für ApacheDS für diese Serverinstanze und löscht das Verzeichnis ggf.
+	 * Setzt ein eindeutiges Arbeitverzeichnis fÃ¼r ApacheDS fÃ¼r diese Serverinstanze und lÃ¶scht das Verzeichnis ggf.
 	 */
 	private void setApacheDSWorkDir() {
 		try {
@@ -141,8 +141,8 @@ public class InitializeServiceThread extends Thread {
 	
 	
 	/**
-	 * Speichert die Objekte aus der Liste in der Datenbank. Dabei wird zuvor geprüft, ob die Objekte bereits in der DB enthalten sind
-	 * und ggf. geändert werden müssen.
+	 * Speichert die Objekte aus der Liste in der Datenbank. Dabei wird zuvor geprÃ¼ft, ob die Objekte bereits in der DB enthalten sind
+	 * und ggf. geÃ¤ndert werden mÃ¼ssen.
 	 * @param list Liste der zu speichernden Objekte
 	 */
 	@SuppressWarnings("rawtypes")

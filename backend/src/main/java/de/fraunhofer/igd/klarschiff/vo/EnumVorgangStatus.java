@@ -18,7 +18,7 @@ public enum EnumVorgangStatus implements EnumText {
     geloescht("gel&#246;scht");
 
     /**
-     * Gibt alle Status zurück, bei denen der Vorgang noch offen ist.
+     * Gibt alle Status zurÃ¼ck, bei denen der Vorgang noch offen ist.
      * @return offen Status
      */
     public static EnumVorgangStatus[] openVorgangStatus() {
@@ -26,7 +26,7 @@ public enum EnumVorgangStatus implements EnumText {
     }
     
     /**
-     * Gibt alle Status zurück, bei denen der Vorgang noch in Bearbeitung ist.
+     * Gibt alle Status zurÃ¼ck, bei denen der Vorgang noch in Bearbeitung ist.
      * @return inBearbeitung Status
      */
     public static EnumVorgangStatus[] inProgressVorgangStatus() {
@@ -34,7 +34,7 @@ public enum EnumVorgangStatus implements EnumText {
     }
     
     /**
-     * Gibt alle Status zurück, bei denen der Vorgang geschlossen ist
+     * Gibt alle Status zurÃ¼ck, bei denen der Vorgang geschlossen ist
      * @return geschlossen Status
      */
     public static EnumVorgangStatus[] closedVorgangStatus() {
@@ -42,7 +42,7 @@ public enum EnumVorgangStatus implements EnumText {
     }
     
     /**
-     * Gibt alle Status zurück, die für den Außendienst berücksichtigt werden
+     * Gibt alle Status zurÃ¼ck, die fÃ¼r den AuÃŸendienst berÃ¼cksichtigt werden
      * @return geschlossen Status
      */
     public static EnumVorgangStatus[] aussendienstVorgangStatus() {
@@ -50,7 +50,7 @@ public enum EnumVorgangStatus implements EnumText {
     }
     
     /**
-     * Gibt alle Status zurück, die auch für Externe (Delegiert) vorgesehen sind
+     * Gibt alle Status zurÃ¼ck, die auch fÃ¼r Externe (Delegiert) vorgesehen sind
      * @return delegiert Status
      */
     public static EnumVorgangStatus[] delegiertVorgangStatus() {

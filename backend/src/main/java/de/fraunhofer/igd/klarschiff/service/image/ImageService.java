@@ -27,10 +27,10 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * Der Service dient zur Manipulation von Bildern, wie z.B. das Skalieren oder das Ausschwärzen von Bildbereichen, bzw. 
+ * Der Service dient zur Manipulation von Bildern, wie z.B. das Skalieren oder das AusschwÃ¤rzen von Bildbereichen, bzw. 
  * zum Auslesen eines Bildes aus einem HTTP-Request
  * @author Stefan Audersch (Fraunhofer IGD)
- * @author Marcus Kröller (Fraunhofer IGD)
+ * @author Marcus KrÃ¶ller (Fraunhofer IGD)
  * @author Alexander Kruth (BFPI)
  */
 @Service
@@ -40,7 +40,7 @@ public class ImageService {
 
 	/**
 	 * Gibt an, wie ein Bild skaliert werden soll. Das Ergebnisbild hat nach der Skalierung die entsprechenden maximalen
-	 * Abmaße bei <code>max</code>. Das Ergebnisbild hat nach der Skalierung genau die Abmaße haben soll, wobei entsprechende 
+	 * AbmaÃŸe bei <code>max</code>. Das Ergebnisbild hat nach der Skalierung genau die AbmaÃŸe haben soll, wobei entsprechende 
 	 * Teile des Bildes transparent gemacht wurden bei <code>correct</code>
 	 */
 	public enum ScaleTyp { max, correct }
@@ -54,7 +54,7 @@ public class ImageService {
 	ScaleTyp scaleTyp = ScaleTyp.max;
 	
 	/**
-	 * Setzt das Bild für einen Vorgang. Dabei wird das Bild in drei Größen
+	 * Setzt das Bild fÃ¼r einen Vorgang. Dabei wird das Bild in drei GrÃ¶ÃŸen
 	 * abgelegt (Gross, Normal, Thumb).
 	 * Die Bilder werden entsprechend skaliert.
 	 * @param image Bild als ByteArray
@@ -74,15 +74,15 @@ public class ImageService {
 	}
 
     /**
-     * Speichert das in <code>image</code> übergebene Bild in den Dateinamen,
-     * der über <code>prevFilename</code> übergeben wurde. Falls dieser leer
+     * Speichert das in <code>image</code> Ã¼bergebene Bild in den Dateinamen,
+     * der Ã¼ber <code>prevFilename</code> Ã¼bergeben wurde. Falls dieser leer
      * ist, wird mittels <code>vorgang</code>-ID und <code>middlePart</code>
-     * und einer UUID ein neuer Dateiname generiert und zurück gegeben.
+     * und einer UUID ein neuer Dateiname generiert und zurÃ¼ck gegeben.
      * @param image Bilddaten
      * @param vorgang Vorgang
      * @param prevFilename Dateiname, darf leer sein
      * @param middlePart Zum Erzeugen eines neuen Dateinamens
-     * @return neuer oder übergebener Dateiname
+     * @return neuer oder Ã¼bergebener Dateiname
      * @throws IOException
      */
     public String generateFilenameAndWriteFile(byte[] image, Vorgang vorgang,
@@ -106,10 +106,10 @@ public class ImageService {
     }
 
 	/**
-	 * Schwarz Bereiche in einem Bild aus. Das Vorschau- als auch das eigentliche Bild eines Vorganges wird dabei geändert.
+	 * Schwarz Bereiche in einem Bild aus. Das Vorschau- als auch das eigentliche Bild eines Vorganges wird dabei geÃ¤ndert.
 	 * @param vorgang Vorgang, bei dem Bereiche aus dem Bild geschwarzt werden sollen
-	 * @param rectangles Liste von Rechtecken als String, die für die Schwarzung verwendet werden sollen
-	 * @param width relative Höhe, die bei der Erstellung der Rechtecke verwendet wurde
+	 * @param rectangles Liste von Rechtecken als String, die fÃ¼r die Schwarzung verwendet werden sollen
+	 * @param width relative HÃ¶he, die bei der Erstellung der Rechtecke verwendet wurde
 	 * @param height relative Breite, die bei der Erstellung der rechtecke verwendet wurde
 	 */
 	public void censorImageForVorgang(Vorgang vorgang, String rectangles, Integer width, Integer height)
@@ -156,7 +156,7 @@ public class ImageService {
 
 
 	/**
-	 * Setzt das Foto (Vorschau und eigentliches Bild) für einen Vorgang.
+	 * Setzt das Foto (Vorschau und eigentliches Bild) fÃ¼r einen Vorgang.
 	 * @param multipartFile Teil des HTTP-Requestes mit den Bilddaten
 	 * @param vorgang Vorgang bei dem das foto gesetzt werden soll
 	 * @throws Exception
@@ -169,12 +169,12 @@ public class ImageService {
 
 	
 	/**
-	 * Scalliert ein Bild. Dabei kann über den ScaleType angegeben werden, ob das Ergebnisbild die entsprechenden maximalen
-	 * Abmaße haben soll, oder das Ergebnisbild genau die Abmaße haben soll, wobei entsprechende Teile des Bildes dann transparent
+	 * Scalliert ein Bild. Dabei kann Ã¼ber den ScaleType angegeben werden, ob das Ergebnisbild die entsprechenden maximalen
+	 * AbmaÃŸe haben soll, oder das Ergebnisbild genau die AbmaÃŸe haben soll, wobei entsprechende Teile des Bildes dann transparent
 	 * gemacht werden sollen. 
 	 * @param image Bild als ByteArray, welches scaliert werden soll
 	 * @param width Breite bzw. maximale Breite des Ergebnisbild
-	 * @param height Höhe bzw. maximale Höhe des Ergebnisbildes
+	 * @param height HÃ¶he bzw. maximale HÃ¶he des Ergebnisbildes
 	 * @param scaleTyp Typ der Transfomation
 	 * @return scalliertes Bild als ByteArray
 	 * @throws Exception

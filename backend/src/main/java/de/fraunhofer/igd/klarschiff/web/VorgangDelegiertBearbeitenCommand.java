@@ -5,9 +5,9 @@ import java.io.Serializable;
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
 
 /**
- * Command für das Vorgangbearbeiten im Backend durch Externe (Delegierte) <br />
+ * Command fÃ¼r das Vorgangbearbeiten im Backend durch Externe (Delegierte) <br />
  * Beinhaltet ein Vorgangs-Objekt, Kommentar sowie die akutelle Seitenzahl
- * und die Seitengröße.
+ * und die SeitengrÃ¶ÃŸe.
  * @author Stefan Audersch (Fraunhofer IGD)
  */
 @SuppressWarnings("serial")

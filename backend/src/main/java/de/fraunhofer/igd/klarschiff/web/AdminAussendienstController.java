@@ -18,9 +18,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
- * Controller zum Bearbeiten der Auﬂendienstteam-Koordinatoren im Adminbereich
+ * Controller zum Bearbeiten der Au√üendienstteam-Koordinatoren im Adminbereich
  *
- * @author Robert Voﬂ (BFPI GmbH)
+ * @author Robert Vo√ü (BFPI GmbH)
  */
 @RequestMapping("/admin")
 @Controller
@@ -35,9 +35,9 @@ public class AdminAussendienstController {
   /**
    * Die Methode verarbeitet den GET-Request auf der URL
    * <code>/admin/aussendienst</code><br/>
-   * Seitenbeschreibung: ‹bersichtsseite zum Auﬂendienst
+   * Seitenbeschreibung: √úbersichtsseite zum Au√üendienst
    *
-   * @param model Model in dem ggf. Daten f¸r die View abgelegt werden
+   * @param model Model in dem ggf. Daten f√ºr die View abgelegt werden
    * @param request Request
    * @return View, die zum Rendern des Request verwendet wird
    */
@@ -53,7 +53,7 @@ public class AdminAussendienstController {
    * von Aussendienst-Teams
    *
    * @param login User-Login
-   * @param model Model in dem ggf. Daten f¸r die View abgelegt werden
+   * @param model Model in dem ggf. Daten f√ºr die View abgelegt werden
    * @param request Request
    * @return View, die zum Rendern des Request verwendet wird
    */
@@ -83,11 +83,11 @@ public class AdminAussendienstController {
   /**
    * Die Methode verarbeitet den POST-Request auf der URL
    * <code>/aussendienst/{login}/bearbeiten</code><br/>
-   * Seitenbeschreibung: ƒndert die Berechtigungen zum Zuweisen von
+   * Seitenbeschreibung: √Ñndert die Berechtigungen zum Zuweisen von
    * Aussendienst-Teams
    *
    * @param login
-   * @param model Model in dem ggf. Daten f¸r die View abgelegt werden
+   * @param model Model in dem ggf. Daten f√ºr die View abgelegt werden
    * @param request Request
    * @return View, die zum Rendern des Request verwendet wird
    */

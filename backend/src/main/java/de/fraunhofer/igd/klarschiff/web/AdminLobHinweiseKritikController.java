@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import de.fraunhofer.igd.klarschiff.dao.LobHinweiseKritikDao;
 
 /**
- * Controller für Lob/Hinweise/Kritik im Adminbereich
+ * Controller fÃ¼r Lob/Hinweise/Kritik im Adminbereich
  * @author Sebastian Schwarz (Hansestadt Rostock)
  */
 @SessionAttributes({"cmdlobhinweisekritik"})
@@ -36,7 +36,7 @@ public class AdminLobHinweiseKritikController {
 	/**
 	 * Die Methode verarbeitet den GET-Request auf der URL <code>/admin/lobhinweisekritik</code><br/>
 	 * @param cmdlobhinweisekritik Command
-	 * @param modelMap Model in der ggf. Daten für die View abgelegt werden
+	 * @param modelMap Model in der ggf. Daten fÃ¼r die View abgelegt werden
 	 * @return View, die zum Rendern des Request verwendet wird
 	 */
 	@RequestMapping(method = RequestMethod.GET)
@@ -47,10 +47,10 @@ public class AdminLobHinweiseKritikController {
 	}
     
     /**
-	 * Ermittelt die Anzahl maximal benötigter Seiten aus:
-	 * @param size gewünschter Anzahl an Elementen pro Seite
+	 * Ermittelt die Anzahl maximal benÃ¶tigter Seiten aus:
+	 * @param size gewÃ¼nschter Anzahl an Elementen pro Seite
 	 * @param count gegebener Anzahl an darzustellender Elemente
-	 * @return maximal benötigte Seitenzahl
+	 * @return maximal benÃ¶tigte Seitenzahl
 	 */
 	private int calculateMaxPages(int size, long count)
     {

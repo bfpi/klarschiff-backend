@@ -20,7 +20,7 @@ import de.fraunhofer.igd.klarschiff.vo.EnumVorgangTyp;
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
 
 /**
- * Die Dao-Klasse erlaubt das Ermitteln von Daten aus der DB für die Statistik.
+ * Die Dao-Klasse erlaubt das Ermitteln von Daten aus der DB fÃ¼r die Statistik.
  * @author Stefan Audersch (Fraunhofer IGD)
  */
 @Repository
@@ -160,7 +160,7 @@ public class StatisticDao {
 		List<Role> zustaendigkeiten = securityService.getCurrentZustaendigkeiten(true);
 		List<Role> delegiertAn = securityService.getCurrentDelegiertAn();
 	
-		//Zuständigkeit & DelegiertAn
+		//ZustÃ¤ndigkeit & DelegiertAn
 		if (!CollectionUtils.isEmpty(zustaendigkeiten) && !CollectionUtils.isEmpty(delegiertAn)) 
 			query.addWhereConditions("(vo.zustaendigkeit IN (:zustaendigkeit) OR vo.delegiertAn IN (:delegiertAn))")
 				.addParameter("zustaendigkeit", Role.toString(zustaendigkeiten))

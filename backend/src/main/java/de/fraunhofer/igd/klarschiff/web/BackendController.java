@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import de.fraunhofer.igd.klarschiff.dao.KategorieDao;
+import de.fraunhofer.igd.klarschiff.dao.KommentarDao;
 import de.fraunhofer.igd.klarschiff.dao.RedaktionEmpfaengerDao;
 import de.fraunhofer.igd.klarschiff.dao.VerlaufDao;
 import de.fraunhofer.igd.klarschiff.dao.VorgangDao;
@@ -24,15 +25,19 @@ import de.fraunhofer.igd.klarschiff.service.classification.ClassificationService
 import de.fraunhofer.igd.klarschiff.service.image.ImageService;
 import de.fraunhofer.igd.klarschiff.service.mail.MailService;
 import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
+import de.fraunhofer.igd.klarschiff.service.security.User;
 import de.fraunhofer.igd.klarschiff.service.settings.SettingsService;
 import de.fraunhofer.igd.klarschiff.vo.Auftrag;
 import de.fraunhofer.igd.klarschiff.vo.EnumAuftragStatus;
+import de.fraunhofer.igd.klarschiff.vo.EnumFreigabeStatus;
 import de.fraunhofer.igd.klarschiff.vo.EnumPrioritaet;
 import de.fraunhofer.igd.klarschiff.vo.EnumVerlaufTyp;
 import de.fraunhofer.igd.klarschiff.vo.EnumVorgangStatus;
 import de.fraunhofer.igd.klarschiff.vo.EnumVorgangTyp;
 import de.fraunhofer.igd.klarschiff.vo.EnumZustaendigkeitStatus;
 import de.fraunhofer.igd.klarschiff.vo.GeoRss;
+import de.fraunhofer.igd.klarschiff.vo.Kategorie;
+import de.fraunhofer.igd.klarschiff.vo.Kommentar;
 import de.fraunhofer.igd.klarschiff.vo.LobHinweiseKritik;
 import de.fraunhofer.igd.klarschiff.vo.Missbrauchsmeldung;
 import de.fraunhofer.igd.klarschiff.vo.RedaktionEmpfaenger;
@@ -42,11 +47,12 @@ import de.fraunhofer.igd.klarschiff.vo.Vorgang;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import org.codehaus.jackson.map.ObjectMapper;
 
 /**
- * Der Controller dient als Schnittstelle für das Frontend
+ * Der Controller dient als Schnittstelle fÃ¼r das Frontend
  * @author Stefan Audersch (Fraunhofer IGD)
  */
 @RequestMapping("/service")
@@ -63,6 +69,9 @@ public class BackendController {
 	@Autowired
 	AuftragDao auftragDao;
 	
+	@Autowired
+	KommentarDao kommentarDao;
+
 	@Autowired
 	VorgangDao vorgangDao;
 	
@@ -89,181 +98,330 @@ public class BackendController {
 	/**
 	 * Die Methode verarbeitet den POST-Request auf der URL <code>/service/vorgang</code><br/>
 	 * Beschreibung: erstellt einen neuen Vorgang
-	 * @param typ Vorgangstyp
-	 * @param kategorie Kategorie
-	 * @param oviWkt Position als WKT
+	 * @param authCode Code zur Identifizierung des Clients
 	 * @param autorEmail E-Mail-Adresse des Erstellers
 	 * @param betreff Betreff
-	 * @param details Details
 	 * @param bild Foto base64 kodiert
-	 * @param resultHashOnSubmit <code>true</code> - gibt den Hash zum Bestätigen als Ergebnis zurück
+	 * @param details Details
+	 * @param fotowunsch Fotowunsch
+	 * @param kategorie Kategorie
+	 * @param oviWkt Position als WKT
+	 * @param positionWGS84 Position im WGS84 Format
+	 * @param resultObjectOnSubmit <code>true</code> - gibt den neuen Vorgangs als Ergebnis zurÃ¼ck
+	 * @param resultHashOnSubmit <code>true</code> - gibt den Hash zum BestÃ¤tigen als Ergebnis zurÃ¼ck
+	 * @param typ Vorgangstyp
 	 * @param response Response in das das Ergebnis direkt geschrieben wird
 	 */
 	@RequestMapping(value="/vorgang", method = RequestMethod.POST)
 	@ResponseBody
 	public void vorgang(
-			@RequestParam(value = "typ", required = false) String typ, 
-			@RequestParam(value = "kategorie", required = false) Long kategorie,
-			@RequestParam(value = "oviWkt", required = false) String oviWkt,
+			@RequestParam(value = "authCode", required = false) String authCode,
 			@RequestParam(value = "autorEmail", required = false) String autorEmail,
 			@RequestParam(value = "betreff", required = false) String betreff,
-			@RequestParam(value = "details", required = false) String details,
 			@RequestParam(value = "bild", required = false) String bild,
+			@RequestParam(value = "details", required = false) String details,
+			@RequestParam(value = "fotowunsch", required = false) Boolean fotowunsch, 
+			@RequestParam(value = "kategorie", required = false) Long kategorie,
+			@RequestParam(value = "oviWkt", required = false) String oviWkt,
+			@RequestParam(value = "positionWGS84", required = false) String positionWGS84,
+			@RequestParam(value = "resultObjectOnSubmit", required = false) Boolean resultObjectOnSubmit, 
 			@RequestParam(value = "resultHashOnSubmit", required = false) Boolean resultHashOnSubmit, 
+			@RequestParam(value = "typ", required = false) String typ, 
 			HttpServletResponse response) {
-		if (resultHashOnSubmit==null) resultHashOnSubmit=false;
+    
+		if (resultHashOnSubmit == null) {
+      resultHashOnSubmit = false;
+    }
+		if (resultObjectOnSubmit == null) {
+      resultObjectOnSubmit = false;
+    }
 		try {
 			Vorgang vorgang = new Vorgang();
 			
 			if (StringUtils.isBlank(typ)) throw new BackendControllerException(1, "[typ] fehlt", "Der Typ ist nicht angegeben.");
-			vorgang.setTyp(EnumVorgangTyp.valueOf(typ));
-			if (vorgang.getTyp()==null) throw new BackendControllerException(2, "[typ] nicht korrekt", "Der Typ ist nicht korrekt.");
 			
 			if (kategorie==null) throw new BackendControllerException(3, "[kategorie] fehlt", "Die Angaben zur Kategorie fehlen.");
-			vorgang.setKategorie(kategorieDao.findKategorie(kategorie));
-			if (vorgang.getKategorie()==null 
-					|| vorgang.getKategorie().getParent()==null
-					|| vorgang.getKategorie().getParent().getTyp()!=vorgang.getTyp()) throw new BackendControllerException(4, "[kategorie] nicht korrekt", "Die Kategorie ist nicht gültig.");
-			
-			if (oviWkt==null) throw new BackendControllerException(5, "[oviWkt] fehlt", "Die Orstangabe fehlt.");
-			try {
-				vorgang.setOviWkt(oviWkt);
-			}catch (Exception e) {
-				throw new BackendControllerException(6, "[oviWkt] nicht korrekt", "Die Ortsangabe ist nicht korrekt.", e);
-			}
-
+      
 			if (StringUtils.isBlank(autorEmail)) throw new BackendControllerException(7, "[autorEmail] fehlt", "Die E-Mail-Adresse fehlt.");
 			if (!isShortEnough(autorEmail, 300)) throw new BackendControllerException(8, "[autorEmail] zu lang", "Die E-Mail-Adresse ist zu lang.");
-			if (!isEmail(autorEmail)) throw new BackendControllerException(9, "[autorEmail] nicht korrekt", "Die E-Mail-Adresse ist nicht gültig.");
+			if (!isEmail(autorEmail)) throw new BackendControllerException(9, "[autorEmail] nicht korrekt", "Die E-Mail-Adresse ist nicht gÃ¼ltig.");
 			vorgang.setAutorEmail(autorEmail);
 			vorgang.setHash(securityService.createHash(autorEmail+System.currentTimeMillis()));
 			
-			if (!isShortEnough(betreff, 300)) throw new BackendControllerException(10, "[betreff] zu lang", "Der Betreff ist zu lang. Es sind maximal 300 Zeichen erlaubt.");
-			vorgang.setBetreff(betreff);
-			
-			vorgang.setDetails(details);
-			
 			vorgang.setDatum(new Date());
-			vorgang.setStatus(EnumVorgangStatus.gemeldet);
 			vorgang.setPrioritaet(EnumPrioritaet.mittel);
-						
-			vorgangDao.persist(vorgang);
+      if (fotowunsch == null) {
+        fotowunsch = false;
+      }
+      
+      vorgang.setStatus(EnumVorgangStatus.gemeldet);
+      vorgangParameterUebernehmen(autorEmail, vorgang, typ, kategorie, positionWGS84, oviWkt,
+          betreff, details, fotowunsch, bild, false);
+      
+      Boolean intern = false;
+      if (authCode != null && authCode.equals(settingsService.getPropertyValue("auth.kod_code")) && vorgang.autorIntern()) {
+        intern = true;
+        vorgang.setStatus(EnumVorgangStatus.offen);
+        vorgangDao.persist(vorgang);
+        
+        vorgang.setZustaendigkeit(classificationService.calculateZustaendigkeitforVorgang(vorgang).getId());
+        vorgang.setZustaendigkeitStatus(EnumZustaendigkeitStatus.zugewiesen);
+        
+        vorgangDao.merge(vorgang);
+      } else {
+        vorgangDao.persist(vorgang);
+      }
 
-			if (bild!=null) {
-				try {
-					imageService.setImageForVorgang(Base64.decode(bild.getBytes()), vorgang);
-				} catch (Exception e) {
-					throw new BackendControllerException(11, "[bild] nicht korrekt", "Das Bild ist fehlerhaft und kann nicht verarbeitewt werden.", e);
-				}
-				vorgangDao.merge(vorgang);
-			}
+      if (resultHashOnSubmit) {
+        sendOk(response, vorgang.getHash());
+      } else if (resultObjectOnSubmit) {
+        sendOk(response, mapper.writeValueAsString(vorgang));
+      } else {
+        sendOk(response);
+      }
 
-			if (resultHashOnSubmit==true) sendOk(response, vorgang.getHash());
-			else sendOk(response);
-
-			mailService.sendVorgangBestaetigungMail(vorgang);
+      if (!intern) {
+        mailService.sendVorgangBestaetigungMail(vorgang);
+      }
 		} catch (Exception e) {
 			logger.warn("Fehler bei BackendController.vorgang:", e);
 			sendError(response, e);
 		}
 	}
-
-	/**
-	 * Die Methode verarbeitet den POST-Request auf der URL <code>/service/vorgangKOD</code><br/>
-	 * Beschreibung: erstellt einen neuen Vorgang des kommunalen Ordnungsdienstes,
-	 * im Gegensatz zum "normalen" Erstellen eines Vorgangs wird der Status
-	 * direkt auf offen gesetzt, damit ist keine Bestätigungs E-Mail notwendig.
-	 * @param typ Vorgangstyp
-	 * @param kategorie Kategorie
-	 * @param oviWkt Position als WKT
-	 * @param autorEmail E-Mail-Adresse des Erstellers
-	 * @param betreff Betreff
-	 * @param details Details
-	 * @param bild Foto base64 kodiert
-	 * @param response Response in das das Ergebnis direkt geschrieben wird
-	 */
-	@RequestMapping(value="/vorgangKOD", method = RequestMethod.POST)
+  
+  /**
+   * Die Methode verarbeitet den POST-Request auf der URL <code>/service/vorgangAktualisieren</code><br/>
+   * Beschreibung: aktualisiert einen bestehenden Vorgang
+   * @param id Vorgang-ID
+   * @param authCode Code zur Identifizierung des Clients
+   * @param autorEmail E-Mail-Adresse des Erstellers
+   * @param betreff Betreff
+   * @param bild Foto base64 kodiert
+   * @param details Details
+   * @param fotowunsch Fotowunsch
+   * @param kategorie Kategorie
+   * @param oviWkt Position als WKT
+   * @param positionWGS84
+   * @param typ Vorgangstyp
+   * @param status Status
+   * @param statusKommentar Statuskommentar
+   * @param prioritaet PrioritÃ¤t
+   * @param delegiertAn Delegiert An
+   * @param auftragStatus Status des Auftrags
+   * @param auftragPrioritaet PrioritÃ¤t des Auftrags
+   * @param response Response in das das Ergebnis direkt geschrieben wird
+   * @throws BackendControllerException
+   */
+  @RequestMapping(value="/vorgangAktualisieren", method = RequestMethod.POST)
 	@ResponseBody
-	public void vorgangKOD(
-			@RequestParam(value = "typ", required = false) String typ, 
-			@RequestParam(value = "kategorie", required = false) Long kategorie,
-			@RequestParam(value = "oviWkt", required = false) String oviWkt,
-			@RequestParam(value = "autorEmail", required = false) String autorEmail,
-			@RequestParam(value = "betreff", required = false) String betreff,
-			@RequestParam(value = "details", required = false) String details,
-			@RequestParam(value = "bild", required = false) String bild,
-			@RequestParam(value = "authCode", required = false) String authCode,
-			HttpServletResponse response) {
-		try {
-      if (settingsService.getPropertyValue("kod.auth_code") == null) {
-        throw new BackendControllerException(13, "[authCode] nicht konfiguriert", "Es wurde kein kod.auth_code konfiguriert.");
+	public void vorgangAktualisieren(
+      @RequestParam(value = "id", required = false) Long id,
+      @RequestParam(value = "authCode", required = false) String authCode,
+      @RequestParam(value = "autorEmail", required = false) String autorEmail,
+      @RequestParam(value = "betreff", required = false) String betreff,
+      @RequestParam(value = "bild", required = false) String bild,
+      @RequestParam(value = "details", required = false) String details,
+      @RequestParam(value = "fotowunsch", required = false) Boolean fotowunsch, 
+      @RequestParam(value = "kategorie", required = false) Long kategorie,
+      @RequestParam(value = "oviWkt", required = false) String oviWkt,
+      @RequestParam(value = "positionWGS84", required = false) String positionWGS84,
+      @RequestParam(value = "typ", required = false) String typ, 
+      @RequestParam(value = "status", required = false) String status, 
+      @RequestParam(value = "statusKommentar", required = false) String statusKommentar,
+      @RequestParam(value = "prioritaet", required = false) Integer prioritaet,
+      @RequestParam(value = "delegiertAn", required = false) String delegiertAn,
+      @RequestParam(value = "auftragStatus", required = false) String auftragStatus,
+      @RequestParam(value = "auftragPrioritaet", required = false) Integer auftragPrioritaet,
+      
+			HttpServletResponse response) throws BackendControllerException {
+    
+    try {
+      if (id == null) {
+        if (StringUtils.isBlank(typ)) {
+          throw new BackendControllerException(1, "[id] fehlt", "Ohne id kann kein Vorgang aktualisiert werden.");
+        }
       }
-      logger.info("kod.auth_code" + settingsService.getPropertyValue("kod.auth_code"));
-      logger.info("param authCode" + authCode);
-      if (!settingsService.getPropertyValue("kod.auth_code").equals(authCode)) {
-        throw new BackendControllerException(12, "[authCode] nicht korrekt", "Falscher AuthCode");
+      if (StringUtils.isBlank(autorEmail)) throw new BackendControllerException(7, "[autorEmail] fehlt", "Die E-Mail-Adresse fehlt.");
+      if (!isShortEnough(autorEmail, 300)) throw new BackendControllerException(8, "[autorEmail] zu lang", "Die E-Mail-Adresse ist zu lang.");
+      if (!isEmail(autorEmail)) throw new BackendControllerException(9, "[autorEmail] nicht korrekt", "Die E-Mail-Adresse ist nicht gÃ¼ltig.");
+
+      Vorgang vorgang = vorgangDao.findVorgang(id);
+      if (vorgang == null) {
+        throw new BackendControllerException(200, "[id] unbekannt", "Es konnte kein Vorgang mit der Ã¼bergebenen ID gefunden werden.");
       }
-			Vorgang vorgang = new Vorgang();
-			
-			if (StringUtils.isBlank(typ)) throw new BackendControllerException(1, "[typ] fehlt", "Der Typ ist nicht angegeben.");
-			vorgang.setTyp(EnumVorgangTyp.valueOf(typ));
-			if (vorgang.getTyp()==null) throw new BackendControllerException(2, "[typ] nicht korrekt", "Der Typ ist nicht korrekt.");
-			
-			if (kategorie==null) throw new BackendControllerException(3, "[kategorie] fehlt", "Die Angaben zur Kategorie fehlen.");
-			vorgang.setKategorie(kategorieDao.findKategorie(kategorie));
-			if (vorgang.getKategorie()==null 
-					|| vorgang.getKategorie().getParent()==null
-					|| vorgang.getKategorie().getParent().getTyp()!=vorgang.getTyp()) throw new BackendControllerException(4, "[kategorie] nicht korrekt", "Die Kategorie ist nicht gültig.");
-			
-			if (oviWkt==null) throw new BackendControllerException(5, "[oviWkt] fehlt", "Die Orstangabe fehlt.");
-			try {
-				vorgang.setOviWkt(oviWkt);
-			}catch (Exception e) {
-				throw new BackendControllerException(6, "[oviWkt] nicht korrekt", "Die Ortsangabe ist nicht korrekt.", e);
-			}
+      vorgangParameterUebernehmen(autorEmail, vorgang, typ, kategorie, positionWGS84, oviWkt,
+          betreff, details, fotowunsch, bild, true);
 
-			if (StringUtils.isBlank(autorEmail)) throw new BackendControllerException(7, "[autorEmail] fehlt", "Die E-Mail-Adresse fehlt.");
-			if (!isShortEnough(autorEmail, 300)) throw new BackendControllerException(8, "[autorEmail] zu lang", "Die E-Mail-Adresse ist zu lang.");
-			if (!isEmail(autorEmail)) throw new BackendControllerException(9, "[autorEmail] nicht korrekt", "Die E-Mail-Adresse ist nicht gültig.");
-			vorgang.setAutorEmail(autorEmail);
-			
-			if (!isShortEnough(betreff, 300)) throw new BackendControllerException(10, "[betreff] zu lang", "Der Betreff ist zu lang. Es sind maximal 300 Zeichen erlaubt.");
-			vorgang.setBetreff(betreff);
-			
-			vorgang.setDetails(details);
-            
-			vorgang.setDatum(new Date());
-			vorgang.setStatus(EnumVorgangStatus.offen);
-			vorgang.setPrioritaet(EnumPrioritaet.mittel);
-						
-			vorgangDao.persist(vorgang);
-            
-            if (bild!=null) {
-				try {
-					imageService.setImageForVorgang(Base64.decode(bild.getBytes()), vorgang);
-				} catch (Exception e) {
-					throw new BackendControllerException(11, "[bild] nicht korrekt", "Das Bild ist fehlerhaft und kann nicht verarbeitewt werden.", e);
-				}
-				vorgangDao.merge(vorgang);
-			}
+      if (prioritaet != null) {
+        if ((prioritaet - 1) > EnumPrioritaet.values().length) {
+          throw new BackendControllerException(12, "[prioritaet] ungÃ¼ltig", "Die PrioritÃ¤t ist fehlerhaft und kann nicht verarbeitewt werden.");
+        }
+        
+        EnumPrioritaet ep = EnumPrioritaet.values()[prioritaet];
+        if(!vorgang.getPrioritaet().equals(ep)) {
+          verlaufDao.persist(verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.prioritaet, vorgang.getPrioritaet().getText(), ep.getText(), autorEmail));
+        }
+        vorgang.setPrioritaet(ep);
+      }
 
-			sendOk(response);
+      if (status != null) {
+        EnumVorgangStatus evs = EnumVorgangStatus.valueOf(status);
+        if(!vorgang.getStatus().equals(evs)) {
+          verlaufDao.persist(verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.status, vorgang.getStatus().getText(), evs.getText(), autorEmail));
+        }
+        vorgang.setStatus(evs);
+      }
 
-			vorgang.setZustaendigkeit(classificationService.calculateZustaendigkeitforVorgang(vorgang).getId());
-			vorgang.setZustaendigkeitStatus(EnumZustaendigkeitStatus.zugewiesen);
-			vorgangDao.merge(vorgang);
+      if (statusKommentar != null) {
+        if(!vorgang.getStatusKommentar().equals(statusKommentar)) {
+          verlaufDao.persist(verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.statusKommentar, StringUtils.abbreviate(vorgang.getStatusKommentar(), 100), StringUtils.abbreviate(statusKommentar, 100), autorEmail));
+        }
+        vorgang.setStatusKommentar(statusKommentar);
+      }
 
-			sendOk(response, vorgang.getId().toString());
-		} catch (Exception e) {
-			logger.warn("Fehler bei BackendController.vorgangKOD:", e);
-			sendError(response, e);
-		}
-	}
+      if (delegiertAn != null || auftragStatus != null || auftragPrioritaet != null) {
+        if (authCode == null) {
+          throw new BackendControllerException(13, "[authCode] fehlt", "Der authCode fehlt.");
+        }
+        if (!authCode.equals(settingsService.getPropertyValue("auth.kod_code"))) {
+          throw new BackendControllerException(14, "[authCode] ungÃ¼ltig", "Der Ãœbergebene authCode ist ungÃ¼ltig.");
+        }
+        
+        if (delegiertAn != null) {
+          if(!vorgang.getDelegiertAn().equals(delegiertAn)) {
+            verlaufDao.persist(verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.delegiertAn, vorgang.getDelegiertAn(), delegiertAn, autorEmail));
+          }
+          vorgang.setDelegiertAn(delegiertAn);
+        }
+
+        if (auftragStatus != null || auftragPrioritaet != null) {
+          Auftrag auftrag = vorgang.getAuftrag();
+          if (auftrag == null) {
+            throw new BackendControllerException(15, "[auftragStatus] ungÃ¼ltig", "Ohne Auftrag kann der auftragStatus nicht aktualisiert werden.");
+          }
+          
+          if (auftragStatus != null) {
+            auftrag.setStatus(EnumAuftragStatus.valueOf(auftragStatus));
+          }
+
+          if (auftragPrioritaet != null) {
+            auftrag.setPrioritaet(auftragPrioritaet);
+          }
+          vorgang.setAuftrag(auftrag);
+        }
+      }
+
+      vorgangDao.persist(vorgang);
+      sendOk(response, mapper.writeValueAsString(vorgang));
+    } catch (Exception e) {
+      logger.warn("Fehler bei BackendController.vorgang:", e);
+      sendError(response, e);
+    }
+  }
+  
+  private void vorgangParameterUebernehmen(
+      String autorEmail,
+      Vorgang vorgang,
+      String typ,
+      Long kategorie,
+      String positionWGS84,
+      String oviWkt,
+      String betreff,
+      String details,
+      Boolean fotowunsch,
+      String bild,
+      Boolean verlaufErgaenzen
+  ) throws BackendControllerException {
+    
+    if(verlaufErgaenzen == null) {
+      verlaufErgaenzen = false;
+    }
+    
+    if (typ != null) {
+      EnumVorgangTyp evt = EnumVorgangTyp.valueOf(typ);
+      if(verlaufErgaenzen && !vorgang.getTyp().equals(evt)) {
+        verlaufDao.persist(verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.typ, vorgang.getTyp().getText(), evt.getText(), autorEmail));
+      }
+      vorgang.setTyp(evt);
+      if (vorgang.getTyp() == null) {
+        throw new BackendControllerException(2, "[typ] nicht korrekt", "Der Typ ist nicht korrekt.");
+      }
+    }
+    
+    if (kategorie != null) {
+      Kategorie newKat = kategorieDao.findKategorie(kategorie);
+      
+      if(verlaufErgaenzen && !vorgang.getKategorie().getId().equals(newKat.getId())) {
+        verlaufDao.persist(verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.kategorie, vorgang.getKategorie().getParent().getName() + " / " + vorgang.getKategorie().getName(), newKat.getParent().getName() + " / " + newKat.getName(), autorEmail));
+      }
+      vorgang.setKategorie(newKat);
+      if (vorgang.getKategorie() == null 
+          || vorgang.getKategorie().getParent() == null
+          || vorgang.getKategorie().getParent().getTyp() != vorgang.getTyp()) {
+        throw new BackendControllerException(4, "[kategorie] nicht korrekt", "Die Kategorie ist nicht gÃ¼ltig.");
+      }
+    }
+    
+    if (positionWGS84 != null) {
+      try {
+        vorgang.setPositionWGS84(positionWGS84);
+      } catch (Exception e) {
+        throw new BackendControllerException(12, "[positionWGS84] nicht korrekt", "Die Ortsangabe ist nicht korrekt.", e);
+      }
+    }
+      
+    if (oviWkt != null) {
+      try {
+        vorgang.setOviWkt(oviWkt);
+      } catch (Exception e) {
+        throw new BackendControllerException(6, "[oviWkt] nicht korrekt", "Die Ortsangabe ist nicht korrekt.");
+      }
+    }
+    
+    if (vorgang.getOviWkt() == null) {
+      throw new BackendControllerException(5, "[position] nicht korrekt", "Keine gÃ¼ltige Ortsangabe.");
+    }
+    
+    if (betreff != null) {
+      if (!isShortEnough(betreff, 300)) {
+        throw new BackendControllerException(10, "[betreff] zu lang", "Der Betreff ist zu lang. Es sind maximal 300 Zeichen erlaubt.");
+      }
+      if(verlaufErgaenzen && !vorgang.getBetreff().equals(betreff)) {
+        verlaufDao.persist(verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.betreff, StringUtils.abbreviate(vorgang.getBetreff(), 100), StringUtils.abbreviate(betreff, 100), autorEmail));
+      }
+      vorgang.setBetreff(betreff);
+    }
+
+    if (details != null) {
+      if(verlaufErgaenzen && !vorgang.getDetails().equals(details)) {
+        verlaufDao.persist(verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.detail, StringUtils.abbreviate(vorgang.getDetails(), 100), StringUtils.abbreviate(details, 100), autorEmail));
+      }
+      vorgang.setDetails(details);
+    }
+    
+    if (fotowunsch != null) {
+      if(verlaufErgaenzen && vorgang.getFotowunsch() != fotowunsch) {
+        verlaufDao.persist(verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.fotowunsch, vorgang.getFotowunsch() ? "aktiv" : "inaktiv", vorgang.getFotowunsch() ? "inaktiv" : "aktiv", autorEmail));
+      }
+      vorgang.setFotowunsch(fotowunsch);
+    }
+    
+    if (bild != null && bild.getBytes().length > 0) {
+      vorgangDao.persist(vorgang);
+      try {
+        imageService.setImageForVorgang(Base64.decode(bild.getBytes()), vorgang);
+        vorgang.setFotoFreigabeStatus(EnumFreigabeStatus.intern);
+        vorgang.setFotowunsch(false);
+      } catch (Exception e) {
+        throw new BackendControllerException(11, "[bild] nicht korrekt", "Das Bild ist fehlerhaft und kann nicht verarbeitet werden.", e);
+      }
+    }
+  }
 
 	/**
 	 * Prüft, ob der mitgegebene String eine gültige E-Mail-Adresse ist
 	 * @param email String mit der E-Mail-Adresse
-	 * @return <code>true</code>, falls E-Mail-Adresse gültig, <code>false</code>, falls  nicht
+	 * @return <code>true</code>, falls E-Mail-Adresse gÃ¼ltig, <code>false</code>, falls  nicht
 	 */
 	private static boolean isEmail(String email)
 	{
@@ -280,19 +438,15 @@ public class BackendController {
 	 * @param maxLength maximale Länge
 	 * @return <code>true</code>, falls String kurz genug oder leer, <code>false</code>, falls  nicht
 	 */
-	private static boolean isShortEnough(String str, int maxLength)
-	{
-		if (str==null || str.length() <= maxLength)
-            return true;
-		else
-            return false;
+	private static boolean isShortEnough(String str, int maxLength) {
+    return str == null || str.length() <= maxLength
 	}
 
 
 	/**
 	 * Die Methode verarbeitet den POST-Request auf der URL <code>/service/vorgangBestaetigung</code><br/>
-	 * Beschreibung: Vorgang bestätigen
-	 * @param hash Hash zum Bestätigen
+	 * Beschreibung: Vorgang bestÃ¤tigen
+	 * @param hash Hash zum BestÃ¤tigen
 	 * @return View die angezeigt werden soll
 	 */
 	@RequestMapping(value="/vorgangBestaetigung")
@@ -305,7 +459,7 @@ public class BackendController {
 
 			for (Verlauf verlauf : vorgang.getVerlauf()) verlauf.getTyp();
 			
-			if (vorgang.getStatus()!=EnumVorgangStatus.gemeldet)  throw new BackendControllerException(103, "Vorgang wurde bereits bestätigt");
+			if (vorgang.getStatus()!=EnumVorgangStatus.gemeldet)  throw new BackendControllerException(103, "Vorgang wurde bereits bestÃ¤tigt");
 
 			vorgang.setStatus(EnumVorgangStatus.offen);
 						
@@ -329,10 +483,11 @@ public class BackendController {
 
 	/**
 	 * Die Methode verarbeitet den POST-Request auf der URL <code>/service/unterstuetzer</code><br/>
-	 * Beschreibung: erstellt eine Unterstützung für ein Vorgang
+	 * Beschreibung: erstellt eine UnterstÃ¼tzung fÃ¼r ein Vorgang
 	 * @param vorgang Vorgang
 	 * @param email E-Mail-Adresse des Erstellers
-	 * @param resultHashOnSubmit <code>true</code> - gibt den Hash zum Bestätigen als Ergebnis zurück
+	 * @param resultObjectOnSubmit <code>true</code> - gibt den neuen Vorgangs als Ergebnis zurÃ¼ck
+	 * @param resultHashOnSubmit <code>true</code> - gibt den Hash zum BestÃ¤tigen als Ergebnis zurÃ¼ck
 	 * @param response Response in das das Ergebnis direkt geschrieben wird
 	 */
 	@RequestMapping(value="/unterstuetzer", method = RequestMethod.POST)
@@ -340,28 +495,39 @@ public class BackendController {
 	public void unterstuetzer(
 			@RequestParam(value = "vorgang", required = false) Long vorgang, 
 			@RequestParam(value = "email", required = false) String email, 
+			@RequestParam(value = "resultObjectOnSubmit", required = false) Boolean resultObjectOnSubmit, 
 			@RequestParam(value = "resultHashOnSubmit", required = false) Boolean resultHashOnSubmit, 
 			HttpServletResponse response) {
 		if (resultHashOnSubmit==null) resultHashOnSubmit=false;
 		try {
 			Unterstuetzer unterstuetzer = new Unterstuetzer();
-			if (vorgang==null) throw new BackendControllerException(201, "[vorgang] fehlt", "Die Unterstützung ist keiner Meldung zugeordnet.");
-			unterstuetzer.setVorgang(vorgangDao.findVorgang(vorgang));
-			if (unterstuetzer.getVorgang()==null) throw new BackendControllerException(202, "[vorgang] nicht korrekt", "Die Unterstützung ist keiner Meldung zugeordnet.");
+			if (vorgang==null) throw new BackendControllerException(201, "[vorgang] fehlt", "Die UnterstÃ¼tzung ist keiner Meldung zugeordnet.");
+
+			Vorgang vorg = vorgangDao.findVorgang(vorgang);
+			if (vorg == null) {
+				throw new BackendControllerException(200, "[vorgang] ungÃ¼ltig", "Es konnte kein Vorgang mit der Ã¼bergebenen ID gefunden werden.");
+			}
+			unterstuetzer.setVorgang(vorg);
+			if (unterstuetzer.getVorgang()==null) throw new BackendControllerException(202, "[vorgang] nicht korrekt", "Die UnterstÃ¼tzung ist keiner Meldung zugeordnet.");
 			
 			if (StringUtils.isBlank(email)) throw new BackendControllerException(203, "[email] fehlt", "Die E-Mail-Adresse fehlt.");
 			if (!isShortEnough(email, 300)) throw new BackendControllerException(204, "[email] zu lang", "Die E-Mail-Adresse ist zu lang.");
 			if (!isEmail(email)) throw new BackendControllerException(205, "[email] nicht korrekt", "Die E-Mail-Adresse ist nicht gültig.");
 			unterstuetzer.setHash(securityService.createHash(unterstuetzer.getVorgang().getId()+email));
-			if (vorgangDao.findUnterstuetzer(unterstuetzer.getHash())!=null) throw new BackendControllerException(206, "[email] wurde bereits für den [vorgang] verwendet", "Sie können die Meldung nicht mehrmals unterstützen.");
-			if (StringUtils.equalsIgnoreCase(unterstuetzer.getVorgang().getAutorEmail(), email)) throw new BackendControllerException(207, "[email] der autor des [vorgang] kann keine unterstützung für den [vorgang] abgeben", "Die Unterstützungsmeldung konnte nicht abgesetzt werden, da Sie Ihre eigene Meldung nicht unterstützen dürfen.");
+			if (vorgangDao.findUnterstuetzer(unterstuetzer.getHash())!=null) throw new BackendControllerException(206, "[email] wurde bereits fÃ¼r den [vorgang] verwendet", "Sie kÃ¶nnen die Meldung nicht mehrmals unterstÃ¼tzen.");
+			if (StringUtils.equalsIgnoreCase(unterstuetzer.getVorgang().getAutorEmail(), email)) throw new BackendControllerException(207, "[email] der autor des [vorgang] kann keine unterstÃ¼tzung fÃ¼r den [vorgang] abgeben", "Die UnterstÃ¼tzungsmeldung konnte nicht abgesetzt werden, da Sie Ihre eigene Meldung nicht unterstÃ¼tzen dÃ¼rfen.");
 			
 			unterstuetzer.setDatum(new Date());
 
 			vorgangDao.persist(unterstuetzer);
 			
-			if (resultHashOnSubmit==true) sendOk(response, unterstuetzer.getHash());
-			else sendOk(response);
+      if (resultHashOnSubmit) {
+        sendOk(response, unterstuetzer.getHash());
+      } else if (resultObjectOnSubmit) {
+        sendOk(response, mapper.writeValueAsString(unterstuetzer));
+      } else {
+        sendOk(response);
+      }
 
 			mailService.sendUnterstuetzerBestaetigungMail(unterstuetzer, email, vorgang);
 			
@@ -374,8 +540,8 @@ public class BackendController {
 	
 	/**
 	 * Die Methode verarbeitet den POST-Request auf der URL <code>/service/unterstuetzerBestaetigung</code><br/>
-	 * Beschreibung: Unterstützung bestätigen
-	 * @param hash Hash zum Bestätigen
+	 * Beschreibung: UnterstÃ¼tzung bestÃ¤tigen
+	 * @param hash Hash zum BestÃ¤tigen
 	 * @return View die angezeigt werden soll
 	 */
 	@RequestMapping(value="/unterstuetzerBestaetigung")
@@ -386,7 +552,7 @@ public class BackendController {
 			Unterstuetzer unterstuetzer = vorgangDao.findUnterstuetzer(hash);
 			if (unterstuetzer==null) throw new BackendControllerException(302, "[hash] nicht korrekt");
 			
-			if (unterstuetzer.getDatumBestaetigung()!=null)  throw new BackendControllerException(303, "Unterstützer wurde bereits bestätigt");
+			if (unterstuetzer.getDatumBestaetigung()!=null)  throw new BackendControllerException(303, "UnterstÃ¼tzer wurde bereits bestÃ¤tigt");
 
 			unterstuetzer.setDatumBestaetigung(new Date());
 			
@@ -404,11 +570,12 @@ public class BackendController {
 	
 	/**
 	 * Die Methode verarbeitet den POST-Request auf der URL <code>/service/missbrauchsmeldung</code><br/>
-	 * Beschreibung: erstellt eine Missbrauchsmeldung für einen Vorgang
+	 * Beschreibung: erstellt eine Missbrauchsmeldung fÃ¼r einen Vorgang
 	 * @param vorgang Vorgang
 	 * @param text Text der Missbrauchsmeldung
 	 * @param email E-Mail-Adresse des Erstellers
-	 * @param resultHashOnSubmit <code>true</code> - gibt den Hash zum Bestätigen als Ergebnis zurück
+	 * @param resultHashOnSubmit <code>true</code> - gibt den Hash zum BestÃ¤tigen als Ergebnis zurÃ¼ck
+	 * @param resultObjectOnSubmit <code>true</code> - gibt den neuen Vorgangs als Ergebnis zurÃ¼ck
 	 * @param response Response in das das Ergebnis direkt geschrieben wird
 	 */
 	@RequestMapping(value="/missbrauchsmeldung", method = RequestMethod.POST)
@@ -418,15 +585,21 @@ public class BackendController {
 			@RequestParam(value = "text", required = false) String text, 
 			@RequestParam(value = "email", required = false) String email, 
 			@RequestParam(value = "resultHashOnSubmit", required = false) Boolean resultHashOnSubmit, 
+			@RequestParam(value = "resultObjectOnSubmit", required = false) Boolean resultObjectOnSubmit,
 			HttpServletResponse response) {
 		if (resultHashOnSubmit==null) resultHashOnSubmit=false;
+		if (resultObjectOnSubmit==null) resultObjectOnSubmit=false;
 		try {
 			Missbrauchsmeldung missbrauchsmeldung = new Missbrauchsmeldung();
 			if (vorgang==null) throw new BackendControllerException(401, "[vorgang] fehlt", "Die Missbrauchsmeldung ist keiner Meldung zugeordnet.");
-			missbrauchsmeldung.setVorgang(vorgangDao.findVorgang(vorgang));
+			Vorgang vorg = vorgangDao.findVorgang(vorgang);
+			if (vorg == null) {
+				throw new BackendControllerException(200, "[vorgang] ungÃ¼ltig", "Es konnte kein Vorgang mit der Ã¼bergebenen ID gefunden werden.");
+			}
+			missbrauchsmeldung.setVorgang(vorg);
 			if (missbrauchsmeldung.getVorgang()==null) throw new BackendControllerException(402, "[vorgang] nicht korrekt", "Die Missbrauchsmeldung ist keiner Meldung zugeordnet.");
 
-			if (StringUtils.isBlank(text)) throw new BackendControllerException(403, "[text] fehlt", "Die Begründung fehlt.");
+			if (StringUtils.isBlank(text)) throw new BackendControllerException(403, "[text] fehlt", "Die BegrÃ¼ndung fehlt.");
 			missbrauchsmeldung.setText(text);
 			
 			if (StringUtils.isBlank(email)) throw new BackendControllerException(404, "[email] fehlt", "Die E-Mail-Adresse fehlt.");
@@ -441,21 +614,139 @@ public class BackendController {
 			
 			mailService.sendMissbrauchsmeldungBestaetigungMail(missbrauchsmeldung, email, vorgang);
 
-			if (resultHashOnSubmit==true) sendOk(response, missbrauchsmeldung.getHash());
-			else sendOk(response);
+			if (resultHashOnSubmit) {
+				sendOk(response, missbrauchsmeldung.getHash());
+			} else if (resultObjectOnSubmit) {
+				sendOk(response, mapper.writeValueAsString(missbrauchsmeldung));
+			} else {
+				sendOk(response);
+			}
 		} catch (Exception e) {
 			logger.warn(e);
 			sendError(response, e);
 		}
 	}
 
+  /**
+   * Die Methode verarbeitet den GET-Request auf der URL <code>/service/kommentar</code><br/>
+   * Beschreibung: holt interne Kommentare zu einem Vorgang
+   * @param vorgang_id Vorgang-ID
+   * @param response Response in das das Ergebnis direkt geschrieben wird
+   */
+  @RequestMapping(value="/kommentar", method = RequestMethod.GET)
+  @ResponseBody
+  public void kommentar(
+      @RequestParam(value = "vorgang_id", required = false) Long vorgang_id,
+      HttpServletResponse response) {
+    
+    try {
+      Vorgang vorgang = vorgangDao.findVorgang(vorgang_id);
+      if (vorgang == null) {
+        throw new BackendControllerException(200, "[vorgang_id] ungÃ¼ltig", "Es konnte kein Vorgang mit der Ã¼bergebenen ID gefunden werden.");
+      }
+      sendOk(response, mapper.writeValueAsString(vorgang.getKommentare()));
+    } catch (Exception ex) {
+      java.util.logging.Logger.getLogger(BackendController.class.getName()).log(Level.SEVERE, null, ex);
+      sendError(response, ex);
+    }
+  }
+
+  /**
+   * Die Methode verarbeitet den GET-Request auf der URL <code>/service/kommentarAnlegen</code><br/>
+   * Beschreibung: legt neuen internen Kommentare zu einem Vorgang an
+   * @param vorgang_id Vorgang-ID
+   * @param authCode Code zur Identifizierung des Clients
+   * @param autorEmail E-Mail-Adresse des Erstellers
+   * @param text Kommentar-Text
+   * @param response Response in das das Ergebnis direkt geschrieben wird
+   */
+  @RequestMapping(value="/kommentar", method = RequestMethod.POST)
+  @ResponseBody
+  public void kommentar(
+      @RequestParam(value = "vorgang_id", required = false) Long vorgang_id,
+      @RequestParam(value = "authCode", required = false) String authCode,
+			@RequestParam(value = "autorEmail", required = false) String autorEmail,
+			@RequestParam(value = "text", required = false) String text,
+      HttpServletResponse response) {
+
+    try {
+      if (vorgang_id == null) {
+        throw new BackendControllerException(1, "[id] fehlt", "Ohne id kann kein Vorgang aktualisiert werden.");
+      }
+
+      Vorgang vorgang = vorgangDao.findVorgang(vorgang_id);
+      if (vorgang == null) {
+        throw new BackendControllerException(200, "[vorgang_id] ungÃ¼ltig", "Es konnte kein Vorgang mit der Ã¼bergebenen ID gefunden werden.");
+      }
+
+      if (authCode == null || !authCode.equals(settingsService.getPropertyValue("auth.kod_code"))) {
+        throw new BackendControllerException(2, "[authCode] ungÃ¼ltig", "Der Ãœbergebene authCode ist ungÃ¼ltig.");
+      }
+
+      if (StringUtils.isBlank(autorEmail)) {
+        throw new BackendControllerException(3, "[autorEmail] fehlt", "Die E-Mail-Adresse fehlt.");
+      }
+      if (!isShortEnough(autorEmail, 300)) {
+        throw new BackendControllerException(4, "[autorEmail] zu lang", "Die E-Mail-Adresse ist zu lang.");
+      }
+      if (!isEmail(autorEmail)) {
+        throw new BackendControllerException(5, "[autorEmail] nicht korrekt", "Die E-Mail-Adresse ist nicht gÃ¼ltig.");
+      }
+
+      if (StringUtils.isBlank(text)) {
+        throw new BackendControllerException(6, "[text] fehlt", "Es fehlt ein Text fÃ¼r den Kommentar.");
+      }
+
+      User user = securityService.getUserByEmail(autorEmail);
+
+      Kommentar kommentar = new Kommentar();
+      kommentar.setAnzBearbeitet(0);
+      kommentar.setDatum(new Date());
+      kommentar.setGeloescht(false);
+      kommentar.setNutzer(user.getName());
+      kommentar.setZuletztBearbeitet(new Date());
+      kommentar.setText(text);
+      kommentar.setVorgang(vorgang);
+
+      kommentarDao.merge(kommentar);
+
+			sendOk(response, mapper.writeValueAsString(kommentar));
+    } catch (Exception ex) {
+      java.util.logging.Logger.getLogger(BackendController.class.getName()).log(Level.SEVERE, null, ex);
+      sendError(response, ex);
+    }
+  }
+
+  /**
+   * Die Methode verarbeitet den GET-Request auf der URL <code>/service/lobHinweiseKritik</code><br/>
+   * Beschreibung: holt Lob, Hinweise oder Kritik zu einem Vorgang
+   * @param vorgang_id Vorgang-ID
+   * @param response Response in das das Ergebnis direkt geschrieben wird
+   */
+  @RequestMapping(value="/lobHinweiseKritik", method = RequestMethod.GET)
+  @ResponseBody
+  public void lobHinweiseKritik(
+      @RequestParam(value = "vorgang_id", required = false) Long vorgang_id,
+      HttpServletResponse response) {
+
+    try {
+      Vorgang vorgang = vorgangDao.findVorgang(vorgang_id);
+      if (vorgang == null) {
+        throw new BackendControllerException(200, "[vorgang_id] ungÃ¼ltig", "Es konnte kein Vorgang mit der Ã¼bergebenen ID gefunden werden.");
+      }
+      sendOk(response, mapper.writeValueAsString(vorgang.getLobHinweiseKritik()));
+    } catch (Exception ex) {
+      java.util.logging.Logger.getLogger(BackendController.class.getName()).log(Level.SEVERE, null, ex);
+      sendError(response, ex);
+    }
+  }
 	
 	/**
 	 * Die Methode verarbeitet den POST-Request auf der URL <code>/service/lobHinweiseKritik</code><br/>
 	 * Beschreibung: erstellt Lob, Hinweise oder Kritik zu einem Vorgang
 	 * @param vorgang Vorgang
 	 * @param email E-Mail-Adresse des Erstellers
-     * @param freitext Freitext
+	 * @param freitext Freitext
 	 * @param response Response in das das Ergebnis direkt geschrieben wird
 	 */
 	@RequestMapping(value="/lobHinweiseKritik", method = RequestMethod.POST)
@@ -467,30 +758,34 @@ public class BackendController {
 			HttpServletResponse response) {
 		try {
 			LobHinweiseKritik lobHinweiseKritik = new LobHinweiseKritik();
-			if (vorgang==null) throw new BackendControllerException(401, "[vorgang] fehlt", "Lob, Hinweise oder Kritik kann/können keiner Meldung zugeordnet werden.");
-			lobHinweiseKritik.setVorgang(vorgangDao.findVorgang(vorgang));
-			if (lobHinweiseKritik.getVorgang()==null) throw new BackendControllerException(402, "[vorgang] nicht korrekt", "Lob, Hinweise oder Kritik kann/können keiner Meldung zugeordnet werden.");
+			if (vorgang==null) throw new BackendControllerException(401, "[vorgang] fehlt", "Lob, Hinweise oder Kritik kann/kÃ¶nnen keiner Meldung zugeordnet werden.");
+			Vorgang vorg = vorgangDao.findVorgang(vorgang);
+			if (vorg == null) {
+				throw new BackendControllerException(200, "[vorgang] ungÃ¼ltig", "Es konnte kein Vorgang mit der Ã¼bergebenen ID gefunden werden.");
+			}
+			lobHinweiseKritik.setVorgang(vorg);
+			if (lobHinweiseKritik.getVorgang()==null) throw new BackendControllerException(402, "[vorgang] nicht korrekt", "Lob, Hinweise oder Kritik kann/kÃ¶nnen keiner Meldung zugeordnet werden.");
 
 			if (StringUtils.isBlank(email)) throw new BackendControllerException(404, "[email] fehlt", "Die E-Mail-Adresse fehlt.");
 			if (!isShortEnough(email, 300)) throw new BackendControllerException(405, "[email] zu lang", "Die E-Mail-Adresse ist zu lang.");
 			if (!isEmail(email)) throw new BackendControllerException(406, "[email] nicht korrekt", "Die E-Mail-Adresse ist nicht gültig.");
             lobHinweiseKritik.setAutorEmail(email);
             
-            // aktuelle Zuständigkeit des Vorgangs bestimmen
+            // aktuelle ZustÃ¤ndigkeit des Vorgangs bestimmen
             String zustaendigkeit = lobHinweiseKritik.getVorgang().getZustaendigkeit();
             
-            // Empfänger gefunden?
+            // EmpfÃ¤nger gefunden?
             Boolean empfaengerGefunden = false;
             
-            // falls aktuelle Zuständigkeit des Vorgangs nicht NULL oder leer ist und gleichzeitig akzeptiert ist
+            // falls aktuelle ZustÃ¤ndigkeit des Vorgangs nicht NULL oder leer ist und gleichzeitig akzeptiert ist
             if (zustaendigkeit != null && zustaendigkeit != "" && lobHinweiseKritik.getVorgang().getZustaendigkeitStatus() == EnumZustaendigkeitStatus.akzeptiert) {
 
                 String empfaengerEmail = new String();
                 
-                // alle Nutzernamen dieser Zuständigkeit bestimmen
+                // alle Nutzernamen dieser ZustÃ¤ndigkeit bestimmen
                 List<String> allUserNamesForRole = securityService.getAllUserNamesForRole(zustaendigkeit);
                 
-                // denjenigen Nutzernamen aus dieser Zuständigkeit bestimmen, der gemäß dem Verlauf die letzte Bearbeitung am Vorgang durchgeführt hat
+                // denjenigen Nutzernamen aus dieser ZustÃ¤ndigkeit bestimmen, der gemÃ¤ÃŸ dem Verlauf die letzte Bearbeitung am Vorgang durchgefÃ¼hrt hat
                 String empfaenger = verlaufDao.findLastUserForVorgangAndZustaendigkeit(lobHinweiseKritik.getVorgang(), allUserNamesForRole);
                 
                 // falls dieser gefunden wurde
@@ -503,7 +798,7 @@ public class BackendController {
                     // falls der String mit dessen E-Mail-Adresse nicht NULL ist
                     if (empfaengerEmail != null && empfaengerEmail != "") {
                     
-                        // Empfänger-E-Mail-Adresse für Lob, Hinweise oder Kritik auf zuvor gefüllten String setzen
+                        // EmpfÃ¤nger-E-Mail-Adresse fÃ¼r Lob, Hinweise oder Kritik auf zuvor gefÃ¼llten String setzen
                         lobHinweiseKritik.setEmpfaengerEmail(empfaengerEmail);
                     
                         // Lob, Hinweise oder Kritik als E-Mail versenden
@@ -512,13 +807,13 @@ public class BackendController {
                 }
             }
             
-            // ansonsten: falls Empfänger zuvor nicht gefunden wurde und aktuelle Zuständigkeit des Vorgangs nicht NULL oder leer ist, aber eben auch nicht akzeptiert ist
+            // ansonsten: falls EmpfÃ¤nger zuvor nicht gefunden wurde und aktuelle ZustÃ¤ndigkeit des Vorgangs nicht NULL oder leer ist, aber eben auch nicht akzeptiert ist
             else if (empfaengerGefunden == false && zustaendigkeit != null && zustaendigkeit != "") {
 
                 String empfaengerEmail = new String();
                 Short zaehler = 0;
                 
-                // alle Empfänger redaktioneller E-Mails dieser Zuständigkeit bestimmen, die zugleich auch Lob, Hinweise oder Kritik als E-Mail empfangen sollen
+                // alle EmpfÃ¤nger redaktioneller E-Mails dieser ZustÃ¤ndigkeit bestimmen, die zugleich auch Lob, Hinweise oder Kritik als E-Mail empfangen sollen
                 List<RedaktionEmpfaenger> allEmpfaengerLobHinweiseKritikForZustaendigkeit = redaktionEmpfaengerDao.getEmpfaengerListLobHinweiseKritikForZustaendigkeit(lobHinweiseKritik.getVorgang().getZustaendigkeit());
                 
                 // falls diese gefunden wurden
@@ -538,7 +833,7 @@ public class BackendController {
                         // ansonsten
                         else {
                             
-                            // kommaseparierten String mit der aktuellen E-Mail-Adresse fortführen
+                            // kommaseparierten String mit der aktuellen E-Mail-Adresse fortfÃ¼hren
                             empfaengerEmail = empfaengerEmail + ", " + empfaengerLobHinweiseKritikForZustaendigkeit.getEmail();
                         }
                         zaehler++;
@@ -547,7 +842,7 @@ public class BackendController {
                         mailService.sendLobHinweiseKritikMail(lobHinweiseKritik.getVorgang(), email, empfaengerLobHinweiseKritikForZustaendigkeit.getEmail(), freitext);
                     }
                     
-                    // Empfänger-E-Mail-Adresse für Lob, Hinweise oder Kritik auf in vorhergehender Schleife gefüllten String setzen
+                    // EmpfÃ¤nger-E-Mail-Adresse fÃ¼r Lob, Hinweise oder Kritik auf in vorhergehender Schleife gefÃ¼llten String setzen
                     lobHinweiseKritik.setEmpfaengerEmail(empfaengerEmail);
                 }
             }
@@ -561,7 +856,7 @@ public class BackendController {
 
 			vorgangDao.persist(lobHinweiseKritik);
 
-			sendOk(response);
+			sendOk(response, mapper.writeValueAsString(lobHinweiseKritik));
 		} catch (Exception e) {
 			logger.warn(e);
 			sendError(response, e);
@@ -571,8 +866,8 @@ public class BackendController {
 	
 	/**
 	 * Die Methode verarbeitet den POST-Request auf der URL <code>/service/missbrauchsmeldungBestaetigung</code><br/>
-	 * Beschreibung: Vorgang bestätigen
-	 * @param hash Hash zum Bestätigen
+	 * Beschreibung: Vorgang bestÃ¤tigen
+	 * @param hash Hash zum BestÃ¤tigen
 	 * @return View die angezeigt werden soll
 	 */
 	@RequestMapping(value="/missbrauchsmeldungBestaetigung")
@@ -583,7 +878,7 @@ public class BackendController {
 			Missbrauchsmeldung missbrauchsmeldung = vorgangDao.findMissbrauchsmeldung(hash);
 			if (missbrauchsmeldung==null) throw new BackendControllerException(502, "[hash] nicht korrekt");
 			
-			if (missbrauchsmeldung.getDatumBestaetigung()!=null)  throw new BackendControllerException(503, "Missbrauchsmeldung wurde bereits bestätigt");
+			if (missbrauchsmeldung.getDatumBestaetigung()!=null)  throw new BackendControllerException(503, "Missbrauchsmeldung wurde bereits bestÃ¤tigt");
 
 			missbrauchsmeldung.setDatumBestaetigung(new Date());
 			
@@ -602,8 +897,8 @@ public class BackendController {
 	
 	/**
 	 * Die Methode verarbeitet den POST-Request auf der URL <code>/service/vorgangLoeschen</code><br/>
-	 * Beschreibung: Vorgang löschen
-	 * @param hash Hash zum Löschen
+	 * Beschreibung: Vorgang lÃ¶schen
+	 * @param hash Hash zum LÃ¶schen
 	 * @return View die angezeigt werden soll
 	 */
 	@RequestMapping(value="/vorgangLoeschen")
@@ -620,7 +915,7 @@ public class BackendController {
 				vorgang.setStatus(EnumVorgangStatus.geloescht);
 				vorgangDao.merge(vorgang);
 				
-			} else throw new BackendControllerException(103, "Vorgang kann nicht mehr gelöscht werden"); 
+			} else throw new BackendControllerException(103, "Vorgang kann nicht mehr gelÃ¶scht werden"); 
 			
 			return "backend/vorgangLoeschenOk";
 			
@@ -632,11 +927,11 @@ public class BackendController {
 
 	/**
 	 * 
-	 * @param oviWkt überwachte Fläche als WKT
-	 * @param probleme Probleme überwachen?
-	 * @param problemeKategorien Liste der überwachten Kategorien bei den Problemen
-	 * @param ideen Ideen überwachen?
-	 * @param ideenKategorien Liste der überwachten Kategorien bei den Ideen
+	 * @param oviWkt Ã¼berwachte FlÃ¤che als WKT
+	 * @param probleme Probleme Ã¼berwachen?
+	 * @param problemeKategorien Liste der Ã¼berwachten Kategorien bei den Problemen
+	 * @param ideen Ideen Ã¼berwachen?
+	 * @param ideenKategorien Liste der Ã¼berwachten Kategorien bei den Ideen
 	 * @param response
 	 */
 	@RequestMapping(value="/geoRss", method = RequestMethod.POST)
@@ -800,8 +1095,191 @@ public class BackendController {
       sendError(response, ex);
     }
   }
-          
 	
+  /**
+   * Die Methode verarbeitet den GET-Request auf der URL
+   * <code>/kategorien</code><br/>
+   *
+   * @param response 
+   * @throws java.io.IOException 
+   */
+  @RequestMapping(value="/kategorien", method = RequestMethod.POST)
+	@ResponseBody
+	public void kategorien(
+      HttpServletResponse response) throws IOException {
+    
+    try {
+      List<Kategorie> kategorien = kategorieDao.findRootKategorien();
+      kategorien.addAll(kategorieDao.getKategorien());
+      sendOk(response, mapper.writeValueAsString(kategorien));
+    } catch (Exception ex) {
+      java.util.logging.Logger.getLogger(BackendController.class.getName()).log(Level.SEVERE, null, ex);
+      sendError(response, ex);
+    }
+  }
+	
+  /**
+   * Die Methode verarbeitet den GET-Request auf der URL
+   * <code>/kategorie</code><br/>
+   *
+   * @param id
+   * @param response 
+   * @throws java.io.IOException 
+   */
+  @RequestMapping(value="/kategorie", method = RequestMethod.POST)
+	@ResponseBody
+	public void kategorie(
+			@RequestParam(value = "id") Integer id,
+      HttpServletResponse response) throws IOException {
+    
+    try {
+      Kategorie kategorie = kategorieDao.findKategorie(Long.parseLong(id.toString()));
+      sendOk(response, mapper.writeValueAsString(kategorie));
+    } catch (Exception ex) {
+      java.util.logging.Logger.getLogger(BackendController.class.getName()).log(Level.SEVERE, null, ex);
+      sendError(response, ex);
+    }
+  }
+  
+  /**
+   * Die Methode verarbeitet den GET-Request auf der URL
+   * <code>/unterkategorien</code><br/>
+   *
+   * @param response 
+   * @throws java.io.IOException 
+   */
+  @RequestMapping(value="/unterkategorien", method = RequestMethod.GET)
+	@ResponseBody
+	public void unterkategorien(
+      HttpServletResponse response) throws IOException {
+    
+    try {
+      List<Kategorie> kategorien = kategorieDao.findUnterKategorien();
+      sendOk(response, mapper.writeValueAsString(kategorien));
+    } catch (Exception ex) {
+      java.util.logging.Logger.getLogger(BackendController.class.getName()).log(Level.SEVERE, null, ex);
+      sendError(response, ex);
+    }
+  }
+  
+  /**
+   * Die Methode verarbeitet den GET-Request auf der URL
+   * <code>/vorgaenge</code><br/>
+   *
+   * @param id
+   * @param ids
+   * @param category_id
+   * @param status
+   * @param date_from
+   * @param date_to
+   * @param updated_from 
+   * @param updated_to 
+   * @param agency_responsible 
+   * @param negation 
+   * @param restriction_area 
+   * @param response 
+   * @throws java.io.IOException 
+   */
+  @RequestMapping(value="/vorgaenge", method = RequestMethod.GET)
+	@ResponseBody
+	public void vorgaenge(
+      @RequestParam(value = "id", required = false) Long id, 
+      @RequestParam(value = "ids", required = false) String ids, 
+      @RequestParam(value = "category_id", required = false) Long category_id, 
+      @RequestParam(value = "status", required = false) String status, 
+      @RequestParam(value = "date_from", required = false) String date_from, 
+      @RequestParam(value = "date_to", required = false) String date_to, 
+      @RequestParam(value = "updated_from", required = false) String updated_from, 
+      @RequestParam(value = "updated_to", required = false) String updated_to, 
+      @RequestParam(value = "agency_responsible", required = false) String agency_responsible, 
+      @RequestParam(value = "negation", required = false) String negation, 
+      @RequestParam(value = "restriction_area", required = false) String restriction_area, 
+      
+      HttpServletResponse response) throws IOException {
+    
+    try {
+      List<Vorgang> vorgaenge = new ArrayList<Vorgang>();
+      if(id != null) {
+        Vorgang vg = vorgangDao.findVorgang(id);
+        vg.setSecurityService(securityService);
+        vorgaenge.add(vg);
+      } else {
+        VorgangSuchenCommand cmd = new VorgangSuchenCommand();
+        // Suchtyp aussendienst wÃ¼rde nur VorgÃ¤nge mit zustaendigkeit_status = 'akzeptiert' ausgeben
+        cmd.setSuchtyp(VorgangSuchenCommand.Suchtyp.erweitert);
+        // Sortieren nach ID
+        cmd.setOrder(0);
+        cmd.setOrderDirection(0);
+        
+        if(negation != null) {
+          cmd.setNegation(negation);
+        }
+        
+        if(restriction_area != null) {
+          cmd.setSuchbereich(restriction_area);
+        }
+        
+        if(ids != null && ids.length() > 0) {
+          String[] idStrList = ids.split(",");
+          Long[] data = new Long[idStrList.length];
+          for (int i = 0; i < idStrList.length; i++) {
+            data[i] = Long.valueOf(idStrList[i]);
+          }
+          cmd.setVorgangAuswaehlen(data);
+        }
+
+        if(category_id != null) {
+          Kategorie kat = kategorieDao.findKategorie(category_id);
+          if(kat != null) {
+            if(kat.getParent() == null) {
+              cmd.setErweitertHauptkategorie(kat);
+            } else {
+              cmd.setErweitertKategorie(kat);
+            }
+          }
+        }
+
+        String[] status_list = status.split(",");
+        EnumVorgangStatus[] evs = new EnumVorgangStatus[status_list.length];
+
+        for (int i = 0; i < status_list.length; i++) {
+          evs[i] = EnumVorgangStatus.valueOf(status_list[i]);
+        }
+        cmd.setErweitertVorgangStatus(evs);
+
+        if(date_from != null) {
+          cmd.setErweitertDatumVon(getDateFromParam(date_from));
+        }
+        if(date_to != null) {
+          cmd.setErweitertDatumBis(getDateFromParam(date_to));
+        }
+        if(updated_from != null) {
+          cmd.setAktualisiertVon(getDateFromParam(updated_from));
+        }
+        if(updated_to != null) {
+          cmd.setAktualisiertBis(getDateFromParam(updated_to));
+        }
+        
+        if(agency_responsible != null) {
+          cmd.setAuftragTeam(agency_responsible);
+          cmd.setAuftragDatum(new Date());
+          cmd.setOrder(8);
+        }
+        
+        List<Object[]> vg = vorgangDao.getVorgaenge(cmd);
+        for(Object[] entry : vg) {
+    		  Vorgang vorgang = (Vorgang)entry[0];
+          vorgang.setSecurityService(securityService);
+          vorgaenge.add(vorgang);
+        }
+      }
+      sendOk(response, mapper.writeValueAsString(vorgaenge));
+    } catch (Exception ex) {
+      java.util.logging.Logger.getLogger(BackendController.class.getName()).log(Level.SEVERE, null, ex);
+      sendError(response, ex);
+    }
+  }
+          
 	/**
 	 * Sendet eine Fehlermeldung
 	 */
@@ -854,4 +1332,10 @@ public class BackendController {
 			throw new RuntimeException(e);
 		}
 	}
+  
+  private Date getDateFromParam(String param) {
+    Date date = new Date();
+    date.setTime(Long.parseLong(param));
+    return date;
+  }
 }

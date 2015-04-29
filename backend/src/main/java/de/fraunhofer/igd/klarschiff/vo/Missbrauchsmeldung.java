@@ -35,13 +35,13 @@ public class Missbrauchsmeldung implements Serializable {
 	private Long id;
 
 	/**
-	 * Vorgang zu dem die Missbrauchsmeldung gehˆrt
+	 * Vorgang zu dem die Missbrauchsmeldung geh√∂rt
 	 */
 	@ManyToOne
     private Vorgang vorgang;
 	
 	/**
-	 * Hash zum Best‰tigen der Missbrauchsmeldung
+	 * Hash zum Best√§tigen der Missbrauchsmeldung
 	 */
 	@Size(max = 32)
     private String hash;
@@ -62,7 +62,7 @@ public class Missbrauchsmeldung implements Serializable {
     private Date datum;
 
     /**
-     * Zeitpunkt der Best‰tigung der Missbrauchsmeldung
+     * Zeitpunkt der Best√§tigung der Missbrauchsmeldung
      */
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(style = "S-")

@@ -31,7 +31,7 @@ public class AdminTrashmailController {
 	/**
 	 * Die Methode verarbeitet den GET-Request auf der URL <code>/admin/trashmail</code><br/>
 	 * Seitenbeschreibung: Darstellung der Trashmails im Adminbereich
-	 * @param model Model in dem ggf. Daten für die View abgelegt werden
+	 * @param model Model in dem ggf. Daten fÃ¼r die View abgelegt werden
 	 * @param request Request
 	 * @return View, die zum Rendern des Request verwendet wird
 	 */
@@ -48,9 +48,9 @@ public class AdminTrashmailController {
 	
 	/**
 	 * Die Methode verarbeitet den POST-Request auf der URL <code>/admin/trashmail</code><br/>
-	 * Seitenbeschreibung: Ändern der Trashmails im Adminbereich
+	 * Seitenbeschreibung: Ã„ndern der Trashmails im Adminbereich
 	 * @param cmd Command
-	 * @param model Model in dem ggf. Daten für die View abgelegt werden
+	 * @param model Model in dem ggf. Daten fÃ¼r die View abgelegt werden
 	 * @param request Request
 	 * @return View, die zum Rendern des Request verwendet wird
 	 */

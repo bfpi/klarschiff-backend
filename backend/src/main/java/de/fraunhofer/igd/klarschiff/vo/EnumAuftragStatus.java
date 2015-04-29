@@ -3,7 +3,7 @@ package de.fraunhofer.igd.klarschiff.vo;
 /**
  * Status eines Auftrags
  *
- * @author Robert Voﬂ (BFPI GmbH)
+ * @author Robert Vo√ü (BFPI GmbH)
  */
 public enum EnumAuftragStatus implements EnumText {
 

@@ -13,7 +13,7 @@ import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
 import de.fraunhofer.igd.klarschiff.util.SqlScriptUtil;
 
 /**
- * Controller für die Rollenübersicht
+ * Controller fÃ¼r die RollenÃ¼bersicht
  * @author Sebastian Schwarz (Hansestadt Rostock)
  */
 @RequestMapping("/rollen")
@@ -26,8 +26,8 @@ public class RollenController {
 	
 	/**
 	 * Die Methode verarbeitet den GET-Request auf der URL <code>/rollen</code><br/>
-	 * Seitenbeschreibung: Übersicht über die Rollen
-	 * @param model Model in dem ggf. Daten für die View abgelegt werden
+	 * Seitenbeschreibung: Ãœbersicht Ã¼ber die Rollen
+	 * @param model Model in dem ggf. Daten fÃ¼r die View abgelegt werden
 	 * @param request Request
 	 * @return View, die zum Rendern des Request verwendet wird
 	 */

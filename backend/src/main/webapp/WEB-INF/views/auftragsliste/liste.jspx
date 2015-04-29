@@ -174,8 +174,8 @@
         </tr>
         <tr>
           <td colspan="3"></td>
-          <td><img alt="gelöscht" src="${url}status_geloescht_15.png" height="15" width="15"  title="Status: gelÃ¶scht"/></td>
-          <td style="vertical-align:top;">gelöcht</td>
+          <td><img alt="gelöscht" src="${url}status_geloescht_15.png" height="15" width="15"  title="Status: gelöscht"/></td>
+          <td style="vertical-align:top;">gelöscht</td>
         </tr>
       </table>
     </p>

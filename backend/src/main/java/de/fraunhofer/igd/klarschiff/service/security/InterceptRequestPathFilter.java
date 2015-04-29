@@ -21,8 +21,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 
 /**
- * Die Klasse implemtiert einen Filter, mit dem abhängig von der URL und dem damit festgelegtem Vorgang 
- * der Zugriff für den aktuellen Benutzer zugelassen oder abgeweisen wird.  
+ * Die Klasse implemtiert einen Filter, mit dem abhÃ¤ngig von der URL und dem damit festgelegtem Vorgang
+ * der Zugriff fÃ¼r den aktuellen Benutzer zugelassen oder abgeweisen wird.
  * @author Stefan Audersch (Fraunhofer IGD)
  */
 public class InterceptRequestPathFilter implements Filter {
@@ -50,9 +50,9 @@ public class InterceptRequestPathFilter implements Filter {
 
 	
 	/**
-	 *  Filtert den Zugriff für den gegebenen Request. 
-	 *  Wird der Zugriff für einen Vorgang und eine Rolle erlaubt, so wir dieses in der aktuellen Session registiert,
-	 *  so dass der Zugriff auf ein bereits zugelassenen Vorgang nach einer Zuständigkeitsänderung weiterhin erlaubt bleibt. 
+	 *  Filtert den Zugriff fÃ¼r den gegebenen Request. 
+	 *  Wird der Zugriff fÃ¼r einen Vorgang und eine Rolle erlaubt, so wir dieses in der aktuellen Session registiert,
+	 *  so dass der Zugriff auf ein bereits zugelassenen Vorgang nach einer ZustÃ¤ndigkeitsÃ¤nderung weiterhin erlaubt bleibt.
 	 */
 	public void doFilter(ServletRequest servletRequest, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 		//request casten
@@ -64,13 +64,13 @@ public class InterceptRequestPathFilter implements Filter {
 				//passendes Pattern wurde gefunden
 				Long vorgangId = Long.parseLong(regexMatcher.group(1));
 				Role role = patternRoleMap.get(regexPattern);
-				//war der Zugriff für den Vorgang und die Role bereits mal in der Session erlaubt?
+				//war der Zugriff fÃ¼r den Vorgang und die Role bereits mal in der Session erlaubt?
 				if (isFilterApplied(request, vorgangId, role)) {
 					//Zugriff wieder erlauben
 					chain.doFilter(servletRequest, response);
 					return;
 				}
-				//Zugriff für Vorgang und Role prüfen
+				//Zugriff fÃ¼r Vorgang und Role prÃ¼fen
 				boolean accessAllowed = false;
 				switch (role) {
 					case zusteandigkeit:
@@ -85,7 +85,7 @@ public class InterceptRequestPathFilter implements Filter {
 					throw new AccessDeniedException("Der Zugriff auf den Vorgang ist nicht erlaubt.");
 				} else {
 					//Zugriff erlaubt
-					//erlaubten Zugriff für den Vorgang und die Role in der Session ablegen
+					//erlaubten Zugriff fÃ¼r den Vorgang und die Role in der Session ablegen
 					setFilterApplied(request, vorgangId, role);
 					chain.doFilter(servletRequest, response);
 					return;
@@ -100,8 +100,8 @@ public class InterceptRequestPathFilter implements Filter {
 	/**
 	 * Ermittelt, ob der Zugriff auf einen Vorgang bereits innerhalb der Session erlaubt war.
 	 * @param request Request
-	 * @param vorgangId Vorgang, für den die Zugriffsberechtigung ermittelt werden soll.
-	 * @param role Rolle, für den die Zugriffsberechtigung ermittelt werden soll.
+	 * @param vorgangId Vorgang, fÃ¼r den die Zugriffsberechtigung ermittelt werden soll.
+	 * @param role Rolle, fÃ¼r den die Zugriffsberechtigung ermittelt werden soll.
 	 * @return <code>true</code> - Zugriff wurde bereits erlaubt; <code>false</code> - Zugriff wurde noch nicht erlaubt;  
 	 */
 	@SuppressWarnings("unchecked")
@@ -114,10 +114,10 @@ public class InterceptRequestPathFilter implements Filter {
 	
 	
 	/**
-	 * Setzt in der Session die Zugriffsberechtigung für einen vorgang und eine Rolle
+	 * Setzt in der Session die Zugriffsberechtigung fÃ¼r einen vorgang und eine Rolle
 	 * @param request Request
-	 * @param vorgangId Vorgang, für den die Zugriffsberechtigung gesetzt werden soll.
-	 * @param role Rolle, für den die Zugriffsberechtigung gesetzt werden soll.
+	 * @param vorgangId Vorgang, fÃ¼r den die Zugriffsberechtigung gesetzt werden soll.
+	 * @param role Rolle, fÃ¼r den die Zugriffsberechtigung gesetzt werden soll.
 	 */
 	@SuppressWarnings("unchecked")
 	private void setFilterApplied(HttpServletRequest request, Long vorgangId, Role role) {

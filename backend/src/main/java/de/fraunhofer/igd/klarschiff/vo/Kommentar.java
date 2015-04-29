@@ -19,7 +19,7 @@ import org.hibernate.annotations.Type;
 import org.springframework.format.annotation.DateTimeFormat;
 
 /**
- * VO für die Abbildung von Kommentaren.
+ * VO fÃ¼r die Abbildung von Kommentaren.
  * @author Stefan Audersch (Fraunhofer IGD)
  */
 @SuppressWarnings("serial")
@@ -36,7 +36,7 @@ public class Kommentar implements Serializable {
 	private Long id;
 	
 	/**
-	 * Vorgang zu dem der Kommentar gehört
+	 * Vorgang zu dem der Kommentar gehÃ¶rt
 	 */
     @NotNull
     @ManyToOne
