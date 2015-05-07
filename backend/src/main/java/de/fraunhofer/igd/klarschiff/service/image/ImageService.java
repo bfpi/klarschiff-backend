@@ -29,7 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * Der Service dient zur Manipulation von Bildern, wie z.B. das Skalieren oder das Ausschwärzen von Bildbereichen, bzw. 
  * zum Auslesen eines Bildes aus einem HTTP-Request
  * @author Stefan Audersch (Fraunhofer IGD)
- * @author Marcus Kr�ller (Fraunhofer IGD)
+ * @author Marcus Kröller (Fraunhofer IGD)
  * @author Alexander Kruth (BFPI)
  */
 @Service
