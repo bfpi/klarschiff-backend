@@ -33,7 +33,7 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.vividsolutions.jts.algorithm.distance.EuclideanDistanceToPoint;
+import com.vividsolutions.jts.algorithm.distance.DistanceToPoint;
 import com.vividsolutions.jts.algorithm.distance.PointPairDistance;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
@@ -289,7 +289,7 @@ public class GeoService {
 				boolean _isInFeatures = isInFeatures;
 				Double _area          = area;
 				//Abstand zum Rand berechnen
-				EuclideanDistanceToPoint.computeDistance(feature.getGeometry(), ovi.getCoordinate(), ppd);
+				DistanceToPoint.computeDistance(feature.getGeometry(), ovi.getCoordinate(), ppd);
 				
 				if (_ovi.coveredBy(feature.getGeometry())) {
 					//ovi ist innerhalb des Features

@@ -28,6 +28,7 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.Type;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.PrecisionModel;
@@ -36,6 +37,7 @@ import com.vividsolutions.jts.io.WKTReader;
 import com.vividsolutions.jts.io.WKTWriter;
 import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
 import de.fraunhofer.igd.klarschiff.service.security.User;
+import de.fraunhofer.igd.klarschiff.service.settings.PropertyPlaceholderConfigurer;
 import de.fraunhofer.igd.klarschiff.service.settings.SettingsService;
 import javax.persistence.Column;
 import javax.persistence.OneToOne;
@@ -300,6 +302,13 @@ public class Vorgang implements Serializable {
     @Transient
     private static SettingsService settingsService = new SettingsService();
     
+    @Transient
+    private static final String internalProjection =
+      PropertyPlaceholderConfigurer.getPropertyValue("geo.map.projection");
+
+    @Transient
+    private static final String wgs84Projection = "EPSG:4326";
+
     /**
      * securityService wird benötigt, um das Trust-Level zu ermitteln
      */
@@ -336,36 +345,62 @@ public class Vorgang implements Serializable {
     /**
      * Lesen der Position als LatLong
      * @return Position als LatLong
+     * @throws org.opengis.referencing.FactoryException
+     * @throws org.opengis.referencing.operation.TransformException
      */
     @Transient
     public String getPositionWGS84() throws FactoryException, MismatchedDimensionException, TransformException {
-      if(ovi==null) {
+      if (ovi == null) {
         return null;
       }
+
+      return transformPosition(ovi, internalProjection, wgs84Projection).toString();
+    }
+
+    private static Point transformPosition(Point point, String sourceProjection, String targetProjection)
+      throws FactoryException, MismatchedDimensionException, TransformException {
+
+      if (sourceProjection.equals(targetProjection)) {
+        return point;
+      }
+
+      // Define CRS forced as EAST_NORTH, because of unpredictable axis order
+      // when using system default.
+      // System default axis order sometimes changes after redeployment!
+      CoordinateReferenceSystem sourceCRS = CRS.decode(sourceProjection, true);
+      CoordinateReferenceSystem targetCRS = CRS.decode(targetProjection, true);
+
+      Point input = (Point) point.clone();
+      if (sourceProjection.equals(wgs84Projection)) {
+        input.getCoordinate().setCoordinate(new Coordinate(point.getY(), point.getX()));
+      }
+
+      Point output = (Point) JTS.transform(input, CRS.findMathTransform(sourceCRS, targetCRS));
+      if (targetProjection.equals(wgs84Projection)) {
+        output.getCoordinate().setCoordinate(new Coordinate(output.getY(), output.getX()));
+      }
+
+      CRS.cleanupThreadLocals();
       
-      CoordinateReferenceSystem sourceCRS = CRS.decode("EPSG:25833");
-      CoordinateReferenceSystem targetCRS = CRS.decode("EPSG:4326");
-      Point p = ovi;
-      p = JTS.transform(p,CRS.findMathTransform(sourceCRS,targetCRS)).getCentroid();
-      return p.toString();
+      return output;
     }
 
     /**
      * Schreiben der WGS84Position als LatLong
-     * @return Position als LatLong
+     * @param position
+     * @throws com.vividsolutions.jts.io.ParseException
+     * @throws org.opengis.referencing.FactoryException
+     * @throws org.opengis.referencing.operation.TransformException
      */
     @Transient
-    public void setPositionWGS84(String position) throws ParseException, FactoryException, MismatchedDimensionException, TransformException  {
-      if(position != null) {
-        Point p = (Point)wktReader.read(position);
-                
-        CoordinateReferenceSystem sourceCRS = CRS.decode("EPSG:4326");
-        CoordinateReferenceSystem targetCRS = CRS.decode("EPSG:25833");
-        p = JTS.transform(p,CRS.findMathTransform(sourceCRS,targetCRS)).getCentroid();
-        ovi = p;
+    public void setPositionWGS84(String position)
+      throws ParseException, FactoryException, MismatchedDimensionException, TransformException  {
+
+      if (position != null) {
+        ovi = transformPosition((Point) wktReader.read(position),
+          wgs84Projection, internalProjection);
       }
     }
-    
     
     /**
      * Existiert ein Foto zum Vorgang?
