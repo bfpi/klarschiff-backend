@@ -21,21 +21,19 @@ import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.GeoTools;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
-import org.geotools.geometry.jts.JTS;
-import org.geotools.referencing.CRS;
-import org.geotools.util.logging.Log4JLoggerFactory;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
+import org.opengis.geometry.MismatchedDimensionException;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.operation.TransformException;
 import org.opengis.referencing.ReferenceIdentifier;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.operation.MathTransform;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vividsolutions.jts.algorithm.distance.DistanceToPoint;
 import com.vividsolutions.jts.algorithm.distance.PointPairDistance;
-import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
@@ -101,87 +99,84 @@ public class GeoService {
 	DataStore dataStore; 
 	FilterFactory2 filterFactory;
 	
-    private MathTransform mapProjectionToMapExternProjection;
-
-    /**
-     * Initialisierung für die Nutzung des WFS und in diesem Zusammenhang ggf. das Setzen von Proxyparametern.
-     */
-    @PostConstruct
-    public void init() {
-    	try {
-    		//java.util.logging.Logger.getLogger("sun.net.www.protocol.http.HttpURLConnection").setLevel(java.util.logging.Level.SEVERE);
-    		//GeoTools.. .setLoggerFactory(Log4JLoggerFactory.getInstance());
-        	CoordinateReferenceSystem mapCRS = CRS.decode(mapProjection);
-        	CoordinateReferenceSystem mapExternCRS = CRS.decode(mapExternProjection);
-        	mapProjectionToMapExternProjection = CRS.findMathTransform(mapCRS, mapExternCRS);
-        	
+	/**
+	 * Initialisierung für die Nutzung des WFS und in diesem Zusammenhang ggf. das
+	 * Setzen von Proxyparametern.
+	 */
+	@PostConstruct
+	public void init() {
+		try {
 			//ConnectionParameter setzen
-			Map<String,String> connectionParameters = new HashMap<String,String>();
+			Map<String, String> connectionParameters = new HashMap<String, String>();
 			connectionParameters.put("WFSDataStoreFactory:GET_CAPABILITIES_URL", wfsCapabilitiesUrl);
 
 			//ggf. Proxy setzen
 			if (!StringUtils.isBlank(settingsService.getProxyHost()) && !StringUtils.isBlank(settingsService.getProxyPort())) {
-				logger.info("Proxy wird fuer die Verbindung mit dem WFS wird gesetzt. (ProxyHost:"+settingsService.getProxyHost()+" ProxyPort:"+settingsService.getProxyPort()+")");
+				logger.info("Proxy wird fuer die Verbindung mit dem WFS wird gesetzt. (ProxyHost:" + settingsService.getProxyHost() + " ProxyPort:" + settingsService.getProxyPort() + ")");
 				System.setProperty("http.proxyHost", settingsService.getProxyHost());
 				System.setProperty("http.proxyPort", settingsService.getProxyPort());
 			}
-			logger.info("aktuelle Proxyeinstellungen: (ProxyHost:"+System.getProperty("http.proxyHost")+" ProxyPort:"+System.getProperty("http.proxyPort")+")");
+			logger.info("aktuelle Proxyeinstellungen: (ProxyHost:" + System.getProperty("http.proxyHost") + " ProxyPort:" + System.getProperty("http.proxyPort") + ")");
 
 			try {
 				//DataStoreErzeugen
 				LogUtil.info("Verbindung zum WFS wird aufgebaut ...");
 				dataStore = DataStoreFinder.getDataStore(connectionParameters);
 
-				if (dataStore==null) throw new NullPointerException();
+				if (dataStore == null) {
+					throw new NullPointerException();
+				}
 
 				try {
-					if (logger.getLevel().isGreaterOrEqual(Level.DEBUG))
-						//nur zum Debuggen
-						for(String typeName : dataStore.getTypeNames()) {
+					if (logger.getLevel().isGreaterOrEqual(Level.DEBUG)) //nur zum Debuggen
+					{
+						for (String typeName : dataStore.getTypeNames()) {
 							SimpleFeatureType schema = dataStore.getSchema(typeName);
-							CoordinateReferenceSystem  crs = schema.getGeometryDescriptor().getCoordinateReferenceSystem();
+							CoordinateReferenceSystem crs = schema.getGeometryDescriptor().getCoordinateReferenceSystem();
 							logger.debug(typeName);
-							for (Iterator<ReferenceIdentifier> iter = crs.getIdentifiers().iterator(); iter.hasNext(); )
+							for (Iterator<ReferenceIdentifier> iter = crs.getIdentifiers().iterator(); iter.hasNext();) {
 								logger.debug(iter.next().getCode());
+							}
 						}
-				} catch (Exception e) { }
-				
+					}
+				} catch (Exception e) {
+				}
+
 				//FilterFactory erzeugen
 				filterFactory = CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());
-				
+
 			} catch (Exception e) {
 				switch (wfsExceptionHandling) {
-				case warn:
-					dataStore = null;
-					logger.error("Verbindung zum WFS konnte nicht richtig initialisiert werden.", e);
-					break;
-				default:
-					throw e;
+					case warn:
+						dataStore = null;
+						logger.error("Verbindung zum WFS konnte nicht richtig initialisiert werden.", e);
+						break;
+					default:
+						throw e;
 				}
 			}
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
-        }
-    }
+		} catch (Exception ex) {
+			throw new RuntimeException(ex);
+		}
+	}
 
     
-    
-    /**
-     * Koordinatentransformation von der internen Darstellung auf ein Koordinatensystem für die Darstellung des
-     * Ortes eines Vorganges in einem externen System.
-     * @param point Punktkoordinate, die transformiert werden soll
-     */
-    private Point transformMapProjectionToMapExternProjection(Point point) {
-        try {
-        	point = (Point)JTS.transform(point, mapProjectionToMapExternProjection);
-        	Coordinate coor = new Coordinate(point.getY(), point.getX());
-        	point.getCoordinate().setCoordinate(coor);
-        	return point;
-        	
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
-        }
-    }
+		/**
+		 * Koordinatentransformation von der internen Darstellung auf ein Koordinatensystem für die Darstellung des
+		 * Ortes eines Vorganges in einem externen System.
+		 * @param point Punktkoordinate, die transformiert werden soll
+		 */
+		private Point transformMapProjectionToMapExternProjection(Point point) {
+			try {
+				return de.bfpi.tools.GeoTools.transformPosition(point, mapProjection, mapExternProjection);
+			} catch (FactoryException ex) {
+				throw new RuntimeException(ex);
+			} catch (MismatchedDimensionException ex) {
+				throw new RuntimeException(ex);
+			} catch (TransformException ex) {
+				throw new RuntimeException(ex);
+			}
+		}
     
     
     /**

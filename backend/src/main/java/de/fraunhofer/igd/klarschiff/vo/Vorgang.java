@@ -28,13 +28,14 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.Type;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.PrecisionModel;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
 import com.vividsolutions.jts.io.WKTWriter;
+import static de.bfpi.tools.GeoTools.transformPosition;
+import static de.bfpi.tools.GeoTools.wgs84Projection;
 import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
 import de.fraunhofer.igd.klarschiff.service.security.User;
 import de.fraunhofer.igd.klarschiff.service.settings.PropertyPlaceholderConfigurer;
@@ -42,12 +43,9 @@ import de.fraunhofer.igd.klarschiff.service.settings.SettingsService;
 import javax.persistence.Column;
 import javax.persistence.OneToOne;
 import org.codehaus.jackson.annotate.JsonIgnore;
-import org.geotools.geometry.jts.JTS;
-import org.geotools.referencing.CRS;
 import org.hibernate.annotations.Where;
 import org.opengis.geometry.MismatchedDimensionException;
 import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.TransformException;
 
 /**
@@ -306,9 +304,6 @@ public class Vorgang implements Serializable {
     private static final String internalProjection =
       PropertyPlaceholderConfigurer.getPropertyValue("geo.map.projection");
 
-    @Transient
-    private static final String wgs84Projection = "EPSG:4326";
-
     /**
      * securityService wird benötigt, um das Trust-Level zu ermitteln
      */
@@ -355,34 +350,6 @@ public class Vorgang implements Serializable {
       }
 
       return transformPosition(ovi, internalProjection, wgs84Projection).toString();
-    }
-
-    private static Point transformPosition(Point point, String sourceProjection, String targetProjection)
-      throws FactoryException, MismatchedDimensionException, TransformException {
-
-      if (sourceProjection.equals(targetProjection)) {
-        return point;
-      }
-
-      // Define CRS forced as EAST_NORTH, because of unpredictable axis order
-      // when using system default.
-      // System default axis order sometimes changes after redeployment!
-      CoordinateReferenceSystem sourceCRS = CRS.decode(sourceProjection, true);
-      CoordinateReferenceSystem targetCRS = CRS.decode(targetProjection, true);
-
-      Point input = (Point) point.clone();
-      if (sourceProjection.equals(wgs84Projection)) {
-        input.getCoordinate().setCoordinate(new Coordinate(point.getY(), point.getX()));
-      }
-
-      Point output = (Point) JTS.transform(input, CRS.findMathTransform(sourceCRS, targetCRS));
-      if (targetProjection.equals(wgs84Projection)) {
-        output.getCoordinate().setCoordinate(new Coordinate(output.getY(), output.getX()));
-      }
-
-      CRS.cleanupThreadLocals();
-      
-      return output;
     }
 
     /**
