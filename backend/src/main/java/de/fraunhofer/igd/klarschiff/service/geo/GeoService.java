@@ -34,6 +34,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vividsolutions.jts.algorithm.distance.DistanceToPoint;
 import com.vividsolutions.jts.algorithm.distance.PointPairDistance;
+import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
@@ -168,7 +169,10 @@ public class GeoService {
 		 */
 		private Point transformMapProjectionToMapExternProjection(Point point) {
 			try {
-				return de.bfpi.tools.GeoTools.transformPosition(point, mapProjection, mapExternProjection);
+				Point p = de.bfpi.tools.GeoTools.transformPosition(point, mapProjection, mapExternProjection);
+				p.getCoordinate().setCoordinate(new Coordinate(p.getY(), p.getX()));
+
+				return p;
 			} catch (FactoryException ex) {
 				throw new RuntimeException(ex);
 			} catch (MismatchedDimensionException ex) {
