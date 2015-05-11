@@ -72,20 +72,20 @@ public class FeatureService {
 		//Bewirtschaftung vom WFS
 		for(String b : bewirtschaftungFeatures) {
 		attributes.appendElements(Attribute.createGeoAttributes(
-				"geo_bewirtschaftung_"+b, 
-				"igd:bewirtschaftung", 
+				"bewirtschaftung_" + b, 
+				"klarschiff_zufi:bewirtschaftung", 
 				"bewirtschafter", 
 				b, 
-				"the_geom", 
+				"geometrie", 
 				false));
 		}
 		
 		//Flächentypen vom WFS
 		for(String f : flaechenFeatures) {
 			attributes.appendElements(Attribute.createGeoAttributes(
-					"geo_"+f, 
-					"igd:"+f, 
-					"the_geom", 
+					f, 
+					"klarschiff_zufi:" + f, 
+					"geometrie", 
 					false));
 		}
 		Map<String, Attribute> attributMap = new HashMap<String, Attribute>();
