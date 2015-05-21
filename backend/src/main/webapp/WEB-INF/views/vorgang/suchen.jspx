@@ -108,6 +108,7 @@
 				<div class="fieldsettitle">Suchfilter</div>
 
 				<form:form method="GET" modelAttribute="cmdvorgangsuchen" class="suche">	
+					<input type="hidden" name="page" value="1" />
 					<table>
 						<tr>
 							<td colspan="2">
