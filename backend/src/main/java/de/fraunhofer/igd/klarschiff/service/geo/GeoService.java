@@ -169,15 +169,8 @@ public class GeoService {
 		 */
 		private Point transformMapProjectionToMapExternProjection(Point point) {
 			try {
-				Point p = de.bfpi.tools.GeoTools.transformPosition(point, mapProjection, mapExternProjection);
-				p.getCoordinate().setCoordinate(new Coordinate(p.getY(), p.getX()));
-
-				return p;
-			} catch (FactoryException ex) {
-				throw new RuntimeException(ex);
-			} catch (MismatchedDimensionException ex) {
-				throw new RuntimeException(ex);
-			} catch (TransformException ex) {
+        return de.bfpi.tools.GeoTools.transformPosition(point, mapProjection, mapExternProjection);
+			} catch (FactoryException | MismatchedDimensionException | TransformException ex) {
 				throw new RuntimeException(ex);
 			}
 		}
