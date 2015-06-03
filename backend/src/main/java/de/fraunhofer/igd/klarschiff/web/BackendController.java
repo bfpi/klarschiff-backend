@@ -386,14 +386,14 @@ public class BackendController {
       if (!isShortEnough(betreff, 300)) {
         throw new BackendControllerException(10, "[betreff] zu lang", "Der Betreff ist zu lang. Es sind maximal 300 Zeichen erlaubt.");
       }
-      if(verlaufErgaenzen && !vorgang.getBetreff().equals(betreff)) {
+      if(verlaufErgaenzen && (vorgang.getBetreff() == null || !vorgang.getBetreff().equals(betreff))) {
         verlaufDao.persist(verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.betreff, StringUtils.abbreviate(vorgang.getBetreff(), 100), StringUtils.abbreviate(betreff, 100), autorEmail));
       }
       vorgang.setBetreff(betreff);
     }
 
     if (details != null) {
-      if(verlaufErgaenzen && !vorgang.getDetails().equals(details)) {
+      if(verlaufErgaenzen && (vorgang.getDetails() == null || !vorgang.getDetails().equals(details))) {
         verlaufDao.persist(verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.detail, StringUtils.abbreviate(vorgang.getDetails(), 100), StringUtils.abbreviate(details, 100), autorEmail));
       }
       vorgang.setDetails(details);
