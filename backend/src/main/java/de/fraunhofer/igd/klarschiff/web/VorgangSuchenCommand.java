@@ -61,6 +61,7 @@ public class VorgangSuchenCommand implements Serializable {
 	Date auftragDatum;
 	String negation;
 	String suchbereich;
+	Boolean ueberspringeVorgaengeMitMissbrauchsmeldungen;
 	
 	//NUR ADMIN dürfen andere Zuständigkeiten sehen
 	
@@ -323,5 +324,13 @@ public class VorgangSuchenCommand implements Serializable {
 
   public void setSuchbereich(String suchbereich) {
     this.suchbereich = suchbereich;
+  }
+
+  public Boolean getUeberspringeVorgaengeMitMissbrauchsmeldungen() {
+    return ueberspringeVorgaengeMitMissbrauchsmeldungen == null ? false : ueberspringeVorgaengeMitMissbrauchsmeldungen;
+  }
+
+  public void setUeberspringeVorgaengeMitMissbrauchsmeldungen(Boolean ueberspringeVorgaengeMitMissbrauchsmeldungen) {
+    this.ueberspringeVorgaengeMitMissbrauchsmeldungen = ueberspringeVorgaengeMitMissbrauchsmeldungen;
   }
 }

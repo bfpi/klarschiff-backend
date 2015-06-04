@@ -1,6 +1,7 @@
 package de.fraunhofer.igd.klarschiff.web;
 
 import de.fraunhofer.igd.klarschiff.dao.AuftragDao;
+import de.fraunhofer.igd.klarschiff.dao.GrenzenDao;
 import java.util.Date;
 import java.util.List;
 
@@ -22,6 +23,7 @@ import de.fraunhofer.igd.klarschiff.dao.RedaktionEmpfaengerDao;
 import de.fraunhofer.igd.klarschiff.dao.VerlaufDao;
 import de.fraunhofer.igd.klarschiff.dao.VorgangDao;
 import de.fraunhofer.igd.klarschiff.service.classification.ClassificationService;
+import de.fraunhofer.igd.klarschiff.service.geo.GrenzeFactory;
 import de.fraunhofer.igd.klarschiff.service.image.ImageService;
 import de.fraunhofer.igd.klarschiff.service.mail.MailService;
 import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
@@ -41,6 +43,7 @@ import de.fraunhofer.igd.klarschiff.vo.Kommentar;
 import de.fraunhofer.igd.klarschiff.vo.LobHinweiseKritik;
 import de.fraunhofer.igd.klarschiff.vo.Missbrauchsmeldung;
 import de.fraunhofer.igd.klarschiff.vo.RedaktionEmpfaenger;
+import de.fraunhofer.igd.klarschiff.vo.StadtGrenze;
 import de.fraunhofer.igd.klarschiff.vo.Unterstuetzer;
 import de.fraunhofer.igd.klarschiff.vo.Verlauf;
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
@@ -68,6 +71,9 @@ public class BackendController {
 	
 	@Autowired
 	AuftragDao auftragDao;
+  
+	@Autowired
+	GrenzenDao grenzenDao;
 	
 	@Autowired
 	KommentarDao kommentarDao;
@@ -382,18 +388,22 @@ public class BackendController {
       throw new BackendControllerException(5, "[position] nicht korrekt", "Keine gültige Ortsangabe.");
     }
     
+    if (!vorgang.getOvi().within(grenzenDao.getStadtgrenze().getGrenze())) {
+      throw new BackendControllerException(13, "[position] außerhalb", "Die neue Meldung befindet sich außerhalb des gültigen Bereichs.");
+    }
+    
     if (betreff != null) {
       if (!isShortEnough(betreff, 300)) {
         throw new BackendControllerException(10, "[betreff] zu lang", "Der Betreff ist zu lang. Es sind maximal 300 Zeichen erlaubt.");
       }
-      if(verlaufErgaenzen && !vorgang.getBetreff().equals(betreff)) {
+      if(verlaufErgaenzen && (vorgang.getBetreff() == null || !vorgang.getBetreff().equals(betreff))) {
         verlaufDao.persist(verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.betreff, StringUtils.abbreviate(vorgang.getBetreff(), 100), StringUtils.abbreviate(betreff, 100), autorEmail));
       }
       vorgang.setBetreff(betreff);
     }
 
     if (details != null) {
-      if(verlaufErgaenzen && !vorgang.getDetails().equals(details)) {
+      if(verlaufErgaenzen && (vorgang.getDetails() == null || !vorgang.getDetails().equals(details))) {
         verlaufDao.persist(verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.detail, StringUtils.abbreviate(vorgang.getDetails(), 100), StringUtils.abbreviate(details, 100), autorEmail));
       }
       vorgang.setDetails(details);
@@ -1210,6 +1220,7 @@ public class BackendController {
         // Sortieren nach ID
         cmd.setOrder(0);
         cmd.setOrderDirection(0);
+        cmd.setUeberspringeVorgaengeMitMissbrauchsmeldungen(true);
         
         if(negation != null) {
           cmd.setNegation(negation);
@@ -1238,7 +1249,7 @@ public class BackendController {
             }
           }
         }
-
+        
         String[] status_list = status.split(",");
         EnumVorgangStatus[] evs = new EnumVorgangStatus[status_list.length];
 
