@@ -383,6 +383,10 @@ public class VorgangDao {
                   + " OR un.count >= " + cmd.getErweitertUnterstuetzerAb()
           );
         }
+        //Missbrauchsmeldungen
+        if(cmd.getUeberspringeVorgaengeMitMissbrauchsmeldungen()) {
+          conds.add("COALESCE(mi.count, 0) = 0");
+        }
         //Priorität
         if (cmd.getErweitertPrioritaet() != null) {
           conds.add("vo.prioritaet = '" + cmd.getErweitertPrioritaet().name() + "'");

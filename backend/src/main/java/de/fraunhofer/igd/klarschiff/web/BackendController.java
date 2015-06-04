@@ -1,6 +1,7 @@
 package de.fraunhofer.igd.klarschiff.web;
 
 import de.fraunhofer.igd.klarschiff.dao.AuftragDao;
+import de.fraunhofer.igd.klarschiff.dao.GrenzenDao;
 import java.util.Date;
 import java.util.List;
 
@@ -22,6 +23,7 @@ import de.fraunhofer.igd.klarschiff.dao.RedaktionEmpfaengerDao;
 import de.fraunhofer.igd.klarschiff.dao.VerlaufDao;
 import de.fraunhofer.igd.klarschiff.dao.VorgangDao;
 import de.fraunhofer.igd.klarschiff.service.classification.ClassificationService;
+import de.fraunhofer.igd.klarschiff.service.geo.GrenzeFactory;
 import de.fraunhofer.igd.klarschiff.service.image.ImageService;
 import de.fraunhofer.igd.klarschiff.service.mail.MailService;
 import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
@@ -41,6 +43,7 @@ import de.fraunhofer.igd.klarschiff.vo.Kommentar;
 import de.fraunhofer.igd.klarschiff.vo.LobHinweiseKritik;
 import de.fraunhofer.igd.klarschiff.vo.Missbrauchsmeldung;
 import de.fraunhofer.igd.klarschiff.vo.RedaktionEmpfaenger;
+import de.fraunhofer.igd.klarschiff.vo.StadtGrenze;
 import de.fraunhofer.igd.klarschiff.vo.Unterstuetzer;
 import de.fraunhofer.igd.klarschiff.vo.Verlauf;
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
@@ -68,6 +71,9 @@ public class BackendController {
 	
 	@Autowired
 	AuftragDao auftragDao;
+  
+	@Autowired
+	GrenzenDao grenzenDao;
 	
 	@Autowired
 	KommentarDao kommentarDao;
@@ -380,6 +386,10 @@ public class BackendController {
     
     if (vorgang.getOviWkt() == null) {
       throw new BackendControllerException(5, "[position] nicht korrekt", "Keine gültige Ortsangabe.");
+    }
+    
+    if (!vorgang.getOvi().within(grenzenDao.getStadtgrenze().getGrenze())) {
+      throw new BackendControllerException(13, "[position] außerhalb", "Die neue Meldung befindet sich außerhalb des gültigen Bereichs.");
     }
     
     if (betreff != null) {
@@ -1210,6 +1220,7 @@ public class BackendController {
         // Sortieren nach ID
         cmd.setOrder(0);
         cmd.setOrderDirection(0);
+        cmd.setUeberspringeVorgaengeMitMissbrauchsmeldungen(true);
         
         if(negation != null) {
           cmd.setNegation(negation);
@@ -1238,7 +1249,7 @@ public class BackendController {
             }
           }
         }
-
+        
         String[] status_list = status.split(",");
         EnumVorgangStatus[] evs = new EnumVorgangStatus[status_list.length];
 

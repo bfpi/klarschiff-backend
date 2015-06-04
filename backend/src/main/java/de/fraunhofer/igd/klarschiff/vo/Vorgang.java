@@ -707,7 +707,7 @@ public class Vorgang implements Serializable {
 	}
 
   public Boolean getFotowunsch() {
-    return fotowunsch;
+    return fotowunsch == null ? false : fotowunsch;
   }
 
   public void setFotowunsch(boolean fotowunsch) {
