@@ -1,0 +1,24 @@
+wfs:
+  url: http://www.geodaten-mv.de/dienste/dvg_laiv_wfs
+  max: 500
+  # Werte: dvg:kreise, dvg:aemter, dvg:gemeinden
+  typename: dvg:kreise
+  schluessel:
+    #- 13003 # Kreis: HRO
+    - 13004 # Kreis: SN
+    #- 13071 # Kreis: LK MSP
+    #- 13072 # Kreis: LK LRO
+    #- 13073 # Kreis: LK VR
+    #- 13074 # Kreis: LK NWM
+    #- 13075 # Kreis: LK VG
+    #- 13076 # Kreis: LK LUP
+    #- 101 # Amt: Neubrandenburg
+    #- 512 # Amt: Heringsdorf
+    #- 13074026 # Gemeinde: Grevesmühlen
+    #- 13072043 # Gemeinde: Güstrow
+db:
+  connection:
+    # Parameter siehe http://deveiate.org/code/pg/PG/Connection.html#method-c-new
+    dbname: klarschiff_backend
+  table: klarschiff_stadt_grenze
+  column: grenze
