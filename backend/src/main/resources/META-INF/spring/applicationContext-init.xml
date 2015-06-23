@@ -416,20 +416,20 @@
 			</list>
 		</property>
 	</bean>	
-    <bean id="kat_01_01" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_01" p:initialZustaendigkeit="a73_strassenreinigung,a67_ausstattung,a82" p:name="Abfallbehälter/Papierkorb schadhaft"/>
-    <bean id="kat_01_02" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_01" p:initialZustaendigkeit="a73_strassenreinigung,a67_ausstattung,a82" p:name="Abfallbehälter/Papierkorb überfüllt"/>
+    <bean id="kat_01_01" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_01" p:initialZustaendigkeit="a73_strassenreinigung;gruenanlagen,a67_ausstattung;bewirtschaftung_Vermessungs- und Liegenschaftsamt,a82_ordnungswidrigkeiten;bewirtschaftung_Amt für Stadtgrün$komma$ Naturschutz und Landschaftspflege" p:name="Abfallbehälter/Papierkorb schadhaft"/>
+    <bean id="kat_01_02" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_01" p:initialZustaendigkeit="a73_strassenreinigung,a67_ausstattung,a82_ordnungswidrigkeiten" p:name="Abfallbehälter/Papierkorb überfüllt"/>
     <bean id="kat_01_03" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_01" p:initialZustaendigkeit="a66_ampeln" p:name="Ampel schadhaft" p:naehereBeschreibungNotwendig="details"/>
-    <bean id="kat_01_04" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_01" p:initialZustaendigkeit="a66_strassenaufsicht,a67_gruenflaechen,a82" p:name="bauliche Gefahrenstelle" p:naehereBeschreibungNotwendig="details"/>
+    <bean id="kat_01_04" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_01" p:initialZustaendigkeit="a66_strassenaufsicht,a67_gruenflaechen,a82_ordnungswidrigkeiten" p:name="bauliche Gefahrenstelle" p:naehereBeschreibungNotwendig="details"/>
     <bean id="kat_01_05" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_01" p:initialZustaendigkeit="a66_beleuchtung" p:name="Beleuchtung schadhaft" p:naehereBeschreibungNotwendig="details"/>
-    <bean id="kat_01_06" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_01" p:initialZustaendigkeit="a66_beschilderung,a67_ausstattung,a82" p:name="Beschilderung/Markierung schadhaft" p:naehereBeschreibungNotwendig="details"/>
+    <bean id="kat_01_06" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_01" p:initialZustaendigkeit="a66_beschilderung,a67_ausstattung,a82_ordnungswidrigkeiten" p:name="Beschilderung/Markierung schadhaft" p:naehereBeschreibungNotwendig="details"/>
     <bean id="kat_01_07" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_01" p:initialZustaendigkeit="a66_bauwerke" p:name="Brücke/Tunnel/Mauer/Treppe schadhaft" p:naehereBeschreibungNotwendig="details"/>
-    <bean id="kat_01_08" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_01" p:initialZustaendigkeit="a66_ausstattung,a67_ausstattung,a82" p:name="Fahrradständer schadhaft"/>
+    <bean id="kat_01_08" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_01" p:initialZustaendigkeit="a66_ausstattung,a67_ausstattung,a82_ordnungswidrigkeiten" p:name="Fahrradständer schadhaft"/>
     <bean id="kat_01_09" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_01" p:initialZustaendigkeit="a66_strassenaufsicht,a67_ausstattung" p:name="Gully schadhaft" p:naehereBeschreibungNotwendig="details"/>
     <bean id="kat_01_10" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_01" p:initialZustaendigkeit="a73_strassenreinigung,a67_gruenflaechen" p:name="Hundekot"/>
-    <bean id="kat_01_11" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_01" p:initialZustaendigkeit="a66_ausstattung,a67_ausstattung,a82" p:name="Poller/Planke/Absperrelement schadhaft"/>
-    <bean id="kat_01_12" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_01" p:initialZustaendigkeit="a67_ausstattung,a82" p:name="Sitzgelegenheit schadhaft"/>
-	<bean id="kat_01_13" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_01" p:initialZustaendigkeit="a73_strassenreinigung,a67_gruenflaechen,a82" p:name="Wegereinigung fehlt" p:naehereBeschreibungNotwendig="details"/>
-	<bean id="kat_01_14" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_01" p:initialZustaendigkeit="a73_strassenreinigung,a67_gruenflaechen,a82" p:name="Wildwuchs" p:naehereBeschreibungNotwendig="details"/>
+    <bean id="kat_01_11" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_01" p:initialZustaendigkeit="a66_ausstattung,a67_ausstattung,a82_ordnungswidrigkeiten" p:name="Poller/Planke/Absperrelement schadhaft"/>
+    <bean id="kat_01_12" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_01" p:initialZustaendigkeit="a67_ausstattung,a82_ordnungswidrigkeiten" p:name="Sitzgelegenheit schadhaft"/>
+	<bean id="kat_01_13" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_01" p:initialZustaendigkeit="a73_strassenreinigung,a67_gruenflaechen,a82_ordnungswidrigkeiten" p:name="Wegereinigung fehlt" p:naehereBeschreibungNotwendig="details"/>
+	<bean id="kat_01_14" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_01" p:initialZustaendigkeit="a73_strassenreinigung,a67_gruenflaechen,a82_ordnungswidrigkeiten" p:name="Wildwuchs" p:naehereBeschreibungNotwendig="details"/>
     
 	
 	<bean id="kat_02" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:name="Müll/Schmutz" p:typ="problem">
@@ -452,20 +452,20 @@
 			</list>
 		</property>
 	</bean>	
-	<bean id="kat_02_01" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_02" p:initialZustaendigkeit="a73_strassenreinigung,a67_ausstattung,a82" p:name="Abfallbehälter/Papierkorb überfüllt"/>
-    <bean id="kat_02_02" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_02" p:initialZustaendigkeit="a73_altfahrzeuge,a82" p:name="Altfahrzeug/Schrottfahrrad" p:naehereBeschreibungNotwendig="details"/>
-	<bean id="kat_02_03" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_02" p:initialZustaendigkeit="a73_umweltaufsicht,a67_gruenflaechen,a82" p:name="Bauabfall" p:naehereBeschreibungNotwendig="details"/>
+	<bean id="kat_02_01" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_02" p:initialZustaendigkeit="a73_strassenreinigung,a67_ausstattung,a82_ordnungswidrigkeiten" p:name="Abfallbehälter/Papierkorb überfüllt"/>
+    <bean id="kat_02_02" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_02" p:initialZustaendigkeit="a73_altfahrzeuge,a82_ordnungswidrigkeiten" p:name="Altfahrzeug/Schrottfahrrad" p:naehereBeschreibungNotwendig="details"/>
+	<bean id="kat_02_03" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_02" p:initialZustaendigkeit="a73_umweltaufsicht,a67_gruenflaechen,a82_ordnungswidrigkeiten" p:name="Bauabfall" p:naehereBeschreibungNotwendig="details"/>
 	<bean id="kat_02_04" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_02" p:initialZustaendigkeit="a73_strassenreinigung" p:name="Beutel in Hundetoilette fehlen"/>
-	<bean id="kat_02_05" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_02" p:initialZustaendigkeit="a73_umweltaufsicht,a67_gruenflaechen,a82" p:name="Elektroschrott" p:naehereBeschreibungNotwendig="details"/>
-	<bean id="kat_02_06" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_02" p:initialZustaendigkeit="a73_umweltaufsicht,a67_gruenflaechen,a82" p:name="Grünschnitt/Weihnachtsbäume" p:naehereBeschreibungNotwendig="details"/>
-	<bean id="kat_02_07" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_02" p:initialZustaendigkeit="a73_umweltaufsicht,a67_gruenflaechen,a82" p:name="Hausmüll" p:naehereBeschreibungNotwendig="details"/>
+	<bean id="kat_02_05" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_02" p:initialZustaendigkeit="a73_umweltaufsicht,a67_gruenflaechen,a82_ordnungswidrigkeiten" p:name="Elektroschrott" p:naehereBeschreibungNotwendig="details"/>
+	<bean id="kat_02_06" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_02" p:initialZustaendigkeit="a73_umweltaufsicht,a67_gruenflaechen,a82_ordnungswidrigkeiten" p:name="Grünschnitt/Weihnachtsbäume" p:naehereBeschreibungNotwendig="details"/>
+	<bean id="kat_02_07" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_02" p:initialZustaendigkeit="a73_umweltaufsicht,a67_gruenflaechen,a82_ordnungswidrigkeiten" p:name="Hausmüll" p:naehereBeschreibungNotwendig="details"/>
 	<bean id="kat_02_08" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_02" p:initialZustaendigkeit="a73_strassenreinigung,a67_gruenflaechen" p:name="Hundekot"/>
     <bean id="kat_02_09" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_02" p:initialZustaendigkeit="a73_muelltonnen" p:name="Mülltonne überfüllt"/>
 	<bean id="kat_02_10" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_02" p:initialZustaendigkeit="a73_container" p:name="Nebenablagerungen an Recycling-Container"/>
     <bean id="kat_02_11" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_02" p:initialZustaendigkeit="a73_container" p:name="Recycling-Container überfüllt"/>
-	<bean id="kat_02_12" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_02" p:initialZustaendigkeit="a73_umweltaufsicht,a82" p:name="Sondermüll" p:naehereBeschreibungNotwendig="details"/>
-	<bean id="kat_02_13" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_02" p:initialZustaendigkeit="a73_umweltaufsicht,a67_gruenflaechen,a82" p:name="Sperrmüll" p:naehereBeschreibungNotwendig="details"/>
-	<bean id="kat_02_14" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_02" p:initialZustaendigkeit="a73_strassenreinigung,a67_gruenflaechen,a82" p:name="Wegereinigung fehlt" p:naehereBeschreibungNotwendig="details"/>
+	<bean id="kat_02_12" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_02" p:initialZustaendigkeit="a73_umweltaufsicht,a82_ordnungswidrigkeiten" p:name="Sondermüll" p:naehereBeschreibungNotwendig="details"/>
+	<bean id="kat_02_13" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_02" p:initialZustaendigkeit="a73_umweltaufsicht,a67_gruenflaechen,a82_ordnungswidrigkeiten" p:name="Sperrmüll" p:naehereBeschreibungNotwendig="details"/>
+	<bean id="kat_02_14" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_02" p:initialZustaendigkeit="a73_strassenreinigung,a67_gruenflaechen,a82_ordnungswidrigkeiten" p:name="Wegereinigung fehlt" p:naehereBeschreibungNotwendig="details"/>
 
 	
 	<bean id="kat_03" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:name="Öffentliches Grün/Spielplatz" p:typ="problem">
@@ -579,24 +579,24 @@
 			</list>
 		</property>
 	</bean>	
-	<bean id="kat_06_01" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_06" p:initialZustaendigkeit="a73_strassenreinigung,a67_ausstattung,a82" p:name="Abfallbehälter/Papierkorb"/>
+	<bean id="kat_06_01" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_06" p:initialZustaendigkeit="a73_strassenreinigung,a67_ausstattung,a82_ordnungswidrigkeiten" p:name="Abfallbehälter/Papierkorb"/>
     <bean id="kat_06_02" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_06" p:initialZustaendigkeit="a66_ampeln" p:name="Ampel" p:naehereBeschreibungNotwendig="details"/>
-	<bean id="kat_06_03" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_06" p:initialZustaendigkeit="a67_stadtbaeume,a82" p:name="Baum" p:naehereBeschreibungNotwendig="details"/>
+	<bean id="kat_06_03" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_06" p:initialZustaendigkeit="a67_stadtbaeume,a82_ordnungswidrigkeiten" p:name="Baum" p:naehereBeschreibungNotwendig="details"/>
 	<bean id="kat_06_04" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_06" p:initialZustaendigkeit="a66_beleuchtung" p:name="Beleuchtung" p:naehereBeschreibungNotwendig="details"/>
-	<bean id="kat_06_05" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_06" p:initialZustaendigkeit="a66_beschilderung,a67_ausstattung,a82" p:name="Beschilderung/Markierung" p:naehereBeschreibungNotwendig="details"/>
+	<bean id="kat_06_05" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_06" p:initialZustaendigkeit="a66_beschilderung,a67_ausstattung,a82_ordnungswidrigkeiten" p:name="Beschilderung/Markierung" p:naehereBeschreibungNotwendig="details"/>
     <bean id="kat_06_06" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_06" p:initialZustaendigkeit="a66_bauwerke" p:name="Brücke/Tunnel/Mauer/Treppe" p:naehereBeschreibungNotwendig="details"/>
 	<bean id="kat_06_07" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_06" p:initialZustaendigkeit="a67_ausstattung" p:name="Brunnen" p:naehereBeschreibungNotwendig="details"/>
 	<bean id="kat_06_08" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_06" p:initialZustaendigkeit="a41" p:name="Denkmal" p:naehereBeschreibungNotwendig="details"/>
-	<bean id="kat_06_09" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_06" p:initialZustaendigkeit="a66_ausstattung,a67_ausstattung,a82" p:name="Fahrradständer"/>
+	<bean id="kat_06_09" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_06" p:initialZustaendigkeit="a66_ausstattung,a67_ausstattung,a82_ordnungswidrigkeiten" p:name="Fahrradständer"/>
 	<bean id="kat_06_10" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_06" p:initialZustaendigkeit="a66_strassenaufsicht,a67_ausstattung" p:name="Gully" p:naehereBeschreibungNotwendig="details"/>
 	<bean id="kat_06_11" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_06" p:initialZustaendigkeit="a66_oepnv,a66_strassenaufsicht" p:name="Haltestelle" p:naehereBeschreibungNotwendig="details"/>
     <bean id="kat_06_12" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_06" p:initialZustaendigkeit="a73_strassenreinigung" p:name="Hundetoilette"/>
     <bean id="kat_06_13" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_06" p:initialZustaendigkeit="a73_muelltonnen" p:name="Mülltonne"/>
 	<bean id="kat_06_14" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_06" p:initialZustaendigkeit="a66_ausstattung" p:name="Parkautomat" p:naehereBeschreibungNotwendig="details"/>
-    <bean id="kat_06_15" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_06" p:initialZustaendigkeit="a66_ausstattung,a67_ausstattung,a82" p:name="Poller/Planke/Absperrelement"/>
+    <bean id="kat_06_15" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_06" p:initialZustaendigkeit="a66_ausstattung,a67_ausstattung,a82_ordnungswidrigkeiten" p:name="Poller/Planke/Absperrelement"/>
     <bean id="kat_06_16" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_06" p:initialZustaendigkeit="a73_container" p:name="Recycling-Container"/>
-    <bean id="kat_06_17" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_06" p:initialZustaendigkeit="a82" p:name="Schutzhütte" p:naehereBeschreibungNotwendig="details"/>
-	<bean id="kat_06_18" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_06" p:initialZustaendigkeit="a67_ausstattung,a82" p:name="Sitzgelegenheit"/>
+    <bean id="kat_06_17" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_06" p:initialZustaendigkeit="a82_ordnungswidrigkeiten" p:name="Schutzhütte" p:naehereBeschreibungNotwendig="details"/>
+	<bean id="kat_06_18" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_06" p:initialZustaendigkeit="a67_ausstattung,a82_ordnungswidrigkeiten" p:name="Sitzgelegenheit"/>
 	<bean id="kat_06_19" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_06" p:initialZustaendigkeit="a67_spielplatzservice" p:name="Spielgerät" p:naehereBeschreibungNotwendig="details"/>
 
 	
@@ -645,21 +645,21 @@
 			</list>
 		</property>
 	</bean>	
-    <bean id="kat_08_01" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_08" p:initialZustaendigkeit="a82" p:name="Baum schadhaft" p:naehereBeschreibungNotwendig="details"/>
-    <bean id="kat_08_02" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_08" p:initialZustaendigkeit="a82,a66_beschilderung" p:name="Beschilderung/Markierung schadhaft" p:naehereBeschreibungNotwendig="details"/>
+    <bean id="kat_08_01" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_08" p:initialZustaendigkeit="a82_ordnungswidrigkeiten" p:name="Baum schadhaft" p:naehereBeschreibungNotwendig="details"/>
+    <bean id="kat_08_02" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_08" p:initialZustaendigkeit="a82_ordnungswidrigkeiten,a66_beschilderung" p:name="Beschilderung/Markierung schadhaft" p:naehereBeschreibungNotwendig="details"/>
     <bean id="kat_08_03" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_08" p:initialZustaendigkeit="a41" p:name="Denkmal schadhaft" p:naehereBeschreibungNotwendig="details"/>
-    <bean id="kat_08_04" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_08" p:initialZustaendigkeit="a82,a66_ausstattung,a67_ausstattung" p:name="Fahrradständer schadhaft"/>
-    <bean id="kat_08_05" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_08" p:initialZustaendigkeit="a82,a73_strassenreinigung" p:name="Müllablagerung" p:naehereBeschreibungNotwendig="details"/>
-    <bean id="kat_08_06" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_08" p:initialZustaendigkeit="a82,a66_ausstattung" p:name="Poller/Absperrelement schadhaft"/>
+    <bean id="kat_08_04" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_08" p:initialZustaendigkeit="a82_ordnungswidrigkeiten,a66_ausstattung,a67_ausstattung" p:name="Fahrradständer schadhaft"/>
+    <bean id="kat_08_05" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_08" p:initialZustaendigkeit="a82_ordnungswidrigkeiten,a73_strassenreinigung" p:name="Müllablagerung" p:naehereBeschreibungNotwendig="details"/>
+    <bean id="kat_08_06" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_08" p:initialZustaendigkeit="a82_ordnungswidrigkeiten,a66_ausstattung" p:name="Poller/Absperrelement schadhaft"/>
     <bean id="kat_08_07" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_08" p:initialZustaendigkeit="a82_ordnungswidrigkeiten" p:name="Reiten abseits der Reitwege" p:naehereBeschreibungNotwendig="details"/>
-    <bean id="kat_08_08" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_08" p:initialZustaendigkeit="a82" p:name="Schutzhütte schadhaft" p:naehereBeschreibungNotwendig="details"/>
-    <bean id="kat_08_09" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_08" p:initialZustaendigkeit="a82" p:name="Sitzgelegenheit schadhaft"/>
+    <bean id="kat_08_08" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_08" p:initialZustaendigkeit="a82_ordnungswidrigkeiten" p:name="Schutzhütte schadhaft" p:naehereBeschreibungNotwendig="details"/>
+    <bean id="kat_08_09" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_08" p:initialZustaendigkeit="a82_ordnungswidrigkeiten" p:name="Sitzgelegenheit schadhaft"/>
     <bean id="kat_08_10" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_08" p:initialZustaendigkeit="a67_spielplatzservice" p:name="Spielgerät schadhaft" p:naehereBeschreibungNotwendig="details"/>
     <bean id="kat_08_11" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_08" p:initialZustaendigkeit="a82_ordnungswidrigkeiten" p:name="verbotenes Campen" p:naehereBeschreibungNotwendig="details"/>
     <bean id="kat_08_12" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_08" p:initialZustaendigkeit="a82_ordnungswidrigkeiten" p:name="verbotenes Fahren mit Kfz" p:naehereBeschreibungNotwendig="details"/>
     <bean id="kat_08_13" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_08" p:initialZustaendigkeit="a82_ordnungswidrigkeiten" p:name="verbotenes Feuermachen" p:naehereBeschreibungNotwendig="details"/>
     <bean id="kat_08_14" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_08" p:initialZustaendigkeit="a82_ordnungswidrigkeiten" p:name="verkehrswidriges Parken" p:naehereBeschreibungNotwendig="details"/>
-    <bean id="kat_08_15" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_08" p:initialZustaendigkeit="a82,a73_strassenreinigung" p:name="Wegereinigung fehlt" p:naehereBeschreibungNotwendig="details"/>
+    <bean id="kat_08_15" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_08" p:initialZustaendigkeit="a82_ordnungswidrigkeiten,a73_strassenreinigung" p:name="Wegereinigung fehlt" p:naehereBeschreibungNotwendig="details"/>
     
     
 	<bean id="kat_09" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:name="Winterdienst" p:typ="problem">
@@ -708,10 +708,10 @@
 	</bean>	
 	<bean id="kat_11_01" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_11" p:initialZustaendigkeit="a66_ampeln" p:name="Ampelschaltung ändern" p:naehereBeschreibungNotwendig="details"/>
     <bean id="kat_11_02" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_11" p:initialZustaendigkeit="a66_beleuchtung" p:name="Beleuchtung verändern" p:naehereBeschreibungNotwendig="details"/>
-    <bean id="kat_11_03" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_11" p:initialZustaendigkeit="a66_beschilderung,a67_ausstattung,a82" p:name="Beschilderung/Markierung ändern" p:naehereBeschreibungNotwendig="details"/>
-	<bean id="kat_11_04" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_11" p:initialZustaendigkeit="a66_beschilderung,a67_ausstattung,a82" p:name="Beschilderung/Markierung einführen" p:naehereBeschreibungNotwendig="details"/>
+    <bean id="kat_11_03" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_11" p:initialZustaendigkeit="a66_beschilderung,a67_ausstattung,a82_ordnungswidrigkeiten" p:name="Beschilderung/Markierung ändern" p:naehereBeschreibungNotwendig="details"/>
+	<bean id="kat_11_04" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_11" p:initialZustaendigkeit="a66_beschilderung,a67_ausstattung,a82_ordnungswidrigkeiten" p:name="Beschilderung/Markierung einführen" p:naehereBeschreibungNotwendig="details"/>
     <bean id="kat_11_05" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_11" p:initialZustaendigkeit="a66_strassenaufsicht" p:name="Bordstein absenken" p:naehereBeschreibungNotwendig="details"/>
-	<bean id="kat_11_06" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_11" p:initialZustaendigkeit="a66_ausstattung,a67_ausstattung,a82" p:name="Fahrradständer aufstellen" p:naehereBeschreibungNotwendig="details"/>
+	<bean id="kat_11_06" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_11" p:initialZustaendigkeit="a66_ausstattung,a67_ausstattung,a82_ordnungswidrigkeiten" p:name="Fahrradständer aufstellen" p:naehereBeschreibungNotwendig="details"/>
 
     
 	<bean id="kat_12" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:name="Fußgänger" p:typ="idee">
@@ -727,13 +727,13 @@
 			</list>
 		</property>
 	</bean>	
-    <bean id="kat_12_01" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_12" p:initialZustaendigkeit="a73_strassenreinigung,a67_ausstattung,a82" p:name="Abfallbehälter/Papierkorb aufstellen" p:naehereBeschreibungNotwendig="details"/>
+    <bean id="kat_12_01" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_12" p:initialZustaendigkeit="a73_strassenreinigung,a67_ausstattung,a82_ordnungswidrigkeiten" p:name="Abfallbehälter/Papierkorb aufstellen" p:naehereBeschreibungNotwendig="details"/>
 	<bean id="kat_12_02" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_12" p:initialZustaendigkeit="a66_ampeln" p:name="Ampelschaltung ändern" p:naehereBeschreibungNotwendig="details"/>
     <bean id="kat_12_03" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_12" p:initialZustaendigkeit="a66_beleuchtung" p:name="Beleuchtung verändern" p:naehereBeschreibungNotwendig="details"/>
-	<bean id="kat_12_04" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_12" p:initialZustaendigkeit="a66_beschilderung,a67_ausstattung,a82" p:name="Beschilderung/Markierung ändern" p:naehereBeschreibungNotwendig="details"/>
-	<bean id="kat_12_05" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_12" p:initialZustaendigkeit="a66_beschilderung,a67_ausstattung,a82" p:name="Beschilderung/Markierung einführen" p:naehereBeschreibungNotwendig="details"/>
+	<bean id="kat_12_04" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_12" p:initialZustaendigkeit="a66_beschilderung,a67_ausstattung,a82_ordnungswidrigkeiten" p:name="Beschilderung/Markierung ändern" p:naehereBeschreibungNotwendig="details"/>
+	<bean id="kat_12_05" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_12" p:initialZustaendigkeit="a66_beschilderung,a67_ausstattung,a82_ordnungswidrigkeiten" p:name="Beschilderung/Markierung einführen" p:naehereBeschreibungNotwendig="details"/>
     <bean id="kat_12_06" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_12" p:initialZustaendigkeit="a66_strassenaufsicht" p:name="Bordstein absenken" p:naehereBeschreibungNotwendig="details"/>
-    <bean id="kat_12_07" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_12" p:initialZustaendigkeit="a67_ausstattung,a82" p:name="Sitzgelegenheit aufstellen" p:naehereBeschreibungNotwendig="details"/>
+    <bean id="kat_12_07" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_12" p:initialZustaendigkeit="a67_ausstattung,a82_ordnungswidrigkeiten" p:name="Sitzgelegenheit aufstellen" p:naehereBeschreibungNotwendig="details"/>
 
 	
 	<bean id="kat_13" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:name="Öffentlicher Nahverkehr" p:typ="idee">
@@ -799,13 +799,13 @@
 			</list>
 		</property>
 	</bean>	
-	<bean id="kat_16_01" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_16" p:initialZustaendigkeit="a82,a73_strassenreinigung" p:name="Abfallbehälter/Papierkorb aufstellen" p:naehereBeschreibungNotwendig="details"/>
-	<bean id="kat_16_02" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_16" p:initialZustaendigkeit="a82,a66_beschilderung" p:name="Beschilderung/Markierung ändern" p:naehereBeschreibungNotwendig="details"/>
-	<bean id="kat_16_03" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_16" p:initialZustaendigkeit="a82,a66_beschilderung" p:name="Beschilderung/Markierung einführen" p:naehereBeschreibungNotwendig="details"/>
-    <bean id="kat_16_04" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_16" p:initialZustaendigkeit="a82,a66_ausstattung,a67_ausstattung" p:name="Fahrradständer aufstellen" p:naehereBeschreibungNotwendig="details"/>
+	<bean id="kat_16_01" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_16" p:initialZustaendigkeit="a82_ordnungswidrigkeiten,a73_strassenreinigung" p:name="Abfallbehälter/Papierkorb aufstellen" p:naehereBeschreibungNotwendig="details"/>
+	<bean id="kat_16_02" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_16" p:initialZustaendigkeit="a82_ordnungswidrigkeiten,a66_beschilderung" p:name="Beschilderung/Markierung ändern" p:naehereBeschreibungNotwendig="details"/>
+	<bean id="kat_16_03" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_16" p:initialZustaendigkeit="a82_ordnungswidrigkeiten,a66_beschilderung" p:name="Beschilderung/Markierung einführen" p:naehereBeschreibungNotwendig="details"/>
+    <bean id="kat_16_04" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_16" p:initialZustaendigkeit="a82_ordnungswidrigkeiten,a66_ausstattung,a67_ausstattung" p:name="Fahrradständer aufstellen" p:naehereBeschreibungNotwendig="details"/>
     <bean id="kat_16_05" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_16" p:initialZustaendigkeit="a67_spielplatzservice" p:name="Spielplatz verändern" p:naehereBeschreibungNotwendig="details"/>
-    <bean id="kat_16_06" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_16" p:initialZustaendigkeit="a82" p:name="Schutzhütte aufstellen" p:naehereBeschreibungNotwendig="details"/>
-    <bean id="kat_16_07" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_16" p:initialZustaendigkeit="a82" p:name="Sitzgelegenheit aufstellen" p:naehereBeschreibungNotwendig="details"/>
+    <bean id="kat_16_06" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_16" p:initialZustaendigkeit="a82_ordnungswidrigkeiten" p:name="Schutzhütte aufstellen" p:naehereBeschreibungNotwendig="details"/>
+    <bean id="kat_16_07" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_16" p:initialZustaendigkeit="a82_ordnungswidrigkeiten" p:name="Sitzgelegenheit aufstellen" p:naehereBeschreibungNotwendig="details"/>
 
 	
 </beans>

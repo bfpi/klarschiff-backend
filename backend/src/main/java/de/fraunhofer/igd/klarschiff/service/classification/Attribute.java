@@ -17,7 +17,8 @@ public class Attribute extends weka.core.Attribute {
 	 * legt fest welche Berechnung für einen Punkt bzgl. einer Fläche (Abstand innerhalb einer Fläche vom Rand, 
 	 * Abstand außerhalb einer Fläche vom Rand, Größe der Fläche) verwendet wird.
 	 */
-	public enum GeoMeasure { abstandInnerhalb, abstandAusserhalb, flaechenGroesse }
+	//public enum GeoMeasure { abstandInnerhalb, abstandAusserhalb, flaechenGroesse }
+        public enum GeoMeasure { innerhalb }
 	
 	boolean isClassAttribute = false;
 	boolean isGeoAttribute = false;

@@ -13,8 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import weka.classifiers.bayes.NaiveBayesUpdateable;
+import weka.classifiers.Evaluation;
 import weka.core.Instance;
 import weka.core.Instances;
+import weka.filters.Filter;
+import weka.filters.unsupervised.instance.RemoveWithValues;
 import de.fraunhofer.igd.klarschiff.dao.KategorieDao;
 import de.fraunhofer.igd.klarschiff.dao.VorgangDao;
 import de.fraunhofer.igd.klarschiff.service.security.Role;
@@ -22,6 +25,7 @@ import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
 import de.fraunhofer.igd.klarschiff.vo.Kategorie;
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
 import de.fraunhofer.igd.klarschiff.vo.VorgangHistoryClasses;
+import weka.classifiers.Classifier;
 
 /**
  * Die Klasse stellt einen Service als Klassifikator bzw. Zuständigkeitsfinder für das System bereit. Ein Vorgang kann dabei 
@@ -76,6 +80,7 @@ public class ClassificationService {
 		List<Vorgang> vorgaenge = vorgangDao.findVorgangForTrainClassificator(maxCountForClassifiereTrainSet);
 		//Features für jeden Vorgang ermitteln
 		for (Vorgang vorgang : vorgaenge) {
+                        logger.info("----Classification featureService.createFeature vorgang ("+vorgang.getBetreff()+")");
 			Instance instance = featureService.createFeature(vorgang, true, ctx);
 			instance.setDataset(ctx.getDataset());
 			instances.add(instance);
@@ -84,6 +89,7 @@ public class ClassificationService {
 			//initiale Zuständigkeit bei den Kategorien hinzufügen
 			for (Kategorie kategorie : kategorieDao.getKategorien()) {
 				for (Instance instance : featureService.createFeature(kategorie, true, ctx)) {
+                                        logger.debug("----Classification featureService.createFeature kategorie ("+kategorie.getName()+")");
 					instance.setDataset(ctx.getDataset());
 					instances.add(instance);
 				}
@@ -100,23 +106,82 @@ public class ClassificationService {
 	 * @throws Exception
 	 */
 	private List<ClassificationResultEntry> classifierVorgang(Vorgang vorgang, ClassificationContext ctx) throws Exception {
-		
+            
+
 		//Features erzeugen
 		Instance instance = featureService.createFeature(vorgang, false, ctx);
-		//Dataset setzen
-		instance.setDataset(ctx.getDataset());
+
+                //dataset filtern
+                Instances thisdataset = ctx.getDataset();
+                
+                RemoveWithValues filter = new RemoveWithValues();
+                String[] options = new String[5];
+                options[0] = "-C";   // attribute index
+                options[1] = "2";    // 2
+                options[2] = "-L";   // 
+                //options[3] = "1"; //vorgang.getKategorie().getId().toString();   // 
+                int valIndex = ctx.getAttributMap().get("kategorie").indexOfValue(vorgang.getKategorie().getId().toString());
+                valIndex++;
+                options[3] = valIndex+"";
+                options[4] = "-V";
+                filter.setOptions(options);
+                
+                filter.setInputFormat(thisdataset);
+                Instances newData = Filter.useFilter(thisdataset, filter);
+                
+            Evaluation eTest = new Evaluation(newData);
+            
+            //ctx.getClassifier().buildClassifier(newData);
+            Classifier cModel = (Classifier)new NaiveBayesUpdateable();
+            cModel.buildClassifier(newData);
+            
+            eTest.evaluateModel(cModel, newData);
+            String strSummary = eTest.toSummaryString();
+            logger.debug(strSummary);
+            
+            
+            
+            double[][] m = eTest.confusionMatrix();
+            
+                try{
+                    int rows = m.length;
+                    int columns = m[0].length;
+                    String str = "|\t";
+
+                    for(int i=0;i<rows;i++){
+                        for(int j=0;j<columns;j++){
+                            str += m[i][j] + "\t";
+                        }
+
+                        logger.debug(str + "|");
+                        str = "|\t";
+                    }
+
+                }catch(Exception e){logger.debug("Matrix is empty!!");}
+                
+                
+                //Dataset setzen
+		instance.setDataset(newData);
 		//Klassifizieren
-		double[] distribution = ctx.getClassifier().distributionForInstance(instance);
+                logger.debug("Dataset :("+newData.toString()+")");
+                logger.debug("Instance:("+instance.toString()+")");
+                
+		double[] distribution = cModel.distributionForInstance(instance);
 		//Map erzeugen
 		List<ClassificationResultEntry> classificationResult = new ArrayList<ClassificationResultEntry>();
 		for (int i = 0; i < distribution.length; i++)
-			classificationResult.add(new ClassificationResultEntry(ctx.getClassAttribute().value(i), distribution[i]));
+			//classificationResult.add(new ClassificationResultEntry(ctx.getClassAttribute().value(i), distribution[i]));
+                        classificationResult.add(new ClassificationResultEntry(newData.classAttribute().value(i), distribution[i]));
 		//Sortieren
 		Collections.sort(classificationResult, new Comparator<ClassificationResultEntry>() {
 			public int compare(ClassificationResultEntry o1, ClassificationResultEntry o2) {
 				return -(o1.getWeight().compareTo(o2.getWeight()));
 			}
 		});
+                
+                for(ClassificationResultEntry entry : classificationResult) {
+                    logger.debug("ClassificationResult ("+entry.getClassValue()+") ("+entry.getWeight()+")");
+                }
 		
 		return classificationResult;
 	}
@@ -205,7 +270,7 @@ public class ClassificationService {
 		try {
 			updateClassifier(vorgang, ctx);
 		} catch (Exception e) {
-			logger.error("Der Klassifizierer konnte nicht mit einer akzeptierten Zuständigkeit aktualisiert werden.", e);
+			logger.error("FEHLER Der Klassifizierer konnte nicht mit einer akzeptierten Zust�ndigkeit aktualisiert werden.", e);
 		}
 	}
 	
@@ -242,6 +307,7 @@ public class ClassificationService {
 		Instances trainSet = createTrainset(ctx);
 		//Klassifikator neu trainieren
 		ctx.getClassifier().buildClassifier(trainSet);
+                ctx.setDataset(trainSet);
 		//neuen context setzen
 		this.ctx = ctx;
 		logger.debug("ClassificationContext is rebuilded");
