@@ -10,9 +10,9 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Die Dao-Klasse erlaubt das Verwalten der Auftr‰ge in der DB.
+ * Die Dao-Klasse erlaubt das Verwalten der Auftr√§ge in der DB.
  *
- * @author Robert Voﬂ (BFPI GmbH)
+ * @author Robert Vo√ü (BFPI GmbH)
  */
 @Repository
 public class AuftragDao {

@@ -21,12 +21,12 @@ import de.fraunhofer.igd.klarschiff.util.LogUtil;
 import de.fraunhofer.igd.klarschiff.util.SqlScriptUtil;
 
 /**
- * Die Klasse stellt einen Service für die Synchronisation der Frontend- und BackendDB bereit. Für die Synchronisation
- * wird zur Laufzeit DbLink verwendet, wofür Trigger und Triggerfunktionen bei der BackendDb eingerichtet werden.
- * Im Initialisierungsscript für die Trigger und Triggerfunktionen können die Parameter für die FrontendDb durch die 
+ * Die Klasse stellt einen Service fÃ¼r die Synchronisation der Frontend- und BackendDB bereit. FÃ¼r die Synchronisation
+ * wird zur Laufzeit DbLink verwendet, wofÃ¼r Trigger und Triggerfunktionen bei der BackendDb eingerichtet werden.
+ * Im Initialisierungsscript fÃ¼r die Trigger und Triggerfunktionen kÃ¶nnen die Parameter fÃ¼r die FrontendDb durch die 
  * Platzhalter <code>%host%</code>, <code>%port%</code>, <code>%dbname%</code>, <code>%username%</code> und 
  * <code>%password%</code> angegeben werden.
- * Eine Synchronisation kann bei Bedarf über einen Kommandozeilenaufruf erfolgen.
+ * Eine Synchronisation kann bei Bedarf Ã¼ber einen Kommandozeilenaufruf erfolgen.
  * @author Stefan Audersch (Fraunhofer IGD)
  * @author Hani Samara (Fraunhofer IGD)
  */
@@ -93,25 +93,25 @@ public class DbSyncService {
 
 	
 	/**
-	 * Initialisiert die notwendigen Trigger und Triggerfunktionen für das DbLink anhand eines in der Konfiguration vorgegebenen
+	 * Initialisiert die notwendigen Trigger und Triggerfunktionen fÃ¼r das DbLink anhand eines in der Konfiguration vorgegebenen
 	 * Scriptes.
-     * Die DB-Parameter für die FrontendDB können im Script durch die Platzhalter <code>%host%</code>, <code>%port%</code>, 
+     * Die DB-Parameter fÃ¼r die FrontendDB kÃ¶nnen im Script durch die Platzhalter <code>%host%</code>, <code>%port%</code>, 
      * <code>%dbname%</code>, <code>%username%</code> und <code>%password%</code> angegeben werden.
 	 * @param session Session zum Zugriff auf die DB
-	 * @param state Soll das Script ausgeführt werden bzw. was soll bei einem Fehler passieren
+	 * @param state Soll das Script ausgefÃ¼hrt werden bzw. was soll bei einem Fehler passieren
 	 */
 	public void executeSqlScriptDbLink(Session session, SqlScriptUtil.State state) {
-		if (state!=SqlScriptUtil.State.disabled) LogUtil.info("SQL-Script für DbLink wird ausgeführt ...");
+		if (state!=SqlScriptUtil.State.disabled) LogUtil.info("SQL-Script fÃ¼r DbLink wird ausgefÃ¼hrt ...");
 		SqlScriptUtil.executeSqlScript(session, getSqlScriptDbLink(), state);
 	}
 	
 	
 	/**
-	 * Initialisiert die notwendigen Trigger und Triggerfunktionen für das DbLink anhand eines in der Konfiguration vorgegebenen
-	 * Scriptes. Eine Session für die DB wird vom EntityManager geholt.
-     * Die DB-Parameter für die FrontendDB können im Script durch die Platzhalter <code>%host%</code>, <code>%port%</code>, 
+	 * Initialisiert die notwendigen Trigger und Triggerfunktionen fÃ¼r das DbLink anhand eines in der Konfiguration vorgegebenen
+	 * Scriptes. Eine Session fÃ¼r die DB wird vom EntityManager geholt.
+     * Die DB-Parameter fÃ¼r die FrontendDB kÃ¶nnen im Script durch die Platzhalter <code>%host%</code>, <code>%port%</code>, 
      * <code>%dbname%</code>, <code>%username%</code> und <code>%password%</code> angegeben werden.
-	 * @param state Soll das Script ausgeführt werden bzw. was soll bei einem Fehler passieren
+	 * @param state Soll das Script ausgefÃ¼hrt werden bzw. was soll bei einem Fehler passieren
 	 */
 	public void executeSqlScriptDbLink(SqlScriptUtil.State state) throws HibernateException {
 		SessionFactory sessionFactory;
@@ -158,7 +158,7 @@ public class DbSyncService {
 	
 	public void executeSqlScriptFrontendDb(SqlScriptUtil.State state) throws HibernateException {
 		if (state == SqlScriptUtil.State.disabled) return;
-		LogUtil.info("SQL-Script zum Erzeugen der FrontendDb wird ausgeführt ...");
+		LogUtil.info("SQL-Script zum Erzeugen der FrontendDb wird ausgefÃ¼hrt ...");
 		SessionFactory sessionFactory = null;
 		Session session = null;
 		try {

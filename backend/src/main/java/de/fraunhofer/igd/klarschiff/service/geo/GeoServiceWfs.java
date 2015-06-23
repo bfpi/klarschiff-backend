@@ -13,7 +13,7 @@ import com.vividsolutions.jts.geom.Point;
 
 /**
  * Hilfsklasse zum Cachen von Anfragen an den WFS. Das Ergebnis beim Aufruf von Funktionen aus der gleichen Klasse 
- * heraus nicht gechacht werden können, werden die Funktionsaufrufe über diese Hilfsklasse umgeleitet.
+ * heraus nicht gechacht werden kÃ¶nnen, werden die Funktionsaufrufe Ã¼ber diese Hilfsklasse umgeleitet.
  * @author Stefan Audersch (Fraunhofer IGD)
  * @see GeoService
  */

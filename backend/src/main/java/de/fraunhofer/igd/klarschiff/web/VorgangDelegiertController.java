@@ -19,7 +19,7 @@ import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
 
 /**
- * Controller für die Vorgangsübersicht und Detailansichten
+ * Controller fÃ¼r die VorgangsÃ¼bersicht und Detailansichten
  * @author Stefan Audersch (Fraunhofer IGD)
  */
 @Controller
@@ -47,11 +47,11 @@ public class VorgangDelegiertController {
 	
 	/**
 	 * Die Methode verarbeitet den GET-Request auf der URL <code>/vorgang/delegiert/{id}/uebersicht</code><br/>
-	 * Seitenbeschreibung: Übersichtsseite für den aktuellen Vorgang
+	 * Seitenbeschreibung: Ãœbersichtsseite fÃ¼r den aktuellen Vorgang
 	 * @param id Vorgangs-ID
 	 * @param page Seitenzahl
-	 * @param size Seitengröße
-	 * @param model Model in dem ggf. Daten für die View abgelegt werden
+	 * @param size SeitengrÃ¶ÃŸe
+	 * @param model Model in dem ggf. Daten fÃ¼r die View abgelegt werden
 	 * @param request Request
 	 * @return View, die zum Rendern des Request verwendet wird
 	 */
@@ -76,9 +76,9 @@ public class VorgangDelegiertController {
 	
 	/**
 	 * Die Methode verarbeitet den GET-Request auf der URL <code>/vorgang/delegiert/{id}/karte</code><br/>
-	 * Seitenbeschreibung: Kartenansicht für den aktuellen Vorgang
+	 * Seitenbeschreibung: Kartenansicht fÃ¼r den aktuellen Vorgang
 	 * @param id Vorgangs-ID
-	 * @param model Model in dem ggf. Daten für die View abgelegt werden
+	 * @param model Model in dem ggf. Daten fÃ¼r die View abgelegt werden
 	 * @param request Request
 	 * @return View, die zum Rendern des Request verwendet wird
 	 */
@@ -92,9 +92,9 @@ public class VorgangDelegiertController {
 		
 	/**
 	 * Die Methode verarbeitet den GET-Request auf der URL <code>/vorgang/delegiert/{id}/foto</code><br/>
-	 * Seitenbeschreibung: Fotoansicht für den aktuellen Vorgang
+	 * Seitenbeschreibung: Fotoansicht fÃ¼r den aktuellen Vorgang
 	 * @param id Vorgangs-ID
-	 * @param model Model in dem ggf. Daten für die View abgelegt werden
+	 * @param model Model in dem ggf. Daten fÃ¼r die View abgelegt werden
 	 * @param request Request
 	 * @return View, die zum Rendern des Request verwendet wird
 	 */
@@ -106,10 +106,10 @@ public class VorgangDelegiertController {
 	}
 	
 	/**
-	 * Ermittelt die Anzahl maximal benötigter Seiten aus:
-	 * @param size gewünschter Anzahl an Elementen (Suchergebnissen) pro Seite
+	 * Ermittelt die Anzahl maximal benÃ¶tigter Seiten aus:
+	 * @param size gewÃ¼nschter Anzahl an Elementen (Suchergebnissen) pro Seite
 	 * @param count gegebener Anzahl an darzustellender Elemente
-	 * @return maximal benötigte Seitenzahl
+	 * @return maximal benÃ¶tigte Seitenzahl
 	 */
 	private int calculateMaxPages(int size, long count)
     {

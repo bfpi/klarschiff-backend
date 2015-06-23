@@ -10,7 +10,7 @@ import javax.validation.constraints.Size;
 import org.apache.commons.lang.StringUtils;
 
 /**
- * VO zum Abbilden der Vorlagen für den Statuskommentar
+ * VO zum Abbilden der Vorlagen fÃ¼r den Statuskommentar
  * @author Stefan Audersch (Fraunhofer IGD)
  */
 @Entity
@@ -19,27 +19,27 @@ public class StatusKommentarVorlage {
 	/* --------------- Attribute ----------------------------*/
 
 	/**
-	 * Id der Vorlagen für den Statuskommentar
+	 * Id der Vorlagen fÃ¼r den Statuskommentar
 	 */
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	
 	/**
-	 * Titel der Vorlagen für den Statuskommentar
+	 * Titel der Vorlagen fÃ¼r den Statuskommentar
 	 */
 	@Size(max = 100)
     private String titel;
 
 	/**
-	 * Text der Vorlagen für den Statuskommentar
+	 * Text der Vorlagen fÃ¼r den Statuskommentar
 	 */
 	private String text;
 
 	/* --------------- TRANSIENT ----------------------------*/
 	
 	/**
-	 * Lesen des Titels der Vorlagen für den Statuskommentar. titel mit einer Länge über 20 Zeichen werden abgeschnitten und mit "..." beendet.
+	 * Lesen des Titels der Vorlagen fÃ¼r den Statuskommentar. titel mit einer LÃ¤nge Ã¼ber 20 Zeichen werden abgeschnitten und mit "..." beendet.
 	 */
 	@Transient
 	public String getTitelAbbreviate() {

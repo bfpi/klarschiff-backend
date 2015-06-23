@@ -109,6 +109,11 @@
                                 <c:set value="freigabeStatus_${verlaufItem.wertNeu}.png" var="altNeu"/>
 								Freigabestatus des Fotos geändert: <img style="vertical-align:middle" alt="${altAlt}" src="${url}${altAlt}" height="15" width="15"  title="${verlaufItem.wertAlt}"/> ➔ <img style="vertical-align:middle" alt="${altNeu}" src="${url}${altNeu}" height="15" width="15"  title="${verlaufItem.wertNeu}"/>
 							</c:when>
+							<c:when test="${verlaufItem.typ=='fotowunsch'}">
+								<c:set value="foto_wunsch_${verlaufItem.wertAlt}.png" var="altAlt"/>
+								<c:set value="foto_wunsch_${verlaufItem.wertNeu}.png" var="altNeu"/>
+								Fotowunsch geändert: <img style="vertical-align:middle" alt="${altAlt}" src="${url}${altAlt}" height="15" width="15"  title="${verlaufItem.wertAlt}"/> ➔ <img style="vertical-align:middle" alt="${altNeu}" src="${url}${altNeu}" height="15" width="15"  title="${verlaufItem.wertNeu}"/>
+							</c:when>
 							<c:when test="${verlaufItem.typ=='typ'}">
                                 <c:set value="${verlaufItem.wertAlt.toLowerCase()}_15.png" var="altAlt"/>
                                 <c:set value="${verlaufItem.wertNeu.toLowerCase()}_15.png" var="altNeu"/>

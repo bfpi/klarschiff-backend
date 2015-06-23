@@ -4,9 +4,9 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * Command für die Auftragslisten im Backend <br />
+ * Command fÃ¼r die Auftragslisten im Backend <br />
  *
- * @author Robert Voß (BFPI GmbH)
+ * @author Robert VoÃŸ (BFPI GmbH)
  */
 @SuppressWarnings("serial")
 public class AussendienstCommand implements Serializable {

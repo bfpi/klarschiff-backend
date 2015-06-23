@@ -7,9 +7,9 @@ import javax.persistence.IdClass;
 
 
 /**
- * VO f¸r die Relation der Auﬂendienst-Koordinatoren. <br/>
+ * VO f√ºr die Relation der Au√üendienst-Koordinatoren. <br/>
  *
- * @author Robert Voﬂ (BFPI GmbH)
+ * @author Robert Vo√ü (BFPI GmbH)
  */
 @SuppressWarnings("serial")
 @Entity

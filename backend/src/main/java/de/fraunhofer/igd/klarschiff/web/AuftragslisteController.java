@@ -20,9 +20,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
- * Controller für die Auftragslisten
+ * Controller fÃ¼r die Auftragslisten
  *
- * @author Robert Voß (BFPI GmbH)
+ * @author Robert VoÃŸ (BFPI GmbH)
  */
 @Controller
 public class AuftragslisteController {
@@ -43,7 +43,7 @@ public class AuftragslisteController {
    * Die Methode verarbeitet den GET-Request auf der URL
    * <code>/auftragsliste</code><br/>
    *
-   * @param model Model in dem ggf. Daten für die View abgelegt werden
+   * @param model Model in dem ggf. Daten fÃ¼r die View abgelegt werden
    * @param request Request
    * @return View, die zum Rendern des Request verwendet wird
    */
@@ -59,7 +59,7 @@ public class AuftragslisteController {
    *
    * @param cmd
    * @param team
-   * @param model Model in dem ggf. Daten für die View abgelegt werden
+   * @param model Model in dem ggf. Daten fÃ¼r die View abgelegt werden
    * @param request Request
    * @return View, die zum Rendern des Request verwendet wird
    */
@@ -94,7 +94,7 @@ public class AuftragslisteController {
    *
    * @param cmd
    * @param auftrag_id
-   * @param model Model in dem ggf. Daten für die View abgelegt werden
+   * @param model Model in dem ggf. Daten fÃ¼r die View abgelegt werden
    * @param request Request
    * @return View, die zum Rendern des Request verwendet wird
    */

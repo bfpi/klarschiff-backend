@@ -14,6 +14,7 @@ public enum EnumVerlaufTyp implements EnumText{
     adresse,
     fotoFreigabeStatus, 
     foto, 
+    fotowunsch, 
     typ,
     kategorie,
     status,

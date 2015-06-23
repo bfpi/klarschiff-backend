@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import de.fraunhofer.igd.klarschiff.service.statistic.StatisticService;
 
 /**
- * Controller für die Backend-Homepage
+ * Controller fÃ¼r die Backend-Homepage
  * @author Stefan Audersch (Fraunhofer IGD)
  */
 @Controller
@@ -21,8 +21,8 @@ public class HomeController {
 	
 	/**
 	 * Die Methode verarbeitet den GET-Request auf der URL <code>/</code><br/>
-	 * Seitenbeschreibung: Die Klarschiff Backend Homepage mit Statistiken zu aktuellen Vorgängen
-	 * @param modelMap Model in dem ggf. Daten für die View abgelegt werden
+	 * Seitenbeschreibung: Die Klarschiff Backend Homepage mit Statistiken zu aktuellen VorgÃ¤ngen
+	 * @param modelMap Model in dem ggf. Daten fÃ¼r die View abgelegt werden
 	 * @param request Request
 	 * @return View, die zum Rendern des Request verwendet wird
 	 */

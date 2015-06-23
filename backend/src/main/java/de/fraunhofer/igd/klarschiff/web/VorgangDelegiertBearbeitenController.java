@@ -37,7 +37,7 @@ import de.fraunhofer.igd.klarschiff.vo.Vorgang;
 import java.util.Date;
 
 /**
- * Controller für die Vorgangsbearbeitung durch Externe (Delegierte)
+ * Controller fÃ¼r die Vorgangsbearbeitung durch Externe (Delegierte)
  * @author Stefan Audersch (Fraunhofer IGD)
  */
 @SessionAttributes("cmd")
@@ -66,7 +66,7 @@ public class VorgangDelegiertBearbeitenController {
     }
 
 	/**
-	 * Liefert alle möglichen Ausprägungen für Vorgangs-Status-Typen 
+	 * Liefert alle mÃ¶glichen AusprÃ¤gungen fÃ¼r Vorgangs-Status-Typen 
 	 */
 	@ModelAttribute("allVorgangStatus")
     public EnumVorgangStatus[] allVorgangStatus() {
@@ -84,7 +84,7 @@ public class VorgangDelegiertBearbeitenController {
     }
 	
 	/**
-	 * Aktualisiert interne Kommentare in übergebenem Model mit Daten aus übergebenem Commandobjekt 
+	 * Aktualisiert interne Kommentare in Ã¼bergebenem Model mit Daten aus Ã¼bergebenem Commandobjekt 
 	 * @param model Model
 	 * @param cmd Command
 	 */
@@ -97,7 +97,7 @@ public class VorgangDelegiertBearbeitenController {
 	}
 	
 	/**
-	 * Aktualisiert Lob, Hinweise oder Kritik in übergebenem Model mit Daten aus übergebenem Commandobjekt 
+	 * Aktualisiert Lob, Hinweise oder Kritik in Ã¼bergebenem Model mit Daten aus Ã¼bergebenem Commandobjekt 
 	 * @param model Model
 	 * @param cmd Command
 	 */
@@ -114,7 +114,7 @@ public class VorgangDelegiertBearbeitenController {
 	 * Seitenbeschreibung: Formular zur Vorgangsbearbeitung oder Hinweis auf noch nicht aktivierte
 	 * Bearbeitbarkeit falls Vorgang noch im Status <code>gemeldet</code>
 	 * @param id Vorgangs-ID
-	 * @param model Model in dem ggf. Daten für die View abgelegt werden
+	 * @param model Model in dem ggf. Daten fÃ¼r die View abgelegt werden
 	 * @param request Request
 	 * @return View, die zum Rendern des Request verwendet wird
 	 */
@@ -131,7 +131,7 @@ public class VorgangDelegiertBearbeitenController {
 	}
 
 	/**
-	 * Ermittelt Vorgang mit übergebener ID aus Backend-Datenbank
+	 * Ermittelt Vorgang mit Ã¼bergebener ID aus Backend-Datenbank
 	 * @param id Vorgangs-ID
 	 * @return
 	 */
@@ -145,7 +145,7 @@ public class VorgangDelegiertBearbeitenController {
 	/**
 	 * Die Methode verarbeitet den POST-Request auf der URL <code>/vorgang/delegiert/{id}/bearbeiten</code><br/>
 	 * Funktionsbeschreibung: 
-	 * <br/>Die Wahl des <code>action</code> Parameters erlaubt folgende Funktionalitäten:
+	 * <br/>Die Wahl des <code>action</code> Parameters erlaubt folgende FunktionalitÃ¤ten:
 	 * <ul>
 	 * <li><code>&Auml;nderungen &uuml;bernehmen</code></li>
 	 * <li><code>zur&uuml;ckweisen</code></li>
@@ -156,7 +156,7 @@ public class VorgangDelegiertBearbeitenController {
 	 * @param result BindingResult
 	 * @param id Vorgangs-ID
 	 * @param action Stringparameter zur funktionalen Steuerung
-	 * @param model Model in der ggf. Daten für die View abgelegt werden
+	 * @param model Model in der ggf. Daten fÃ¼r die View abgelegt werden
 	 * @param request HttpServletRequest-Objekt
 	 * @return View, die zum Rendern des Request verwendet wird
 	 */
@@ -172,7 +172,7 @@ public class VorgangDelegiertBearbeitenController {
 		
 		action = StringEscapeUtils.escapeHtml(action);
 
-		assertMaxLength(cmd, result,  Assert.EvaluateOn.ever, "vorgang.statusKommentar", 500, "Die öffentliche Statusinformation ist zu lang.");
+		assertMaxLength(cmd, result,  Assert.EvaluateOn.ever, "vorgang.statusKommentar", 500, "Die Ã¶ffentliche Statusinformation ist zu lang.");
 		if (result.hasErrors()) {
 			cmd.setVorgang(getVorgang(id));
 			updateKommentarInModel(model, cmd);
@@ -222,10 +222,10 @@ public class VorgangDelegiertBearbeitenController {
 	}
 	
 	/**
-	 * Ermittelt die Anzahl maximal benötigter Seiten aus:
-	 * @param size gewünschter Anzahl an Elementen (Suchergebnissen) pro Seite
+	 * Ermittelt die Anzahl maximal benÃ¶tigter Seiten aus:
+	 * @param size gewÃ¼nschter Anzahl an Elementen (Suchergebnissen) pro Seite
 	 * @param count gegebener Anzahl an darzustellender Elemente
-	 * @return maximal benötigte Seitenzahl
+	 * @return maximal benÃ¶tigte Seitenzahl
 	 */
 	private int calculateMaxPages(int size, long count)
     {

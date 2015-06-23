@@ -31,12 +31,22 @@ import org.springframework.format.annotation.DateTimeFormat;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.PrecisionModel;
+import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
 import com.vividsolutions.jts.io.WKTWriter;
-import javax.persistence.JoinColumn;
+import static de.bfpi.tools.GeoTools.transformPosition;
+import static de.bfpi.tools.GeoTools.wgs84Projection;
+import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
+import de.fraunhofer.igd.klarschiff.service.security.User;
+import de.fraunhofer.igd.klarschiff.service.settings.PropertyPlaceholderConfigurer;
+import de.fraunhofer.igd.klarschiff.service.settings.SettingsService;
+import javax.persistence.Column;
 import javax.persistence.OneToOne;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.hibernate.annotations.Where;
+import org.opengis.geometry.MismatchedDimensionException;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.operation.TransformException;
 
 /**
  * VO zum Abbilden eines Vorganges.
@@ -61,7 +71,7 @@ public class Vorgang implements Serializable {
     private Long id;
 
 	/**
-	 * Zeitpunkt der letzten ƒnderung
+	 * Zeitpunkt der letzten √Ñnderung
 	 */
 	@Version
 	@Temporal(TemporalType.TIMESTAMP)
@@ -96,7 +106,7 @@ public class Vorgang implements Serializable {
     private String adresse;
     
     /**
-	 * Information ¸ber das Eigentum des Fl¸rst¸cks, in dem der Vorgang liegt
+	 * Information √ºber das Eigentum des Fl√ºrst√ºcks, in dem der Vorgang liegt
 	 */
 	@Size(max = 300)
     private String flurstueckseigentum;
@@ -136,7 +146,7 @@ public class Vorgang implements Serializable {
     private String autorEmail;
 
     /**
-     * Hash zum Best‰tigen des Vorganges
+     * Hash zum Best√§tigen des Vorganges
      */
 	@Size(max = 32)
     private String hash;
@@ -150,7 +160,7 @@ public class Vorgang implements Serializable {
     
     /**
      * Vorgangsstatus als Integer. (Das erlaubt das einfachere Sortieren 
-     * der Vorg‰nge in der Ergebnistabelle mit Hilfe einer angepassten DB-Anfrage)
+     * der Vorg√§nge in der Ergebnistabelle mit Hilfe einer angepassten DB-Anfrage)
      */
     @SuppressWarnings("unused")
 	@NotNull
@@ -188,18 +198,18 @@ public class Vorgang implements Serializable {
     private EnumFreigabeStatus fotoFreigabeStatus = EnumFreigabeStatus.intern;;
     
     /**
-     * Zust‰ndigkeit (Id der Rolle) f¸r den Vorgang
+     * Zust√§ndigkeit (Id der Rolle) f√ºr den Vorgang
      */
     String zustaendigkeit;
     
     /**
-     * Status der Zust‰ndigkeit
+     * Status der Zust√§ndigkeit
      */
 	@Enumerated(EnumType.STRING)
     EnumZustaendigkeitStatus zustaendigkeitStatus;
     
     /**
-     * Zust‰ndigkeit f¸r Frontend (also ausf¸hrlicher Standort bzw. Name des Amtes; Locality der Rolle) f¸r den Vorgang
+     * Zust√§ndigkeit f√ºr Frontend (also ausf√ºhrlicher Standort bzw. Name des Amtes; Locality der Rolle) f√ºr den Vorgang
      */
     String zustaendigkeitFrontend;
 
@@ -213,17 +223,18 @@ public class Vorgang implements Serializable {
 	 */
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "vorgang")
-    private List<LobHinweiseKritik> lobHinweiseKritik = new ArrayList<LobHinweiseKritik>();
+    @Where(clause = "geloescht = 'false'")
+    private List<Kommentar> kommentare = new ArrayList<Kommentar>();
 	
 	/**
 	 * Liste von Lob, Hinweisen oder Kritik zum Vorgang
 	 */
+    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "vorgang")
-    @Where(clause = "geloescht = 'false'")
-    private List<Kommentar> kommentare = new ArrayList<Kommentar>();
+    private List<LobHinweiseKritik> lobHinweiseKritik = new ArrayList<LobHinweiseKritik>();
 
     /**
-     * Liste der Verlaufseintr‰ge
+     * Liste der Verlaufseintr√§ge
      */
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "vorgang")
@@ -236,7 +247,7 @@ public class Vorgang implements Serializable {
     private Kategorie kategorie;
 
     /**
-     * Liste der Unterst¸tzungen
+     * Liste der Unterst√ºtzungen
      */
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "vorgang")
@@ -251,23 +262,29 @@ public class Vorgang implements Serializable {
     private List<Missbrauchsmeldung> missbrauchsmeldungen = new ArrayList<Missbrauchsmeldung>();
     
     /**
-     * Priorit‰t
+     * Priorit√§t
      */
     @NotNull
 	@Enumerated(EnumType.STRING)
     EnumPrioritaet prioritaet;
     
     /**
-     * Priorit‰t als Integer. (Das erlaubt das einfachere Sortieren 
-     * der Vorg‰nge in der Ergebnistabelle mit Hilfe einer angepassten DB-Anfrage)
+     * Priorit√§t als Integer. (Das erlaubt das einfachere Sortieren 
+     * der Vorg√§nge in der Ergebnistabelle mit Hilfe einer angepassten DB-Anfrage)
      */
     @NotNull
     EnumPrioritaet prioritaetOrdinal;
     
     /**
-     * Flag zum Markieren archivierte Vorg‰nge
+     * Flag zum Markieren archivierte Vorg√§nge
      */
     Boolean archiviert;
+    
+    /**
+     * ein Wunsch nach einem Foto wurde ge√§u√üert
+     */
+    @Column( nullable = false, columnDefinition = "boolean default false")
+    Boolean fotowunsch;
     
 	/* --------------- transient ----------------------------*/
     
@@ -279,6 +296,20 @@ public class Vorgang implements Serializable {
     
     @Transient
     private static WKTWriter wktWriter = new WKTWriter();
+    
+    @Transient
+    private static SettingsService settingsService = new SettingsService();
+    
+    @Transient
+    private static final String internalProjection =
+      PropertyPlaceholderConfigurer.getPropertyValue("geo.map.projection");
+
+    /**
+     * securityService wird ben√∂tigt, um das Trust-Level zu ermitteln
+     */
+    @JsonIgnore
+    @Transient
+    private SecurityService securityService;
 
     /**
      *Auftrag zu dem Vorgang
@@ -304,6 +335,38 @@ public class Vorgang implements Serializable {
     @Transient
     public String getOviWkt() {
     	return (ovi==null) ? null : wktWriter.write(ovi);
+    }
+
+    /**
+     * Lesen der Position als LatLong
+     * @return Position als LatLong
+     * @throws org.opengis.referencing.FactoryException
+     * @throws org.opengis.referencing.operation.TransformException
+     */
+    @Transient
+    public String getPositionWGS84() throws FactoryException, MismatchedDimensionException, TransformException {
+      if (ovi == null) {
+        return null;
+      }
+
+      return transformPosition(ovi, internalProjection, wgs84Projection).toString();
+    }
+
+    /**
+     * Schreiben der WGS84Position als LatLong
+     * @param position
+     * @throws com.vividsolutions.jts.io.ParseException
+     * @throws org.opengis.referencing.FactoryException
+     * @throws org.opengis.referencing.operation.TransformException
+     */
+    @Transient
+    public void setPositionWGS84(String position)
+      throws ParseException, FactoryException, MismatchedDimensionException, TransformException  {
+
+      if (position != null) {
+        ovi = transformPosition((Point) wktReader.read(position),
+          wgs84Projection, internalProjection);
+      }
     }
     
     /**
@@ -413,7 +476,47 @@ public class Vorgang implements Serializable {
 	public void setAutorEmail(String autorEmail) {
         this.autorEmail = autorEmail;
     }
+  
+  public Boolean autorIntern() {
+    if(this.autorEmail == null) {
+      return false;
+    }
+    return this.autorEmail.matches(settingsService.getPropertyValue("auth.internal_author_match"));
+  }
 
+  public void setSecurityService(SecurityService securityService) {
+    this.securityService = securityService;
+  }
+  
+  public Boolean autorAussendienst() {
+    if(this.autorEmail == null || securityService == null) {
+      return false;
+    }
+    User user = securityService.getUserByEmail(this.autorEmail);
+    if(user == null) {
+      return false;
+    }
+    List<String> teams = user.getAussendienstTeams();
+    if(teams == null || teams.isEmpty()) {
+      return false;
+    }
+    return true;
+  }
+  
+  public Integer getTrustLevel() {
+    int trust_level = 0;
+    
+    if(getStatus() != EnumVorgangStatus.gemeldet) {
+      trust_level = 1;
+      if(autorAussendienst()) {
+        trust_level = 3;
+      } else if(autorIntern()) {
+        trust_level = 2;
+      }
+    }
+    return trust_level;
+  }
+  
 	public List<Kommentar> getKommentare() {
         return this.kommentare;
     }
@@ -449,6 +552,19 @@ public class Vorgang implements Serializable {
 	public List<Unterstuetzer> getUnterstuetzer() {
         return this.unterstuetzer;
     }
+
+  public Integer getUnterstuetzerCount() {
+    if(this.unterstuetzer == null) {
+      return 0;
+    }
+    int unt = 0;
+    for(Unterstuetzer u : this.unterstuetzer) {
+      if(u.getDatumBestaetigung() != null) {
+        unt++;
+      }
+    }
+    return unt;
+  }
 
 	public void setUnterstuetzer(List<Unterstuetzer> unterstuetzer) {
         this.unterstuetzer = unterstuetzer;
@@ -486,6 +602,17 @@ public class Vorgang implements Serializable {
 		this.status = status;
 		this.statusOrdinal = status;
 	}
+  
+  public Date getStatusDatum() {
+    for(int i = verlauf.size() - 1; i >= 0; i--) {
+      Verlauf v = verlauf.get(i);
+      if(v.getTyp() == EnumVerlaufTyp.erzeugt || v.getTyp() == EnumVerlaufTyp.status) {
+        return v.getDatum();
+      }
+    }
+    
+    return null;
+  }
 
 	public EnumZustaendigkeitStatus getZustaendigkeitStatus() {
 		return zustaendigkeitStatus;
@@ -579,6 +706,14 @@ public class Vorgang implements Serializable {
 		this.archiviert = archiviert;
 	}
 
+  public Boolean getFotowunsch() {
+    return fotowunsch == null ? false : fotowunsch;
+  }
+
+  public void setFotowunsch(boolean fotowunsch) {
+    this.fotowunsch = fotowunsch;
+  }
+  
 	public boolean getErstsichtungErfolgt() {
 		return erstsichtungErfolgt;
 	}
@@ -594,4 +729,33 @@ public class Vorgang implements Serializable {
   public void setAuftrag(Auftrag auftrag) {
     this.auftrag = auftrag;
   }
+
+  public String getAuftragTeam() {
+    if(getAuftrag() == null) {
+      return null;
+    }
+    return getAuftrag().getTeam();
+  }
+  
+  public Date getAuftragDatum() {
+    if(getAuftrag() == null) {
+      return null;
+    }
+    return getAuftrag().getDatum();
+  }
+
+  public String getAuftragStatus() {
+    if(getAuftrag() == null) {
+      return null;
+    }
+    return getAuftrag().getStatus().getText();
+  }
+  
+  public Integer getAuftragPrioritaet() {
+    if(getAuftrag() == null) {
+      return null;
+    }
+    return getAuftrag().getPrioritaet();
+  }
+  
 }

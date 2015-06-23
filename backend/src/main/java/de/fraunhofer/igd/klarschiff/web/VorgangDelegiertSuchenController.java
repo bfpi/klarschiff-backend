@@ -34,7 +34,7 @@ import de.fraunhofer.igd.klarschiff.web.VorgangDelegiertSuchenCommand.EinfacheSu
 import de.fraunhofer.igd.klarschiff.web.VorgangDelegiertSuchenCommand.Suchtyp;
 
 /**
- * Controller für die Vorgangsuche für Externe (Delegierte)
+ * Controller fÃ¼r die Vorgangsuche fÃ¼r Externe (Delegierte)
  * @author Stefan Audersch (Fraunhofer IGD)
  */
 @SessionAttributes({"cmdvorgangdelegiertsuchen"})
@@ -60,7 +60,7 @@ public class VorgangDelegiertSuchenController {
 	KategorieDao kategorieDao;
 
 	/**
-	 * Liefert alle möglichen Ausprägungen für Vorgangs-Status-Typen 
+	 * Liefert alle mÃ¶glichen AusprÃ¤gungen fÃ¼r Vorgangs-Status-Typen 
 	 */
 	@ModelAttribute("allVorgangStatus")
 	public EnumVorgangStatus[] allVorgangStatus() {
@@ -68,7 +68,7 @@ public class VorgangDelegiertSuchenController {
 	}
 
 	/**
-	 * Liefert alle Ausprägungen für Vorgangs-Status-Typen, die auch für Externe (Delegiert) vorgesehen sind
+	 * Liefert alle AusprÃ¤gungen fÃ¼r Vorgangs-Status-Typen, die auch fÃ¼r Externe (Delegiert) vorgesehen sind
 	 */
 	@ModelAttribute("allDelegiertVorgangStatus")
 	public EnumVorgangStatus[] allDelegiertVorgangStatus() {
@@ -76,7 +76,7 @@ public class VorgangDelegiertSuchenController {
 	}
 	
 	/**
-	 * Liefert alle möglichen Ausprägungen für Vorgangstypen 
+	 * Liefert alle mÃ¶glichen AusprÃ¤gungen fÃ¼r Vorgangstypen 
 	 */
 	@ModelAttribute("vorgangtypen")
     public Collection<EnumVorgangTyp> populateEnumVorgangTypen() {
@@ -84,7 +84,7 @@ public class VorgangDelegiertSuchenController {
     }
 
 	/**
-	 * Liefert alle möglichen Ausprägungen für Prioritätsbezeichner 
+	 * Liefert alle mÃ¶glichen AusprÃ¤gungen fÃ¼r PrioritÃ¤tsbezeichner 
 	 */
 	@ModelAttribute("allPrioritaeten")
     public Collection<EnumPrioritaet> allPrioritaeten() {
@@ -106,7 +106,7 @@ public class VorgangDelegiertSuchenController {
     }
 	
     /** Initialisiert <code>VorgangSuchenCommand</code>-Objekt  mit Standardwerten zur Benutzung als ModelAttribute 
-     * für Suchoperation
+     * fÃ¼r Suchoperation
      */
 	@ModelAttribute("cmdvorgangdelegiertsuchen")
     public VorgangDelegiertSuchenCommand initCommand() {
@@ -124,8 +124,8 @@ public class VorgangDelegiertSuchenController {
     }
 	
 	/**
-	 * Aktualisiert Unterkategorie und Liste möglicher Hauptkategorien (abhängig von Vorgangstyp) in übergebenem
-	 * Model mit Daten aus übergebenem Commandobjekt 
+	 * Aktualisiert Unterkategorie und Liste mÃ¶glicher Hauptkategorien (abhÃ¤ngig von Vorgangstyp) in Ã¼bergebenem
+	 * Model mit Daten aus Ã¼bergebenem Commandobjekt 
 	 * @param model Model
 	 * @param cmd Command
 	 */
@@ -138,10 +138,10 @@ public class VorgangDelegiertSuchenController {
 	
 	/**
 	 * Die Methode verarbeitet den GET-Request auf der URL <code>/vorgang/delegiert/suchen</code><br/>
-	 * Seitenbeschreibung: Darstellung der Backend-Suchfunktionalität
+	 * Seitenbeschreibung: Darstellung der Backend-SuchfunktionalitÃ¤t
 	 * @param cmd Command
 	 * @param neu optionaler Parameter, triggert Initialisierung des Commandobjektes bei neuer Suchanfrage
-	 * @param modelMap Model in der ggf. Daten für die View abgelegt werden
+	 * @param modelMap Model in der ggf. Daten fÃ¼r die View abgelegt werden
 	 * @return View, die zum Rendern des Request verwendet wird
 	 */
 	@RequestMapping(method = RequestMethod.GET)
@@ -160,9 +160,9 @@ public class VorgangDelegiertSuchenController {
 	
 	/**
 	 * Die Methode verarbeitet den GET-Request auf der URL <code>/vorgang/delegiert/suchen/karte</code><br/>
-	 * Seitenbeschreibung: Kartenandarstellung für die Ergebnisse der aktuellen Suchanfrage 
+	 * Seitenbeschreibung: Kartenandarstellung fÃ¼r die Ergebnisse der aktuellen Suchanfrage 
 	 * @param cmd Command
-	 * @param modelMap Model in der ggf. Daten für die View abgelegt werden
+	 * @param modelMap Model in der ggf. Daten fÃ¼r die View abgelegt werden
 	 * @return View, die zum Rendern des Request verwendet wird
 	 */
 	@RequestMapping(value="/karte", method = RequestMethod.GET)
@@ -209,10 +209,10 @@ public class VorgangDelegiertSuchenController {
 	}
 	
 	/**
-	 * Ermittelt die Anzahl maximal benötigter Seiten aus:
-	 * @param size gewünschter Anzahl an Elementen (Suchergebnissen) pro Seite
+	 * Ermittelt die Anzahl maximal benÃ¶tigter Seiten aus:
+	 * @param size gewÃ¼nschter Anzahl an Elementen (Suchergebnissen) pro Seite
 	 * @param count gegebener Anzahl an darzustellender Elemente
-	 * @return maximal benötigte Seitenzahl
+	 * @return maximal benÃ¶tigte Seitenzahl
 	 */
 	private int calculateMaxPages(int size, long count)
     {

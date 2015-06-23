@@ -18,7 +18,7 @@ import de.fraunhofer.igd.klarschiff.vo.Verlauf;
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
 
 /**
- * Die Dao-Klasse erlaubt das Verwalten der Verlauf-Daten der Vorgänge in der DB.
+ * Die Dao-Klasse erlaubt das Verwalten der Verlauf-Daten der VorgÃ¤nge in der DB.
  * @author Stefan Audersch (Fraunhofer IGD)
  */
 @Repository
@@ -38,20 +38,33 @@ public class VerlaufDao {
         em.persist(verlauf);
     }
 	
+	public Verlauf addVerlaufToVorgang(Vorgang vorgang, EnumVerlaufTyp typ, String wertAlt, String wertNeu) {
+		return addVerlaufToVorgang(vorgang, typ, wertAlt, wertNeu, null);
+	}
+    
 	/**
-	 * Fügt zu einem Vorgang neue Verlaufswerte hinzu, ohne diese in der DB zu speichern.
-	 * @param vorgang Vorgang zu dem die Verlaufswerte hinzugefügt werden sollen
+	 * FÃ¼gt zu einem Vorgang neue Verlaufswerte hinzu, ohne diese in der DB zu speichern.
+	 * @param vorgang Vorgang zu dem die Verlaufswerte hinzugefÃ¼gt werden sollen
 	 * @param typ Typ des Verlaufs
 	 * @param wertAlt Alter Wert
 	 * @param wertNeu Neuer Wert
 	 * @return Verlaufswerte
 	 */
-	public Verlauf addVerlaufToVorgang(Vorgang vorgang, EnumVerlaufTyp typ, String wertAlt, String wertNeu) {
+	public Verlauf addVerlaufToVorgang(Vorgang vorgang, EnumVerlaufTyp typ, String wertAlt, String wertNeu, String nutzer_email) {
 		Verlauf verlauf = new Verlauf();
 		verlauf.setVorgang(vorgang);
-		try {
-			verlauf.setNutzer(securityService.getCurrentUser().getName());
-		} catch (Exception e) {}
+		if(nutzer_email != null) {
+			User user = securityService.getUserByEmail(nutzer_email);
+			if(user != null) {
+				verlauf.setNutzer(user.getName());
+			} else {
+				verlauf.setNutzer(nutzer_email);
+			}
+		} else {
+			try {
+				verlauf.setNutzer(securityService.getCurrentUser().getName());
+			} catch (Exception e) {}
+		}
 		verlauf.setTyp(typ);
 		verlauf.setWertAlt(wertAlt);
 		verlauf.setWertNeu(wertNeu);
@@ -74,7 +87,7 @@ public class VerlaufDao {
 	
     
 	/**
-	 * Findet denjenigen Benutzernamen aus einer gegebenen Liste von Benutzernamen, der gemäß dem Verlauf die letzte Bearbeitung am gegebenen Vorgang durchgeführt hat.
+	 * Findet denjenigen Benutzernamen aus einer gegebenen Liste von Benutzernamen, der gemÃ¤ÃŸ dem Verlauf die letzte Bearbeitung am gegebenen Vorgang durchgefÃ¼hrt hat.
 	 * @param vorgang Vorgang
 	 * @param userNames Liste von Benutzernamen
 	 * @return Nutzername als String

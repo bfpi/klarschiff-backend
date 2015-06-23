@@ -36,7 +36,7 @@ import de.fraunhofer.igd.klarschiff.vo.Vorgang;
 import java.nio.file.Paths;
 
 /**
- * Diese Klasse stellt einen Service bereit, über den E-Mails erstellt und versendet werden können.
+ * Diese Klasse stellt einen Service bereit, Ã¼ber den E-Mails erstellt und versendet werden kÃ¶nnen.
  * @author Stefan Audersch (Fraunhofer IGD)
  */
 public class MailService {
@@ -97,13 +97,13 @@ public class MailService {
     
     
     /**
-	 * Erstellt und versendet eine E-Mail mit Lob, Hinweise oder Kritik von Bürger/-innen zu einem Vorgang an den letzten Bearbeiter des Vorgangs
+	 * Erstellt und versendet eine E-Mail mit Lob, Hinweise oder Kritik von BÃ¼rger/-innen zu einem Vorgang an den letzten Bearbeiter des Vorgangs
 	 * @param vorgang Vorgang, zu dem die E-Mail versendet werden soll
 	 */
 	public void sendLobHinweiseKritikMail(Vorgang vorgang, String absender, String empfaenger, String freitext) {
 		try {
 			MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mailSender.createMimeMessage(), true);
-			mimeMessageHelper.setSubject(settingsService.getContextAppTitle() + ": Lob, Hinweise oder Kritik von Bürger/-innen zu Vorgang " + vorgang.getId());
+			mimeMessageHelper.setSubject(settingsService.getContextAppTitle() + ": Lob, Hinweise oder Kritik von BÃ¼rger/-innen zu Vorgang " + vorgang.getId());
 			mimeMessageHelper.setFrom(absender);
 			mimeMessageHelper.setTo(empfaenger);
             mimeMessageHelper.setBcc(absender);
@@ -116,7 +116,7 @@ public class MailService {
 	
 	
 	/**
-	 * Erstellt und versendet eine E-Mail zur Bestätigung eines Vorganges
+	 * Erstellt und versendet eine E-Mail zur BestÃ¤tigung eines Vorganges
 	 * @param vorgang Vorgang, zu dem die E-Mail versendet werden soll
 	 */
 	public void sendVorgangBestaetigungMail(Vorgang vorgang) {
@@ -138,8 +138,8 @@ public class MailService {
 	
 	
 	/**
-	 * Erstellt und versendet eine E-Mail zur Bestätigung einer Unterstützung
-	 * @param unterstuetzer Unterstützung, zu der die E-Mail versendet werden soll
+	 * Erstellt und versendet eine E-Mail zur BestÃ¤tigung einer UnterstÃ¼tzung
+	 * @param unterstuetzer UnterstÃ¼tzung, zu der die E-Mail versendet werden soll
 	 * @param email E-Mail-Adresse, an die die E-Mail versendet werden soll
 	 */
 	public void sendUnterstuetzerBestaetigungMail(Unterstuetzer unterstuetzer, String email, Long vorgang) {
@@ -157,7 +157,7 @@ public class MailService {
 
 	
 	/**
-	 * Erstellt und versendet eine E-Mail zur Bestätigung einer Missbrauchsmeldung
+	 * Erstellt und versendet eine E-Mail zur BestÃ¤tigung einer Missbrauchsmeldung
 	 * @param missbrauchsmeldung Missbrauchsmeldung, zu der die E-Mail versendet werden soll
 	 * @param email E-Mail-Adresse, an die die E-Mail versendet werden soll
 	 */
@@ -182,9 +182,9 @@ public class MailService {
 	 * @param toEmail E-Mail-Adresse, an die die E-Mail versendet werden soll
 	 * @param text Freitext, der in die E-Mail aufgenommen wird
 	 * @param sendAutor Soll die Angabe des Autors mitgesendet werden?
-	 * @param sendKarte Soll ein Link für die Karte mitgesendet werden?
+	 * @param sendKarte Soll ein Link fÃ¼r die Karte mitgesendet werden?
 	 * @param sendKommentare Sollen die internen Kommentare mitgesendet werden?
-	 * @param sendLobHinweiseKritik Sollen Lob, Hinweise oder Kritik von Bürger/-innen mitgesendet werden?
+	 * @param sendLobHinweiseKritik Sollen Lob, Hinweise oder Kritik von BÃ¼rger/-innen mitgesendet werden?
 	 * @param sendFoto Soll das Foto als Anhang mitgesendet werden?
 	 * @param sendMissbrauchsmeldungen Sollen die Missbrauchsmeldungen mitgesendet werden?
 	 */
@@ -220,9 +220,9 @@ public class MailService {
 	 * @param vorgang Vorgang zu dem die E-Mail erstellt werden soll.
 	 * @param text Freitextfeld, der in die E-Mail aufgenommen wird.
 	 * @param sendAutor Soll der Autor in der E-Mail aufgenommen werden?
-	 * @param sendKarte Soll ein Link für die Karte in der E-Mail erzeugt werden?
+	 * @param sendKarte Soll ein Link fÃ¼r die Karte in der E-Mail erzeugt werden?
 	 * @param sendKommentare Sollen die Kommentare in der E-Mail aufgenommen werden?
-     * @param sendLobHinweiseKritik Sollen Lob, Hinweise oder Kritik von Bürger/-innen mitgesendet werden?
+     * @param sendLobHinweiseKritik Sollen Lob, Hinweise oder Kritik von BÃ¼rger/-innen mitgesendet werden?
 	 * @param sendMissbrauchsmeldungen sollen die Missbrauchsmeldungen in der E-Mail aufgenommen werden?
 	 * @return Text der erzeugten E-Mail
 	 */
@@ -276,7 +276,7 @@ public class MailService {
 			}
             
             if (vorgang.getFlurstueckseigentum() != null && !vorgang.getFlurstueckseigentum().isEmpty()) {
-				str.append("Flurstückseigentum: ");
+				str.append("FlurstÃ¼ckseigentum: ");
 				str.append(vorgang.getFlurstueckseigentum());
 				str.append("\n");
 			}
@@ -296,12 +296,12 @@ public class MailService {
 			str.append("\n");
 			
             if (vorgang.getStatusKommentar() != null && !vorgang.getStatusKommentar().isEmpty()) {
-				str.append("öffentliche Statusinformation: " );
+				str.append("Ã¶ffentliche Statusinformation: " );
 				str.append(vorgang.getStatusKommentar());
 				str.append("\n");
 			}
 			
-			str.append("Zuständigkeit: " ); 
+			str.append("ZustÃ¤ndigkeit: " ); 
 			str.append(vorgang.getZustaendigkeit());
 			str.append(" (");
 			str.append(vorgang.getZustaendigkeitStatus());
@@ -330,7 +330,7 @@ public class MailService {
 			}
 			
 			if (sendLobHinweiseKritik) {
-				str.append("\nLob, Hinweise oder Kritik von Bürger/-innen\n*******************************************\n");
+				str.append("\nLob, Hinweise oder Kritik von BÃ¼rger/-innen\n*******************************************\n");
 				for (LobHinweiseKritik lobHinweiseKritik : lobHinweiseKritikDao.findLobHinweiseKritikForVorgang(vorgang)) {
 					str.append("- " + lobHinweiseKritik.getAutorEmail() + " " + formatter.format(lobHinweiseKritik.getDatum()) +" -\n" );
 					str.append(lobHinweiseKritik.getFreitext());
@@ -358,9 +358,9 @@ public class MailService {
 	
 	
 	/**
-	 * Sendet E-Mails an die Dispatcher mit neuen Vorgängen.
-	 * @param newVorgaenge Liste der Vorgänge, die in der E-Mail dargestellt werden sollen.
-	 * @param to Liste der Empfänger der E-Mail.
+	 * Sendet E-Mails an die Dispatcher mit neuen VorgÃ¤ngen.
+	 * @param newVorgaenge Liste der VorgÃ¤nge, die in der E-Mail dargestellt werden sollen.
+	 * @param to Liste der EmpfÃ¤nger der E-Mail.
 	 */
 	public void sendInformDispatcherMail(List<Vorgang> newVorgaenge, String[] to) {
 		if (CollectionUtils.isEmpty(newVorgaenge) || ArrayUtils.isEmpty(to)) return;
@@ -383,9 +383,9 @@ public class MailService {
 	
 	
 	/**
-	 * Sendet E-Mails an die externen Benutzer mit neuen Vorgängen.
-	 * @param newVorgaenge Liste der Vorgänge, die in der E-Mail dargestellt werden sollen.
-	 * @param to Liste der Empfänger der E-Mail.
+	 * Sendet E-Mails an die externen Benutzer mit neuen VorgÃ¤ngen.
+	 * @param newVorgaenge Liste der VorgÃ¤nge, die in der E-Mail dargestellt werden sollen.
+	 * @param to Liste der EmpfÃ¤nger der E-Mail.
 	 */
 	public void sendInformExternMail(List<Vorgang> newVorgaenge, String[] to) {
 		if (CollectionUtils.isEmpty(newVorgaenge) || ArrayUtils.isEmpty(to)) return;
@@ -408,7 +408,7 @@ public class MailService {
     
     
     /**
-	 * Sendet eine E-Mail an den Ersteller eines Vorganges mit den Daten über den aktuellen Status des Vorganges.
+	 * Sendet eine E-Mail an den Ersteller eines Vorganges mit den Daten Ã¼ber den aktuellen Status des Vorganges.
 	 * @param vorgang Vorgang zu dem der Ersteller informiert werden sollen.
 	 */
 	public void sendInformErstellerMailInBearbeitung(Vorgang vorgang) {
@@ -443,7 +443,7 @@ public class MailService {
 
 	
 	/**
-	 * Sendet eine E-Mail an den Ersteller eines Vorganges mit den Daten über den aktuellen Status des Vorganges.
+	 * Sendet eine E-Mail an den Ersteller eines Vorganges mit den Daten Ã¼ber den aktuellen Status des Vorganges.
 	 * @param vorgang Vorgang zu dem der Ersteller informiert werden sollen.
 	 */
 	public void sendInformErstellerMailAbschluss(Vorgang vorgang) {
@@ -478,28 +478,28 @@ public class MailService {
     
     
     /**
-	 * Sendet E-Mails an die Empfänger redaktioneller E-Mails.
+	 * Sendet E-Mails an die EmpfÃ¤nger redaktioneller E-Mails.
 	 * @param tageOffenNichtAkzeptiert Anzahl der Tage zum Redaktionskriterium 1.
 	 * @param tageInbearbeitungOhneStatusKommentar Anzahl der Tage zum Redaktionskriterium 2.
 	 * @param tageIdeeOffenOhneUnterstuetzung Anzahl der Tage zum Redaktionskriterium 2.
-	 * @param vorgaengeOffenNichtAkzeptiert Liste der Vorgänge zu Redaktionskriterium 1, die in der E-Mail dargestellt werden sollen.
-	 * @param vorgaengeInbearbeitungOhneStatusKommentar Liste der Vorgänge zu Redaktionskriterium 2, die in der E-Mail dargestellt werden sollen.
-	 * @param vorgaengeIdeeOffenOhneUnterstuetzung Liste der Vorgänge zu Redaktionskriterium 3, die in der E-Mail dargestellt werden sollen.
-	 * @param vorgaengeWirdnichtbearbeitetOhneStatuskommentar Liste der Vorgänge zu Redaktionskriterium 4, die in der E-Mail dargestellt werden sollen.
-	 * @param vorgaengeNichtMehrOffenNichtAkzeptiert Liste der Vorgänge zu Redaktionskriterium 5, die in der E-Mail dargestellt werden sollen.
-	 * @param vorgaengeOhneRedaktionelleFreigaben Liste der Vorgänge zu Redaktionskriterium 6, die in der E-Mail dargestellt werden sollen.
-	 * @param vorgaengeOhneZustaendigkeit Liste der Vorgänge zu Redaktionskriterium 7, die in der E-Mail dargestellt werden sollen.
-	 * @param to Empfänger der E-Mail.
+	 * @param vorgaengeOffenNichtAkzeptiert Liste der VorgÃ¤nge zu Redaktionskriterium 1, die in der E-Mail dargestellt werden sollen.
+	 * @param vorgaengeInbearbeitungOhneStatusKommentar Liste der VorgÃ¤nge zu Redaktionskriterium 2, die in der E-Mail dargestellt werden sollen.
+	 * @param vorgaengeIdeeOffenOhneUnterstuetzung Liste der VorgÃ¤nge zu Redaktionskriterium 3, die in der E-Mail dargestellt werden sollen.
+	 * @param vorgaengeWirdnichtbearbeitetOhneStatuskommentar Liste der VorgÃ¤nge zu Redaktionskriterium 4, die in der E-Mail dargestellt werden sollen.
+	 * @param vorgaengeNichtMehrOffenNichtAkzeptiert Liste der VorgÃ¤nge zu Redaktionskriterium 5, die in der E-Mail dargestellt werden sollen.
+	 * @param vorgaengeOhneRedaktionelleFreigaben Liste der VorgÃ¤nge zu Redaktionskriterium 6, die in der E-Mail dargestellt werden sollen.
+	 * @param vorgaengeOhneZustaendigkeit Liste der VorgÃ¤nge zu Redaktionskriterium 7, die in der E-Mail dargestellt werden sollen.
+	 * @param to EmpfÃ¤nger der E-Mail.
 	 */
 	public void sendInformRedaktionEmpfaengerMail(Short tageOffenNichtAkzeptiert, Short tageInbearbeitungOhneStatusKommentar, Short tageIdeeOffenOhneUnterstuetzung, List<Vorgang> vorgaengeOffenNichtAkzeptiert, List<Vorgang> vorgaengeInbearbeitungOhneStatusKommentar, List<Vorgang> vorgaengeIdeeOffenOhneUnterstuetzung, List<Vorgang> vorgaengeWirdnichtbearbeitetOhneStatuskommentar, List<Vorgang> vorgaengeNichtMehrOffenNichtAkzeptiert, List<Vorgang> vorgaengeOhneRedaktionelleFreigaben, List<Vorgang> vorgaengeOhneZustaendigkeit, String to, String zustaendigkeit) {
         
-        //keine E-Mail versenden, falls alle Listen von Vorgängen leer sind
+        //keine E-Mail versenden, falls alle Listen von VorgÃ¤ngen leer sind
 		if ( (CollectionUtils.isEmpty(vorgaengeOffenNichtAkzeptiert)) && (CollectionUtils.isEmpty(vorgaengeInbearbeitungOhneStatusKommentar)) && (CollectionUtils.isEmpty(vorgaengeIdeeOffenOhneUnterstuetzung)) && (CollectionUtils.isEmpty(vorgaengeWirdnichtbearbeitetOhneStatuskommentar)) && (CollectionUtils.isEmpty(vorgaengeNichtMehrOffenNichtAkzeptiert)) && (CollectionUtils.isEmpty(vorgaengeOhneRedaktionelleFreigaben)) && (CollectionUtils.isEmpty(vorgaengeOhneZustaendigkeit)) ) return;
         
         //lokale Variablen initiieren
         Date jetzt = new Date();
 		
-        //Teiltexte für die einzelnen Redaktionskriterien initiieren
+        //Teiltexte fÃ¼r die einzelnen Redaktionskriterien initiieren
 		SimpleMailMessage textKriteriumOffenNichtAkzeptiert = new SimpleMailMessage(kriteriumOffenNichtAkzeptiertTemplate);
 		SimpleMailMessage textKriteriumOffenInbearbeitungOhneStatusKommentar = new SimpleMailMessage(kriteriumOffenInbearbeitungOhneStatusKommentarTemplate);
 		SimpleMailMessage textKriteriumIdeeOffenOhneUnterstuetzung = new SimpleMailMessage(kriteriumIdeeOffenOhneUnterstuetzungTemplate);
@@ -508,151 +508,151 @@ public class MailService {
 		SimpleMailMessage textKriteriumOhneRedaktionelleFreigaben = new SimpleMailMessage(kriteriumOhneRedaktionelleFreigabenTemplate);
 		SimpleMailMessage textKriteriumOhneZustaendigkeit = new SimpleMailMessage(kriteriumOhneZustaendigkeitTemplate);
         
-        //Gesamt-E-Mail initiieren, mit Adresse des Empfängers versehen und entsprechenden Platzhalter für Zuständigkeit ersetzen
+        //Gesamt-E-Mail initiieren, mit Adresse des EmpfÃ¤ngers versehen und entsprechenden Platzhalter fÃ¼r ZustÃ¤ndigkeit ersetzen
 		SimpleMailMessage msg = new SimpleMailMessage(informRedaktionEmpfaengerMailTemplate);
 		msg.setTo(to);
 		msg.setSubject(msg.getSubject().replaceAll("%title%", settingsService.getContextAppTitle()));
         msg.setText(msg.getText().replaceAll("%zustaendigkeit%", zustaendigkeit));
         msg.setText(msg.getText().replaceAll("%title%", settingsService.getContextAppTitle()));
         
-        //falls Liste der Vorgänge zu Redaktionskriterium 1 nicht leer ist...
+        //falls Liste der VorgÃ¤nge zu Redaktionskriterium 1 nicht leer ist...
         if (!CollectionUtils.isEmpty(vorgaengeOffenNichtAkzeptiert)) {
         
-            //Liste der Vorgänge auslesen und zu String zusammenbauen
+            //Liste der VorgÃ¤nge auslesen und zu String zusammenbauen
             StringBuilder str = new StringBuilder();
             for (Vorgang vorgang : vorgaengeOffenNichtAkzeptiert) {
                 str.append(String.format("%1$-" + 9 + "s", vorgang.getId()) + String.format("%1$-" + 27 + "s", vorgang.getZustaendigkeit()) + String.format("%1$-" + 10 + "s", vorgang.getTyp().getText()) + formatter.format(vorgang.getVersion()) + " (vor " + ((jetzt.getTime() - vorgang.getVersion().getTime()) / (24 * 60 * 60 * 1000)) + " Tagen)\n");
             }
             
-            //Platzhalter für Teiltexte ersetzen und Teiltexte in Gesamt-E-Mail einfügen
+            //Platzhalter fÃ¼r Teiltexte ersetzen und Teiltexte in Gesamt-E-Mail einfÃ¼gen
             textKriteriumOffenNichtAkzeptiert.setText(textKriteriumOffenNichtAkzeptiert.getText().replaceAll("%tage%", tageOffenNichtAkzeptiert.toString()));
             textKriteriumOffenNichtAkzeptiert.setText(textKriteriumOffenNichtAkzeptiert.getText().replaceAll("%vorgaenge%", str.toString()));
             msg.setText(msg.getText().replaceAll("%kriteriumOffenNichtAkzeptiert%", textKriteriumOffenNichtAkzeptiert.getText()));
         }
-        //ansonsten Platzhalter für Teiltexte des Redaktionskriteriums 1 (plus nachfolgende Linebreaks) aus Gesamt-E-Mail entfernen
+        //ansonsten Platzhalter fÃ¼r Teiltexte des Redaktionskriteriums 1 (plus nachfolgende Linebreaks) aus Gesamt-E-Mail entfernen
         else {
             msg.setText(msg.getText().replaceAll("%kriteriumOffenNichtAkzeptiert%\n\n", ""));
         }
         
-        //falls Liste der Vorgänge zu Redaktionskriterium 2 nicht leer ist...
+        //falls Liste der VorgÃ¤nge zu Redaktionskriterium 2 nicht leer ist...
         if (!CollectionUtils.isEmpty(vorgaengeInbearbeitungOhneStatusKommentar)) {
         
-            //Liste der Vorgänge auslesen und zu String zusammenbauen
+            //Liste der VorgÃ¤nge auslesen und zu String zusammenbauen
             StringBuilder str = new StringBuilder();
             for (Vorgang vorgang : vorgaengeInbearbeitungOhneStatusKommentar) {
                 str.append(String.format("%1$-" + 9 + "s", vorgang.getId()) + String.format("%1$-" + 27 + "s", vorgang.getZustaendigkeit()) + String.format("%1$-" + 10 + "s", vorgang.getTyp().getText()) + formatter.format(vorgang.getVersion()) + " (vor " + ((jetzt.getTime() - vorgang.getVersion().getTime()) / (24 * 60 * 60 * 1000)) + " Tagen)\n");
             }
             
-            //Platzhalter für Teiltexte ersetzen und Teiltexte in Gesamt-E-Mail einfügen
+            //Platzhalter fÃ¼r Teiltexte ersetzen und Teiltexte in Gesamt-E-Mail einfÃ¼gen
             textKriteriumOffenInbearbeitungOhneStatusKommentar.setText(textKriteriumOffenInbearbeitungOhneStatusKommentar.getText().replaceAll("%tage%", tageInbearbeitungOhneStatusKommentar.toString()));
             textKriteriumOffenInbearbeitungOhneStatusKommentar.setText(textKriteriumOffenInbearbeitungOhneStatusKommentar.getText().replaceAll("%vorgaenge%", str.toString()));
             msg.setText(msg.getText().replaceAll("%kriteriumOffenInbearbeitungOhneStatusKommentar%", textKriteriumOffenInbearbeitungOhneStatusKommentar.getText()));
         }
-        //ansonsten Platzhalter für Teiltexte des Redaktionskriteriums 2 (plus nachfolgende Linebreaks) aus Gesamt-E-Mail entfernen
+        //ansonsten Platzhalter fÃ¼r Teiltexte des Redaktionskriteriums 2 (plus nachfolgende Linebreaks) aus Gesamt-E-Mail entfernen
         else {
             msg.setText(msg.getText().replaceAll("%kriteriumOffenInbearbeitungOhneStatusKommentar%\n\n", ""));
         }
         
-        //falls Liste der Vorgänge zu Redaktionskriterium 3 nicht leer ist...
+        //falls Liste der VorgÃ¤nge zu Redaktionskriterium 3 nicht leer ist...
         if (!CollectionUtils.isEmpty(vorgaengeIdeeOffenOhneUnterstuetzung)) {
         
-            //Liste der Vorgänge auslesen und zu String zusammenbauen
+            //Liste der VorgÃ¤nge auslesen und zu String zusammenbauen
             StringBuilder str = new StringBuilder();
             for (Vorgang vorgang : vorgaengeIdeeOffenOhneUnterstuetzung) {
                 str.append(String.format("%1$-" + 9 + "s", vorgang.getId()) + String.format("%1$-" + 27 + "s", vorgang.getZustaendigkeit()) + String.format("%1$-" + 18 + "s", vorgangDao.countUnterstuetzerByVorgang(vorgang)) + formatter.format(verlaufDao.getAktuellstesErstsichtungsdatumZuVorgang(vorgang)) + " (vor " + ((jetzt.getTime() - verlaufDao.getAktuellstesErstsichtungsdatumZuVorgang(vorgang).getTime()) / (24 * 60 * 60 * 1000)) + " Tagen)\n");
             }
             
-            //Platzhalter für Teiltexte ersetzen und Teiltexte in Gesamt-E-Mail einfügen
+            //Platzhalter fÃ¼r Teiltexte ersetzen und Teiltexte in Gesamt-E-Mail einfÃ¼gen
             textKriteriumIdeeOffenOhneUnterstuetzung.setText(textKriteriumIdeeOffenOhneUnterstuetzung.getText().replaceAll("%tage%", tageIdeeOffenOhneUnterstuetzung.toString()));
             textKriteriumIdeeOffenOhneUnterstuetzung.setText(textKriteriumIdeeOffenOhneUnterstuetzung.getText().replaceAll("%unterstuetzungen%", settingsService.getVorgangIdeeUnterstuetzer().toString()));
             textKriteriumIdeeOffenOhneUnterstuetzung.setText(textKriteriumIdeeOffenOhneUnterstuetzung.getText().replaceAll("%vorgaenge%", str.toString()));
             msg.setText(msg.getText().replaceAll("%kriteriumIdeeOffenOhneUnterstuetzung%", textKriteriumIdeeOffenOhneUnterstuetzung.getText()));
         }
-        //ansonsten Platzhalter für Teiltexte des Redaktionskriteriums 3 (plus nachfolgende Linebreaks) aus Gesamt-E-Mail entfernen
+        //ansonsten Platzhalter fÃ¼r Teiltexte des Redaktionskriteriums 3 (plus nachfolgende Linebreaks) aus Gesamt-E-Mail entfernen
         else {
             msg.setText(msg.getText().replaceAll("%kriteriumIdeeOffenOhneUnterstuetzung%\n\n", ""));
         }
         
-        //falls Liste der Vorgänge zu Redaktionskriterium 4 nicht leer ist...
+        //falls Liste der VorgÃ¤nge zu Redaktionskriterium 4 nicht leer ist...
         if (!CollectionUtils.isEmpty(vorgaengeWirdnichtbearbeitetOhneStatuskommentar)) {
         
-            //Liste der Vorgänge auslesen und zu String zusammenbauen
+            //Liste der VorgÃ¤nge auslesen und zu String zusammenbauen
             StringBuilder str = new StringBuilder();
             for (Vorgang vorgang : vorgaengeWirdnichtbearbeitetOhneStatuskommentar) {
                 str.append(String.format("%1$-" + 9 + "s", vorgang.getId()) + String.format("%1$-" + 27 + "s", vorgang.getZustaendigkeit()) + String.format("%1$-" + 10 + "s", vorgang.getTyp().getText()) + formatter.format(vorgang.getVersion()) + " (vor " + ((jetzt.getTime() - vorgang.getVersion().getTime()) / (24 * 60 * 60 * 1000)) + " Tagen)\n");
             }
             
-            //Platzhalter für Teiltexte ersetzen und Teiltexte in Gesamt-E-Mail einfügen
+            //Platzhalter fÃ¼r Teiltexte ersetzen und Teiltexte in Gesamt-E-Mail einfÃ¼gen
             textKriteriumWirdnichtbearbeitetOhneStatuskommentar.setText(textKriteriumWirdnichtbearbeitetOhneStatuskommentar.getText().replaceAll("%vorgaenge%", str.toString()));
             msg.setText(msg.getText().replaceAll("%kriteriumWirdnichtbearbeitetOhneStatuskommentar%", textKriteriumWirdnichtbearbeitetOhneStatuskommentar.getText()));
         }
-        //ansonsten Platzhalter für Teiltexte des Redaktionskriteriums 4 (plus nachfolgende Linebreaks) aus Gesamt-E-Mail entfernen
+        //ansonsten Platzhalter fÃ¼r Teiltexte des Redaktionskriteriums 4 (plus nachfolgende Linebreaks) aus Gesamt-E-Mail entfernen
         else {
             msg.setText(msg.getText().replaceAll("%kriteriumWirdnichtbearbeitetOhneStatuskommentar%\n\n", ""));
         }
         
-        //falls Liste der Vorgänge zu Redaktionskriterium 5 nicht leer ist...
+        //falls Liste der VorgÃ¤nge zu Redaktionskriterium 5 nicht leer ist...
         if (!CollectionUtils.isEmpty(vorgaengeNichtMehrOffenNichtAkzeptiert)) {
         
-            //Liste der Vorgänge auslesen und zu String zusammenbauen
+            //Liste der VorgÃ¤nge auslesen und zu String zusammenbauen
             StringBuilder str = new StringBuilder();
             for (Vorgang vorgang : vorgaengeNichtMehrOffenNichtAkzeptiert) {
                 str.append(String.format("%1$-" + 9 + "s", vorgang.getId()) + String.format("%1$-" + 27 + "s", vorgang.getZustaendigkeit()) + String.format("%1$-" + 10 + "s", vorgang.getTyp().getText()) + String.format("%1$-" + 24 + "s", vorgang.getStatus().getText()) + formatter.format(vorgang.getVersion()) + " (vor " + ((jetzt.getTime() - vorgang.getVersion().getTime()) / (24 * 60 * 60 * 1000)) + " Tagen)\n");
             }
             
-            //Platzhalter für Teiltexte ersetzen und Teiltexte in Gesamt-E-Mail einfügen
+            //Platzhalter fÃ¼r Teiltexte ersetzen und Teiltexte in Gesamt-E-Mail einfÃ¼gen
             textKriteriumNichtMehrOffenNichtAkzeptiert.setText(textKriteriumNichtMehrOffenNichtAkzeptiert.getText().replaceAll("%vorgaenge%", str.toString()));
             msg.setText(msg.getText().replaceAll("%kriteriumNichtMehrOffenNichtAkzeptiert%", textKriteriumNichtMehrOffenNichtAkzeptiert.getText()));
         }
-        //ansonsten Platzhalter für Teiltexte des Redaktionskriteriums 5 (plus nachfolgende Linebreaks) aus Gesamt-E-Mail entfernen
+        //ansonsten Platzhalter fÃ¼r Teiltexte des Redaktionskriteriums 5 (plus nachfolgende Linebreaks) aus Gesamt-E-Mail entfernen
         else {
             msg.setText(msg.getText().replaceAll("%kriteriumNichtMehrOffenNichtAkzeptiert%\n\n", ""));
         }
         
-        //falls Liste der Vorgänge zu Redaktionskriterium 6 nicht leer ist...
+        //falls Liste der VorgÃ¤nge zu Redaktionskriterium 6 nicht leer ist...
         if (!CollectionUtils.isEmpty(vorgaengeOhneRedaktionelleFreigaben)) {
         
-            //Liste der Vorgänge auslesen und zu String zusammenbauen
+            //Liste der VorgÃ¤nge auslesen und zu String zusammenbauen
             StringBuilder str = new StringBuilder();
             for (Vorgang vorgang : vorgaengeOhneRedaktionelleFreigaben) {
                 str.append(String.format("%1$-" + 9 + "s", vorgang.getId()) + String.format("%1$-" + 27 + "s", vorgang.getZustaendigkeit()) + String.format("%1$-" + 10 + "s", vorgang.getTyp().getText()) + String.format("%1$-" + 24 + "s", vorgang.getStatus().getText()) + String.format("%1$-" + 25 + "s", vorgang.getBetreffFreigabeStatus()) + String.format("%1$-" + 25 + "s", vorgang.getDetailsFreigabeStatus()) + vorgang.getFotoFreigabeStatus() + "\n");
             }
             
-            //Platzhalter für Teiltexte ersetzen und Teiltexte in Gesamt-E-Mail einfügen
+            //Platzhalter fÃ¼r Teiltexte ersetzen und Teiltexte in Gesamt-E-Mail einfÃ¼gen
             textKriteriumOhneRedaktionelleFreigaben.setText(textKriteriumOhneRedaktionelleFreigaben.getText().replaceAll("%vorgaenge%", str.toString()));
             msg.setText(msg.getText().replaceAll("%kriteriumOhneRedaktionelleFreigaben%", textKriteriumOhneRedaktionelleFreigaben.getText()));
         }
-        //ansonsten Platzhalter für Teiltexte des Redaktionskriteriums 6 (plus nachfolgende Linebreaks) aus Gesamt-E-Mail entfernen
+        //ansonsten Platzhalter fÃ¼r Teiltexte des Redaktionskriteriums 6 (plus nachfolgende Linebreaks) aus Gesamt-E-Mail entfernen
         else {
             msg.setText(msg.getText().replaceAll("%kriteriumOhneRedaktionelleFreigaben%\n\n", ""));
         }
         
-        //falls Liste der Vorgänge zu Redaktionskriterium 7 nicht leer ist...
+        //falls Liste der VorgÃ¤nge zu Redaktionskriterium 7 nicht leer ist...
         if (!CollectionUtils.isEmpty(vorgaengeOhneZustaendigkeit)) {
         
-            //Liste der Vorgänge auslesen und zu String zusammenbauen
+            //Liste der VorgÃ¤nge auslesen und zu String zusammenbauen
             StringBuilder str = new StringBuilder();
             for (Vorgang vorgang : vorgaengeOhneZustaendigkeit) {
                 str.append(String.format("%1$-" + 9 + "s", vorgang.getId()) + String.format("%1$-" + 10 + "s", vorgang.getTyp().getText()) + vorgang.getStatus().getText() + "\n");
             }
             
-            //Platzhalter für Teiltexte ersetzen und Teiltexte in Gesamt-E-Mail einfügen
+            //Platzhalter fÃ¼r Teiltexte ersetzen und Teiltexte in Gesamt-E-Mail einfÃ¼gen
             textKriteriumOhneZustaendigkeit.setText(textKriteriumOhneZustaendigkeit.getText().replaceAll("%vorgaenge%", str.toString()));
             msg.setText(msg.getText().replaceAll("%kriteriumOhneZustaendigkeit%", textKriteriumOhneZustaendigkeit.getText()));
         }
-        //ansonsten Platzhalter für Teiltexte des Redaktionskriteriums 7 (plus nachfolgende Linebreaks) aus Gesamt-E-Mail entfernen
+        //ansonsten Platzhalter fÃ¼r Teiltexte des Redaktionskriteriums 7 (plus nachfolgende Linebreaks) aus Gesamt-E-Mail entfernen
         else {
             msg.setText(msg.getText().replaceAll("%kriteriumOhneZustaendigkeit%\n\n", ""));
         }
 
-        //Job ausführen
+        //Job ausfÃ¼hren
 		jobExecutorService.runJob(new MailSenderJob(this, msg));	
 	}
 	
 	
 	/**
 	 * Passt eine URL an, so dass sie beim Versenden einer EMail verwendet werden kann.
-	 * @param url URL, die geprüft ung ggf. angepasst werden soll.
+	 * @param url URL, die geprÃ¼ft ung ggf. angepasst werden soll.
 	 * @return angepasste URL
 	 */
 	private String getServerUrl(String url) {

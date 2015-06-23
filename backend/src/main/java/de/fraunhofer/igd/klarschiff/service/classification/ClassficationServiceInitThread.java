@@ -6,7 +6,7 @@ import de.fraunhofer.igd.klarschiff.util.ThreadUtil;
 
 /**
  * Der Thread dient zum Initialisieren des Klassifikators. Nach dem Start des Threads
- * wird zun‰chst eine gegebene Zeit gewartet.
+ * wird zun√§chst eine gegebene Zeit gewartet.
  * @author Stefan Audersch (Fraunhofer IGD)
  */
 public class ClassficationServiceInitThread extends Thread {	
@@ -34,7 +34,7 @@ public class ClassficationServiceInitThread extends Thread {
 			Thread thread = ThreadUtil.findThreadByName(InitializeServiceThread.class.getSimpleName());
 			while(thread!=null && thread.isAlive()) sleep(100);
 			classificationService.logger.debug("init ClassificationService");
-			LogUtil.info("Zust‰ndigkeitsfinder wird initialisiert ...");
+			LogUtil.info("Zust√§ndigkeitsfinder wird initialisiert ...");
 			classificationService.reBuildClassifier();
 		} catch (Exception e) {
 			classificationService.logger.error("Fehler beim Initialisieren des ClassificationService", e);

@@ -10,11 +10,11 @@ import de.fraunhofer.igd.klarschiff.vo.Kategorie;
 
 
 /**
- * Command für die Vorgangsuche. <br />
- * Beinhaltet Suchfelder für einfache und erweiterte Suche sowie Attribute für die 
+ * Command fÃ¼r die Vorgangsuche. <br />
+ * Beinhaltet Suchfelder fÃ¼r einfache und erweiterte Suche sowie Attribute fÃ¼r die 
  * Ergebnisdarstellung: <br/>
  * <code>page</code>: die aktuelle Seitenzahl<br/>
- * <code>size</code>: die konfigurierte Anzahl von Einträgen pro Seite<br/>
+ * <code>size</code>: die konfigurierte Anzahl von EintrÃ¤gen pro Seite<br/>
  * <code>order</code>: die Spalte nach der sortiert wird<br/>
  * <code>orderDirection</code>: die Sortierreihenfolge (1:absteigend,default:aufsteigend)
  * @author Stefan Audersch (Fraunhofer IGD)
@@ -45,6 +45,8 @@ public class VorgangSuchenCommand implements Serializable {
 	Kategorie erweitertKategorie;
 	Date erweitertDatumVon;
 	Date erweitertDatumBis;
+	Date aktualisiertVon;
+	Date aktualisiertBis;
 	EnumVorgangStatus[] erweitertVorgangStatus;
 	Boolean erweitertArchiviert;
 	String erweitertZustaendigkeit;
@@ -57,8 +59,11 @@ public class VorgangSuchenCommand implements Serializable {
 	Long[] vorgangAuswaehlen;
 	String auftragTeam;
 	Date auftragDatum;
+	String negation;
+	String suchbereich;
+	Boolean ueberspringeVorgaengeMitMissbrauchsmeldungen;
 	
-	//NUR ADMIN dürfen andere Zuständigkeiten sehen
+	//NUR ADMIN dÃ¼rfen andere ZustÃ¤ndigkeiten sehen
 	
 	public String getOrderString() {
 		switch(order) {
@@ -70,6 +75,7 @@ public class VorgangSuchenCommand implements Serializable {
 			case 5: return "vo.adresse";
 			case 6: return "un.count";
 			case 7: return "vo.zustaendigkeit";
+			case 8: return "auftrag.prioritaet, vo.datum";
 			default: return "";
 		}
 	}
@@ -200,6 +206,22 @@ public class VorgangSuchenCommand implements Serializable {
 		this.erweitertDatumBis = erweitertDatumBis;
 	}
 
+  public Date getAktualisiertVon() {
+    return aktualisiertVon;
+  }
+
+  public void setAktualisiertVon(Date aktualisiertVon) {
+    this.aktualisiertVon = aktualisiertVon;
+  }
+
+  public Date getAktualisiertBis() {
+    return aktualisiertBis;
+  }
+
+  public void setAktualisiertBis(Date aktualisiertBis) {
+    this.aktualisiertBis = aktualisiertBis;
+  }
+  
 	public EnumVorgangStatus[] getErweitertVorgangStatus() {
 		return erweitertVorgangStatus;
 	}
@@ -287,4 +309,28 @@ public class VorgangSuchenCommand implements Serializable {
 	public void setAuftragDatum(Date auftragDatum) {
 		this.auftragDatum = auftragDatum;
 	}
+
+  public String getNegation() {
+    return negation;
+  }
+
+  public void setNegation(String negation) {
+    this.negation = negation;
+  }
+
+  public String getSuchbereich() {
+    return suchbereich;
+  }
+
+  public void setSuchbereich(String suchbereich) {
+    this.suchbereich = suchbereich;
+  }
+
+  public Boolean getUeberspringeVorgaengeMitMissbrauchsmeldungen() {
+    return ueberspringeVorgaengeMitMissbrauchsmeldungen == null ? false : ueberspringeVorgaengeMitMissbrauchsmeldungen;
+  }
+
+  public void setUeberspringeVorgaengeMitMissbrauchsmeldungen(Boolean ueberspringeVorgaengeMitMissbrauchsmeldungen) {
+    this.ueberspringeVorgaengeMitMissbrauchsmeldungen = ueberspringeVorgaengeMitMissbrauchsmeldungen;
+  }
 }

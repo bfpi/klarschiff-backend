@@ -21,19 +21,18 @@ import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.GeoTools;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
-import org.geotools.geometry.jts.JTS;
-import org.geotools.referencing.CRS;
-import org.geotools.util.logging.Log4JLoggerFactory;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
+import org.opengis.geometry.MismatchedDimensionException;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.operation.TransformException;
 import org.opengis.referencing.ReferenceIdentifier;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.operation.MathTransform;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.vividsolutions.jts.algorithm.distance.EuclideanDistanceToPoint;
+import com.vividsolutions.jts.algorithm.distance.DistanceToPoint;
 import com.vividsolutions.jts.algorithm.distance.PointPairDistance;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
@@ -47,14 +46,14 @@ import de.fraunhofer.igd.klarschiff.vo.Vorgang;
 
 
 /**
- * Der Service dient zum Halten von Konfigurationsparametern für die Darstellung von Karten in den Webseiten mit Hilfe von 
- * OpenLayers, zur Erstellung von URLs für die Darstellung der Position eines Vorganges in einem externen System als auch 
- * zur Ermittlung von Features mit geographischem Hintergrund für den Zuständigkeitsfinder, die über den WFS ermittelt
+ * Der Service dient zum Halten von Konfigurationsparametern fÃ¼r die Darstellung von Karten in den Webseiten mit Hilfe von 
+ * OpenLayers, zur Erstellung von URLs fÃ¼r die Darstellung der Position eines Vorganges in einem externen System als auch 
+ * zur Ermittlung von Features mit geographischem Hintergrund fÃ¼r den ZustÃ¤ndigkeitsfinder, die Ã¼ber den WFS ermittelt
  * werden. Bei der Ermittlung von Features mit geographischen Hintergrund wird ein zweistufiger Cache verwendet, um die 
- * Abfragen an den WFS zu reduzieren. Hierfür wird die Hilfsklasse GeoServiceWfs verwendet, da der Caching nur funktioniert,
+ * Abfragen an den WFS zu reduzieren. HierfÃ¼r wird die Hilfsklasse GeoServiceWfs verwendet, da der Caching nur funktioniert,
  * wenn der Funktionsaufruf nicht aus der gleichen Klasse erfolgt. 
  * @author Stefan Audersch (Fraunhofer IGD)
- * @author Marcus Kröller (Fraunhofer IGD)
+ * @author Marcus KrÃ¶ller (Fraunhofer IGD)
  * @see GeoServiceWfs
  */
 public class GeoService {
@@ -101,96 +100,93 @@ public class GeoService {
 	DataStore dataStore; 
 	FilterFactory2 filterFactory;
 	
-    private MathTransform mapProjectionToMapExternProjection;
-
-    /**
-     * Initialisierung für die Nutzung des WFS und in diesem Zusammenhang ggf. das Setzen von Proxyparametern.
-     */
-    @PostConstruct
-    public void init() {
-    	try {
-    		//java.util.logging.Logger.getLogger("sun.net.www.protocol.http.HttpURLConnection").setLevel(java.util.logging.Level.SEVERE);
-    		//GeoTools.. .setLoggerFactory(Log4JLoggerFactory.getInstance());
-        	CoordinateReferenceSystem mapCRS = CRS.decode(mapProjection);
-        	CoordinateReferenceSystem mapExternCRS = CRS.decode(mapExternProjection);
-        	mapProjectionToMapExternProjection = CRS.findMathTransform(mapCRS, mapExternCRS);
-        	
+	/**
+	 * Initialisierung fÃ¼r die Nutzung des WFS und in diesem Zusammenhang ggf. das
+	 * Setzen von Proxyparametern.
+	 */
+	@PostConstruct
+	public void init() {
+		try {
 			//ConnectionParameter setzen
-			Map<String,String> connectionParameters = new HashMap<String,String>();
+			Map<String, String> connectionParameters = new HashMap<String, String>();
 			connectionParameters.put("WFSDataStoreFactory:GET_CAPABILITIES_URL", wfsCapabilitiesUrl);
 
 			//ggf. Proxy setzen
 			if (!StringUtils.isBlank(settingsService.getProxyHost()) && !StringUtils.isBlank(settingsService.getProxyPort())) {
-				logger.info("Proxy wird fuer die Verbindung mit dem WFS wird gesetzt. (ProxyHost:"+settingsService.getProxyHost()+" ProxyPort:"+settingsService.getProxyPort()+")");
+				logger.info("Proxy wird fuer die Verbindung mit dem WFS wird gesetzt. (ProxyHost:" + settingsService.getProxyHost() + " ProxyPort:" + settingsService.getProxyPort() + ")");
 				System.setProperty("http.proxyHost", settingsService.getProxyHost());
 				System.setProperty("http.proxyPort", settingsService.getProxyPort());
 			}
-			logger.info("aktuelle Proxyeinstellungen: (ProxyHost:"+System.getProperty("http.proxyHost")+" ProxyPort:"+System.getProperty("http.proxyPort")+")");
+			logger.info("aktuelle Proxyeinstellungen: (ProxyHost:" + System.getProperty("http.proxyHost") + " ProxyPort:" + System.getProperty("http.proxyPort") + ")");
 
 			try {
 				//DataStoreErzeugen
 				LogUtil.info("Verbindung zum WFS wird aufgebaut ...");
 				dataStore = DataStoreFinder.getDataStore(connectionParameters);
 
-				if (dataStore==null) throw new NullPointerException();
+				if (dataStore == null) {
+					throw new NullPointerException();
+				}
 
 				try {
-					if (logger.getLevel().isGreaterOrEqual(Level.DEBUG))
-						//nur zum Debuggen
-						for(String typeName : dataStore.getTypeNames()) {
+					if (logger.getLevel().isGreaterOrEqual(Level.DEBUG)) //nur zum Debuggen
+					{
+						for (String typeName : dataStore.getTypeNames()) {
 							SimpleFeatureType schema = dataStore.getSchema(typeName);
-							CoordinateReferenceSystem  crs = schema.getGeometryDescriptor().getCoordinateReferenceSystem();
+							CoordinateReferenceSystem crs = schema.getGeometryDescriptor().getCoordinateReferenceSystem();
 							logger.debug(typeName);
-							for (Iterator<ReferenceIdentifier> iter = crs.getIdentifiers().iterator(); iter.hasNext(); )
+							for (Iterator<ReferenceIdentifier> iter = crs.getIdentifiers().iterator(); iter.hasNext();) {
 								logger.debug(iter.next().getCode());
+							}
 						}
-				} catch (Exception e) { }
-				
+					}
+				} catch (Exception e) {
+				}
+
 				//FilterFactory erzeugen
 				filterFactory = CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());
-				
+
 			} catch (Exception e) {
 				switch (wfsExceptionHandling) {
-				case warn:
-					dataStore = null;
-					logger.error("Verbindung zum WFS konnte nicht richtig initialisiert werden.", e);
-					break;
-				default:
-					throw e;
+					case warn:
+						dataStore = null;
+						logger.error("Verbindung zum WFS konnte nicht richtig initialisiert werden.", e);
+						break;
+					default:
+						throw e;
 				}
 			}
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
-        }
-    }
+		} catch (Exception ex) {
+			throw new RuntimeException(ex);
+		}
+	}
 
     
-    
-    /**
-     * Koordinatentransformation von der internen Darstellung auf ein Koordinatensystem für die Darstellung des
-     * Ortes eines Vorganges in einem externen System.
-     * @param point Punktkoordinate, die transformiert werden soll
-     */
-    private Point transformMapProjectionToMapExternProjection(Point point) {
-        try {
-        	point = (Point)JTS.transform(point, mapProjectionToMapExternProjection);
-        	Coordinate coor = new Coordinate(point.getY(), point.getX());
-        	point.getCoordinate().setCoordinate(coor);
-        	return point;
-        	
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
-        }
-    }
+		/**
+		 * Koordinatentransformation von der internen Darstellung auf ein Koordinatensystem fÃ¼r die Darstellung des
+		 * Ortes eines Vorganges in einem externen System.
+		 * @param point Punktkoordinate, die transformiert werden soll
+		 */
+		private Point transformMapProjectionToMapExternProjection(Point point) {
+			try {
+				return de.bfpi.tools.GeoTools.transformPosition(point, mapProjection, mapExternProjection);
+			} catch (FactoryException ex) {
+				throw new RuntimeException(ex);
+			} catch (MismatchedDimensionException ex) {
+				throw new RuntimeException(ex);
+			} catch (TransformException ex) {
+				throw new RuntimeException(ex);
+			}
+		}
     
     
     /**
      * Erstellung der URL zur Darstellung des Ortes eines Vorganges in einem externen Web-Mapping-System
-     * Die URL kann über die Einstellungen konfiguriert werden
+     * Die URL kann Ã¼ber die Einstellungen konfiguriert werden
      * und kann die folgenden Platzhalter beinhalten:
      * <code>%xmin%</code>, <code>%ymin%</code>, <code>%xmax%</code>, <code>%ymax%</code>, <code>%x%</code>, <code>%y%</code>, <code>%id%</code>
-     * @param vorgang Vorgang, für den die URL erzeugt werden soll
-     * @return URL für die externe Anzeige
+     * @param vorgang Vorgang, fÃ¼r den die URL erzeugt werden soll
+     * @return URL fÃ¼r die externe Anzeige
      * @see #mapExternUrl
      */
     public String getMapExternUrl(Vorgang vorgang) {
@@ -208,10 +204,10 @@ public class GeoService {
     
     /**
      * Erstellung der URL zur Darstellung des Ortes eines Vorganges in einem externen System (z.B. im Frontend). 
-     * Die URL kann über die Einstellungen konfiguriert werden und
+     * Die URL kann Ã¼ber die Einstellungen konfiguriert werden und
      * kann die folgenden Platzhalter beinhalten: <code>%x%</code>, <code>%y%</code> und <code>%id%</code>,    
-     * @param vorgang Vorgang für den die URL erzeugt werden soll
-     * @return Url für die externe Anzeige
+     * @param vorgang Vorgang fÃ¼r den die URL erzeugt werden soll
+     * @return Url fÃ¼r die externe Anzeige
      * @see #mapExternExternUrl
      */
     public String getMapExternExternUrl(Vorgang vorgang) {
@@ -221,10 +217,10 @@ public class GeoService {
 
     
     /**
-     * Ermitteln des FeatureWertes für ein Feature mit geographischem Hintergrund
-     * @param ovi Punkt, für den das Feature ermittelt werden soll
-     * @param attribute Feature, für den der Wert ermittelt werden soll
-     * @return Distanz bzw. Flächengröße entsprechend des Typs
+     * Ermitteln des FeatureWertes fÃ¼r ein Feature mit geographischem Hintergrund
+     * @param ovi Punkt, fÃ¼r den das Feature ermittelt werden soll
+     * @param attribute Feature, fÃ¼r den der Wert ermittelt werden soll
+     * @return Distanz bzw. FlÃ¤chengrÃ¶ÃŸe entsprechend des Typs
      * @see de.fraunhofer.igd.klarschiff.service.classification.Attribute.GeoMeasure
      */
     public Double calculateFeature(Point ovi, Attribute attribute) {
@@ -242,22 +238,22 @@ public class GeoService {
 	
     
     /**
-     * Ermittelt die FeatureWerte mit geographischem Hintergrund für ein Feature. Dabei werden die Werte für alle
+     * Ermittelt die FeatureWerte mit geographischem Hintergrund fÃ¼r ein Feature. Dabei werden die Werte fÃ¼r alle
      * GeoMeasure (abstandInnerhalb, abstandAusserhalb, flaechenGroesse) berechnet. Durch den Aufruf der Funktion
-     * über die Funktion {@link GeoServiceWfs#getGeoFeatures(Point, double, String, String, String, String)} kann ein ggf.
+     * Ã¼ber die Funktion {@link GeoServiceWfs#getGeoFeatures(Point, double, String, String, String, String)} kann ein ggf.
      * gecachtes Ergebnis der Funktion aufgerufen werden.
-     * @param ovi Punkt für den die Features berechnet werden sollen
-     * @param oviBuffer Umkreis des Punktes der mit berücksichtigt werden soll
+     * @param ovi Punkt fÃ¼r den die Features berechnet werden sollen
+     * @param oviBuffer Umkreis des Punktes der mit berÃ¼cksichtigt werden soll
      * @param typeName Typ des Features beim WFS
      * @param geomPropertyName Name des Geometrieattributs beim WFS
      * @param propertyName PropertyName beim WFS
      * @param propertyValue PropertyValue beim WFS
-     * @return Featurwerte für den Punkt [0] abstandAusserhalb, [1] abstandInnerhalb und [2] flaechenGroesse
+     * @return Featurwerte fÃ¼r den Punkt [0] abstandAusserhalb, [1] abstandInnerhalb und [2] flaechenGroesse
      * @see GeoServiceWfs#getGeoFeatures(Point, double, String, String, String, String)
      */
 	protected Double[] getGeoFeatures(Point ovi, double oviBuffer, String typeName, String geomPropertyName, String propertyName, String propertyValue) {
 		logger.debug("getGeoFeatures L2: ovi=" +ovi.getX()+","+ovi.getY()+" typeName="+typeName+" geomPropertyName="+geomPropertyName+" propertyName="+propertyName+" propertyValue="+propertyValue);
-		//Features für ein typeName über den WFS ermitteln
+		//Features fÃ¼r ein typeName Ã¼ber den WFS ermitteln
 		List<GeoFeature> features = geoServiceWfs.getGeoFeatures(ovi, oviBuffer, typeName, geomPropertyName, propertyName);
 		
 		//ggf. Feature bei Attributen mit angegebenem propertyName und propertyValue herausfiltern
@@ -269,27 +265,27 @@ public class GeoService {
 			features = _features;
 		} 
 		
-		//Workaround für die nachfolgende Operation
+		//Workaround fÃ¼r die nachfolgende Operation
 		Geometry _ovi = ovi.buffer(0.001,1);
 
-		//Fläche im das ovi bestimmen
+		//FlÃ¤che im das ovi bestimmen
 		Polygon oviWithBuffer = (Polygon) ovi.buffer(oviBuffer);
 		
 		//HilfsObjekt zur Abstandsberechnung
 		PointPairDistance ppd = new PointPairDistance();
-		//Hilfsvariablen für den Durchlauf der Features
+		//Hilfsvariablen fÃ¼r den Durchlauf der Features
 		Double distance      = null;
 		boolean isInFeatures = false;
 		Double area          = 0d;
 		
-		//jedes gültige Feature durchlaufen
+		//jedes gÃ¼ltige Feature durchlaufen
 		for(GeoFeature feature : features)
 			try {
 				Double _distance      = distance;
 				boolean _isInFeatures = isInFeatures;
 				Double _area          = area;
 				//Abstand zum Rand berechnen
-				EuclideanDistanceToPoint.computeDistance(feature.getGeometry(), ovi.getCoordinate(), ppd);
+				DistanceToPoint.computeDistance(feature.getGeometry(), ovi.getCoordinate(), ppd);
 				
 				if (_ovi.coveredBy(feature.getGeometry())) {
 					//ovi ist innerhalb des Features
@@ -297,17 +293,17 @@ public class GeoService {
 					_isInFeatures = true;
 					_distance = min(_distance, ppd.getDistance());
 				} else {
-					//ovi ist außerhalb des Features
+					//ovi ist auÃŸerhalb des Features
 					if(!_isInFeatures) _distance = min(_distance, ppd.getDistance());
 				}
-				//Fläche zur Gesamtfläche hinzufügen
+				//FlÃ¤che zur GesamtflÃ¤che hinzufÃ¼gen
 				_area += oviWithBuffer.intersection(feature.getGeometry()).getArea();
 			
 				distance = _distance;
 				isInFeatures = _isInFeatures;
 				area = _area;
 			} catch (Exception e) {
-				logger.warn("Berechnungen für ein GeoFeature sind fehlerhaft.", e);
+				logger.warn("Berechnungen fÃ¼r ein GeoFeature sind fehlerhaft.", e);
 			}
 		
 		return (isInFeatures) ? new Double[]{null, distance, area} : new Double[]{distance, null, (area>0d) ? area : null};
@@ -316,11 +312,11 @@ public class GeoService {
 	
 	/**
 	 * Ermittelt die angefragten WFS-Features zu einem gegebenen Punkt und dessen Umkreis, die den Umkreis schneiden. 
-	 * Durch den Aufruf der Funktion über die Funktion 
+	 * Durch den Aufruf der Funktion Ã¼ber die Funktion 
 	 * {@link GeoServiceWfs#getGeoFeatures(Point, double, String, String, String)} kann ein ggf. gecachtes Ergebnis 
 	 * der Funktion aufgerufen werden.
-	 * @param ovi Punkt für den die WFS-Features ermittelt werden sollen
-	 * @param oviBuffer Umkreis um den Punkt, der berücksichtigt werden soll
+	 * @param ovi Punkt fÃ¼r den die WFS-Features ermittelt werden sollen
+	 * @param oviBuffer Umkreis um den Punkt, der berÃ¼cksichtigt werden soll
 	 * @param typeName Typ des Features beim WFS
      * @param geomPropertyName Name des Geometrieattributs beim WFS
 	 * @param propertyName PropertyName beim WFS
@@ -331,13 +327,13 @@ public class GeoService {
 	protected List<GeoFeature> getGeoFeatures(Point ovi, double oviBuffer, String typeName, String geomPropertyName, String propertyName) {
 		logger.debug("getGeoFeatures L1: ovi=" +ovi.getX()+","+ovi.getY()+" typeName="+typeName+" geomPropertyName="+geomPropertyName+" propertyName="+propertyName);
 		try {
-			//Fläche um das ovi bestimmen
+			//FlÃ¤che um das ovi bestimmen
 			Polygon oviWithBuffer = (Polygon)ovi.buffer(oviBuffer);
 			
-			//Filter für die WFS-anfrage bestimmen
+			//Filter fÃ¼r die WFS-anfrage bestimmen
 			Filter filter = filterFactory.intersects(filterFactory.property(geomPropertyName), filterFactory.literal(oviWithBuffer)); 
 			
-			//WFS-Anfrage durchführen
+			//WFS-Anfrage durchfÃ¼hren
 			FeatureSource<SimpleFeatureType, SimpleFeature> source = dataStore.getFeatureSource(typeName);
 			FeatureCollection<SimpleFeatureType, SimpleFeature> features = source.getFeatures(new Query(typeName, filter));
 			

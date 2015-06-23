@@ -21,7 +21,7 @@ import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
 import de.fraunhofer.igd.klarschiff.util.SqlScriptUtil;
 
 /**
- * Controller für den Adminbereich
+ * Controller fÃ¼r den Adminbereich
  * @author Stefan Audersch (Fraunhofer IGD)
  */
 @RequestMapping("/admin")
@@ -55,8 +55,8 @@ public class AdminController {
 	
 	/**
 	 * Die Methode verarbeitet den GET-Request auf der URL <code>/admin/uebersicht</code><br/>
-	 * Seitenbeschreibung: Übersichtsseite zum Adminbereich
-	 * @param model Model in dem ggf. Daten für die View abgelegt werden
+	 * Seitenbeschreibung: Ãœbersichtsseite zum Adminbereich
+	 * @param model Model in dem ggf. Daten fÃ¼r die View abgelegt werden
 	 * @param request Request
 	 * @return View, die zum Rendern des Request verwendet wird
 	 */
@@ -68,8 +68,8 @@ public class AdminController {
 	
 	/**
 	 * Die Methode verarbeitet den GET-Request auf der URL <code>/admin/benutzer</code><br/>
-	 * Seitenbeschreibung: Übersicht über die Benutzer im Adminbereich
-	 * @param model Model in dem ggf. Daten für die View abgelegt werden
+	 * Seitenbeschreibung: Ãœbersicht Ã¼ber die Benutzer im Adminbereich
+	 * @param model Model in dem ggf. Daten fÃ¼r die View abgelegt werden
 	 * @param request Request
 	 * @return View, die zum Rendern des Request verwendet wird
 	 */
@@ -82,8 +82,8 @@ public class AdminController {
 	
 	/**
 	 * Die Methode verarbeitet den GET-Request auf der URL <code>/admin/rollen</code><br/>
-	 * Seitenbeschreibung: Übersicht über die Rollen im Adminbereich
-	 * @param model Model in dem ggf. Daten für die View abgelegt werden
+	 * Seitenbeschreibung: Ãœbersicht Ã¼ber die Rollen im Adminbereich
+	 * @param model Model in dem ggf. Daten fÃ¼r die View abgelegt werden
 	 * @param request Request
 	 * @return View, die zum Rendern des Request verwendet wird
 	 */
@@ -97,8 +97,8 @@ public class AdminController {
     
     /**
 	 * Die Methode verarbeitet den GET-Request auf der URL <code>/admin/redaktion</code><br/>
-	 * Seitenbeschreibung: Übersicht über die Redaktion im Adminbereich
-	 * @param model Model in dem ggf. Daten für die View abgelegt werden
+	 * Seitenbeschreibung: Ãœbersicht Ã¼ber die Redaktion im Adminbereich
+	 * @param model Model in dem ggf. Daten fÃ¼r die View abgelegt werden
 	 * @param request Request
 	 * @return View, die zum Rendern des Request verwendet wird
 	 */
@@ -112,8 +112,8 @@ public class AdminController {
     
     /**
 	 * Die Methode verarbeitet den GET-Request auf der URL <code>/admin/status</code><br/>
-	 * Seitenbeschreibung: Übersicht zum Status des Servers im Adminbereich
-	 * @param model Model in dem ggf. Daten für die View abgelegt werden
+	 * Seitenbeschreibung: Ãœbersicht zum Status des Servers im Adminbereich
+	 * @param model Model in dem ggf. Daten fÃ¼r die View abgelegt werden
 	 * @param request Request
 	 * @return View, die zum Rendern des Request verwendet wird
 	 */
@@ -133,8 +133,8 @@ public class AdminController {
 	
 	/**
 	 * Die Methode verarbeitet den GET-Request auf der URL <code>/admin/test</code><br/>
-	 * Seitenbeschreibung: Testfunktionen für die Jobs und die Schnittstelle für das Frontend im Adminbereich
-	 * @param model Model in dem ggf. Daten für die View abgelegt werden
+	 * Seitenbeschreibung: Testfunktionen fÃ¼r die Jobs und die Schnittstelle fÃ¼r das Frontend im Adminbereich
+	 * @param model Model in dem ggf. Daten fÃ¼r die View abgelegt werden
 	 * @param request Request
 	 * @return View, die zum Rendern des Request verwendet wird
 	 */
@@ -146,9 +146,9 @@ public class AdminController {
 	
 	/**
 	 * Die Methode verarbeitet den POST-Request auf der URL <code>/admin/test</code><br/>
-	 * Seitenbeschreibung: Ausführen von Jobs im Adminbereich
-	 * @param model Model in dem ggf. Daten für die View abgelegt werden
-	 * @param action Id um den auszuführenden Job zu identifizieren
+	 * Seitenbeschreibung: AusfÃ¼hren von Jobs im Adminbereich
+	 * @param model Model in dem ggf. Daten fÃ¼r die View abgelegt werden
+	 * @param action Id um den auszufÃ¼hrenden Job zu identifizieren
 	 * @param request Request
 	 * @return View, die zum Rendern des Request verwendet wird
 	 */
@@ -181,7 +181,7 @@ public class AdminController {
 	/**
 	 * Die Methode verarbeitet den GET-Request auf der URL <code>/admin/datenbank</code><br/>
 	 * Seitenbeschreibung: Darstellung der Datenbankfunktionen im Adminbereich
-	 * @param model Model in dem ggf. Daten für die View abgelegt werden
+	 * @param model Model in dem ggf. Daten fÃ¼r die View abgelegt werden
 	 * @param request Request
 	 * @return View, die zum Rendern des Request verwendet wird
 	 */
@@ -192,9 +192,9 @@ public class AdminController {
 
 	/**
 	 * Die Methode verarbeitet den POST-Request auf der URL <code>/admin/datenbank</code><br/>
-	 * Seitenbeschreibung: Ausführung einer Datenbankfunktion im Adminbereich
-	 * @param model Model in dem ggf. Daten für die View abgelegt werden
-	 * @param action Id zum identifizieren der auszuführenden Datenbankfunktion
+	 * Seitenbeschreibung: AusfÃ¼hrung einer Datenbankfunktion im Adminbereich
+	 * @param model Model in dem ggf. Daten fÃ¼r die View abgelegt werden
+	 * @param action Id zum identifizieren der auszufÃ¼hrenden Datenbankfunktion
 	 * @param request Request
 	 * @return View, die zum Rendern des Request verwendet wird
 	 */

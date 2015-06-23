@@ -16,9 +16,9 @@ import javax.persistence.TemporalType;
 import org.springframework.format.annotation.DateTimeFormat;
 
 /**
- * VO zum Abbilden des Auﬂendienst-Auftrages f¸r einen Vorgang
+ * VO zum Abbilden des Au√üendienst-Auftrages f√ºr einen Vorgang
  *
- * @author Robert Voﬂ (BFPI GmbH)
+ * @author Robert Vo√ü (BFPI GmbH)
  *
  */
 @SuppressWarnings("serial")
@@ -31,14 +31,14 @@ public class Auftrag implements Serializable {
   private Integer id;
 
   /**
-   * Vorgang f¸r den Auftrag
+   * Vorgang f√ºr den Auftrag
    */
   @OneToOne
   @JoinColumn(name = "vorgang")
   private Vorgang vorgang;
 
   /**
-   * Team f¸r den Auftrag
+   * Team f√ºr den Auftrag
    */
   @Enumerated(EnumType.STRING)
   private String team;
@@ -51,7 +51,7 @@ public class Auftrag implements Serializable {
   private Date datum;
 
   /**
-   * Priorit‰t
+   * Priorit√§t
    */
   private Integer prioritaet;
 
