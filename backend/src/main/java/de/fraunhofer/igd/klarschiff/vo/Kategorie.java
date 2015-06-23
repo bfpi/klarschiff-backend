@@ -111,6 +111,11 @@ public class Kategorie implements Serializable {
     }
     
 
+  @NotNull
+  @Column(columnDefinition = "boolean default false")
+  private boolean geloescht = false;
+
+
     /* --------------- Persitenzfunktionen ----------------------------*/
 
 	/**
