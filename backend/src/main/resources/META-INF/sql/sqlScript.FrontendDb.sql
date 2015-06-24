@@ -323,45 +323,77 @@ CREATE OR REPLACE VIEW klarschiff_wfs AS
 		
 ALTER TABLE klarschiff_wfs OWNER TO ${f_username};
 
-CREATE OR REPLACE VIEW klarschiff_wfs_tmpl AS
-    SELECT 
-    	v.id, 
-    	v.datum, 
-    	v.details, 
-    	v.bemerkung, 
-    	v.kategorieid, 
-    	k.name AS kategorie_name, 
-    	v.hauptkategorieid, 
-    	kh.name AS hauptkategorie_name, 
-    	v.the_geom::geometry(Point,25833) AS the_geom, 
-    	v.titel, 
-    	v.vorgangstyp, 
-    	t.name AS vorgangstyp_name, 
-    	v.status, 
-    	s.name AS status_name, 
-    	v.unterstuetzer,
-    	v.foto_vorhanden,
-    	v.foto_freigegeben,
-    	v.foto_normal,
-    	v.foto_thumb,
-        v.betreff_vorhanden,
-        v.betreff_freigegeben,
-        v.details_vorhanden,
-        v.details_freigegeben,
-        v.zustaendigkeit
-    FROM 
-    	klarschiff_wfs v,
-    	klarschiff_status s,
-    	klarschiff_kategorie k,
-    	klarschiff_kategorie kh,
-    	klarschiff_vorgangstyp t
+CREATE OR REPLACE VIEW klarschiff_wfs_georss AS
+    SELECT
+        v.id AS meldung,
+        initcap(v.vorgangstyp::text) AS typ,
+        hk.name::text AS hauptkategorie,
+        uk.parent::smallint AS hauptkategorie_id,
+        uk.name::text AS unterkategorie,
+        uk.id::smallint AS unterkategorie_id,
+        CASE
+            WHEN v.status::text = 'wirdNichtBearbeitet'::text THEN 'wird nicht bearbeitet'::text
+            ELSE regexp_replace(v.status::text, '([A-Z])'::text, ' \1'::text, 'g'::text)
+        END AS status,
+        CASE
+            WHEN (( SELECT count(*) AS count
+               FROM klarschiff.klarschiff_unterstuetzer u
+              WHERE v.id = u.vorgang AND u.datum IS NOT NULL))::smallint > 0 THEN (( SELECT count(*) AS count
+               FROM klarschiff.klarschiff_unterstuetzer u
+              WHERE v.id = u.vorgang AND u.datum IS NOT NULL))::text
+            ELSE 'bisher keine'::text
+        END AS unterstuetzungen,
+        CASE
+            WHEN v.titel IS NOT NULL AND v.titel::text <> ''::text AND v.betreff_freigegeben IS TRUE AND v.betreff_vorhanden IS TRUE THEN v.titel::text
+            WHEN v.status::text = 'offen'::text AND v.betreff_vorhanden IS TRUE AND v.betreff_freigegeben IS FALSE THEN 'redaktionelle Prüfung ausstehend'::text
+            WHEN v.status::text <> 'offen'::text AND v.betreff_vorhanden IS TRUE AND v.betreff_freigegeben IS FALSE THEN 'redaktionell nicht freigegeben'::text
+            ELSE 'nicht vorhanden'::text
+        END AS betreff,
+        CASE
+            WHEN v.details IS NOT NULL AND v.details <> ''::text AND v.details_freigegeben IS TRUE AND v.details_vorhanden IS TRUE THEN v.details
+            WHEN v.status::text = 'offen'::text AND v.details_vorhanden IS TRUE AND v.details_freigegeben IS FALSE THEN 'redaktionelle Prüfung ausstehend'::text
+            WHEN v.status::text <> 'offen'::text AND v.details_vorhanden IS TRUE AND v.details_freigegeben IS FALSE THEN 'redaktionell nicht freigegeben'::text
+            ELSE 'nicht vorhanden'::text
+        END AS details,
+        CASE
+            WHEN v.foto_thumb IS NOT NULL AND v.foto_thumb::text <> ''::text AND v.foto_freigegeben IS TRUE AND v.foto_vorhanden IS TRUE THEN ((((('<br/><a href="http://support.klarschiff-hro.de/fotos/'::text || v.foto_normal::text) || '" target="_blank" title="große Ansicht öffnen…"><img src="http://support.klarschiff-hro.de/fotos/'::text) || v.foto_thumb::text) || '" alt="'::text) || v.foto_thumb::text) || '" /></a>'::text
+            WHEN v.status::text = 'offen'::text AND v.foto_vorhanden IS TRUE AND v.foto_freigegeben IS FALSE THEN 'redaktionelle Prüfung ausstehend'::text
+            WHEN v.status::text <> 'offen'::text AND v.foto_vorhanden IS TRUE AND v.foto_freigegeben IS FALSE THEN 'redaktionell nicht freigegeben'::text
+            ELSE 'nicht vorhanden'::text
+        END AS foto,
+        CASE
+            WHEN v.bemerkung IS NOT NULL AND v.bemerkung::text <> ''::text THEN v.bemerkung::text
+            ELSE 'nicht vorhanden'::text
+        END AS info_der_verwaltung,
+        CASE
+            WHEN to_char(v.datum::timestamp with time zone, 'TZ'::text) = 'CEST'::text THEN to_char(v.datum::timestamp with time zone, 'Dy, DD Mon YYYY HH24:MI:SS +0200'::text)
+            ELSE to_char(v.datum::timestamp with time zone, 'Dy, DD Mon YYYY HH24:MI:SS +0100'::text)
+        END AS datum,
+        ST_X(ST_Transform(v.the_geom, 4326))::text AS x,
+        ST_Y(ST_Transform(v.the_geom, 4326))::text AS y,
+        v.the_geom::geometry(Point,25833) AS geometrie
+    FROM
+        klarschiff.klarschiff_vorgang v,
+        klarschiff.klarschiff_kategorie hk,
+        klarschiff.klarschiff_kategorie uk
     WHERE
-    	v.status = s.id AND
-    	v.kategorieid = k.id AND
-    	v.hauptkategorieid = kh.id AND
-    	v.vorgangstyp = t.id;
+        v.kategorieid = uk.id AND
+        uk.parent = hk.id AND
+        (v.status::text <> ALL (ARRAY['duplikat'::text, 'geloescht'::text])) AND
+        v.archiviert IS NOT TRUE AND
+        NOT (v.id IN (
+            SELECT
+                m.vorgang
+            FROM
+                klarschiff.klarschiff_missbrauchsmeldung m
+            WHERE
+                m.datum_bestaetigung IS NOT NULL AND
+                m.datum_abarbeitung IS NULL AND
+                m.vorgang = v.id))
+    ORDER BY
+        v.datum DESC;
 
-ALTER TABLE klarschiff.klarschiff_wfs_tmpl OWNER TO ${f_username};
+ALTER TABLE klarschiff.klarschiff_wfs_georss OWNER TO ${f_username};
 
 -- #######################################################################################
 -- # Update matadata table 'geometry_columns'                                            #
