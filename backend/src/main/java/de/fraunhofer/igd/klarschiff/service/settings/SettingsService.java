@@ -89,7 +89,7 @@ public class SettingsService {
 	public void setShowLogins(boolean showLogins) {
 		this.showLogins = showLogins;
 	}
-
+        
 	public boolean getShowFehlerDetails() {
 		return showFehlerDetails;
 	}

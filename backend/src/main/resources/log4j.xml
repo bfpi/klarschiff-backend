@@ -27,15 +27,16 @@
 	<logger name="org.hibernate.mapping.RootClass"><level value="ERROR"/></logger>
 	<logger name="klarschiff.backend"><level value="INFO"/></logger>
 
+	<logger name="de.fraunhofer.igd.klarschiff.service.classification"><level value="DEBUG"/></logger>
+        <logger name="de.fraunhofer.igd.klarschiff.service.classification.ClassificationService"><level value="DEBUG"/></logger>
+	<logger name="de.fraunhofer.igd.klarschiff.service.geo.GeoService"><level value="INFO"/></logger>
+
 <!-- 
 	<logger name="de.fraunhofer.igd.klarschiff.service.security.SecurityServiceLdap"><level value="DEBUG"/></logger>
-	<logger name="de.fraunhofer.igd.klarschiff.service.classification.ClassificationService"><level value="DEBUG"/></logger>
 	<logger name="de.fraunhofer.igd.klarschiff.service.security.LdapTemplate"><level value="DEBUG"/></logger>
-	<logger name="de.fraunhofer.igd.klarschiff.service.geo.GeoService" level="DEBUG"/>
 	<logger name="de.fraunhofer.igd.klarschiff.dao.HqlQueryHelper" level="DEBUG"/>
 	<logger name="de.fraunhofer.igd.klarschiff.service.security.SecurityServiceLdap" level="DEBUG"/>
 	<logger name="de.fraunhofer.igd.klarschiff.service.mail" level="DEBUG"/>
-	<logger name="de.fraunhofer.igd.klarschiff.service.classification" level="DEBUG"/>
  -->
 
 	<root>
