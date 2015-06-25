@@ -220,13 +220,13 @@ public class VorgangDao {
 
 	
   /**
-   * Fügt zu einem StringBuilder den WHERE-Teil einer SQL-Query zur Suche von
-   * Vorgängen anhand der Parameter im <code>VorgangSuchenCommand</code>
+   * FÃ¼gt zu einem StringBuilder den WHERE-Teil einer SQL-Query zur Suche von
+   * VorgÃ¤ngen anhand der Parameter im <code>VorgangSuchenCommand</code>
    * hinzu.
    *
    * @param cmd Command mit den Parametern zur Suche
-   * @param sql StringBuilder an den angehängt wird
-   * @return StringBuilder an den angehängt wird mit WHERE
+   * @param sql StringBuilder an den angehÃ¤ngt wird
+   * @return StringBuilder an den angehÃ¤ngt wird mit WHERE
    */
   private StringBuilder addFilter(VorgangSuchenCommand cmd, StringBuilder sql) {
     List<EnumVorgangStatus> unStatus = new ArrayList<EnumVorgangStatus>(Arrays.asList(EnumVorgangStatus.closedVorgangStatus()));
@@ -320,7 +320,7 @@ public class VorgangDao {
             conds.add("vo.status NOT IN ('" + StringUtils.join(notInStatus, "', '") + "')");
           }
         }
-        //Zuständigkeit
+        //ZustÃ¤ndigkeit
         if (!StringUtils.isBlank(cmd.getErweitertZustaendigkeit())) {
           if (cmd.getErweitertZustaendigkeit().equals("#mir zugewiesen#")) {
             conds.add("vo.zustaendigkeit IN ('" + StringUtils.join(
@@ -374,7 +374,7 @@ public class VorgangDao {
             conds.add("vo.archiviert IS NULL OR NOT vo.archiviert");
           }
         }
-        //Unterstützer
+        //UnterstÃ¼tzer
         if (cmd.getErweitertUnterstuetzerAb() != null) {
           unStatus.add(EnumVorgangStatus.inBearbeitung);
           conds.add("vo.typ != '" + EnumVorgangTyp.idee + "' "
@@ -387,7 +387,7 @@ public class VorgangDao {
         if(cmd.getUeberspringeVorgaengeMitMissbrauchsmeldungen()) {
           conds.add("COALESCE(mi.count, 0) = 0");
         }
-        //Priorität
+        //PrioritÃ¤t
         if (cmd.getErweitertPrioritaet() != null) {
           conds.add("vo.prioritaet = '" + cmd.getErweitertPrioritaet().name() + "'");
         }
@@ -401,7 +401,7 @@ public class VorgangDao {
         }
         break;
     }
-    // Unterstützer
+    // UnterstÃ¼tzer
     sql.append(" LEFT JOIN (SELECT vorgang, COUNT(DISTINCT id) FROM klarschiff_unterstuetzer")
             .append(" WHERE datum_bestaetigung IS NOT NULL GROUP BY vorgang) un")
             .append(" ON vo.id = un.vorgang");
@@ -418,13 +418,13 @@ public class VorgangDao {
 
     
     /**
-    * Fügt zu einem StringBuilder den WHERE-Teil einer SQL-Query zur Suche von
-    * Vorgängen anhand der Parameter im <code>VorgangDelegiertSuchenCommand</code>
+    * FÃ¼gt zu einem StringBuilder den WHERE-Teil einer SQL-Query zur Suche von
+    * VorgÃ¤ngen anhand der Parameter im <code>VorgangDelegiertSuchenCommand</code>
     * hinzu.
     *
     * @param cmd Command mit den Parametern zur Suche
-    * @param sql StringBuilder an den angehängt wird
-    * @return StringBuilder an den angehängt wird mit WHERE
+    * @param sql StringBuilder an den angehÃ¤ngt wird
+    * @return StringBuilder an den angehÃ¤ngt wird mit WHERE
     */
     private StringBuilder addFilter(VorgangDelegiertSuchenCommand cmd, StringBuilder sql) {
 
@@ -514,10 +514,10 @@ public class VorgangDao {
 
 
 	/**
-	 * Fügt die GroupBy-Terme zu einer HQL-Anfrage hinzu, wenn in der Anfrage nach dem Vorgang gruppiert werden soll. Die Parameter für
-	 * die Projektion auf die Vorgangsattributte werden dabei zur HQL-Anfrage hinzugefügt.
-	 * @param query Hilfsobjekt für HQL-Anfragen
-	 * @return verändertes Hilfsobjekt für HQL-Anfragen
+	 * FÃ¼gt die GroupBy-Terme zu einer HQL-Anfrage hinzu, wenn in der Anfrage nach dem Vorgang gruppiert werden soll. Die Parameter fÃ¼r
+	 * die Projektion auf die Vorgangsattributte werden dabei zur HQL-Anfrage hinzugefÃ¼gt.
+	 * @param query Hilfsobjekt fÃ¼r HQL-Anfragen
+	 * @return verÃ¤ndertes Hilfsobjekt fÃ¼r HQL-Anfragen
 	 */
 	private HqlQueryHelper addGroupByVorgang(HqlQueryHelper query) {
 		return addGroupByVorgang(query, true);
@@ -569,11 +569,11 @@ public class VorgangDao {
 	
 	
   /**
-   * Ermittelt die Liste der Vorgänge zur Suche anhand der Parameter im
+   * Ermittelt die Liste der VorgÃ¤nge zur Suche anhand der Parameter im
    * <code>VorgangSuchenCommand</code>
    *
    * @param cmd Command mit den Parametern zur Suche
-   * @return Ergebnisliste der Vorgänge
+   * @return Ergebnisliste der VorgÃ¤nge
    */
   public List<Object[]> getVorgaenge(VorgangSuchenCommand cmd) {
     StringBuilder sql = new StringBuilder();
@@ -582,12 +582,12 @@ public class VorgangDao {
             .append(" COALESCE(un.count, 0) AS unterstuetzer,")
             .append(" COALESCE(mi.count, 0) AS missbrauchsmeldung");
     sql.append(" FROM klarschiff_vorgang vo");
-    // Für Sortierung
+    // FÃ¼r Sortierung
     sql.append(" LEFT JOIN klarschiff_kategorie kat_unter ON vo.kategorie = kat_unter.id");
     sql.append(" LEFT JOIN klarschiff_kategorie kat_haupt ON kat_unter.parent = kat_haupt.id");
-    // Für Auftrag
+    // FÃ¼r Auftrag
     sql.append(" LEFT JOIN klarschiff_auftrag auftrag ON vo.id = auftrag.vorgang");
-    // Änderungsdatum
+    // Ã„nderungsdatum
     sql.append(" INNER JOIN (SELECT vorgang, MAX(datum) AS datum FROM klarschiff_verlauf")
             .append(" GROUP BY vorgang) verlauf1 ON vo.id = verlauf1.vorgang");
 
@@ -673,9 +673,9 @@ public class VorgangDao {
     }
 
     /**
-	 * Ermittelt die Ergebnisanzahl für eine definierte parametrisierte Anfrage nach Vorgängen. 
+	 * Ermittelt die Ergebnisanzahl fÃ¼r eine definierte parametrisierte Anfrage nach VorgÃ¤ngen. 
 	 * @param cmd Command mit den Parametern zur Suche
-	 * @return Anzahl der Vorgänge im Suchergebnis
+	 * @return Anzahl der VorgÃ¤nge im Suchergebnis
 	 */
     public long countVorgaenge(VorgangSuchenCommand cmd) {
       StringBuilder sql = new StringBuilder();
