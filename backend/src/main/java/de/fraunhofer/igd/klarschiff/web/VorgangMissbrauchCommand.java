@@ -5,7 +5,7 @@ import java.io.Serializable;
 import de.fraunhofer.igd.klarschiff.vo.Missbrauchsmeldung;
 
 /**
- * Command zum Erstellen, Betrachten und Best‰tigen der Bearbeitung von Missbrauchsmeldungen <br />
+ * Command zum Erstellen, Betrachten und Best√§tigen der Bearbeitung von Missbrauchsmeldungen <br />
  * Beinhaltet Missbrauchsmeldung (VO) und ihre ID.
  * @author Stefan Audersch (Fraunhofer IGD)
  */

@@ -34,8 +34,8 @@ public class EnumBean {
 	/* --------------- transient ----------------------------*/
 
 	/**
-	 * Hilfsfunktion zum einfachen Erzeugen der (Hilfs-)Objekte des Enums ausgehend von den ursprünglichen Enums
-	 * @param enumText ursprüngliches Enum 
+	 * Hilfsfunktion zum einfachen Erzeugen der (Hilfs-)Objekte des Enums ausgehend von den ursprÃ¼nglichen Enums
+	 * @param enumText ursprÃ¼ngliches Enum
 	 */
 	@Transient
 	public EnumBean fill(EnumText enumText) {

@@ -44,7 +44,7 @@ public class MailSenderJob implements Runnable {
 	
 
 	/**
-	 * Methode die beim Versenden der E-Mail ausgeführt wird.
+	 * Methode die beim Versenden der E-Mail ausgefÃ¼hrt wird.
 	 */
 	@Override
 	public void run() {

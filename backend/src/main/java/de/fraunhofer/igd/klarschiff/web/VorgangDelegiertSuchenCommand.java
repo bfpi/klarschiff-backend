@@ -1,12 +1,22 @@
 package de.fraunhofer.igd.klarschiff.web;
 
 import java.io.Serializable;
+import java.util.Date;
+
+import org.apache.commons.lang.StringUtils;
+
+import de.fraunhofer.igd.klarschiff.vo.EnumPrioritaet;
+import de.fraunhofer.igd.klarschiff.vo.EnumVorgangStatus;
+import de.fraunhofer.igd.klarschiff.vo.EnumVorgangTyp;
+import de.fraunhofer.igd.klarschiff.vo.Kategorie;
+
 
 /**
- * Command für die Vorgangsuche im Backend für Externe (Delegierte)<br />
- * Beinhaltet Suchfeld für einfache Suche sowie Attribute für die Ergebnisdarstellung: <br/>
+ * Command fÃ¼r die Vorgangsuche fÃ¼r Externe (Delegierte). <br />
+ * Beinhaltet Suchfelder fÃ¼r einfache und erweiterte Suche sowie Attribute fÃ¼r die 
+ * Ergebnisdarstellung: <br/>
  * <code>page</code>: die aktuelle Seitenzahl<br/>
- * <code>size</code>: die konfigurierte Anzahl von Einträgen pro Seite<br/>
+ * <code>size</code>: die konfigurierte Anzahl von EintrÃ¤gen pro Seite<br/>
  * <code>order</code>: die Spalte nach der sortiert wird<br/>
  * <code>orderDirection</code>: die Sortierreihenfolge (1:absteigend,default:aufsteigend)
  * @author Stefan Audersch (Fraunhofer IGD)
@@ -14,16 +24,34 @@ import java.io.Serializable;
 @SuppressWarnings("serial")
 public class VorgangDelegiertSuchenCommand implements Serializable {
 
-	public enum EinfacheSuche { offene, abgeschlossene };
-
+	/* --------------- Attribute ----------------------------*/
+	
+	public enum Suchtyp { einfach, erweitert }; 
+	public enum EinfacheSuche { offene, offeneIdeen, abgeschlossene };
+	
 	Integer page;
 	Integer size;
 	Integer order;
 	Integer orderDirection;
-		
-	// einfach Suche
+	
+	// einfache vs. erweiterte suche
+	Suchtyp suchtyp;
+	
+	// einfache Suche
 	EinfacheSuche einfacheSuche;
-
+	
+	// erweiterte Suche
+	String erweitertFulltext;
+	EnumVorgangTyp erweitertVorgangTyp;
+	Kategorie erweitertHauptkategorie;
+	Kategorie erweitertKategorie;
+	Date erweitertDatumVon;
+	Date erweitertDatumBis;
+	EnumVorgangStatus[] erweitertVorgangStatus;
+	EnumPrioritaet erweitertPrioritaet;
+	Integer erweitertStadtteilgrenze;
+	String erweitertNummer;
+	
 	public String getOrderString() {
 		switch(order) {
 			case 0: return "vo.id";
@@ -31,19 +59,20 @@ public class VorgangDelegiertSuchenCommand implements Serializable {
 			case 2: return "vo.datum";
 			case 3: return "kat_haupt.name,kat_unter.name";
 			case 4: return "vo.status_ordinal";
-			case 5: return "vo.zustaendigkeit";
-			case 6: return "vo.prioritaet_ordinal";
+			case 5: return "vo.adresse";
+			case 7: return "vo.zustaendigkeit";
 			default: return "";
 		}
 	}
 	
 	public String getOrderDirectionString() {
 		switch(orderDirection) {
-		case 1: return "desc";
-		default: return "asc";
-	}
+			case 1: return "desc";
+			default: return "asc";
+		}
 	}
 	
+	/* --------------- GET + SET ----------------------------*/
 	
 	public Integer getPage() {
 		return page;
@@ -56,6 +85,19 @@ public class VorgangDelegiertSuchenCommand implements Serializable {
 	}
 	public void setSize(Integer size) {
 		this.size = size;
+	}
+	public Suchtyp getSuchtyp() {
+		return suchtyp;
+	}
+	public void setSuchtyp(Suchtyp suchtyp) {
+		setPage(1);
+		this.suchtyp = suchtyp;
+	}
+	public EinfacheSuche getEinfacheSuche() {
+		return einfacheSuche;
+	}
+	public void setEinfacheSuche(EinfacheSuche einfacheSuche) {
+		this.einfacheSuche = einfacheSuche;
 	}
 	public Integer getOrder() {
 		return order;
@@ -70,11 +112,106 @@ public class VorgangDelegiertSuchenCommand implements Serializable {
 		this.orderDirection = orderDirection;
 	}
 
-	public EinfacheSuche getEinfacheSuche() {
-		return einfacheSuche;
+	public String getErweitertFulltext() {
+		return erweitertFulltext;
+	}
+	
+	public void setErweitertFulltext(String erweitertFulltext) {
+		try {
+			if (erweitertFulltext!=null)
+				this.erweitertFulltext = new String(erweitertFulltext.getBytes(), "UTF-8");		
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
-	public void setEinfacheSuche(EinfacheSuche einfacheSuche) {
-		this.einfacheSuche = einfacheSuche;
+	public Long getErweitertNummerAsLong() {
+		if(this.erweitertNummer == null) {
+			return null;
+		}
+		try {
+			return Long.parseLong(erweitertNummer);
+		}
+		catch (Exception e) {
+			return null;
+		}
+	}
+
+	public String getErweitertNummer() {
+		Long erwNummer = this.getErweitertNummerAsLong();
+		if(erwNummer == null)  {
+			return "";
+		}
+		else {
+			return erwNummer.toString();
+		}
+	}
+
+	public void setErweitertNummer(String erweitertNummer) {
+		this.erweitertNummer = erweitertNummer;
+	}
+
+	public EnumVorgangTyp getErweitertVorgangTyp() {
+		return erweitertVorgangTyp;
+	}
+
+	public void setErweitertVorgangTyp(EnumVorgangTyp erweitertVorgangTyp) {
+		this.erweitertVorgangTyp = erweitertVorgangTyp;
+	}
+
+	public Kategorie getErweitertHauptkategorie() {
+		return erweitertHauptkategorie;
+	}
+
+	public void setErweitertHauptkategorie(Kategorie erweitertHauptkategorie) {
+		this.erweitertHauptkategorie = erweitertHauptkategorie;
+	}
+
+	public Kategorie getErweitertKategorie() {
+		return erweitertKategorie;
+	}
+
+	public void setErweitertKategorie(Kategorie erweitertKategorie) {
+		this.erweitertKategorie = erweitertKategorie;
+	}
+
+	public Date getErweitertDatumVon() {
+		return erweitertDatumVon;
+	}
+
+	public void setErweitertDatumVon(Date erweitertDatumVon) {
+		this.erweitertDatumVon = erweitertDatumVon;
+	}
+
+	public Date getErweitertDatumBis() {
+		return erweitertDatumBis;
+	}
+
+	public void setErweitertDatumBis(Date erweitertDatumBis) {
+		this.erweitertDatumBis = erweitertDatumBis;
+	}
+
+	public EnumVorgangStatus[] getErweitertVorgangStatus() {
+		return erweitertVorgangStatus;
+	}
+
+	public void setErweitertVorgangStatus(EnumVorgangStatus[] erweitertVorgangStatus) {
+		this.erweitertVorgangStatus = erweitertVorgangStatus;
+	}
+
+	public EnumPrioritaet getErweitertPrioritaet() {
+		return erweitertPrioritaet;
+	}
+
+	public void setErweitertPrioritaet(EnumPrioritaet erweitertPrioritaet) {
+		this.erweitertPrioritaet = erweitertPrioritaet;
+	}
+
+	public Integer getErweitertStadtteilgrenze() {
+		return erweitertStadtteilgrenze;
+	}
+
+	public void setErweitertStadtteilgrenze(Integer erweitertStadtteilgrenze) {
+		this.erweitertStadtteilgrenze = erweitertStadtteilgrenze;
 	}
 }

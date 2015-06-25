@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import de.fraunhofer.igd.klarschiff.vo.RedaktionKriterien;
 
 /**
- * DAO zum Lesen und Aktualisieren der Empf‰nger von redaktionellen E-Mails mit Hilfe der DB
+ * DAO zum Lesen und Aktualisieren der Empf√§nger von redaktionellen E-Mails mit Hilfe der DB
  * @author Sebastian Schwarz (Hansestadt Rostock)
  */
 @Repository
@@ -23,7 +23,7 @@ public class RedaktionKriterienDao {
 	EntityManager em;
 
 	/**
-	 * gibt eine Liste mit den in der DB gelisteten Empf‰ngern von redaktionellen E-Mails zur¸ck
+	 * gibt eine Liste mit den in der DB gelisteten Empf√§ngern von redaktionellen E-Mails zur√ºck
 	 */
 	@SuppressWarnings("unchecked")
 	public List<RedaktionKriterien> getKriterienList() {

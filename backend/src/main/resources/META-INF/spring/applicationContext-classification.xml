@@ -18,11 +18,12 @@
 	<bean class="de.fraunhofer.igd.klarschiff.service.classification.FeatureService" id="featureService">
 		<property name="bewirtschaftungFeatures">
 			<list>
+				<value>Amt für Kultur, Denkmalpflege und Museen</value>
 				<value>Amt für Stadtgrün, Naturschutz und Landschaftspflege</value>
+				<value>Amt für Umweltschutz</value>
+				<value>Kataster-, Vermessungs- und Liegenschaftsamt</value>
+				<value>Stadtforstamt</value>
 				<value>Tief- und Hafenbauamt</value>
-				<value>Ver- und Entsorgung</value>
-				<value>Vermessungs- und Liegenschaftsamt</value>
-				<value>Umweltamt</value>
 			</list>
 		</property>
 		<property name="flaechenFeatures">

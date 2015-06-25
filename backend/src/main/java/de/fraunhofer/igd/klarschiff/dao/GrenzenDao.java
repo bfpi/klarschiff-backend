@@ -1,5 +1,6 @@
 package de.fraunhofer.igd.klarschiff.dao;
 
+import de.fraunhofer.igd.klarschiff.vo.StadtGrenze;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -38,5 +39,14 @@ public class GrenzenDao {
         if (id == null) return null;
         return entityManager.find(StadtteilGrenze.class, id);
     }
-	
+
+
+	/**
+	 * Ermittelt die Stadtgrenze
+	 * @return Stadtteilgrenze
+	 */
+	@SuppressWarnings("unchecked")
+	public StadtGrenze getStadtgrenze() {
+    return entityManager.createQuery("select sg from StadtGrenze sg", StadtGrenze.class).getResultList().get(0);
+	}
 }

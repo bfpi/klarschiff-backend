@@ -8,7 +8,7 @@ import org.springframework.core.io.DefaultResourceLoader;
 
 /**
  * Die Klasse erweitert die Klasse <code>org.springframework.beans.factory.config.PropertyPlaceholderConfigurer</code>,
- * so dass in der <code>settings.properties</code> Profile verwendet werden können. Hierzu wird da Profil über die 
+ * so dass in der <code>settings.properties</code> Profile verwendet werden kÃ¶nnen. Hierzu wird da Profil Ã¼ber die 
  * Umgebungsvariable <code>KLARSCHIFF_HRO_PROFILE</code> des Rechners, die Java-Umgebungsvariable <code>KLARSCHIFF_HRO_PROFILE</code>
  * oder dem Property <code>profile</code> in der <code>settings.properties</code> ermittelt.
  * @author Stefan Audersch (Fraunhofer IGD)
@@ -34,7 +34,7 @@ public class PropertyPlaceholderConfigurer extends org.springframework.beans.fac
 
 	
 	/**
-	 * Ermittelt den Wert einer Property wobei bei dieser Implementierung das Profile berücksichtigt wird.
+	 * Ermittelt den Wert einer Property wobei bei dieser Implementierung das Profile berÃ¼cksichtigt wird.
 	 * @param placeholder Name der Property
 	 * @param props Properties
 	 * @return Wert des Platzhalters
@@ -48,7 +48,7 @@ public class PropertyPlaceholderConfigurer extends org.springframework.beans.fac
 
 	
 	/**
-	 * Ermittelt das verwendet Profile über die Umgebungsvariable <code>KLARSCHIFF_HRO_PROFILE</code> des Rechners, 
+	 * Ermittelt das verwendet Profile Ã¼ber die Umgebungsvariable <code>KLARSCHIFF_HRO_PROFILE</code> des Rechners, 
 	 * die Java-Umgebungsvariable <code>KLARSCHIFF_HRO_PROFILE</code> oder dem Property <code>profile</code> in der 
 	 * <code>settings.properties</code>.
 	 * @return Profile
@@ -76,14 +76,14 @@ public class PropertyPlaceholderConfigurer extends org.springframework.beans.fac
 			logger.info("Verwendetes Profil: "+profile);
 			return _profile;
 		} catch (Exception e) {
-			throw new RuntimeException("Profile kann nicht ermittelt werden. Das Profile kann über das SystemProperty "+PROFILE_SYSTEM_PROPERTY_NAME+
-					" oder über die Variable "+PROFILE_SETTINGS_FILE_PROPERTY_NAME+" in der Datei "+SETTINGS_FILE_LOCATION+ " festgelegt werden.", e);
+			throw new RuntimeException("Profile kann nicht ermittelt werden. Das Profile kann Ã¼ber das SystemProperty "+PROFILE_SYSTEM_PROPERTY_NAME+
+					" oder Ã¼ber die Variable "+PROFILE_SETTINGS_FILE_PROPERTY_NAME+" in der Datei "+SETTINGS_FILE_LOCATION+ " festgelegt werden.", e);
 		}
 	}
 
 	
 	/**
-	 * Gibt die Properties aus der <code>settings.properties</code> zurück.
+	 * Gibt die Properties aus der <code>settings.properties</code> zurÃ¼ck.
 	 * @return Properties aus der <code>settings.properties</code>
 	 */
 	public static Properties getProperties() {
@@ -100,7 +100,7 @@ public class PropertyPlaceholderConfigurer extends org.springframework.beans.fac
 	}
 	
 	/**
-	 * Ermittelt den Wert einer Property wobei das Profile berücksichtigt wird.
+	 * Ermittelt den Wert einer Property wobei das Profile berÃ¼cksichtigt wird.
 	 * @param name Name der Property
 	 * @return Wert des Platzhalters
 	 */

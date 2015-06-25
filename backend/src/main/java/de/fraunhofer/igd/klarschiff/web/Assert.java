@@ -18,22 +18,22 @@ import org.springframework.validation.BindingResult;
 public class Assert
 {
 	/**
-	 * Legt fest ob eine Prüfung abhängig von den bereits durchgeführten Prüfungen durchgeführt werden soll.<br/>
+	 * Legt fest ob eine PrÃ¼fung abhÃ¤ngig von den bereits durchgefÃ¼hrten PrÃ¼fungen durchgefÃ¼hrt werden soll.<br/>
 	 * @author Stefan Audersch (Fraunhofer IGD)
 	 */
 	public enum EvaluateOn { 
 		/**
-		 * Prüfung wird immer auasgeführt 
+		 * PrÃ¼fung wird immer auasgefÃ¼hrt 
 		 */
 		ever, 
 		
 		/**
-		 * wenn ein Fehler bereits vorhanden ist, wird die Prüfung nicht ausgeführt
+		 * wenn ein Fehler bereits vorhanden ist, wird die PrÃ¼fung nicht ausgefÃ¼hrt
 		 */
 		firstError, 
 		
 		/**
-		 * wenn ein Fehler für das gleiche Property bereits vorhanden ist, wird die Prüfung nicht ausgeführt
+		 * wenn ein Fehler fÃ¼r das gleiche Property bereits vorhanden ist, wird die PrÃ¼fung nicht ausgefÃ¼hrt
 		 */
 		firstPropertyError }
 
@@ -43,7 +43,7 @@ public class Assert
 	 * @param bean Bean mit den Werten
 	 * @param result Bindingresult mit den Fehlermeldungen
 	 * @param evaluateOn siehe EvaluateOn
-	 * @param property Name des zu prüfenden Properties
+	 * @param property Name des zu prÃ¼fenden Properties
 	 * @param errorMessage Fehlermeldung, die bei einem Fehler verwendet werden soll
 	 */
 	public static void assertNotEmpty(Object bean, BindingResult result, EvaluateOn evaluateOn, String property, String errorMessage)
@@ -58,7 +58,7 @@ public class Assert
 	 * @param bean Bean mit den Werten
 	 * @param result Bindingresult mit den Fehlermeldungen
 	 * @param evaluateOn siehe EvaluateOn
-	 * @param property Name des zu prüfenden Properties
+	 * @param property Name des zu prÃ¼fenden Properties
 	 * @param errorProperty Property auf das das evaluateOn angewendet wird und an das ggf. die Fehlermeldung gebunden wird
 	 * @param errorMessage Fehlermeldung, die bei einem Fehler verwendet werden soll
 	 */
@@ -74,7 +74,7 @@ public class Assert
 	 * @param bean Bean mit den Werten
 	 * @param result Bindingresult mit den Fehlermeldungen
 	 * @param evaluateOn siehe EvaluateOn
-	 * @param property Name des zu prüfenden Properties
+	 * @param property Name des zu prÃ¼fenden Properties
 	 * @param value Vergleichswert
 	 * @param errorProperty Property auf das das evaluateOn angewendet wird und an das ggf. die Fehlermeldung gebunden wird
 	 * @param errorMessage Fehlermeldung, die bei einem Fehler verwendet werden soll
@@ -91,8 +91,8 @@ public class Assert
 	 * @param bean Bean mit den Werten
 	 * @param result Bindingresult mit den Fehlermeldungen
 	 * @param evaluateOn siehe EvaluateOn
-	 * @param property1 Name des zu prüfenden Properties
-	 * @param property2 Name des zu prüfenden Properties
+	 * @param property1 Name des zu prÃ¼fenden Properties
+	 * @param property2 Name des zu prÃ¼fenden Properties
 	 * @param propertyError Property auf das das evaluateOn angewendet wird und an das ggf. die Fehlermeldung gebunden wird
 	 * @param errorMessage Fehlermeldung, die bei einem Fehler verwendet werden soll
 	 */
@@ -114,12 +114,12 @@ public class Assert
 
 
 	/**
-	 * Fehler, wenn der Werte zu lang ist
+	 * Fehler, wenn der Wert zu lang ist
 	 * @param bean Bean mit den Werten
 	 * @param result Bindingresult mit den Fehlermeldungen
 	 * @param evaluateOn siehe EvaluateOn
-	 * @param property Name des zu prüfenden Properties
-	 * @param length maximale Zeichenlänge
+	 * @param property Name des zu prÃ¼fenden Properties
+	 * @param length maximale ZeichenlÃ¤nge
 	 * @param errorMessage Fehlermeldung, die bei einem Fehler verwendet werden soll
 	 */
 	public static void assertMaxLength(Object bean, BindingResult result, EvaluateOn evaluateOn, String property, int length, String errorMessage)
@@ -136,11 +136,11 @@ public class Assert
 	
 	
 	/**
-	 * Fehler, wenn der Werte keine PLZ ist
+	 * Fehler, wenn der Wert keine PLZ ist
 	 * @param bean Bean mit den Werten
 	 * @param result Bindingresult mit den Fehlermeldungen
 	 * @param evaluateOn siehe EvaluateOn
-	 * @param property Name des zu prüfenden Properties
+	 * @param property Name des zu prÃ¼fenden Properties
 	 * @param errorMessage Fehlermeldung, die bei einem Fehler verwendet werden soll
 	 */
 	public static void assertPlz(Object bean, BindingResult result, EvaluateOn evaluateOn, String property, String errorMessage)
@@ -150,17 +150,16 @@ public class Assert
 
 
 	/**
-	 * Fehler, wenn der Werte keine E-Mail-Adresse ist
+	 * Fehler, wenn der Wert keine E-Mail-Adresse ist
 	 * @param bean Bean mit den Werten
 	 * @param result Bindingresult mit den Fehlermeldungen
 	 * @param evaluateOn siehe EvaluateOn
-	 * @param property Name des zu prüfenden Properties
+	 * @param property Name des zu prÃ¼fenden Properties
 	 * @param errorMessage Fehlermeldung, die bei einem Fehler verwendet werden soll
 	 */
 	public static void assertEmail(Object bean, BindingResult result, EvaluateOn evaluateOn, String property, String errorMessage)
 	{
-//		assertPattern(bean, result, evaluateOn, property, ".+@.+\\.[a-z]+", errorMessage);
-		assertPattern(bean, result, evaluateOn, property, "[a-zA-Z0-9\\.-]+@[a-zA-Z0-9\\.-]+\\.[A-Za-z]+", errorMessage);
+		assertPattern(bean, result, evaluateOn, property, "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$", errorMessage);
 	}
 
 
@@ -169,8 +168,8 @@ public class Assert
 	 * @param bean Bean mit den Werten
 	 * @param result Bindingresult mit den Fehlermeldungen
 	 * @param evaluateOn siehe EvaluateOn
-	 * @param property Name des zu prüfenden Properties
-	 * @param pattern Regulärer Ausdruck
+	 * @param property Name des zu prÃ¼fenden Properties
+	 * @param pattern RegulÃ¤rer Ausdruck
 	 * @param errorMessage Fehlermeldung, die bei einem Fehler verwendet werden soll
 	 */
 	public static void assertPattern(Object bean, BindingResult result, EvaluateOn evaluateOn, String property, String pattern, String errorMessage)
@@ -188,10 +187,10 @@ public class Assert
 	/* ########################### Hilfsfunktionen zum validieren ***************************** */
 
 	/**
-	 * Testet eine String nach einem vorgegebenen regulären Ausdruck
-	 * @param str zu prüfender String
-	 * @param pattern regulärer Ausdruck 
-	 * @return <code>true</code> wenn der reguläre Ausdruck passt
+	 * Testet eine String nach einem vorgegebenen regulÃ¤ren Ausdruck
+	 * @param str zu prÃ¼fender String
+	 * @param pattern regulÃ¤rer Ausdruck 
+	 * @return <code>true</code> wenn der regulÃ¤re Ausdruck passt
 	 */
 	public static boolean matches(String str, String pattern)
 	{
@@ -203,7 +202,7 @@ public class Assert
 
 	/**
 	 * Testet ob ein Object leer ist. String nur aus Leerzeichen oder leere Collection sind dabei ebenfalls leer
-	 * @param o zu prüfendes Objekt
+	 * @param o zu prÃ¼fendes Objekt
 	 * @return <code>true</code> - es ist leer
 	 */
 	@SuppressWarnings("unchecked")
@@ -248,15 +247,15 @@ public class Assert
 	}
 
 
-	/* ########################### Prüfung, ob eine Validierung stattfinden soll ***************************** */
+	/* ########################### PrÃ¼fung, ob eine Validierung stattfinden soll ***************************** */
 
 
 	/**
-	 * Prüft ob eine Validierung mit den den Parametern durchgeführt werden soll
+	 * PrÃ¼ft ob eine Validierung mit den den Parametern durchgefÃ¼hrt werden soll
 	 * @param evaluateOn siehe EvaluateOn
 	 * @param result Bindingresult mit den Fehlermeldungen
 	 * @param property Property auf das das evaluateOn angewendet wird
-	 * @return <code>true</code> - Prüfung soll angewendet werden
+	 * @return <code>true</code> - PrÃ¼fung soll angewendet werden
 	 */
 	private static boolean evaluate(EvaluateOn evaluateOn, BindingResult result, String property)
 	{
@@ -284,10 +283,10 @@ public class Assert
 
 	
 	/**
-	 * Sind bereit Fehlermeldungen für ein Property im Bindingresult vorhanden?
+	 * Sind bereit Fehlermeldungen fÃ¼r ein Property im Bindingresult vorhanden?
 	 * @param result Bindingresult mit den Fehlermeldungen
-	 * @param property Property für das nach Fehlern gesucht werden soll
-	 * @return <code>true</code> - Bindingresult beinhaltet bereits Fehlermeldungen für das Property
+	 * @param property Property fÃ¼r das nach Fehlern gesucht werden soll
+	 * @return <code>true</code> - Bindingresult beinhaltet bereits Fehlermeldungen fÃ¼r das Property
 	 */
 	public static boolean hasError(BindingResult result, String property)
 	{
@@ -295,11 +294,11 @@ public class Assert
 	}
 
 
-	/* ########################### Hinzufügen von Fehlernachrichten ***************************** */
+	/* ########################### HinzufÃ¼gen von Fehlernachrichten ***************************** */
 
 
 	/**
-	 * Fügt eine Fehlernachricht dem BindingResult hinzu
+	 * FÃ¼gt eine Fehlernachricht dem BindingResult hinzu
 	 * @param result Bindingresult mit den Fehlermeldungen
 	 * @param property Property an das die Fehlermeldung gebunden werden soll
 	 * @param errorMessage Fehlermeldung
@@ -311,7 +310,7 @@ public class Assert
 
 	
 	/**
-	 * Fügt eine Fehlernachricht dem BindingResult hinzu
+	 * FÃ¼gt eine Fehlernachricht dem BindingResult hinzu
 	 * @param result Bindingresult mit den Fehlermeldungen
 	 * @param evaluateOn siehe EvaluateOn
 	 * @param property Property auf das das evaluateOn angewendet wird und an das ggf. die Fehlermeldung gebunden wird

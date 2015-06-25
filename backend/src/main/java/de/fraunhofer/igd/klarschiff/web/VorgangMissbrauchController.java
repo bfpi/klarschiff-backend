@@ -27,7 +27,7 @@ import de.fraunhofer.igd.klarschiff.vo.Verlauf;
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
 
 /**
- * Controller zum Erstellen, Betrachten und Bestätigen der Bearbeitung von Missbrauchsmeldungen
+ * Controller zum Erstellen, Betrachten und BestÃ¤tigen der Bearbeitung von Missbrauchsmeldungen
  * @author Stefan Audersch (Fraunhofer IGD)
  */
 @SessionAttributes("cmd")
@@ -47,7 +47,7 @@ public class VorgangMissbrauchController {
 	 * Die Methode verarbeitet den GET-Request auf der URL <code>/vorgang/{id}/missbrauch</code><br/>
 	 * Seitenbeschreibung: Anzeige existierender und Erstellung neuer Missbrauchsmeldungen
 	 * @param id Vorgangs-ID
-	 * @param model Model in der ggf. Daten für die View abgelegt werden
+	 * @param model Model in der ggf. Daten fÃ¼r die View abgelegt werden
 	 * @param request HttpServletRequest-Objekt
 	 * @return View, die zum Rendern des Request verwendet wird
 	 */
@@ -64,10 +64,10 @@ public class VorgangMissbrauchController {
 	
 	/**
 	 * Die Methode verarbeitet den POST-Request auf der URL <code>/vorgang/{id}/missbrauch</code><br/>
-	 * Funktionsbeschreibung: Nimmt Missbrauchsmeldung oder Bestätigung der Bearbeitung vorhergehender
+	 * Funktionsbeschreibung: Nimmt Missbrauchsmeldung oder BestÃ¤tigung der Bearbeitung vorhergehender
 	 * Missbrauchsmeldungen entgegen
 	 * @param id Vorgangs-ID
-	 * @param model Model in der ggf. Daten für die View abgelegt werden
+	 * @param model Model in der ggf. Daten fÃ¼r die View abgelegt werden
 	 * @param request HttpServletRequest-Objekt
 	 * @return Missbrauchs-View mit neuer Meldung oder als nun bearbeitet markiertem Missbrauch
 	 */

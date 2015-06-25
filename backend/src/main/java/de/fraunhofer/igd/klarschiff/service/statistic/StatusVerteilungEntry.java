@@ -3,7 +3,7 @@ package de.fraunhofer.igd.klarschiff.service.statistic;
 import de.fraunhofer.igd.klarschiff.vo.EnumVorgangStatus;
 
 /**
- * Die Klasse stellt eine Bean zum Ablegen der ermittelten Daten für die Statistik bereit.
+ * Die Klasse stellt eine Bean zum Ablegen der ermittelten Daten fÃ¼r die Statistik bereit.
  * @author Stefan Audersch (Fraunhofer IGD)
  *
  */
@@ -23,8 +23,8 @@ public class StatusVerteilungEntry {
 	
 	
 	/**
-	 * Durch das Setzen der Gesamtanzahl wird das Verhältnis (<code>ratio</code>) berechnet.
-	 * @param countOverall Gesamtanzahl der Vorgänge für ein Status
+	 * Durch das Setzen der Gesamtanzahl wird das VerhÃ¤ltnis (<code>ratio</code>) berechnet.
+	 * @param countOverall Gesamtanzahl der VorgÃ¤nge fÃ¼r ein Status
 	 */
 	protected void setCountOverall(long countOverall) {
 		ratio = Math.round(100d/countOverall*count);

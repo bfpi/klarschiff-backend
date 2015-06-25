@@ -1,10 +1,10 @@
 <jsp:root 
-	xmlns:c="http://java.sun.com/jsp/jstl/core" 
-	xmlns:fn="http://java.sun.com/jsp/jstl/functions" 
-	xmlns:spring="http://www.springframework.org/tags" 
-	xmlns:jsp="http://java.sun.com/JSP/Page" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu"
-	xmlns:fx="http://igd.fraunhofer.de/tags/elfunctions" 
+	xmlns:fx="http://igd.fraunhofer.de/tags/elfunctions"
 	xmlns:sec="http://www.springframework.org/security/tags"
 	version="2.0"
 	>
@@ -40,8 +40,8 @@
 			</c:if>
 		</form>
         
-		<c:if test="${fx:showLogins()}">
-				<div class="dev" style="margin-top: 20px;">
+        <c:if test="${fx:demo()}">
+            <div class="dev" style="margin-top: 20px;">
 				Folgende Zugangsdaten können Sie nutzen:
                 <br/>
                 <br/>
@@ -55,6 +55,9 @@
 	       			</tbody>
 	       		</table>
 	       	</div>
+		</c:if>
+		
+		<c:if test="${fx:showLogins()}">
 	       	<div class="dev" style="margin-top: 20px;">
 				Dieses ist eine Übersicht der Benutzer im lokalem LDAP, welche zum Testen verwendet werden können:
 	       		<table>
@@ -76,11 +79,20 @@
 	
 	<!-- HELP -->
 	<div id="root_style_help">
+        <c:choose>
+            <c:when test="${fx:demo()}">
+                <p>
+                    Klarschiff ist ein Bürgerbeteiligungsportal, genauer gesagt eine Onlineplattform zum Melden und Bearbeiten von Problemen und Ideen, die sich auf den öffentlichen Raum einer Kommune beziehen.
+                </p>
+            </c:when>
+            <c:otherwise>
+                <p>
+                    ${fx:title()} ist das Bürgerbeteiligungsportal von ${fx:area()}, genauer gesagt die Onlineplattform zum Melden und Bearbeiten von Problemen und Ideen, die sich auf den öffentlichen Raum in ${fx:area()} beziehen.
+                </p>
+            </c:otherwise>
+        </c:choose>
 		<p>
-			Klarschiff ist ein Bürgerbeteiligungsportal, genauer gesagt eine Onlineplattform zum Melden und Bearbeiten von Problemen und Ideen, die sich auf den öffentlichen Raum einer Kommune beziehen.
-		</p>
-		<p>
-            Sie befinden sich im sogenannten Backend von Klarschiff, in dem von Bürgerinnen und Bürgern gemeldete Probleme und Ideen als Vorgänge bearbeitet oder selbst neue Vorgänge erstellen werden können, von denen zuvor beispielsweise via Brief oder Telefon Kenntnis erlangt wurde. Um mit dem Backend arbeiten zu können, müssen Sie einer Bearbeitungsrolle zugeordnet sein und sich mit Ihrem Benutzernamen und Ihrem Passwort anmelden. 
+            Sie befinden sich im sogenannten Backend von ${fx:title()}, in dem von Bürgerinnen und Bürgern gemeldete Probleme und Ideen als Vorgänge bearbeitet oder selbst neue Vorgänge erstellen werden können, von denen zuvor beispielsweise via Brief oder Telefon Kenntnis erlangt wurde. Um mit dem Backend arbeiten zu können, müssen Sie einer Bearbeitungsrolle zugeordnet sein und sich mit Ihrem Benutzernamen und Ihrem Passwort anmelden. 
 		</p>
 	</div>
 

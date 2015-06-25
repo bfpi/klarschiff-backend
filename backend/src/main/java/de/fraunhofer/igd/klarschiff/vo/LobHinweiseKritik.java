@@ -35,7 +35,7 @@ public class LobHinweiseKritik implements Serializable {
 	private Long id;
 
 	/**
-	 * Vorgang, zu dem Lob, Hinweise oder Kritik gehören
+	 * Vorgang, zu dem Lob, Hinweise oder Kritik gehÃ¶ren
 	 */
 	@ManyToOne
     private Vorgang vorgang;
@@ -47,7 +47,7 @@ public class LobHinweiseKritik implements Serializable {
     private String autorEmail;
     
     /**
-     * E-Mail-Adresse des Empfängers
+     * E-Mail-Adresse des EmpfÃ¤ngers
      */
     @Size(max = 300)
     private String empfaengerEmail;

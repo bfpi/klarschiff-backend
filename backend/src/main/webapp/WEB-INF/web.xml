@@ -3,7 +3,7 @@
 
     <display-name>backend</display-name>
     
-    <description>Klarschiff ist ein Bürgerbeteiligungsportal, genauer gesagt eine Onlineplattform zum Melden und Bearbeiten von Problemen und Ideen, die sich auf den öffentlichen Raum einer Kommune beziehen.</description>
+    <description>Bürgerbeteiligungsportal zum Melden und Bearbeiten von Problemen und Ideen, die sich auf den öffentlichen Raum beziehen</description>
     
     <!-- Enable escaping of form submission contents -->
     <context-param>

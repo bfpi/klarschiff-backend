@@ -1,0 +1,184 @@
+<jsp:root 
+	xmlns:c="http://java.sun.com/jsp/jstl/core" 
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions" 
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:spring="http://www.springframework.org/tags" 
+	xmlns:jsp="http://java.sun.com/JSP/Page" 
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu"
+	xmlns:tiles="http://tiles.apache.org/tags-tiles" 
+	version="2.0"
+	>
+	<jsp:directive.page contentType="text/html;charset=UTF-8"/>
+  
+  <!-- Datepicker-->
+ 	<c:url value="/script/jquery-ui/jquery.ui.core.js" var="url"/>
+ 	<script src="${url}" type="text/javascript"><!-- //jquery.ui.datepicker --></script>
+ 	<c:url value="/script/jquery-ui/jquery.ui.datepicker.js" var="url"/>
+ 	<script src="${url}" type="text/javascript"><!-- //jquery.ui.datepicker --></script>
+ 	<c:url value="/script/jquery-ui/jquery.ui.datepicker-de.js" var="url"/>
+ 	<script src="${url}" type="text/javascript"><!-- //jquery.ui.datepicker-de --></script>
+ 	<c:url value="/script/resulttable.js" var="url"/>
+ 	<script src="${url}" type="text/javascript"><!-- //resulttable --></script>
+ 	<c:url value="/script/form.js" var="url"/>
+ 	<script src="${url}" type="text/javascript"><!-- //form --></script>
+ 	
+	<c:url value="/script/jquery-ui/css/jquery.ui.all.css" var="url"/>
+	<link rel="stylesheet" type="text/css" href="${url}"> <!-- styles.css --> </link>
+
+	<!-- CONTENTTITLE -->
+	<div id="root_style_content_title">
+		Aufträge
+	</div>
+  
+  <!-- TABMENU -->
+	<tiles:importAttribute name="tabmenu_item" ignore="true" toName="tabmenu_item"/>
+	<menu:tabmenuauftragsliste currentId="${team}"/>
+	
+	<!-- CONTENT -->
+	<div id="root_style_content">
+    <form:form method="POST" modelAttribute="cmdauftragsliste">
+			<div>
+        <form:label path="datum">Datum</form:label>
+        <form:input path="datum" id="datum" cssClass="inputtext" />
+      </div>
+      <script type="text/javascript">
+        $(function() {
+          $('#datum').datepicker();
+        });
+      </script>
+      <input type="submit" value="Anzeigen"/>
+    </form:form>
+
+		<c:choose>
+			<c:when test="${not empty auftraege}">
+
+		    <table class="resulttable">
+		      <thead>
+		        <tr>
+              <th>#</th>
+              <th>Typ</th>
+              <th>Erstellung</th>
+              <th colspan="2">Haupt- und Unterkategorie</th>
+              <th>Vorgangsstatus</th>
+              <th>Auftragsstatus</th>
+		        </tr>
+		      </thead>
+			    <tbody>
+				  	<c:forEach items="${auftraege}" var="auftrag" varStatus="rowCounter">
+				  		<c:set value="${auftrag.vorgang}" var="vorgang"/>
+                        <fmt:formatDate value="${vorgang.datum}" pattern="dd.MM.yyyy" var="erstellung_datum"/>
+                        <fmt:formatDate value="${vorgang.datum}" pattern="dd.MM.yyyy HH:mm:ss" var="erstellung_datum_uhrzeit"/>
+                        <fmt:formatDate value="${vorgang.datum}" pattern="HH:mm:ss" var="erstellung_uhrzeit"/>
+                        <jsp:useBean id="heute" class="java.util.Date" />
+                        <fmt:formatDate value="${heute}" pattern="dd.MM.yyyy" var="heute_datum"/>
+				      <tr class="row ${(rowCounter.count%2==0)? 'odd' : 'even'}">
+				        <td class="id" style="text-align: center;">
+									<span class="show-tooltip" title="Vorgangsnummer: ${vorgang.id}" data-id="${vorgang.id}">${vorgang.id}</span>
+								</td>
+				        <td style="text-align: center;">
+				        	<c:url value="/images/${vorgang.typ}_15.png" var="url"/>
+									<img alt="${vorgang.typ.text}" src="${url}" height="15" width="15"  title="Typ: ${vorgang.typ.text}"/>
+								</td>
+                                
+                                <c:choose>
+                                    <c:when test="${erstellung_datum eq heute_datum}">
+                                        <td style="text-align: center;" title="${erstellung_datum_uhrzeit}">${erstellung_uhrzeit}</td>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <td style="text-align: center;" title="${erstellung_datum_uhrzeit}">${erstellung_datum}</td>
+                                    </c:otherwise>
+                                </c:choose>
+				        <td>
+									${vorgang.kategorie.parent.name}
+								</td>
+				        <td>
+									${vorgang.kategorie.name}
+								</td>
+				        <td style="text-align: center;">
+				        	<c:url value="/images/${vorgang.typ}_${vorgang.status}_15.png" var="url"/>
+									<img alt="${vorgang.status}" src="${url}"  title="Status: ${vorgang.status.text}"/>
+								</td>
+				        <td style="font-size: 17px; text-align: center;">
+                  <c:url value="/auftragsliste/${auftrag.id}/update_status" var="url"/>
+                  <form:form method="POST" commandName="cmdauftragsliste"
+                             action="${url}" data-autosave="true">
+                    <form:select path="status">
+                      <c:forEach items="${allAuftragStatus}" var="option">
+                        <c:choose>
+                            <c:when test="${option eq auftrag.status}">
+                              <option value="${option}" selected="true">${fn:replace(option, '_', ' ')}</option>
+                            </c:when>
+                            <c:otherwise>
+                              <option value="${option}">${fn:replace(option, '_', ' ')}</option>
+                            </c:otherwise>
+                        </c:choose> 
+                      </c:forEach>
+                    </form:select>
+                  </form:form>
+								</td>
+				      </tr>
+						</c:forEach>
+			    </tbody>
+		    </table>
+			</c:when>
+			<c:otherwise>
+				<div style="margin:20px 0px 0px 10px;">Das Außendiensteinheiten-Team <span style="font-style:italic">${team}</span> hat am gewählten Tag keine Aufträge.</div>
+			</c:otherwise>
+		</c:choose>
+	</div>
+        
+  <!-- HELP -->
+  <div id="root_style_help">
+    <p>
+      Legende:
+      <c:url value="/images/" var="url"/>
+      <table>
+        <tr>
+          <td><img alt="Problem" src="${url}problem_15.png" height="15" width="15" title="Typ: Problem"/></td>
+          <td style="vertical-align:top;">Problem</td>
+          <td width="20px"></td>
+          <td><img alt="gemeldet" src="${url}status_gemeldet_15.png" height="15" width="15"  title="Status: gemeldet"/></td>
+          <td style="vertical-align:top;">gemeldet</td>
+          <td width="20px"></td>
+          <td width="15"><div class="missbrauchsmeldungLegende" style="height:15px;"></div></td>
+          <td style="vertical-align:top;"  title="Status: Missbrauch gemeldet">Missbrauch gemeldet</td>
+          <td width="20px"></td>
+        </tr>
+        <tr>
+          <td><img alt="Idee" src="${url}idee_15.png" height="15" width="15" title="Typ: Idee"/></td>
+          <td style="vertical-align:top;">Idee</td>
+          <td></td>
+          <td><img alt="offen" src="${url}status_offen_15.png" height="15" width="15" title="Status: offen"/></td>
+          <td style="vertical-align:top;">offen</td>
+          <td></td>
+          <td><img alt="offen" src="${url}archiviert_15.png" height="15" width="15" title="archiviert"/></td>
+          <td style="vertical-align:top;"  title="archiviert">archiviert</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td colspan="3"></td>
+          <td><img alt="in Bearbeitung" src="${url}status_inBearbeitung_15.png" height="15" width="15" title="Status: in Bearbeitung"/></td>
+          <td style="vertical-align:top;">in Bearbeitung</td>
+          <td colspan="4"></td>
+        </tr>
+        <tr>
+          <td colspan="3"></td>
+          <td><img alt="wird nicht bearbeitet/Duplikat" src="${url}status_wirdNichtBearbeitet_15.png" height="15" width="15"  title="Status: wird nicht bearbeitet/Duplikat"/></td>
+          <td style="vertical-align:top;">wird nicht bearbeitet / Duplikat</td>
+        </tr>
+        <tr>
+          <td colspan="3"></td>
+          <td><img alt="abgeschlossen" src="${url}status_abgeschlossen_15.png" height="15" width="15"  title="Status: abgeschlossen"/></td>
+          <td style="vertical-align:top;">abgeschlossen</td>
+        </tr>
+        <tr>
+          <td colspan="3"></td>
+          <td><img alt="gelöscht" src="${url}status_geloescht_15.png" height="15" width="15"  title="Status: gelöscht"/></td>
+          <td style="vertical-align:top;">gelöscht</td>
+        </tr>
+      </table>
+    </p>
+  </div>
+
+</jsp:root>

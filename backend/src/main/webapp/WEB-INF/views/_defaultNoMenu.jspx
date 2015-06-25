@@ -1,10 +1,10 @@
 <html 
-	xmlns:jsp="http://java.sun.com/JSP/Page" 
-	xmlns:c="http://java.sun.com/jsp/jstl/core" 
-	xmlns:tiles="http://tiles.apache.org/tags-tiles" 
-	xmlns:spring="http://www.springframework.org/tags" 
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:tiles="http://tiles.apache.org/tags-tiles"
+	xmlns:spring="http://www.springframework.org/tags"
 	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
-	xmlns:fx="http://igd.fraunhofer.de/tags/elfunctions" 
+	xmlns:fx="http://igd.fraunhofer.de/tags/elfunctions"
 	xmlns="http://www.w3.org/1999/xhtml"
 >  
 	
@@ -22,8 +22,12 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=Edge" />	
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
+		<!-- Favicon -->
+		<c:url value="/favicon.ico" var="url" />
+		<LINK REL="SHORTCUT ICON" HREF="${url}"/>
+
 		<!-- Titel -->
-		<title>Klarschiff – Backend</title>
+		<title>${fx:title()}</title>
 		
 		<!-- Style -->
 		<c:url value="/styles/styles.css" var="url"/>
@@ -45,9 +49,14 @@
 	    <div id="root_style_page" style="max-width:800px; width:800px;text-align: left;">
 	    
 	    	<!-- HEADER -->
-			<div id="root_style_header">
-                <![CDATA[&nbsp;]]>
-            </div>
+            <c:choose>
+                <c:when test="${fx:demo()}">
+                    <div id="root_style_header_demo">DEMO</div>
+                </c:when>
+                <c:otherwise>
+                    <div id="root_style_header"><![CDATA[&nbsp;]]></div>
+                </c:otherwise>
+            </c:choose>
 			
 			<div id="root_style_midle">
 				

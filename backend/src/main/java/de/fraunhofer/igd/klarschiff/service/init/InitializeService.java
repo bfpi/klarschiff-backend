@@ -30,22 +30,22 @@ public class InitializeService {
 	DbSyncService dbSyncService;
 	
 	/**
-	 * Aktionen für das Ausführen eines SQL-Scriptes (z.B. Initialisierung des DbLink mit Trigger und Triggerfunktionen
-	 * für die Synchronisystion der Frontend- und BackendDB)
+	 * Aktionen fÃ¼r das AusfÃ¼hren eines SQL-Scriptes (z.B. Initialisierung des DbLink mit Trigger und Triggerfunktionen
+	 * fÃ¼r die Synchronisystion der Frontend- und BackendDB)
 	 *
-	 * <code>disabled</code> - SQL-Script wird nicht ausgeführt <br/>
-	 * <code>warn</code> - SQL-Script wird ausgeführt, Fehler werden ggf. geloggt und die Ausführung des Servers wird bei einem ggf. aufgetretenen Fehler fortgeführt <br/>
-	 * <code>error</code> - SQL-Script wird ausgeführt, bei einem Fehler wird die Asuführung des Servers abgeberochen
+	 * <code>disabled</code> - SQL-Script wird nicht ausgefÃ¼hrt <br/>
+	 * <code>warn</code> - SQL-Script wird ausgefÃ¼hrt, Fehler werden ggf. geloggt und die AusfÃ¼hrung des Servers wird bei einem ggf. aufgetretenen Fehler fortgefÃ¼hrt <br/>
+	 * <code>error</code> - SQL-Script wird ausgefÃ¼hrt, bei einem Fehler wird die AsufÃ¼hrung des Servers abgeberochen
 	 */
 	
 	/**
-	 * Legt fest, ob die Initalisierung beim Start des Servers ausgeführt werden soll.
+	 * Legt fest, ob die Initalisierung beim Start des Servers ausgefÃ¼hrt werden soll.
 	 */
 	boolean enable = true;
 
 	/**
-	 * Legt fest, wie die Ausführung des SQL-Scriptes zur Initialisierung des DbLink mit Trigger und Triggerfunktionen
-	 * für die Synchronisystion der Frontend- und BackendDB ausgeführt werden soll.
+	 * Legt fest, wie die AusfÃ¼hrung des SQL-Scriptes zur Initialisierung des DbLink mit Trigger und Triggerfunktionen
+	 * fÃ¼r die Synchronisystion der Frontend- und BackendDB ausgefÃ¼hrt werden soll.
 	 */
 	SqlScriptUtil.State executeSqlScriptDbLink = SqlScriptUtil.State.disabled;
 	SqlScriptUtil.State executeSqlScriptFrontendDb = SqlScriptUtil.State.disabled;
@@ -59,7 +59,7 @@ public class InitializeService {
 	
 	
 	/**
-	 * Start des Thread zum Ausführen der Initialisierung der DB.
+	 * Start des Thread zum AusfÃ¼hren der Initialisierung der DB.
 	 * @throws Exception
 	 */
     @PostConstruct

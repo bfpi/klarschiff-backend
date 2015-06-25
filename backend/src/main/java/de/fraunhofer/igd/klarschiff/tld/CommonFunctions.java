@@ -8,7 +8,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
 
 /**
- * Die Klasse stellt die Implementierung für allgemeine EL-Funktionen bereit.
+ * Die Klasse stellt die Implementierung fÃ¼r allgemeine EL-Funktionen bereit.
  * @author Stefan Audersch (Fraunhofer IGD)
  */
 public class CommonFunctions {
@@ -35,7 +35,7 @@ public class CommonFunctions {
 
 
 	/**
-	 * Kodiert einen String in HTML wobei Zeilenumbrüche in <code>&lt;br/&gt;</code> umgewandelt werden.
+	 * Kodiert einen String in HTML wobei ZeilenumbrÃ¼che in <code>&lt;br/&gt;</code> umgewandelt werden.
 	 */
 	public static String toHtml(String str) {
 		return str.replaceAll("\n", "<br/>");
@@ -51,10 +51,10 @@ public class CommonFunctions {
 
 
 	/**
-	 * Kürzt einen String auf eine festgegebenen Länge. Am Ende des neuen Strings werden "..." gesetzt.
-	 * @param str String der gekürzt werden soll
-	 * @param maxWidth maximale Länge des neuen Strings
-	 * @return gekürzter String
+	 * KÃ¼rzt einen String auf eine festgegebenen LÃ¤nge. Am Ende des neuen Strings werden "..." gesetzt.
+	 * @param str String der gekÃ¼rzt werden soll
+	 * @param maxWidth maximale LÃ¤nge des neuen Strings
+	 * @return gekÃ¼rzter String
 	 */
 	public static String abbreviate(String str, Integer maxWidth) {
 		return StringUtils.abbreviate(str, maxWidth);

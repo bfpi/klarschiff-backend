@@ -35,8 +35,10 @@
         <secure:intercept-url pattern="/xmlfeeds/**" access="permitAll" />
         <secure:intercept-url pattern="/vorgangneu" access="hasRole('ROLE_EXTERN') or hasRole('ROLE_ADMIN') or hasRole('ROLE_INTERN')" />
         <secure:intercept-url pattern="/kategorien/**" access="hasRole('ROLE_EXTERN') or hasRole('ROLE_ADMIN') or hasRole('ROLE_INTERN')" />
-        <secure:intercept-url pattern="/" access="hasRole('ROLE_EXTERN') or hasRole('ROLE_INTERN') or hasRole('ROLE_ADMIN')"/>
-        <secure:intercept-url pattern="/vorgang/delegiert/**" access="hasRole('ROLE_EXTERN') or hasRole('ROLE_ADMIN')" />
+        <secure:intercept-url pattern="/" access="hasRole('ROLE_EXTERN') or hasRole('ROLE_INTERN') or hasRole('ROLE_ADMIN') or hasRole('ROLE_KOORDINATOR') or hasRole('ROLE_AUSSENDIENST')"/>
+        <secure:intercept-url pattern="/vorgang/delegiert/**" access="permitAll" />
+        <secure:intercept-url pattern="/aussendienst/**" access="hasRole('ROLE_KOORDINATOR')" />
+        <secure:intercept-url pattern="/auftragsliste/**" access="hasRole('ROLE_AUSSENDIENST')" />
         <secure:intercept-url pattern="/**" access="hasRole('ROLE_INTERN') or hasRole('ROLE_ADMIN')" />
         <secure:custom-filter ref="interceptRequestPathFilter" after="FILTER_SECURITY_INTERCEPTOR"/>
     </secure:http>
@@ -95,6 +97,7 @@
     	p:userSearchBase="${ldap.userSearchBase}"
     	p:userObjectClass="${ldap.userObjectClass}"
     	p:userSearchFilter="${ldap.userSearchFilter}"
+    	p:userEmailFilter="${ldap.userEmailFilter}"
     	p:groupSearchBase="${ldap.groupSearchBase}"
     	p:groupObjectClass="${ldap.groupObjectClass}"
     	p:groupSearchFilter="${ldap.groupSearchFilter}"

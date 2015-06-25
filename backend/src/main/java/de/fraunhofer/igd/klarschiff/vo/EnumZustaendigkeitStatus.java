@@ -2,7 +2,7 @@ package de.fraunhofer.igd.klarschiff.vo;
 
 
 /**
- * Status der Zuständigkeit für einen Status
+ * Status der ZustÃ¤ndigkeit fÃ¼r einen Status
  * @author Stefan Audersch (Fraunhofer IGD)
  */
 public enum EnumZustaendigkeitStatus implements EnumText {

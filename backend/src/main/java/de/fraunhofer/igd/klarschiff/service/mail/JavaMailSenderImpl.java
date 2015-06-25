@@ -7,7 +7,7 @@ import org.apache.commons.lang.StringUtils;
 
 /**
  * Erweiterung der Klasse <code>org.springframework.mail.javamail.JavaMailSenderImpl</code>, die auch den Versand
- * von E-Mails über eine SMTP-Provider mit STARTTLS erlaubt.
+ * von E-Mails Ã¼ber eine SMTP-Provider mit STARTTLS erlaubt.
  * @author Stefan Audersch (Fraunhofer IGD)
  */
 public class JavaMailSenderImpl extends org.springframework.mail.javamail.JavaMailSenderImpl {

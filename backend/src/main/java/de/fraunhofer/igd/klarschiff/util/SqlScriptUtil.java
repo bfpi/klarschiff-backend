@@ -11,7 +11,7 @@ import org.hibernate.Transaction;
 import org.hibernate.jdbc.Work;
 
 /**
- * Klasse zum Ausführen eines SQL-Scriptes in der DB. Diese Klasse ist speziell für die Ausführung des Scriptes zum
+ * Klasse zum AusfÃ¼hren eines SQL-Scriptes in der DB. Diese Klasse ist speziell fÃ¼r die AusfÃ¼hrung des Scriptes zum
  * Initialisieren der Trigger und Triggerfunktionen in der BackendDB gedacht.
  * @author Stefan Audersch (Fraunhofer IGD)
  * @author Hani Samara (Fraunhofer IGD)
@@ -26,10 +26,10 @@ public class SqlScriptUtil implements Work {
 	
 	
 	/**
-	 * Führt ein SQL-Script aus.
-	 * @param session Session auf der eine Transaktion zum Ausführen geöffnet werden soll
+	 * FÃ¼hrt ein SQL-Script aus.
+	 * @param session Session auf der eine Transaktion zum AusfÃ¼hren geÃ¶ffnet werden soll
 	 * @param sqlScript SQL-Script
-	 * @param state Soll das Script ausgeführt werden bzw. was soll bei einem Fehler passieren
+	 * @param state Soll das Script ausgefÃ¼hrt werden bzw. was soll bei einem Fehler passieren
 	 */
 	public static void executeSqlScript(Session session, String sqlScript, State state) throws HibernateException {
 		Transaction transaction = null;
@@ -53,7 +53,7 @@ public class SqlScriptUtil implements Work {
 	
 	/**
 	 * Initialisierung
-	 * @param sqlScript Script welches ausgeführt werden soll
+	 * @param sqlScript Script welches ausgefÃ¼hrt werden soll
 	 */
 	private SqlScriptUtil(String sqlScript, State state) {
 		this.sqlScript = sqlScript;
@@ -62,12 +62,12 @@ public class SqlScriptUtil implements Work {
 	
 	
 	/**
-	 * Ausführen des Scriptes.
+	 * AusfÃ¼hren des Scriptes.
 	 */
 	@Override
 	public void execute(Connection connection) throws SQLException {
 		try {
-			logger.debug("SqlScript wird ausgeführt.");
+			logger.debug("SqlScript wird ausgefÃ¼hrt.");
 			PreparedStatement statement = connection.prepareStatement(sqlScript);
 			statement.execute();
 		} catch (Exception e) {
@@ -75,7 +75,7 @@ public class SqlScriptUtil implements Work {
 				case error:
 					throw new SQLException(e);
 				case warn:
-					logger.error("Fehler bei der Ausführung des sqlScriptes:", e);
+					logger.error("Fehler bei der AusfÃ¼hrung des sqlScriptes:", e);
 			}
 		}
 	}

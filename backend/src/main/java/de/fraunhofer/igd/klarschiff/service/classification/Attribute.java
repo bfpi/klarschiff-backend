@@ -5,17 +5,17 @@ import java.util.List;
 import weka.core.FastVector;
 
 /**
- * Mit Hilfe der Klasse wird die Arbeit mit Attributen, wie sie für Weka benötigt werden, vereinfacht. Die 
+ * Mit Hilfe der Klasse wird die Arbeit mit Attributen, wie sie fÃ¼r Weka benÃ¶tigt werden, vereinfacht. Die 
  * Attribute sind somit mehr an die Arbeitsweise in Klarschiff angepasst. Es werden Grundfunktionen bereitgestellt,
- * um Attribute für Weka einfach zu erzeugen.
+ * um Attribute fÃ¼r Weka einfach zu erzeugen.
  * @author Stefan Audersch (Fraunhofer IGD)
  */
 @SuppressWarnings("serial")
 public class Attribute extends weka.core.Attribute {
 
 	/**
-	 * legt fest welche Berechnung für einen Punkt bzgl. einer Fläche (Abstand innerhalb einer Fläche vom Rand, 
-	 * Abstand außerhalb einer Fläche vom Rand, Größe der Fläche) verwendet wird.
+	 * legt fest welche Berechnung fÃ¼r einen Punkt bzgl. einer FlÃ¤che (Abstand innerhalb einer FlÃ¤che vom Rand, 
+	 * Abstand auÃŸerhalb einer FlÃ¤che vom Rand, GrÃ¶ÃŸe der FlÃ¤che) verwendet wird.
 	 */
 	//public enum GeoMeasure { abstandInnerhalb, abstandAusserhalb, flaechenGroesse }
         public enum GeoMeasure { innerhalb }
@@ -53,7 +53,7 @@ public class Attribute extends weka.core.Attribute {
 	 * Erzeugt ein Attribut mit einem vorgegebenen Wertebereich.
 	 * @param name Name des Attributes
 	 * @param values Wertebereich
-	 * @param updateble Kann sich der Wert des Attributes (Feature des Vorganges) mit der Zeit ändern?
+	 * @param updateble Kann sich der Wert des Attributes (Feature des Vorganges) mit der Zeit Ã¤ndern?
 	 * @return Attribut mit erweiterten Funktionen, wie es auch in Weka verwendet werden kann
 	 */
 	public static Attribute createAttribute(String name, List<String> values, boolean updateble) {
@@ -67,7 +67,7 @@ public class Attribute extends weka.core.Attribute {
 	
 	/**
 	 * Erzeugt ein Attribut mit einem vorgegebenen Wertebereich.
-	 * Der Wert des Attributes (Feature des Vorganges) kann sich mit der Zeit ändern.
+	 * Der Wert des Attributes (Feature des Vorganges) kann sich mit der Zeit Ã¤ndern.
 	 * @param name Name des Attributes
 	 * @param values Wertebereich
 	 * @return Attribut mit erweiterten Funktionen, wie es auch in Weka verwendet werden kann
@@ -81,12 +81,12 @@ public class Attribute extends weka.core.Attribute {
 	
 	
 	/**
-	 * Erzeugt ein Attribut mit geographischem Hintergrund. Die Attributwerte werden in der Anwendung über einen WFS ermittelt.
+	 * Erzeugt ein Attribut mit geographischem Hintergrund. Die Attributwerte werden in der Anwendung Ã¼ber einen WFS ermittelt.
 	 * @param name Name des Attributes
 	 * @param typeName Typ des Attributes im WFS
-	 * @param geoMeasure Berechnungstyp für das Attribut
+	 * @param geoMeasure Berechnungstyp fÃ¼r das Attribut
 	 * @param geomPropertyName Attributname der Geometrie beim WMS
-	 * @param updateble Kann sich der Wert des Attributes (Feature des Vorganges) mit der Zeit ändern?
+	 * @param updateble Kann sich der Wert des Attributes (Feature des Vorganges) mit der Zeit Ã¤ndern?
 	 * @return Attribut mit erweiterten Funktionen, wie es auch in Weka verwendet werden kann
 	 */
 	public static Attribute createGeoAttribute(String name, String typeName, GeoMeasure geoMeasure, String geomPropertyName, boolean updateble) {
@@ -101,12 +101,12 @@ public class Attribute extends weka.core.Attribute {
 	
 
 	/**
-	 * Erzeugt mehrere Attribute mit geographischem Hintergrund. Dabei wird für jedes <code>GeoMeasure</code> jeweils ein 
+	 * Erzeugt mehrere Attribute mit geographischem Hintergrund. Dabei wird fÃ¼r jedes <code>GeoMeasure</code> jeweils ein 
 	 * Attribut erzeugt. Der Name der Attribute ergibt sich aus dem <code>namePrefix</code> und dem jeweiligen <code>GeoMeasure</code>.
-	 * @param namePrefix Präfix für die Namen der Attribute
+	 * @param namePrefix PrÃ¤fix fÃ¼r die Namen der Attribute
 	 * @param typeName Typ des Attributes im WFS
 	 * @param geomPropertyName Attributname der Geometrie beim WMS
-	 * @param updateble Können sich die Werte der Attribute (Feature des Vorganges) mit der Zeit ändern?
+	 * @param updateble KÃ¶nnen sich die Werte der Attribute (Feature des Vorganges) mit der Zeit Ã¤ndern?
 	 * @return List (FastVector) mit Attributen
 	 */
 	public static FastVector createGeoAttributes(String namePrefix, String typeName, String geomPropertyName, boolean updateble) {
@@ -119,7 +119,7 @@ public class Attribute extends weka.core.Attribute {
 	
 	
 	/**
-	 * Erzeugt ein Attribut mit geographischem Hintergrund. Die Attributwerte werden in der Anwendung über einen WFS ermittelt.
+	 * Erzeugt ein Attribut mit geographischem Hintergrund. Die Attributwerte werden in der Anwendung Ã¼ber einen WFS ermittelt.
 	 * Bei der Ermittlung der Attributwerte vom WFS werden dabei Typ (z.B. igd:bewirtschaftung), PropertyName 
 	 * (z.B. bewirtschafter) und PropertyValue (z.B. Umweltamt) verwendet. 
 	 * @param name Name des Attributes
@@ -127,7 +127,7 @@ public class Attribute extends weka.core.Attribute {
 	 * @param propertyName PropertyName des Attributes beim WFS
 	 * @param propertyValue PropertyValue des Attributes beim WFS
 	 * @param geomPropertyName Attributname der Geometrie beim WMS
-	 * @param updateble Kann sich der Wert des Attributes (Feature des Vorganges) mit der Zeit ändern?
+	 * @param updateble Kann sich der Wert des Attributes (Feature des Vorganges) mit der Zeit Ã¤ndern?
 	 * @return Attribut mit erweiterten Funktionen, wie es auch in Weka verwendet werden kann
 	 */
 	public static Attribute createGeoAttribute(String name, String typeName, String propertyName, String propertyValue, GeoMeasure geoMeasure, String geomPropertyName, boolean updateble) {
@@ -139,16 +139,16 @@ public class Attribute extends weka.core.Attribute {
 	
 	
 	/**
-	 * Erzeugt mehrere Attribute mit geographischem Hintergrund. Dabei wird für jedes <code>GeoMeasure</code> jeweils ein 
+	 * Erzeugt mehrere Attribute mit geographischem Hintergrund. Dabei wird fÃ¼r jedes <code>GeoMeasure</code> jeweils ein 
 	 * Attribut erzeugt. Der Name der Attribute ergibt sich aus dem <code>namePrefix</code> und dem jeweiligen <code>GeoMeasure</code>.
 	 * Bei der Ermittlung der Attributwerte vom WFS werden dabei Typ (z.B. igd:bewirtschaftung), PropertyName 
 	 * (z.B. bewirtschafter) und PropertyValue (z.B. Umweltamt) verwendet.
-	 * @param namePrefix Präfix für die Namen der Attribute
+	 * @param namePrefix PrÃ¤fix fÃ¼r die Namen der Attribute
 	 * @param typeName Typ des Attributes im WFS
 	 * @param propertyName PropertyName des Attributes beim WFS
 	 * @param propertyValue PropertyValue des Attributes beim WFS
 	 * @param geomPropertyName Attributname der Geometrie beim WMS
-	 * @param updateble Können sich die Werte der Attribute (Feature des Vorganges) mit der Zeit ändern?
+	 * @param updateble KÃ¶nnen sich die Werte der Attribute (Feature des Vorganges) mit der Zeit Ã¤ndern?
 	 * @return List (FastVector) mit Attributen
 	 */
 	public static FastVector createGeoAttributes(String namePrefix, String typeName, String propertyName, String propertyValue, String geomPropertyName, boolean updateble) {

@@ -4,7 +4,7 @@ import com.vividsolutions.jts.geom.Geometry;
 
 
 /**
- * Die Klasse ist eine Hilfsklasse zum Übergeben der ermittelten Features vom WFS. 
+ * Die Klasse ist eine Hilfsklasse zum Ãœbergeben der ermittelten Features vom WFS.
  * @author Stefan Audersch (Fraunhofer IGD)
  */
 public class GeoFeature {
