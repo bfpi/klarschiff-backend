@@ -9,8 +9,8 @@ import de.fraunhofer.igd.klarschiff.dao.JobDao;
 import de.fraunhofer.igd.klarschiff.vo.JobRun;
 
 /**
- * Runnable-Klasse, die vor dem Ausführen des eigentlichen Jobs mit Hilfe der <code>JobDao</code> überprüft, ob
- * der Job bereits von einem anderem Server im Cluster ausgeführt wurde. 
+ * Runnable-Klasse, die vor dem AusfÃ¼hren des eigentlichen Jobs mit Hilfe der <code>JobDao</code> Ã¼berprÃ¼ft, ob
+ * der Job bereits von einem anderem Server im Cluster ausgefÃ¼hrt wurde. 
  * @author Stefan Audersch (Fraunhofer IGD)
  */
 public class MethodInvokingSyncInClusterRunnable extends MethodInvokingRunnable {
@@ -21,8 +21,8 @@ public class MethodInvokingSyncInClusterRunnable extends MethodInvokingRunnable 
 	JobDao jobDao;
 	
 	/**
-	 * Führt einen Job aus und registiret diesen über die DB, wenn dieser noch nicht von einem anderen Server im Cluster 
-	 * ausgeführt wurde.
+	 * FÃ¼hrt einen Job aus und registiret diesen Ã¼ber die DB, wenn dieser noch nicht von einem anderen Server im Cluster 
+	 * ausgefÃ¼hrt wurde.
 	 */
 	@Override
 	public Object invoke() throws InvocationTargetException, IllegalAccessException {
@@ -33,7 +33,7 @@ public class MethodInvokingSyncInClusterRunnable extends MethodInvokingRunnable 
 			e.printStackTrace();
 		}
 		if (id!=null) {
-			logger.info("Job ["+name+"] wird ausgeführt.");
+			logger.info("Job ["+name+"] wird ausgefÃ¼hrt.");
 			try {
 				Object result = super.invoke();
 				jobDao.updateJobRun(id, JobRun.Ergebnis.abgeschlossen, null);

@@ -1,14 +1,15 @@
 <jsp:root 
-	xmlns:c="http://java.sun.com/jsp/jstl/core" 
-	xmlns:fn="http://java.sun.com/jsp/jstl/functions" 
-	xmlns:spring="http://www.springframework.org/tags" 
-	xmlns:jsp="http://java.sun.com/JSP/Page" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu"
 	xmlns:tiles="http://tiles.apache.org/tags-tiles"
 	xmlns:vorgang="urn:jsptagdir:/WEB-INF/tags/vorgang"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:form="http://www.springframework.org/tags/form"
-	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util" 
+	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+	xmlns:fx="http://igd.fraunhofer.de/tags/elfunctions"
 	version="2.0"
 	>
 	<jsp:directive.page contentType="text/html;charset=UTF-8"/>
@@ -38,7 +39,7 @@
 	<!-- HELP -->
 	<div id="root_style_help">
 		<p>
-            Sie haben auf dieser Seite die Möglichkeit die Liste der <util:help anchor="Trashmail">Trashmail-Domains</util:help> anzupassen, die durch Klarschiff geblockt werden sollen. Die einzelnen Domains sind hierzu einfach zeilenweise in des Textfeld einzutragen. Eine aktuelle Liste von Trashmail-Domains finden Sie beispielsweise unter: <a href="http://www.trashmail-blacklist.de/" target="_blank">http://www.trashmail-blacklist.de</a>
+            Sie haben auf dieser Seite die Möglichkeit die Liste der <util:help anchor="Trashmail">Trashmail-Domains</util:help> anzupassen, die durch ${fx:title()} geblockt werden sollen. Die einzelnen Domains sind hierzu einfach zeilenweise in des Textfeld einzutragen. Eine aktuelle Liste von Trashmail-Domains finden Sie beispielsweise unter: <a href="http://www.trashmail-blacklist.de/" target="_blank">http://www.trashmail-blacklist.de</a>
 		</p>
 	</div>
 

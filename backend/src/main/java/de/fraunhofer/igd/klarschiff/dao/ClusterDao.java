@@ -24,7 +24,7 @@ public class ClusterDao {
 	EntityManager em;
 
 	/**
-	 * Löscht allte Einträge in der DB und registriert bzw. aktualisiert den Eintrag des aktuellen Servers in der DB 
+	 * LÃ¶scht allte EintrÃ¤ge in der DB und registriert bzw. aktualisiert den Eintrag des aktuellen Servers in der DB 
 	 */
 	@Transactional
 	public void notifyAliveServer() {
@@ -32,7 +32,7 @@ public class ClusterDao {
 		String serverConnectorPort = ClusterUtil.getServerConnectorPort();
 		
 		Date date = new Date();
-		//alte löschen
+		//alte lÃ¶schen
 		em.createQuery("DELETE FROM Server WHERE datum<:datum").setParameter("datum", DateUtils.addSeconds(date, -30)).executeUpdate();
 		
 		//aktualisieren oder neu?
@@ -58,7 +58,7 @@ public class ClusterDao {
 	}
 	
 	/**
-	 * Gibt eine Liste mit den in der DB gelisteten Servern zurück.
+	 * Gibt eine Liste mit den in der DB gelisteten Servern zurÃ¼ck.
 	 */
 	@SuppressWarnings("unchecked")
 	public List<Server> getAliveServerList() {

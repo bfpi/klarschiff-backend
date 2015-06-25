@@ -1,16 +1,16 @@
 <jsp:root 
-	xmlns:c="http://java.sun.com/jsp/jstl/core" 
-	xmlns:fn="http://java.sun.com/jsp/jstl/functions" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
-	xmlns:spring="http://www.springframework.org/tags" 
-	xmlns:jsp="http://java.sun.com/JSP/Page" 
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu"
 	xmlns:vorgang="urn:jsptagdir:/WEB-INF/tags/vorgang"
 	xmlns:map="urn:jsptagdir:/WEB-INF/tags/map"
 	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
 	xmlns:foto="urn:jsptagdir:/WEB-INF/tags/foto"
 	xmlns:tiles="http://tiles.apache.org/tags-tiles"
-	xmlns:fx="http://igd.fraunhofer.de/tags/elfunctions" 
+	xmlns:fx="http://igd.fraunhofer.de/tags/elfunctions"
 	version="2.0"
 	>
 	<jsp:directive.page contentType="text/html;charset=UTF-8"/>
@@ -46,7 +46,7 @@
 			</c:when>
 
 			<c:otherwise>
-				<p>In diesem Bereich finden Sie verschiedene Dokumentationen zum Backend von Klarschiff:</p>
+				<p>In diesem Bereich finden Sie verschiedene Dokumentationen zum Backend von ${fx:title()}:</p>
 				<ul>
 					<li>Benutzerhandbuch: Handbuch für Benutzer</li>
 					<li>Administrationshandbuch: Handbuch für Administratoren</li>
@@ -54,7 +54,7 @@
 					<li>API-Dokumentation: Dokumentation der Implementierung für Entwickler</li>
 				</ul>
 				<br/>
-                <p>Die Dokumentation zum Frontend von Klarschiff finden Sie <a href="https://github.com/rostock/klarschiff-frontend/wiki/Dokumentation" target="_blank">hier.</a> Wichtigste Elemente dieser Dokumentation sind die Installationsanweisung (inklusive Hervorhebung besonders wichtiger Punkte) und die Kurzbeschreibung der Komponenten, aus denen sich das Frontend zusammensetzt.</p>
+                <p>Die Dokumentation zum Frontend von ${fx:title()} finden Sie <a href="https://github.com/rostock/klarschiff-frontend/wiki/Dokumentation" target="_blank">hier.</a> Wichtigste Elemente dieser Dokumentation sind die Installationsanweisung (inklusive Hervorhebung besonders wichtiger Punkte) und die Kurzbeschreibung der Komponenten, aus denen sich das Frontend zusammensetzt.</p>
 			</c:otherwise>
 
 		</c:choose>
@@ -63,7 +63,7 @@
 	<!-- HELP -->
 	<div id="root_style_help">
 		<p>
-			Über die Menüreiter oben auf dieser Seite haben Sie die Möglichkeit zwischen den vier verschiedenen Dokumentationen zum Backend von Klarschiff zu wechseln.
+			Über die Menüreiter oben auf dieser Seite haben Sie die Möglichkeit zwischen den vier verschiedenen Dokumentationen zum Backend von ${fx:title()} zu wechseln.
 		</p>
 	</div>
 

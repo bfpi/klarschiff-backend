@@ -14,7 +14,7 @@ import de.fraunhofer.igd.klarschiff.service.geo.GeoService;
 import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
 
 /**
- * Controller für die Anmeldefunktionalität am Backend
+ * Controller fÃ¼r die AnmeldefunktionalitÃ¤t am Backend
  * @author Stefan Audersch (Fraunhofer IGD)
  */
 @Controller
@@ -37,8 +37,8 @@ public class LoginController {
 	
 	/**
 	 * Die Methode verarbeitet den GET-Request auf der URL <code>/login</code><br/>
-	 * Seitenbeschreibung: Loginseite mit Rückmeldung bei Fehleingabe
-	 * @param model Model in dem ggf. Daten für die View abgelegt werden
+	 * Seitenbeschreibung: Loginseite mit RÃ¼ckmeldung bei Fehleingabe
+	 * @param model Model in dem ggf. Daten fÃ¼r die View abgelegt werden
 	 * @param request Request
 	 * @return View, die zum Rendern des Request verwendet wird
 	 */
@@ -47,8 +47,6 @@ public class LoginController {
     		ModelMap model, 
     		HttpServletRequest request) 
 	{
-		//securityService.getCurrentUser();
-		//securityService.findAllUsers();
 		if (request.getParameter("access_denied_error")!=null) model.addAttribute("accessDeniedError", true);
 		if (request.getParameter("login_error")!=null) model.addAttribute("loginError", true);
 		return "login";

@@ -28,11 +28,11 @@ import de.fraunhofer.igd.klarschiff.vo.VorgangHistoryClasses;
 import weka.classifiers.Classifier;
 
 /**
- * Die Klasse stellt einen Service als Klassifikator bzw. Zuständigkeitsfinder für das System bereit. Ein Vorgang kann dabei 
- * klassifiziert werden. Ergebnis dabei ist eine Liste von möglichen Zuständigkeiten inkl. deren Relevanz. Damit der Klassifikator im
+ * Die Klasse stellt einen Service als Klassifikator bzw. ZustÃ¤ndigkeitsfinder fÃ¼r das System bereit. Ein Vorgang kann dabei 
+ * klassifiziert werden. Ergebnis dabei ist eine Liste von mÃ¶glichen ZustÃ¤ndigkeiten inkl. deren Relevanz. Damit der Klassifikator im
  * laufenden Betrieb aktualisiert bzw. erneuert werden kann, wird der eigentliche Klassifikator in einem Kontext gehalten.
  * @author Stefan Audersch (Fraunhofer IGD)
- * @author Marcus Kröller (Fraunhofer IGD)
+ * @author Marcus KrÃ¶ller (Fraunhofer IGD)
  * @see de.fraunhofer.igd.klarschiff.service.classification.ClassificationContext
  */
 @Service
@@ -57,7 +57,7 @@ public class ClassificationService {
 	
 	/**
 	 * Initialisiert den Klassifikator und setzt den Kontext beim Service. Das Initialisieren wird als Thread
-	 * ausgeführt, der erst eine Weile wartet, damit alle anderen Services, Repositorys etc. (z.B. LDAP, JPA)
+	 * ausgefÃ¼hrt, der erst eine Weile wartet, damit alle anderen Services, Repositorys etc. (z.B. LDAP, JPA)
 	 * richtig initialisiert sind.
 	 * @see de.fraunhofer.igd.klarschiff.service.classification.ClassficationServiceInitThread
 	 */
@@ -68,7 +68,7 @@ public class ClassificationService {
 	
 	
 	/**
-	 * Ermittelt für einen gegebenen Kontext das Trainingset für den Klassifikator 
+	 * Ermittelt fÃ¼r einen gegebenen Kontext das Trainingset fÃ¼r den Klassifikator 
 	 * @param ctx Klassifikatorkontext
 	 * @return Liste mit Trainingsdaten
 	 * @throws Exception
@@ -76,9 +76,9 @@ public class ClassificationService {
 	 */
 	private Instances createTrainset(ClassificationContext ctx) throws Exception {
 		Instances instances = new Instances(ctx.getDataset());
-		//Vorgänge für das Training holen
+		//VorgÃ¤nge fÃ¼r das Training holen
 		List<Vorgang> vorgaenge = vorgangDao.findVorgangForTrainClassificator(maxCountForClassifiereTrainSet);
-		//Features für jeden Vorgang ermitteln
+		//Features fÃ¼r jeden Vorgang ermitteln
 		for (Vorgang vorgang : vorgaenge) {
                         logger.info("----Classification featureService.createFeature vorgang ("+vorgang.getBetreff()+")");
 			Instance instance = featureService.createFeature(vorgang, true, ctx);
@@ -86,7 +86,7 @@ public class ClassificationService {
 			instances.add(instance);
 		}
 		if (vorgaenge.size()<maxCountForClassifiereTrainSet) {
-			//initiale Zuständigkeit bei den Kategorien hinzufügen
+			//initiale ZustÃ¤ndigkeit bei den Kategorien hinzufÃ¼gen
 			for (Kategorie kategorie : kategorieDao.getKategorien()) {
 				for (Instance instance : featureService.createFeature(kategorie, true, ctx)) {
                                         logger.debug("----Classification featureService.createFeature kategorie ("+kategorie.getName()+")");
@@ -99,10 +99,10 @@ public class ClassificationService {
 	}
 	
 	/**
-	 * Ermittelt die Zuständigkeit für einen Vorgang bei einem gegebenen Kontext. 
-	 * @param vorgang Vorgang für den die Zuständigkeit ermittelt werden soll
+	 * Ermittelt die ZustÃ¤ndigkeit fÃ¼r einen Vorgang bei einem gegebenen Kontext. 
+	 * @param vorgang Vorgang fÃ¼r den die ZustÃ¤ndigkeit ermittelt werden soll
 	 * @param ctx Klassifikatorkontext
-	 * @return Liste mit Zuständigkeiten und deren Relevanz
+	 * @return Liste mit ZustÃ¤ndigkeiten und deren Relevanz
 	 * @throws Exception
 	 */
 	private List<ClassificationResultEntry> classifierVorgang(Vorgang vorgang, ClassificationContext ctx) throws Exception {
@@ -188,23 +188,23 @@ public class ClassificationService {
 	
 	
 	/**
-	 * Ermittelt die aktuell zu verwendene Zuständigkeit. Bei der Berechnung wird das Ergebnis des Klassifikators sowie die History
-	 * der bisher bereits verwendeten Zuständigkeiten berücksichtigt. Die berechnete Zuständigkeit ist somit immer die Gruppe mit der 
-	 * höchsten Relevanz, die aber noch nicht für die Zuständigkeit verwendet wurde.
-	 * Die berechnete Zuständigkeit wird abschließend in die History der Zuständigkeiten für den Vorgang mit aufgenommen.
-	 * @param vorgang Vorgang für den die Zuständigkeit berechnet werden soll
-	 * @return berechnete Zuständigkeit
+	 * Ermittelt die aktuell zu verwendene ZustÃ¤ndigkeit. Bei der Berechnung wird das Ergebnis des Klassifikators sowie die History
+	 * der bisher bereits verwendeten ZustÃ¤ndigkeiten berÃ¼cksichtigt. Die berechnete ZustÃ¤ndigkeit ist somit immer die Gruppe mit der 
+	 * hÃ¶chsten Relevanz, die aber noch nicht fÃ¼r die ZustÃ¤ndigkeit verwendet wurde.
+	 * Die berechnete ZustÃ¤ndigkeit wird abschlieÃŸend in die History der ZustÃ¤ndigkeiten fÃ¼r den Vorgang mit aufgenommen.
+	 * @param vorgang Vorgang fÃ¼r den die ZustÃ¤ndigkeit berechnet werden soll
+	 * @return berechnete ZustÃ¤ndigkeit
 	 */
 	public Role calculateZustaendigkeitforVorgang(Vorgang vorgang) {
 		try {
 			ClassificationResultEntry resultClass = null;
-			//History für den vorgang ermittlen
+			//History fÃ¼r den vorgang ermittlen
 			VorgangHistoryClasses history = vorgangDao.findVorgangHistoryClasses(vorgang);
 			//Wenn der Dispatcher bereits in der History ist keine neue Klassifikation
 			if (isDispatcherInVorgangHistoryClasses(history)) return securityService.getDispatcherZustaendigkeit();
 			//Vorgang klassifizieren
 			List<ClassificationResultEntry> classificationResult = classifierVorgang(vorgang, ctx);
-			//Zuständigkeiten aus der History und aktuelle überspringen
+			//ZustÃ¤ndigkeiten aus der History und aktuelle Ã¼berspringen
 			for(ClassificationResultEntry entry : classificationResult) {
 				if ((history==null || !history.getHistoryClasses().contains(entry.getClassValue())) && !StringUtils.equals(vorgang.getZustaendigkeit(), entry.getClassValue())) {
 					resultClass = entry;
@@ -212,12 +212,12 @@ public class ClassificationService {
 				}
 			}
 			
-			//ggf. zuständigkeit an Dispatcher übergeben
+			//ggf. zustÃ¤ndigkeit an Dispatcher Ã¼bergeben
 			if (resultClass==null) {
 				resultClass = new ClassificationResultEntry(securityService.getDispatcherZustaendigkeitId(), 0d);
 			}
 			
-			//gewählte Zuständigkeit in der History speichern
+			//gewÃ¤hlte ZustÃ¤ndigkeit in der History speichern
 			try {
 				boolean isNew = false;
 				if (history==null)
@@ -229,20 +229,20 @@ public class ClassificationService {
 				history.getHistoryClasses().add(resultClass.getClassValue());
 				if (isNew) vorgangDao.persist(history); else vorgangDao.merge(history);
 			} catch (Exception e) {
-				logger.error("Eine zugewiesene Zuständigkeit konnte nicht in die VorgangHistoryClass aufgenommen werden.", e);
+				logger.error("Eine zugewiesene ZustÃ¤ndigkeit konnte nicht in die VorgangHistoryClass aufgenommen werden.", e);
 			}
 
 			return securityService.getZustaendigkeit(resultClass.getClassValue());
 		} catch (Exception e) {
-			logger.error("Die Zuständigkeit für den Vorgang konnte nicht ermittelt werden.", e);
-			throw new RuntimeException("Die Zuständigkeit für den Vorgang konnte nicht ermittelt werden.", e);
+			logger.error("Die ZustÃ¤ndigkeit fÃ¼r den Vorgang konnte nicht ermittelt werden.", e);
+			throw new RuntimeException("Die ZustÃ¤ndigkeit fÃ¼r den Vorgang konnte nicht ermittelt werden.", e);
 		}
 	}
 	
 	
 	/**
-	 * Ermittelt, ob bereits der Dispatcher für den Vorgang zuständig war
-	 * @param history Zuständigkeitshistory für den Vorgang
+	 * Ermittelt, ob bereits der Dispatcher fÃ¼r den Vorgang zustÃ¤ndig war
+	 * @param history ZustÃ¤ndigkeitshistory fÃ¼r den Vorgang
 	 * @return ja bzw. nein
 	 */
 	private boolean isDispatcherInVorgangHistoryClasses(VorgangHistoryClasses history) {
@@ -253,7 +253,7 @@ public class ClassificationService {
 
 	
 	/**
-	 * Ermittelt, ob bereits der Dispatcher für den Vorgang zuständig war.
+	 * Ermittelt, ob bereits der Dispatcher fÃ¼r den Vorgang zustÃ¤ndig war.
 	 * @return ja bzw. nein
 	 */
 	public boolean isDispatcherInVorgangHistoryClasses(Vorgang vorgang) {
@@ -262,7 +262,7 @@ public class ClassificationService {
 	
 	
 	/**
-	 * Aktualisiert den Klassifikator mit der aktuellen Zuständigkeit des Vorgangs. Dabei wird für den gegebenen
+	 * Aktualisiert den Klassifikator mit der aktuellen ZustÃ¤ndigkeit des Vorgangs. Dabei wird fÃ¼r den gegebenen
 	 * Vorgang ein Trainingsset erzeugt, womit der Klassifikator aktualisiert wird.
 	 * @param vorgang Vorgang, der zur Aktualisierung verwendet wird
 	 */
@@ -275,7 +275,7 @@ public class ClassificationService {
 	}
 	
 	/**
-	 * Aktualisiert den Klassifikator mit der aktuellen Zuständigkeit des Vorgangs. Dabei wird für den gegebenen
+	 * Aktualisiert den Klassifikator mit der aktuellen ZustÃ¤ndigkeit des Vorgangs. Dabei wird fÃ¼r den gegebenen
 	 * Vorgang ein Trainingsset erzeugt, womit der Klassifikator aktualisiert wird.
 	 * @param vorgang Vorgang, der zur Aktualisierung verwendet wird
 	 * @param ctx Klassifikatorkontext

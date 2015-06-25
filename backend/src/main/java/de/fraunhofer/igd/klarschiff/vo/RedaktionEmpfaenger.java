@@ -14,7 +14,7 @@ import javax.validation.constraints.NotNull;
 import org.springframework.format.annotation.DateTimeFormat;
 
 /**
- * VO f¸r die Empf‰nger redaktioneller E-Mails
+ * VO f√ºr die Empf√§nger redaktioneller E-Mails
  * @author Sebastian Schwarz (Hansestadt Rostock)
  */
 @SuppressWarnings("serial")
@@ -24,44 +24,44 @@ public class RedaktionEmpfaenger implements Serializable {
 	/* --------------- Attribute ----------------------------*/
 
 	/**
-	 * ID des Empf‰ngers von redaktionellen E-Mails
+	 * ID des Empf√§ngers von redaktionellen E-Mails
 	 */
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
     
     /**
-	 * Zugehˆrigkeit des Empf‰ngers zu einer Zust‰ndigkeit
+	 * Zugeh√∂rigkeit des Empf√§ngers zu einer Zust√§ndigkeit
 	 */ 
 	private String zustaendigkeit;
     
     /**
-	 * E-Mail-Adresse des Empf‰ngers
+	 * E-Mail-Adresse des Empf√§ngers
 	 */
     @NotNull
 	private String email;
     
     /**
-     * Eskalationsstufe, in der der Empf‰nger redaktionelle E-Mails erhalten soll
+     * Eskalationsstufe, in der der Empf√§nger redaktionelle E-Mails erhalten soll
      */
     @NotNull
     private Short stufe;
     
     /**
-     * Tage, die zwischen dem Versenden redaktioneller E-Mails an den Empf‰nger verstreichen sollen
+     * Tage, die zwischen dem Versenden redaktioneller E-Mails an den Empf√§nger verstreichen sollen
      */
     @NotNull
     private Short tageZwischenMails;
 	
 	/**
-	 * Zeitpunkt des letzen Versandes einer redaktionellen E-Mail an den Empf‰nger
+	 * Zeitpunkt des letzen Versandes einer redaktionellen E-Mail an den Empf√§nger
 	 */
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(style = "S-")
     private Date letzteMail;
 	
 	/**
-	 * Soll Empf‰nger auch E-Mails mit Lob, Kritik und Hinweisen empfangen?
+	 * Soll Empf√§nger auch E-Mails mit Lob, Kritik und Hinweisen empfangen?
 	 */
     private Boolean empfaengerLobHinweiseKritik;
 	

@@ -104,5 +104,8 @@
 		p:showLogins="${show.logins}"
 		p:showFehlerDetails="${show.fehler.details}"
 		p:bugTrackingUrl="${bug.tracking.url}"
+        p:contextAppTitle="${context.app.title}"
+        p:contextAppArea="${context.app.area}"
+        p:contextAppDemo="${context.app.demo}"
 		/>
 </beans>

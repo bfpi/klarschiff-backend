@@ -30,6 +30,7 @@
 						<th>Login</th>
 						<th>Benutzer</th>
 						<th>Administrator</th>
+						<th>Koordinator</th>
  						<th>intern</th>
 						<th>extern</th>
 						<th>interne Rollen</th>
@@ -42,6 +43,7 @@
 							<td>${user.id}</td>
 							<td>${user.name}</td>					
  							<td align="center"><c:if test="${user.userAdmin}">&#x2714;</c:if></td>
+ 							<td align="center"><c:if test="${user.userKoordinator}">&#x2714;</c:if></td>
  							<td align="center"><c:if test="${!user.userAdmin and user.userIntern}">&#x2714;</c:if></td>
 							<td align="center"><c:if test="${!user.userAdmin and user.userExtern}">&#x2714;</c:if></td>
 							<c:choose><c:when test="${user.userAdmin}"><td align="center">alle</td></c:when><c:otherwise><td><ul><c:forEach items="${user.zustaendigkeiten}"  var="role"><li><span>${role.id}</span></li></c:forEach></ul></td></c:otherwise></c:choose>	

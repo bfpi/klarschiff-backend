@@ -1,8 +1,10 @@
 <jsp:root 
-	xmlns:c="http://java.sun.com/jsp/jstl/core" 
-	xmlns:fn="http://java.sun.com/jsp/jstl/functions" 
-	xmlns:spring="http://www.springframework.org/tags" 
-	xmlns:jsp="http://java.sun.com/JSP/Page" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:fx="http://igd.fraunhofer.de/tags/elfunctions"
+    xmlns:sec="http://www.springframework.org/security/tags"
 	version="2.0"
 	>
 	<jsp:directive.page contentType="text/html;charset=UTF-8"/>
@@ -13,7 +15,21 @@
 	</div>
 	
 	<!-- CONTENT -->
-	<div id="root_style_content">
-	</div>
+    <c:choose>
+        <c:when test="${fx:demo()}">
+            <div id="root_style_content"></div>
+        </c:when>
+        <c:otherwise>
+            <div id="root_style_content">
+                Falls Ihnen das Benutzerhandbuch nicht weiterhilft beziehungsweise Sie Kommentare, Anregungen oder Kritik zum Backend von ${fx:title()}
+                äußern möchten, so wenden Sie sich bitte an:<br/>
+                <br/>
+                KSM Kommunalservice Mecklenburg AöR<br/>
+                Eckdrift 93<br/>
+                19061 Schwerin<br/>
+                Telefon: +49-385-633-5100<br/>
+            </div>
+        </c:otherwise>
+    </c:choose>
 	
 </jsp:root>

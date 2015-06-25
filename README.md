@@ -3,35 +3,36 @@
 
 ## Background
 
-Basically, **Klarschiff** is a web portal for public participation. It is hoped to be a helpful application mainly for municipalities and other (public) administrative institutions to improve communication with their members (i.e. citizens, people). The application consists of two parts fundamentally linked together: the back-end (as provided and described here) and the front-end.
+Basically, **Klarschiff** is a web application for public participation. It is hoped to be a helpful tool mainly for municipalities and other (public) administrative institutions to improve communication with their members (i.e. the people). The application consists of two parts fundamentally linked together: the back-end (as provided and described here) and the front-end.
 
-The back-end of **Klarschiff** is a web application which can be used by municipalities and other (public) administrative institutions to manage all incoming events reported via the corresponding front-end.
+The back-end of **Klarschiff** is a web application which can be used by municipalities and other (public) administrative institutions to manage all incoming events either reported via the corresponding front-end or reported via the back-end itself.
 
-The project was initiated by municipality of Rostock (Germany), more precisely its land registry office.
+The project was initiated by the municipality of Rostock (Germany), more precisely its land registry office.
 
 
 ## Language issues
 
 Sorry folks, but currently, almost the whole project (i.e. the documentation, most of the code comments, the file names and the project name itself, of course) is available in German language only.
 
-Hopefully we will find both the time and the spiritedness to improve this situation in the coming weeks and months together.
-
 
 ## Documentation
 
-The current documentation is, as already mentioned above, available in German language only. Nevertheless, you are invited to read through the `dokumentation` directory.
+The current documentation is, as already mentioned above, available in German only. Nevertheless, you are invited to read through the `dokumentation` directory.
 
 
 ## Virtual machine demo
 
-The initiators of the **Klarschiff** project are hosting a ready-to-use virtual machine (VM) in [VMware format](http://en.wikipedia.org/wiki/Vmdk) on their servers which comes with the complete **Klarschiff** demo version pre-installed on it: the demo is executable locally – for more details see the readme file that is shipped with the VM. The VM is compressed and made available as a 5 GB gzip archive via the following link: [klarschiff-demo-vm.tar.gz](https://geo.sv.rostock.de/download/klarschiff-demo-vm.tar.gz)
+The initiators of the **Klarschiff** project are offering a ready-to-use virtual machine (VM) in [VMware format](http://en.wikipedia.org/wiki/Vmdk) for download on their servers: it comes with the complete **Klarschiff** demo version pre-installed on it. The demo is executable locally – for more details see the readme file that is shipped along with the VM. The VM is compressed and made available as a 5 GB gzip archive via the following link: [klarschiff-demo-vm.tar.gz](https://geo.sv.rostock.de/download/klarschiff-demo-vm.tar.gz)
 
 
 ## Online demo
 
-Additionally, the initiators of the **Klarschiff** project are hosting a [demo version](http://demo.klarschiff-hro.de/backend) (login with the name `interner` and the password `interner`) of the project on their servers. This demo version uses the code hosted here on GitHub, with settings slightly adjusted to the local conditions, of course.
+Additionally, the initiators of the **Klarschiff** project are hosting a [demo version](http://demo.klarschiff-hro.de/backend) of the project on their servers. This demo version uses the code hosted here on GitHub, with `settings.properties` slightly adjusted to the local environment, of course.
 
-Apart from that demo, there is also a real-world productive version running on the initiators' servers which is accessible internally only.
+
+## In production
+
+**Klarschiff** is running as a real-world productive version named **Klarschiff.HRO** on the initiators' servers but is accessible internally only.
 
 
 ## License

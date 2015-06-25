@@ -29,7 +29,7 @@
             <thead>
                 <tr>
                     <util:sortedtableheadercolumn name="Vorgang" id="0" currentOrderId="${cmdlobhinweisekritik.order}" currentOrderDirection="${cmdlobhinweisekritik.orderDirection}"/>
-                    <util:sortedtableheadercolumn name="Datum" id="1" currentOrderId="${cmdlobhinweisekritik.order}" currentOrderDirection="${cmdlobhinweisekritik.orderDirection}"/>
+                    <util:sortedtableheadercolumn name="Erstellung" id="1" currentOrderId="${cmdlobhinweisekritik.order}" currentOrderDirection="${cmdlobhinweisekritik.orderDirection}"/>
                     <util:sortedtableheadercolumn name="Autor" id="2" currentOrderId="${cmdlobhinweisekritik.order}" currentOrderDirection="${cmdlobhinweisekritik.orderDirection}"/>
                     <util:sortedtableheadercolumn name="Empfänger" id="3" currentOrderId="${cmdlobhinweisekritik.order}" currentOrderDirection="${cmdlobhinweisekritik.orderDirection}"/>
                     <util:sortedtableheadercolumn name="Nachricht" id="4" currentOrderId="${cmdlobhinweisekritik.order}" currentOrderDirection="${cmdlobhinweisekritik.orderDirection}"/>
@@ -38,9 +38,21 @@
             <tbody>
                 <c:forEach items="${alleLobHinweiseKritik}" var="lobHinweisKritik" varStatus="rowCounter">
                     <c:url value="/vorgang/${lobHinweisKritik.vorgang.getId()}/uebersicht" var="url"/>
+                    <fmt:formatDate value="${lobHinweisKritik.datum}" pattern="dd.MM.yyyy" var="erstellung_datum"/>
+                    <fmt:formatDate value="${lobHinweisKritik.datum}" pattern="dd.MM.yyyy HH:mm:ss" var="erstellung_datum_uhrzeit"/>
+                    <fmt:formatDate value="${lobHinweisKritik.datum}" pattern="HH:mm:ss" var="erstellung_uhrzeit"/>
+                    <jsp:useBean id="heute" class="java.util.Date" />
+                    <fmt:formatDate value="${heute}" pattern="dd.MM.yyyy" var="heute_datum"/>
                     <tr class="${(rowCounter.count%2==0)? 'odd' : 'even'}" onClick="location.href='${url}'" style="cursor:pointer;">
                         <td>${lobHinweisKritik.vorgang.getId()}</td>
-                        <td style="text-align: center;"><fmt:formatDate value="${lobHinweisKritik.datum}" pattern="dd.MM.yyyy"/></td>
+                        <c:choose>
+                            <c:when test="${erstellung_datum eq heute_datum}">
+                                <td style="text-align: center;" title="${erstellung_datum_uhrzeit}">${erstellung_uhrzeit}</td>
+                            </c:when>
+                            <c:otherwise>
+                                <td style="text-align: center;" title="${erstellung_datum_uhrzeit}">${erstellung_datum}</td>
+                            </c:otherwise>
+                        </c:choose>
                         <td>${lobHinweisKritik.autorEmail}</td>
                         <td>${lobHinweisKritik.empfaengerEmail}</td>
                         <td>${lobHinweisKritik.freitext}</td>

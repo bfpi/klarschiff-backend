@@ -6,6 +6,7 @@
 	xmlns:tiles="http://tiles.apache.org/tags-tiles" 
 	xmlns:sec="http://www.springframework.org/security/tags"
 	xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu"
+	xmlns:fx="http://igd.fraunhofer.de/tags/elfunctions"
 	version="2.0"
 >
 	
@@ -20,24 +21,27 @@
 				<c:if test="${pageContext.request.userPrincipal != null}">
 					<menu:item label="Startseite" url="/" id="menu.home" currentId="${menu_item}"/>
 				</c:if>
-		
-				<sec:authorize access="hasRole('ROLE_INTERN') or hasRole('ROLE_ADMIN')">		
+
+				<sec:authorize access="hasAnyRole('ROLE_INTERN', 'ROLE_ADMIN')">
 					<menu:item label="Vorgänge" url="/vorgang/suchen?neu=true" id="menu.vorgaenge" currentId="${menu_item}"/>
+					<menu:item label="Delegationen" url="/vorgang/delegiert/suchen?neu=true" id="menu.vorgaenge.delegiert" currentId="${menu_item}"/>
 				</sec:authorize>
-                
-                <sec:authorize access="hasRole('ROLE_EXTERN') or hasRole('ROLE_ADMIN')">
-                    <sec:authorize access="not hasRole('ROLE_INTERN') and not hasRole('ROLE_ADMIN')">	
-                        <menu:item label="Vorgänge" url="/vorgang/delegiert/suchen?neu=true" id="menu.vorgaenge.delegiert" currentId="${menu_item}"/>
-                    </sec:authorize>
-                    <sec:authorize access="hasRole('ROLE_INTERN') or hasRole('ROLE_ADMIN')">	
-                        <menu:item label="Delegationen" url="/vorgang/delegiert/suchen?neu=true" id="menu.vorgaenge.delegiert" currentId="${menu_item}"/>
-                    </sec:authorize>
+
+				<sec:authorize access="hasRole('ROLE_EXTERN') and !hasAnyRole('ROLE_INTERN', 'ROLE_ADMIN')">
+					<menu:item label="Vorgänge" url="/vorgang/delegiert/suchen?neu=true" id="menu.vorgaenge.delegiert" currentId="${menu_item}"/>
 				</sec:authorize>
-		
-				<sec:authorize access="hasRole('ROLE_INTERN') or hasRole('ROLE_EXTERN') or hasRole('ROLE_ADMIN')">		
+
+				<sec:authorize access="hasRole('ROLE_KOORDINATOR')">
+					<menu:item label="Außendienst" url="/aussendienst" id="menu.aussendienst" currentId="${menu_item}"/>
+				</sec:authorize>
+				<sec:authorize access="hasRole('ROLE_AUSSENDIENST')">
+					<menu:item label="Aufträge" url="/auftragsliste" id="menu.auftragsliste" currentId="${menu_item}"/>
+				</sec:authorize>
+
+				<sec:authorize access="hasAnyRole('ROLE_INTERN', 'ROLE_EXTERN', 'ROLE_ADMIN')">
 					<menu:item label="neuer Vorgang" url="/vorgangneu" id="menu.vorgangneu" currentId="${menu_item}"/>
 				</sec:authorize>
-		
+
 				<c:choose>
 					<c:when test="${pageContext.request.userPrincipal != null}">
 						<menu:item label="abmelden" url="/resources/j_spring_security_logout" id="menu.logout" currentId="${menu_item}"/>
@@ -58,7 +62,11 @@
 				</sec:authorize>
 		
 				<menu:item label="Dokumentation" url="/dokumentation/index" id="menu.dokumentation" currentId="${menu_item}"/>
-				<menu:item label="Service" url="/service" id="menu.service" currentId="${menu_item}"/>
+                
+                <c:if test="${not fx:demo()}">
+                    <menu:item label="Service" url="/service" id="menu.service" currentId="${menu_item}"/>
+                </c:if>
+
 				<menu:item label="Impressum" url="/impressum" id="menu.impressum" currentId="${menu_item}"/>
 			</ul>
 		</c:when>

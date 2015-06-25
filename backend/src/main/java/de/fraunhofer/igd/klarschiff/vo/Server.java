@@ -39,8 +39,8 @@ public class Server implements Serializable {
 	String jvmRoute;
 	
 	/**
-	 * Zeitpunkt der letzen Registrierung/Benachrichtung der Serverinstanz. Anhand des Datums werden veraltete Einträge in
-	 * der DB gelöscht.  
+	 * Zeitpunkt der letzen Registrierung/Benachrichtung der Serverinstanz. Anhand des Datums werden veraltete EintrÃ¤ge in
+	 * der DB gelÃ¶scht.  
 	 */
 	Date datum;
 	

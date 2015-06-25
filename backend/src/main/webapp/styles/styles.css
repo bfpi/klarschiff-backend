@@ -1,13 +1,29 @@
 /* author Stefan Audersch (Fraunhofer IGD) */
 /* @author Hani Samara (Fraunhofer IGD) */
 /* @author Frank Christiner (Fraunhofer IGD) */
-/* @author Markus Kröller (Fraunhofer IGD) */
+/* @author Markus KrÃ¶ller (Fraunhofer IGD) */
 /* @author Martin Gielow (Fraunhofer IGD) */
 
 .dev {
 	background-color: #FFFFDF;
 	color: #4f4f4f;
 	padding: 5px;
+}
+
+div.mapExtern {
+    text-align: left;
+    left: 20px;
+    float: left;
+}
+
+div.mapExternLonelyIcon {
+    text-align: left;
+    left: 20px;
+}
+
+img.icon {
+    border: hidden;
+    border-width: 0px;
 }
 
 body,div {
@@ -101,7 +117,7 @@ table.result td.label {
 table.result td.value {
 	vertical-align: top;
 }
-/* ######################### Zuständigkeit ######################### */
+/* ######################### ZustÃ¤ndigkeit ######################### */
 ul.formlist li.akzeptieren,ul.formlist li.automatisch,ul.formlist li.manuell
 	{
 	padding-top: 2px;
@@ -778,6 +794,10 @@ button#uploadSubmitButton, button#uploadCancelButton {
 	height: 26px;
 }
 
+span.fotowunschWrap {
+  margin-right: 10px;
+}
+
 button#uploadButton, form#uploadForm {
   margin-left: 10px;
 }
@@ -1274,7 +1294,19 @@ span.show-tooltip-text {
 #root_style_header {
     height:120px;
 	margin-bottom: 10px;
-    background-image: url("../images/header.png");
+	background-image: url("../images/header.png");
+	background-repeat: repeat-x;
+    color:#FFFFFF;
+	/* abgerundete Ecken */
+	-moz-border-radius: 5px; /* Mozilla */
+	-webkit-border-radius: 5px; /* Webkit */
+	-khtml-border-radius: 5px; /* KHTML */
+	border-radius: 5px; /* Opera */
+}
+#root_style_header_demo {
+    height:65px;
+	margin-bottom: 10px;
+    background-color:#FFCD05;
     color:#D81920;
     text-align:center;
     line-height:62px;
@@ -1578,7 +1610,7 @@ fieldset { /* abgerundete Ecken */
 	font-size: 0.9em;
 }
 
-/* ######################### ADRESSSUCHE ######################### */
+/* ######################### ADRESSENSUCHE ######################### */
 div.results {
     display:none;
     position:absolute;
@@ -1594,32 +1626,32 @@ div.results {
     z-index:1;
 }
 
-div.resultElement {
+div.resultElement, div.result-element {
     line-height:150%;
     cursor:pointer;
 }
 
-div.resultElement:hover {
+div.resultElement:hover, div.result-element:hover  {
     background-color:#E1E1E1;
 }
 
-div.resultElement span {
+div.resultElement span, div.result-element span  {
     float:right;
     padding-right:6px;
     color:#AAAAAA;
     font-size:75%;
     font-style:italic;
 }
-div.resultElement:hover span {
+div.resultElement:hover span, div.result-element:hover span {
     color:#000000;
 }
 
-div.resultElement a {
+div.resultElement a, div.result-element a {
     color: #164194;
     text-decoration:none;
 }
 
-div.resultElement a:hover {
+div.resultElement a:hover, div.result-element a:hover {
     color:#d81920;
 }
 
@@ -1692,4 +1724,31 @@ div.resultElement a:hover {
 .cboxIE #cboxMiddleLeft,
 .cboxIE #cboxMiddleRight {
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#00FFFFFF,endColorstr=#00FFFFFF);
+}
+
+table#aussendienst_zustaendigkeiten ul {
+  padding: 0;
+}
+
+table#aussendienst_zustaendigkeiten ul li {
+  list-style: outside none none;
+}
+
+table#aussendienst_zustaendigkeiten ul li a img {
+  height: 12px;
+  margin: 0 4px;
+}
+
+table#aussendienst_zustaendigkeiten ul#aussendienstTeams li a,
+table#aussendienst_zustaendigkeiten ul#aktuellerBenutzer li a {
+  float: right;
+}
+
+table.sortable tbody tr.sortable-highlight {
+  background-color: #ffe789;
+}
+
+table.sortable tbody tr td span.sorting-arrows {
+  cursor: move;
+  font-size: 15px;
 }

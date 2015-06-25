@@ -13,7 +13,7 @@ import de.fraunhofer.igd.klarschiff.vo.Kommentar;
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
 
 /**
- * Die Dao-Klasse ermöglicht den Zugriff auf die Kommentare der Vorgänge 
+ * Die Dao-Klasse ermÃ¶glicht den Zugriff auf die Kommentare der VorgÃ¤nge 
  * @author Stefan Audersch (Fraunhofer IGD)
  */
 @Repository
@@ -26,6 +26,12 @@ public class KommentarDao {
     public void persist(Kommentar kommentar) {
         em.persist(kommentar);
     }
+    
+	@Transactional
+	public void merge(Kommentar kommentar) {
+		em.merge(kommentar);
+		em.flush();
+	}
 	
 	@Transactional
 	public List<Kommentar> findKommentareForVorgang(Vorgang vorgang) {

@@ -75,8 +75,8 @@
 							</c:when>
 							<c:when test="${verlaufItem.typ=='statusKommentar'}">
 								<c:choose>
-									<c:when test="${not empty verlaufItem.wertNeu}">Statuskommentar geändert</c:when>
-									<c:otherwise>Statuskommentar gelöscht</c:otherwise>
+									<c:when test="${not empty verlaufItem.wertNeu}">öffentliche Statusinformation geändert</c:when>
+									<c:otherwise>öffentliche Statusinformation gelöscht</c:otherwise>
 								</c:choose>
 							</c:when>
 							<c:when test="${verlaufItem.typ=='zustaendigkeitAkzeptiert'}">
@@ -108,6 +108,11 @@
                                 <c:set value="freigabeStatus_${verlaufItem.wertAlt}.png" var="altAlt"/>
                                 <c:set value="freigabeStatus_${verlaufItem.wertNeu}.png" var="altNeu"/>
 								Freigabestatus des Fotos geändert: <img style="vertical-align:middle" alt="${altAlt}" src="${url}${altAlt}" height="15" width="15"  title="${verlaufItem.wertAlt}"/> ➔ <img style="vertical-align:middle" alt="${altNeu}" src="${url}${altNeu}" height="15" width="15"  title="${verlaufItem.wertNeu}"/>
+							</c:when>
+							<c:when test="${verlaufItem.typ=='fotowunsch'}">
+								<c:set value="foto_wunsch_${verlaufItem.wertAlt}.png" var="altAlt"/>
+								<c:set value="foto_wunsch_${verlaufItem.wertNeu}.png" var="altNeu"/>
+								Fotowunsch geändert: <img style="vertical-align:middle" alt="${altAlt}" src="${url}${altAlt}" height="15" width="15"  title="${verlaufItem.wertAlt}"/> ➔ <img style="vertical-align:middle" alt="${altNeu}" src="${url}${altNeu}" height="15" width="15"  title="${verlaufItem.wertNeu}"/>
 							</c:when>
 							<c:when test="${verlaufItem.typ=='typ'}">
                                 <c:set value="${verlaufItem.wertAlt.toLowerCase()}_15.png" var="altAlt"/>
@@ -173,6 +178,20 @@
 							</c:when>
 							<c:when test="${verlaufItem.typ=='vorgangBestaetigung'}">
 								Vorgang von externem Autor bestätigt
+							</c:when>
+							<c:when test="${verlaufItem.typ=='aufgabeStatus'}">
+								Aufgaben-Status geändert auf:
+								<c:choose>
+									<c:when test="${verlaufItem.wertNeu == 'abgehakt'}">
+										&#x2611;
+									</c:when>
+									<c:when test="${verlaufItem.wertNeu == 'nicht_abgehakt'}">
+										&#x2610;
+									</c:when>
+									<c:when test="${verlaufItem.wertNeu == 'nicht_abarbeitbar'}">
+										&#x2612;
+									</c:when>
+								</c:choose>
 							</c:when>
 						</c:choose>
 					</div>

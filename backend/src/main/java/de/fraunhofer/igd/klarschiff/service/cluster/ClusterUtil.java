@@ -9,8 +9,8 @@ import javax.management.ObjectName;
 import org.apache.commons.lang.StringUtils;
 
 /**
- * Mit Hilfe der Util-Klasse können verschieden Daten des aktuellen Servers ermittelt werden können, die eine Identifikation 
- * im Cluster ermöglichen.
+ * Mit Hilfe der Util-Klasse kÃ¶nnen verschieden Daten des aktuellen Servers ermittelt werden kÃ¶nnen, die eine Identifikation 
+ * im Cluster ermÃ¶glichen.
  * @author Stefan Audersch (Fraunhofer IGD)
  */
 public class ClusterUtil {
@@ -21,7 +21,7 @@ public class ClusterUtil {
 	static String serverJvmRoute;
 	
 	/**
-	 * Gibt den Connector und den Port des aktuellen Servers zurück. 
+	 * Gibt den Connector und den Port des aktuellen Servers zurÃ¼ck. 
 	 * @return Connector und Port des aktuellen Servers, z.B. http-bio-80.
 	 */
 	public static String getServerConnectorPort() {
@@ -43,7 +43,7 @@ public class ClusterUtil {
 	}
 
 	/**
-	 * Gibt den in der <code>server.xml</code> des aktuellen Servers angegeben Wert der <code>jvmRoute</code> zurück.
+	 * Gibt den in der <code>server.xml</code> des aktuellen Servers angegeben Wert der <code>jvmRoute</code> zurÃ¼ck.
 	 * @return Wert der <code>jvmRoute</code> in der <code>server.xml</code> des aktuellen Servers.
 	 */
 	public static String getServerJvmRoute() {
@@ -57,7 +57,7 @@ public class ClusterUtil {
 	}
 	
 	/**
-	 * Gibt die Liste der IPs des aktuellen Servers zurück.
+	 * Gibt die Liste der IPs des aktuellen Servers zurÃ¼ck.
 	 * @return Liste der IPs des aktuellen Servers.
 	 */
 	public static String getServerIp() {
@@ -75,7 +75,7 @@ public class ClusterUtil {
 	}
 
 	/**
-	 * Gibt den Rechnernamen des aktuellen Servers zurück.
+	 * Gibt den Rechnernamen des aktuellen Servers zurÃ¼ck.
 	 * @return Rechnername des aktuellen Servers.
 	 */
 	public static String getServerName() {

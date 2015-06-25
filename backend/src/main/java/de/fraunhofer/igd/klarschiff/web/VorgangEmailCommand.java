@@ -5,8 +5,8 @@ import java.io.Serializable;
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
 
 /**
- * Command für den Mailversand im Backend <br />
- * Beinhaltet ein Vorgangs-Objekt sowie Emaildetails (Absenderadresse und -name, Empfängeradresse und Mailtext).
+ * Command fÃ¼r den Mailversand im Backend <br />
+ * Beinhaltet ein Vorgangs-Objekt sowie Emaildetails (Absenderadresse und -name, EmpfÃ¤ngeradresse und Mailtext).
  * @author Stefan Audersch (Fraunhofer IGD)
  */
 @SuppressWarnings("serial")
@@ -18,9 +18,11 @@ public class VorgangEmailCommand implements Serializable {
 	String toEmail;
 	String text;
 	
+	boolean sendAutor = true;
 	boolean sendKarte = true;
 	boolean sendFoto = true;
 	boolean sendKommentare = true;
+	boolean sendLobHinweiseKritik = true;
 	boolean sendMissbrauchsmeldungen = true;
 	
 	public Vorgang getVorgang() {
@@ -56,6 +58,12 @@ public class VorgangEmailCommand implements Serializable {
 	public void setSendKommentare(boolean sendKommentare) {
 		this.sendKommentare = sendKommentare;
 	}
+	public boolean getSendLobHinweiseKritik() {
+		return sendLobHinweiseKritik;
+	}
+	public void setSendLobHinweiseKritik(boolean sendLobHinweiseKritik) {
+		this.sendLobHinweiseKritik = sendLobHinweiseKritik;
+	}
 	public boolean getSendFoto() {
 		return sendFoto;
 	}
@@ -76,5 +84,11 @@ public class VorgangEmailCommand implements Serializable {
 	}
 	public void setSendMissbrauchsmeldungen(boolean sendMissbrauchsmeldungen) {
 		this.sendMissbrauchsmeldungen = sendMissbrauchsmeldungen;
+	}
+	public boolean getSendAutor() {
+		return sendAutor;
+	}
+	public void setSendAutor(boolean sendAutor) {
+		this.sendAutor = sendAutor;
 	}
 }

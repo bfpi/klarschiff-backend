@@ -17,7 +17,7 @@ import de.fraunhofer.igd.klarschiff.vo.Vorgang;
 
 /**
  * Die Klasse stellt einen Service zur Erstellung von Excel-dokumenten bereit. Dabei werden vorhandenen
- * Excel-Dokumente (Templates) eingelesen und mit Daten gefüllt.<br/>
+ * Excel-Dokumente (Templates) eingelesen und mit Daten gefÃ¼llt.<br/>
  * Die verwendeten Templates liegen an der folgenden Stelle: [templatePath][Template].xls 
  * @author Stefan Audersch (Fraunhofer IGD)
  */
@@ -25,7 +25,7 @@ import de.fraunhofer.igd.klarschiff.vo.Vorgang;
 public class PoiService {
 	
 	/**
-	 * Zur Verfügung stehende Templates von Excel-Dokumenten. 
+	 * Zur VerfÃ¼gung stehende Templates von Excel-Dokumenten. 
 	 */
 	public enum Template { vorgangListe, vorgangDelegiertListe }
 	String templatePath = "classpath:META-INF/templates/";
@@ -48,7 +48,7 @@ public class PoiService {
 	
 	
 	/**
-	 * Füllt eine Template mit den übergebenen Daten
+	 * FÃ¼llt eine Template mit den Ã¼bergebenen Daten
 	 * @param template Template, welches verwendet werden soll.
 	 * @param data Daten, die in das Template eingetragen werden sollen. Die genaue Struktur der Daten ist der Implementierung zu entnehmen.
 	 * @return Template mit Daten
@@ -108,7 +108,7 @@ public class PoiService {
 			break;
 
 		default:
-			throw new RuntimeException("Das Template wird nicht unterstützt.");
+			throw new RuntimeException("Das Template wird nicht unterstÃ¼tzt.");
 		}
 		
 		return workbook;

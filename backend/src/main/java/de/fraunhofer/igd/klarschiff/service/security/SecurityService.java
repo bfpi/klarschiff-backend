@@ -1,5 +1,6 @@
 package de.fraunhofer.igd.klarschiff.service.security;
 
+import de.fraunhofer.igd.klarschiff.dao.AussendienstKoordinatorDao;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.PrintWriter;
@@ -35,7 +36,7 @@ import de.fraunhofer.igd.klarschiff.vo.Kommentar;
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
 
 /**
- * Die Klasse stellt einen Service bereit über den die Daten zu Benutzer und deren Rollen bzw. Zuständigkeiten auf der Basis des LDAP ermittelt werden können.
+ * Die Klasse stellt einen Service bereit Ã¼ber den die Daten zu Benutzer und deren Rollen bzw. ZustÃ¤ndigkeiten auf der Basis des LDAP ermittelt werden kÃ¶nnen.
  * Anfragen an das LDAP werden dabei i.d.R. mit Hilfe der Klasse <code>SecurityServiceLdap</code> gecacht, um wiederholte Anfragen an das LDAP zu vermeiden.
  * @author Stefan Audersch (Fraunhofer IGD)
  * @author Hani Samara (Fraunhofer IGD)
@@ -46,6 +47,8 @@ public class SecurityService {
 	
 	@Autowired
 	VorgangDao vorgangDao;
+	@Autowired
+	AussendienstKoordinatorDao aussendienstKoordinatorDao;
 	
 	SecurityServiceLdap securityServiceLdap;
 	
@@ -55,6 +58,7 @@ public class SecurityService {
 	String userSearchBase;
 	String userObjectClass;
 	String userSearchFilter;
+	String userEmailFilter;
 	String groupSearchBase;
 	String groupObjectClass;
 	String groupSearchFilter;
@@ -64,6 +68,8 @@ public class SecurityService {
 	String groupExtern = "extern";
 	String groupAdmin = "admin";
 	String groupDispatcher = "dispatcher";
+	String groupKoordinator = "koordinator";
+	String groupAussendienst = "aussendienst";
 	
 	private ContextMapper<User> userContextMapper;
 	private ContextMapper<Role> roleContextMapper;
@@ -72,7 +78,7 @@ public class SecurityService {
 	static final String FS = System.getProperty("file.separator");
 
 	/**
-	 * Initialisiert den Service. Dabei werden die Mapper für Benutzer und Rollen initialisiert.
+	 * Initialisiert den Service. Dabei werden die Mapper fÃ¼r Benutzer und Rollen initialisiert.
 	 */
 	@PostConstruct
 	public void init() {
@@ -95,7 +101,7 @@ public class SecurityService {
 	
 	/**
 	 * Ermittelt ob der Benutzer Adminrechte hat.
-	 * @param login Benutzer, für den überprüft werden soll, ob er Adminrechte hat.
+	 * @param login Benutzer, fÃ¼r den Ã¼berprÃ¼ft werden soll, ob er Adminrechte hat.
 	 * @return <code>true</code> - der Benutzer hat Adminrechte
 	 */
 	public boolean isUserAdmin(String login) {
@@ -104,8 +110,8 @@ public class SecurityService {
 		List<Role> role = securityServiceLdap.getObjectListFromLdap(groupSearchBase, "(&(objectclass="+groupObjectClass+")("+StringUtils.replace(groupSearchFilter, "{0}", user.getDn())+")("+groupRoleAttribute+"="+groupAdmin+"))", roleContextMapper);
 		return (role.size()==0) ? false : true;
 	}
-	
-	
+
+    
 	/**
 	 * Ermittelt ob der aktuelle Benutzer ein Dispatcher ist.
 	 * @return <code>true</code> - der Benutzer ist ein Dispatcher
@@ -119,7 +125,7 @@ public class SecurityService {
 	
 	/**
 	 * Ermittelt ob der Benutzer ein Dispatcher ist.
-	 * @param login Benutzer, für den überprüft werden soll, ob er ein Dispatcher ist.
+	 * @param login Benutzer, fÃ¼r den Ã¼berprÃ¼ft werden soll, ob er ein Dispatcher ist.
 	 * @return <code>true</code> - der Benutzer ist ein Dispatcher
 	 */
 	public boolean isUserDispatcher(String login) {
@@ -129,9 +135,21 @@ public class SecurityService {
 		return (role.size()==0) ? false : true;
 	}
 	
+    
+    /**
+	 * Ermittelt ob der Benutzer Koordinator-Rechte hat.
+	 * @param login Benutzer, fÃ¼r den Ã¼berprÃ¼ft werden soll, ob er Koordinator-Rechte hat.
+	 * @return <code>true</code> - der Benutzer hat Koordinator-Rechte
+	 */
+	public boolean isUserKoordinator(String login) {
+		User user = getUser(login);
+		if (user==null) return false;
+		List<Role> role = securityServiceLdap.getObjectListFromLdap(groupSearchBase, "(&(objectclass="+groupObjectClass+")("+StringUtils.replace(groupSearchFilter, "{0}", user.getDn())+")("+groupRoleAttribute+"="+groupKoordinator+"))", roleContextMapper);
+		return (role.size()==0) ? false : true;
+	}
 	
 	/**
-	 * Ermittelt für den aktuellen Benutzer die Benutzerdaten.
+	 * Ermittelt fÃ¼r den aktuellen Benutzer die Benutzerdaten.
 	 * @return Benutzerdaten des Benutzers; <code>null</code> wenn die Benutzerdaten nicht ermittelt werden konnten
 	 */
 	public User getCurrentUser() {
@@ -144,9 +162,9 @@ public class SecurityService {
 
 	
 	/**
-	 * Ermittelt die Benutzerdaten für einen Benutzer.
-	 * @param login Benutzer für den die Benutzerdaten ermittelt werden sollen
-	 * @return Benutzerdaten für den Benutzer; <code>null</code> wenn die Benutzerdaten nicht ermittelt werden konnten
+	 * Ermittelt die Benutzerdaten fÃ¼r einen Benutzer.
+	 * @param login Benutzer fÃ¼r den die Benutzerdaten ermittelt werden sollen
+	 * @return Benutzerdaten fÃ¼r den Benutzer; <code>null</code> wenn die Benutzerdaten nicht ermittelt werden konnten
 	 */
 	public User getUser(String login) {
 		try {
@@ -157,12 +175,26 @@ public class SecurityService {
 			return null;
 		}
 	}
+  
+	/**
+	 * Ermittelt die Benutzerdaten fÃ¼r einen Benutzer anhand der EMail-Adresse.
+	 * @param email EMail des Benutzers fÃ¼r den die Benutzerdaten ermittelt werden sollen
+	 * @return Benutzerdaten fÃ¼r den Benutzer; <code>null</code> wenn die Benutzerdaten nicht ermittelt werden konnten
+	 */
+	public User getUserByEmail(String email) {
+		try {
+			List<User> users = securityServiceLdap.getObjectListFromLdap(userSearchBase, "(&(objectclass="+userObjectClass+")("+StringUtils.replace(userEmailFilter, "{0}", email)+"))", userContextMapper);
+			return users.get(0);
+		} catch (Exception e) {
+			return null;
+		}
+  }
 
 	
 	/**
-	 * Ermittelt die Benutzer-E-Mail-Adresse für einen Benutzer in einer gegebenen Rolle anhand des Benutzernamens.
-	 * @param userName Benutzername, für den die Benutzer-E-Mail-Adresse ermittelt werden soll
-	 * @param roleId Rolle, auf die die Suche beschränkt werden soll
+	 * Ermittelt die Benutzer-E-Mail-Adresse fÃ¼r einen Benutzer in einer gegebenen Rolle anhand des Benutzernamens.
+	 * @param userName Benutzername, fÃ¼r den die Benutzer-E-Mail-Adresse ermittelt werden soll
+	 * @param roleId Rolle, auf die die Suche beschrÃ¤nkt werden soll
 	 * @return Benutzer-E-Mail-Adresse; <code>null</code> wenn die Benutzer-E-Mail-Adresse nicht ermittelt werden konnte
 	 */
 	public String getUserEmailForRoleByName(String userName, String roleId) {
@@ -182,7 +214,7 @@ public class SecurityService {
 	
 	
 	/**
-	 * Ermittelt alle Benutzer, die für das Backend einen Zugang haben.
+	 * Ermittelt alle Benutzer, die fÃ¼r das Backend einen Zugang haben.
 	 * @return List der Benutzer und deren Benutzerdaten
 	 */
 	public List<User> getAllUser(){
@@ -216,28 +248,43 @@ public class SecurityService {
 	
 	
 	/**
-	 * Ermittelt alle Benutzer für eine gegebene Rolle.
-	 * @param roleId Rolle, für die die Benutzer ermittelt werden sollen
+	 * Ermittelt alle Benutzer fÃ¼r eine gegebene Gruppe.
+	 * @param groupId Gruppe, fÃ¼r die die Benutzer ermittelt werden sollen
+	 * @return Liste von Benutzern
+	 */
+	public List<User> getAllUserForGroup(String groupId){
+		//alle UserLogins in den Gruppen ermitteln
+		return getUserFromLoginList(securityServiceLdap.getObjectListFromLdap(groupSearchBase, "(&(objectclass="+groupObjectClass+")("+groupRoleAttribute+"="+groupKoordinator+"))", userLoginContextMapper));
+	}
+	
+	/**
+	 * Ermittelt alle Benutzer fÃ¼r eine gegebene Rolle.
+	 * @param roleId Rolle, fÃ¼r die die Benutzer ermittelt werden sollen
 	 * @return Liste von Benutzern
 	 */
 	public List<User> getAllUserForRole(String roleId){
 		//alle UserLogins in den Rollen ermitteln
-		List<List<String>> usersLoginList = securityServiceLdap.getObjectListFromLdap(groupSearchBase, "(&(objectclass="+groupObjectClass+")("+groupObjectId+"="+roleId+"))", userLoginContextMapper);
+		return getUserFromLoginList(securityServiceLdap.getObjectListFromLdap(groupSearchBase, "(&(objectclass="+groupObjectClass+")("+groupObjectId+"="+roleId+"))", userLoginContextMapper));
+	}
+  
+	public List<User> getUserFromLoginList(List<List<String>> usersLoginList) {
 		//Set
 		Set<String> userLoginSet = new HashSet<String>();
-		for(List<String> list : usersLoginList)
+		for(List<String> list : usersLoginList) {
 			userLoginSet.addAll(list);
+		}
 		//User ermitteln
 		List<User> userList = new ArrayList<User>();
-		for(Iterator<String> iter = userLoginSet.iterator(); iter.hasNext(); )
+		for(Iterator<String> iter = userLoginSet.iterator(); iter.hasNext();) {
 			userList.add(getUser(iter.next()));
+		}
 		return userList;
-	}
+  }
 	
 	
 	/**
-	 * Ermittelt alle Benutzernamen für eine gegebene Rolle.
-	 * @param roleId Rolle, für die die Benutzer ermittelt werden sollen
+	 * Ermittelt alle Benutzernamen fÃ¼r eine gegebene Rolle.
+	 * @param roleId Rolle, fÃ¼r die die Benutzer ermittelt werden sollen
 	 * @return Liste von Benutzernamen
 	 */
 	public List<String> getAllUserNamesForRole(String roleId){
@@ -257,7 +304,7 @@ public class SecurityService {
 	
 	/**
 	 * Ermittelt die E-Mail-Adressen aller Benutzer einer Rolle
-	 * @param roleId Rolle, für die die Benutzer und deren E-Mail-Adressen ermittelt werden sollen
+	 * @param roleId Rolle, fÃ¼r die die Benutzer und deren E-Mail-Adressen ermittelt werden sollen
 	 * @return Array mit E-Mail-Adressen
 	 */
 	public String[] getAllUserEmailsForRole(String roleId) {
@@ -271,7 +318,7 @@ public class SecurityService {
 	
 	/**
 	 * Ermittelt die E-Mail-Adressen der externen Benutzer einer Rolle
-	 * @param roleId Rolle, für die die externen Benutzer und deren E-Mail-Adressen ermittelt werden sollen
+	 * @param roleId Rolle, fÃ¼r die die externen Benutzer und deren E-Mail-Adressen ermittelt werden sollen
 	 * @return Array mit E-Mail-Adressen
 	 */
 	public String[] getAllExternUserEmailsForRole(String roleId) {
@@ -288,8 +335,8 @@ public class SecurityService {
 	
 	
 	/**
-	 * Ermittelt die Rolle für die Dispatcher.
-	 * @return Rolle für die Dispatcher
+	 * Ermittelt die Rolle fÃ¼r die Dispatcher.
+	 * @return Rolle fÃ¼r die Dispatcher
 	 */
 	public Role getDispatcherZustaendigkeit() {
 		return getZustaendigkeit(groupDispatcher);
@@ -297,8 +344,8 @@ public class SecurityService {
 	
 	
 	/**
-	 * Gibt die Id für die Rolle der Dispatcher zurück.
-	 * @return Id für die Rolle der Dispatcher
+	 * Gibt die Id fÃ¼r die Rolle der Dispatcher zurÃ¼ck.
+	 * @return Id fÃ¼r die Rolle der Dispatcher
 	 */
 	public String getDispatcherZustaendigkeitId() {
 		return groupDispatcher;
@@ -306,8 +353,8 @@ public class SecurityService {
 
 	
 	/**
-	 * Ermittelt die Rollendaten für eine Zuständigkeit.
-	 * @param id Id der Rolle bzw. Zuständigkeit
+	 * Ermittelt die Rollendaten fÃ¼r eine ZustÃ¤ndigkeit.
+	 * @param id Id der Rolle bzw. ZustÃ¤ndigkeit
 	 * @return ermittelte Rolle 
 	 */
 	public Role getZustaendigkeit(String id) {
@@ -321,21 +368,39 @@ public class SecurityService {
     
     
     /**
-	 * Ermittelt die Liste der Zuständigkeiten für den aktuellen Benutzer.  
+	 * Ermittelt die Liste der ZustÃ¤ndigkeiten fÃ¼r den aktuellen Benutzer.  
 	 * @param inclDispatcher incl. der Dispatcherrolle?
-	 * @return Liste mit den Zuständigkeiten
+	 * @return Liste mit den ZustÃ¤ndigkeiten
 	 */
 	public List<Role> getCurrentZustaendigkeiten(boolean inclDispatcher) {
 		return getZustaendigkeiten(SecurityContextHolder.getContext().getAuthentication().getName(), inclDispatcher);
 	}
 	
 	/**
-	 * Ermittelt die Liste der Zuständigkeiten für einen Benutzer
-	 * @param login Benutzer für den die Zuständigkeiten ermittelt werden sollen
+	 * Ermittelt die Liste der ZustÃ¤ndigkeiten fÃ¼r einen Benutzer
+	 * @param login Benutzer fÃ¼r den die ZustÃ¤ndigkeiten ermittelt werden sollen
 	 * @param inclDispatcher incl. der Dispatcherrolle?
-	 * @return Liste mit den Zuständigkeiten
+	 * @return Liste mit den ZustÃ¤ndigkeiten
 	 */
 	public List<Role> getZustaendigkeiten(String login, boolean inclDispatcher) {
+		if (isUserAdmin(login)) {
+			return getAllZustaendigkeiten(inclDispatcher);
+		} else {
+			User user = getUser(login);
+			if (user==null) throw new RuntimeException();
+			String dispatcherFilter = inclDispatcher ? "" : "(!("+groupObjectId+"="+groupDispatcher+"))";
+
+			return securityServiceLdap.getObjectListFromLdap(groupSearchBase, "(&(objectclass="+groupObjectClass+")("+groupRoleAttribute+"="+groupIntern+")"+dispatcherFilter+"("+StringUtils.replace(groupSearchFilter, "{0}", user.getDn())+"))", roleContextMapper);
+		}
+	}
+	
+	/**
+	 * Ermittelt die Liste der ZustÃ¤ndigkeiten fÃ¼r einen Benutzer
+	 * @param login Benutzer fÃ¼r den die ZustÃ¤ndigkeiten ermittelt werden sollen
+	 * @param inclDispatcher incl. der Dispatcherrolle?
+	 * @return Liste mit den ZustÃ¤ndigkeiten
+	 */
+	public List<Role> getAussendienstZustaendigkeiten(String login, boolean inclDispatcher) {
 		if (isUserAdmin(login)) {
 			return getAllZustaendigkeiten(inclDispatcher);
 		} else {
@@ -349,10 +414,10 @@ public class SecurityService {
 
 	
 	/**
-	 * Ermittelt ob ein Benutzer für ein Vorgang zuständig ist.
+	 * Ermittelt ob ein Benutzer fÃ¼r ein Vorgang zustÃ¤ndig ist.
 	 * @param login Benutzer
 	 * @param vorgang Vorgang
-	 * @return <code>true</code> - Benutzer ist für den Vorgang zuständig
+	 * @return <code>true</code> - Benutzer ist fÃ¼r den Vorgang zustÃ¤ndig
 	 */
 	public boolean isZustaendigForVorgang(String login, Vorgang vorgang) {
 		for (Role zustaendigkeit : getZustaendigkeiten(login, true))
@@ -362,9 +427,9 @@ public class SecurityService {
 
 	
 	/**
-	 * Ermittelt ob der aktuelle Benutzer für ein Vorgang zuständig ist.
+	 * Ermittelt ob der aktuelle Benutzer fÃ¼r ein Vorgang zustÃ¤ndig ist.
 	 * @param vorgang Vorgang
-	 * @return <code>true</code> - aktueller Benutzer ist für den Vorgang zuständig
+	 * @return <code>true</code> - aktueller Benutzer ist fÃ¼r den Vorgang zustÃ¤ndig
 	 */
 	public boolean isCurrentZustaendigForVorgang(Vorgang vorgang) {
 		return isZustaendigForVorgang(SecurityContextHolder.getContext().getAuthentication().getName(), vorgang);
@@ -372,9 +437,9 @@ public class SecurityService {
 	
     
     /**
-	 * Ermittelt alle im System vorhandenen Zuständigkeiten.
+	 * Ermittelt alle im System vorhandenen ZustÃ¤ndigkeiten.
 	 * @param inclDispatcher incl. der Dispatcherrolle?
-	 * @return Liste mit allen Zuständigkeiten
+	 * @return Liste mit allen ZustÃ¤ndigkeiten
 	 */
 	public List<Role> getAllZustaendigkeiten(boolean inclDispatcher) {
 		String dispatcherFilter = inclDispatcher ? "" : "(!("+groupObjectId+"="+groupDispatcher+"))";
@@ -391,21 +456,23 @@ public class SecurityService {
 
 	
 	/**
-	 * Ermittelt die Rollen zum Delegieren für einen Benutzer
-	 * @param login Benutzer für den die Rollen ermittelt werden sollen
+	 * Ermittelt die Rollen zum Delegieren fÃ¼r einen Benutzer
+	 * @param login Benutzer fÃ¼r den die Rollen ermittelt werden sollen
 	 * @return Liste mit den Rollen
 	 */
 	public List<Role> getDelegiertAn(String login) {
-		if (isUserAdmin(login)) return getAllDelegiertAn();
-		User user = getUser(login);
-		if (user==null) throw new RuntimeException();
-		List <Role> delegiertAn = securityServiceLdap.getObjectListFromLdap(groupSearchBase, "(&(objectclass="+groupObjectClass+")("+groupRoleAttribute+"="+groupExtern+")("+StringUtils.replace(groupSearchFilter, "{0}", user.getDn())+"))", roleContextMapper);
-		return delegiertAn;
+		if (isUserAdmin(login)) {
+            return getAllDelegiertAn();
+        } else {
+            User user = getUser(login);
+			if (user==null) throw new RuntimeException();
+            return securityServiceLdap.getObjectListFromLdap(groupSearchBase, "(&(objectclass="+groupObjectClass+")("+groupRoleAttribute+"="+groupExtern+")("+StringUtils.replace(groupSearchFilter, "{0}", user.getDn())+"))", roleContextMapper);
+        }
 	}
 
 	
 	/**
-	 * Ermittelt die Rollen zum Delegieren für den aktuellen Benutzer
+	 * Ermittelt die Rollen zum Delegieren fÃ¼r den aktuellen Benutzer
 	 * @return Liste mit den Rollen
 	 */
 	public List<Role> getCurrentDelegiertAn() {
@@ -477,12 +544,12 @@ public class SecurityService {
 
 	
 	/**
-	 * Ermittelt ob der aktuelle Benutzer für den Vorgang zuständig ist.
+	 * Ermittelt ob der aktuelle Benutzer fÃ¼r den Vorgang zustÃ¤ndig ist.
 	 * @param vorgangId Vorgang
-	 * @return <code>true</code> - aktueller Benutzer ist für den Vorgang zuständig
+	 * @return <code>true</code> - aktueller Benutzer ist fÃ¼r den Vorgang zustÃ¤ndig
 	 */
 	public boolean isCurrentZustaendigkeiten(Long vorgangId) {
-		//Zuständigkeit für den Vorgang ermitteln
+		//ZustÃ¤ndigkeit fÃ¼r den Vorgang ermitteln
 		String zustaendigkeit = vorgangDao.getZustaendigkeitForVorgang(vorgangId);
 		if (StringUtils.isBlank(zustaendigkeit)) {
 			return isCurrentUserAdmin();
@@ -500,7 +567,7 @@ public class SecurityService {
 	 * @return <code>true</code> - Vorgang ist an den aktueller Benutzer delegiert
 	 */
 	public boolean isCurrentDelegiertAn(Long vorgangId) {
-		//DelegiertAn für den Vorgang ermitteln
+		//DelegiertAn fÃ¼r den Vorgang ermitteln
 		String delegiertAn = vorgangDao.getDelegiertAnForVorgang(vorgangId);
 		if (StringUtils.isBlank(delegiertAn)) {
 			return isCurrentUserAdmin();
@@ -513,8 +580,8 @@ public class SecurityService {
 	
 
 	/**
-	 * Erzeugt aus einem String einen MD5-Hash. diese wird beispielsweise zum Erzeugen der URL für Bestätigungen verwendet.
-	 * @param str String für den der Hash erstellt werden soll
+	 * Erzeugt aus einem String einen MD5-Hash. diese wird beispielsweise zum Erzeugen der URL fÃ¼r BestÃ¤tigungen verwendet.
+	 * @param str String fÃ¼r den der Hash erstellt werden soll
 	 * @return MD5-Hash
 	 */
 	public String createHash(String str) {
@@ -577,12 +644,55 @@ public class SecurityService {
 	}
 
 	/**
-	 * Prüft, ob der aktuelle Nutzer einen Kommentar bearbeiten darf.
-	 * @param kommentar Zu prüfender Kommentar
+	 * PrÃ¼ft, ob der aktuelle Nutzer einen Kommentar bearbeiten darf.
+	 * @param kommentar Zu prÃ¼fender Kommentar
 	 * @return Darf der Nutzer bearbeiten
 	 */
 	public boolean mayCurrentUserEditKommentar(Kommentar kommentar) {
 		return this.getCurrentUser().getName().equals(kommentar.getNutzer());
+	}
+
+	/**
+	 * Ermittelt alle AussendienstTeams
+	 *
+	 * @return List der Aussendienst-Teams
+	 */
+	public List<Role> getAllAussendienstTeams() {
+		List<Role> allZustaendigkeiten = securityServiceLdap.getObjectListFromLdap(groupSearchBase, "(&(objectclass=" + groupObjectClass + ")(" + groupRoleAttribute + "=" + groupAussendienst + "))", roleContextMapper);
+
+		Collections.sort(allZustaendigkeiten, new Comparator<Role>() {
+			public int compare(Role r1, Role r2) {
+				return r1.getId().compareTo(r2.getId());
+			}
+		});
+
+		return allZustaendigkeiten;
+	}
+
+	
+	/**
+	 * Ermittelt die AuÃŸendienst-Teams, denen ein Benutzer zugeordnet ist
+	 * @param login Benutzer fÃ¼r den die Rollen ermittelt werden sollen
+	 * @return Liste mit den Rollen
+	 */
+	public List<String> getAussendienstTeam(String login) {
+		User user = getUser(login);
+		List <Role> roles = securityServiceLdap.getObjectListFromLdap(groupSearchBase, "(&(objectclass="+groupObjectClass+")("+groupRoleAttribute+"="+groupAussendienst+")("+StringUtils.replace(groupSearchFilter, "{0}", user.getDn())+"))", roleContextMapper);
+		List<String> teams = new ArrayList<String>();
+		for(Role role : roles) {
+			teams.add(role.getId());
+		}
+		Collections.sort(teams);
+		return teams;
+	}
+
+	/**
+	 * Ermittelt alle AussendienstTeams eines Koordinators
+	 *
+	 * @return List der Aussendienst-Teams
+	 */
+	public List<String> getAussendienstKoordinatorZustaendigkeiten(String login) {
+		return aussendienstKoordinatorDao.findAussendienstByLogin(login);
 	}
 	
 		
@@ -626,6 +736,14 @@ public class SecurityService {
 
 	public void setUserSearchFilter(String userSearchFilter) {
 		this.userSearchFilter = userSearchFilter;
+	}
+
+	public String getUserEmailFilter() {
+		return userEmailFilter;
+	}
+
+	public void setUserEmailFilter(String userEmailFilter) {
+		this.userEmailFilter = userEmailFilter;
 	}
 
 	public String getGroupSearchBase() {
@@ -694,6 +812,11 @@ public class SecurityService {
 
 	public void setGroupAdmin(String groupAdmin) {
 		this.groupAdmin = groupAdmin;
+	}
+
+
+	public String getGroupKoordinator() {
+		return groupKoordinator;
 	}
 
 

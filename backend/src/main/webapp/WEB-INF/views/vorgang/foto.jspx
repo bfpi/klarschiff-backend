@@ -33,6 +33,10 @@
       <table>
         <tr>
           <td>
+            <form method="post" id="fotowunschEditForm" style="display: inline;">
+              <util:fotowunsch fotowunsch="${vorgang.fotowunsch}"/>
+            </form>
+            
             <c:if test="${vorgang.fotoExists}">
               <util:freigabestatus status="${vorgang.fotoFreigabeStatus}"/>
               <c:if test="${not vorgang.archiviert and vorgang.status ne 'gemeldet'}">

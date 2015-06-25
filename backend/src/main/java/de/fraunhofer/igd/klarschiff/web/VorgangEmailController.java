@@ -51,7 +51,7 @@ public class VorgangEmailController {
 	/**
 	 * Die Methode verarbeitet den GET-Request auf der URL <code>/vorgang/{id}/email</code><br/>
 	 * Seitenbeschreibung: Formular zum Versenden einer Übersicht des aktuellen Vorganges per E-Mail.
-	 * Die Eingabe des Empfängers, eines Freitext sowie die Auswahl, welche Vorgangselemente (Karte, Bild, 
+	 * Die Eingabe des Empfängers, eines Freitext sowie die Auswahl, welche Vorgangselemente (Autor, Karte, Bild, 
 	 * Kommentare, Missbrauchsmeldungen) angefügt werden sollen, sind möglich.
 	 * @param id Vorgangs-ID
 	 * @param model Model in der ggf. Daten für die View abgelegt werden
@@ -68,7 +68,7 @@ public class VorgangEmailController {
 	 * Seitenbeschreibung: Formular zum Versenden einer Übersicht des aktuellen Vorganges per E-Mail für
 	 * Externe (Delegierte).
 	 * Die Eingabe des Empfängers, eines Freitext sowie die Auswahl, welche Vorgangselemente (Karte, Bild, 
-	 * Kommentare) angefügt werden sollen, sind möglich. Missbrauchsmeldungen stehen Externen nicht zur Verfügung.
+	 * Kommentare) angefügt werden sollen, sind möglich. Autor und Missbrauchsmeldungen stehen Externen nicht zur Verfügung.
 	 * @param id Vorgangs-ID
 	 * @param model Model in der ggf. Daten für die View abgelegt werden
 	 * @param request HttpServletRequest-Objekt
@@ -87,7 +87,7 @@ public class VorgangEmailController {
 	 * @param id Vorgangs-ID
 	 * @param model Model in der ggf. Daten für die View abgelegt werden
 	 * @param request HttpServletRequest-Objekt
-	 * @param delegiert E-Mailverand für delgierte? (keine Missbrauchsmedlungen)
+	 * @param delegiert E-Mailverand für delgierte? (kein Autor und keine Missbrauchsmedlungen)
 	 * @return View, die zum Rendern des Request verwendet wird
 	 */
 	public String email(Long id, ModelMap model, HttpServletRequest request, boolean delegiert) {
@@ -96,6 +96,7 @@ public class VorgangEmailController {
 		cmd.setFromEmail(securityService.getCurrentUser().getEmail());
 		cmd.setFromName(securityService.getCurrentUser().getName());
 		if (delegiert) {
+			cmd.setSendAutor(false);
 			cmd.setSendMissbrauchsmeldungen(false);
 			model.put("delegiert", true);
 		}
@@ -154,7 +155,7 @@ public class VorgangEmailController {
 	 * @param id Vorgangs-ID
 	 * @param model Model in der ggf. Daten für die View abgelegt werden
 	 * @param request HttpServletRequest-Objekt
- 	 * @param delegiert E-Mailverand für delgierte? (keine Missbrauchsmedlungen)
+ 	 * @param delegiert E-Mailverand für delgierte? (kein Autor und keine Missbrauchsmedlungen)
 	 * @return View, die zum Rendern des Request verwendet wird
 	 */
     public String emailSubmit(
@@ -167,15 +168,15 @@ public class VorgangEmailController {
 		if (delegiert)
 			model.put("delegiert", true);
 		
-		assertNotEmpty(cmd, result, Assert.EvaluateOn.ever, "toEmail", "Fehler: Empfängeradresse darf nicht leer sein.");
-		assertNotEmpty(cmd, result, Assert.EvaluateOn.ever, "text", "Fehler: Text darf nicht leer sein.");
-		assertMaxLength(cmd, result,  Assert.EvaluateOn.ever, "text", 300, "Fehler: Text darf nicht länger als 300 Zeichen sein.");
-		assertEmail(cmd, result, Assert.EvaluateOn.firstPropertyError, "toEmail", "Fehler: Empfängeradresse ist keine E-Mailadresse.");
+		assertNotEmpty(cmd, result, Assert.EvaluateOn.ever, "toEmail", "Fehler: Empfängeradresse darf nicht leer sein!");
+		assertNotEmpty(cmd, result, Assert.EvaluateOn.ever, "text", "Fehler: Text darf nicht leer sein!");
+		assertMaxLength(cmd, result,  Assert.EvaluateOn.ever, "text", 300, "Fehler: Text darf nicht länger als 300 Zeichen sein!");
+		assertEmail(cmd, result, Assert.EvaluateOn.firstPropertyError, "toEmail", "Fehler: Empfängeradresse ist keine gültige E-Mail-Adresse!");
 		if (result.hasErrors()) {
 			return "noMenu/vorgang/printEmail/email";
 		}			
 		
-		mailService.sendVorgangWeiterleitenMail(vorgangDao.findVorgang(id), cmd.getFromEmail(), cmd.getToEmail(), cmd.getText(), cmd.getSendKarte(), cmd.getSendKommentare(), cmd.getSendFoto(), cmd.getSendMissbrauchsmeldungen());
+		mailService.sendVorgangWeiterleitenMail(vorgangDao.findVorgang(id), cmd.getFromEmail(), cmd.getToEmail(), cmd.getText(), cmd.getSendAutor(), cmd.getSendKarte(), cmd.getSendKommentare(), cmd.getSendLobHinweiseKritik(), cmd.getSendFoto(), cmd.getSendMissbrauchsmeldungen());
 		return "noMenu/vorgang/printEmail/emailSubmit";
 	}
 
@@ -217,7 +218,7 @@ public class VorgangEmailController {
 	 * @param id Vorgangs-ID
 	 * @param response HttpServletResponse
 	 * @param onlyurl erstellt nur die mailto-URL oder eine Seite mit entsprechendem JavaScript
-	 * @param delegiert E-Mailverand für delgierte? (keine Missbrauchsmedlungen)
+	 * @param delegiert E-Mailverand für delgierte? (kein Autor und keine Missbrauchsmedlungen)
 	 */
 	public void emailDirect(Long id, String browser, HttpServletResponse response, boolean delegiert) throws Exception {
 		// Vorgang ermitteln
@@ -225,7 +226,7 @@ public class VorgangEmailController {
 		
 		// Subject und Body für die E-Mail ermittlen
 		String subject = mailService.getVorgangWeiterleitenMailTemplate().getSubject();
-        String body = mailService.composeVorgangWeiterleitenMail(vorgang, "", true, true, !delegiert);
+        String body = mailService.composeVorgangWeiterleitenMail(vorgang, "", !delegiert, true, true, true, !delegiert);
 		
 		// Text-Encoding ermitteln
 		String encoding = mailService.getMailtoMailclientEncoding();

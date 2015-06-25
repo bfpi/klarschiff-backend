@@ -3,7 +3,7 @@ package de.fraunhofer.igd.klarschiff.util;
 import org.springframework.core.io.ClassPathResource;
 
 /**
- * Die Klasse ermöglicht den einfachen Zugriff auf Dateien im Klassenpfad.
+ * Die Klasse ermÃ¶glicht den einfachen Zugriff auf Dateien im Klassenpfad.
  * @author Stefan Audersch (Fraunhofer IGD)
  */
 public class ClassPathResourceUtil {

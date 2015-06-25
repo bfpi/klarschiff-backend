@@ -41,7 +41,7 @@
 		</div>
 
 <!-- Vorgangdaten -->
-		<div class="printTitle">Informationen über Vorgang</div>	
+		<div class="printTitle">Vorgangsdaten</div>	
 		<table class="result" border="0">
 			<tr>
 				<td class="label">Typ</td>
@@ -85,19 +85,21 @@
  
 			<tr>
 				<td class="label">Erstellung</td>									
-				<td class="value"><div class="result"><fmt:formatDate value="${vorgang.datum}" pattern="dd.MM.yyyy HH:mm"/></div></td>	
-
-				<c:if test="${not empty vorgang.autorEmail}">
-					<td class="label">Autor</td>									
-					<td class="value"><div class="result">${vorgang.autorEmail}</div></td>	
-				</c:if>
+				<td class="value"><div class="result"><fmt:formatDate value="${vorgang.datum}" pattern="dd.MM.yyyy HH:mm"/></div></td>
+                
+                <c:if test="${empty delegiert or not delegiert}">
+		            <c:if test="${not empty vorgang.autorEmail}">
+                        <td class="label">Autor</td>									
+                        <td class="value"><div class="result">${vorgang.autorEmail}</div></td>	
+                    </c:if>
+	        	</c:if>
 			</tr>
 
 			<tr>
 				<td class="label">Status</td>
 				<td class="value"><div class="result">${vorgang.status.text}</div></td>	
 				<c:if test="${not empty vorgang.statusKommentar}">
-					<td class="label">Kommentar</td>									
+					<td class="label">öffentliche<br/>Statusinformation</td>									
 					<td class="value"><div class="result">${fx:toHtml(vorgang.statusKommentar)}</div></td>	
 				</c:if>
 			</tr>
@@ -157,7 +159,7 @@
 		</table>
 
 
-<!-- Kommentare -->
+<!-- interne Kommentare -->
 		<c:if test="${not empty vorgang.kommentare}">
 			<div class="printTitle">interne Kommentare</div>
 	  		<c:forEach items="${vorgang.kommentare}" var="kommentar">
@@ -169,6 +171,24 @@
 	  				</div>
 					<div class="verlaufText" >
 		        		${fx:toHtml(kommentar.text)} 
+					</div>	
+	  			</div>
+			</c:forEach>
+		</c:if>
+
+
+<!-- Lob, Hinweise oder Kritik von Bürger/-innen -->
+		<c:if test="${not empty vorgang.lobHinweiseKritik}">
+			<div class="printTitle">Lob, Hinweise oder Kritik von Bürger/-innen</div>
+	  		<c:forEach items="${vorgang.lobHinweiseKritik}" var="lobHinweisKritik">
+	  			<div class="verlauf">
+	  				<div class="verlaufHeader">
+	  					<span style="margin-right:10px;padding:0px;">${lobHinweisKritik.autorEmail}</span>
+		       			<fmt:formatDate value="${lobHinweisKritik.datum}" pattern="dd.MM.yyyy"/><![CDATA[&nbsp;&nbsp;]]>
+		       			<span style="font-size:0.8em; color:#666;"><fmt:formatDate value="${lobHinweisKritik.datum}" pattern="HH:mm"/></span>
+	  				</div>
+					<div class="verlaufText" >
+		        		${fx:toHtml(lobHinweisKritik.freitext)} 
 					</div>	
 	  			</div>
 			</c:forEach>

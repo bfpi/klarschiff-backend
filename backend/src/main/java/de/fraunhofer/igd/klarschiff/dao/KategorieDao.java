@@ -25,6 +25,10 @@ public class KategorieDao {
 		return entityManager.createQuery("SELECT o FROM Kategorie o WHERE o.parent IS NULL ORDER BY o.name", Kategorie.class).getResultList();
 	}
 
+	public List<Kategorie> findUnterKategorien() {
+		return entityManager.createQuery("SELECT o FROM Kategorie o WHERE o.parent IS NOT NULL ORDER BY o.name", Kategorie.class).getResultList();
+	}
+
 	public List<Kategorie> findRootKategorienForTyp(EnumVorgangTyp typ) {
 		return entityManager.createQuery("SELECT o FROM Kategorie o WHERE o.parent IS NULL AND o.typ=:typ ORDER BY o.name", Kategorie.class).setParameter("typ", typ).getResultList();
 	}

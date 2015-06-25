@@ -19,7 +19,6 @@
 	<jsp:directive.attribute name="serverResolutions" type="java.lang.String" required="true" rtexprvalue="true"/>
 	<jsp:directive.attribute name="ovi" type="java.lang.String" required="true" rtexprvalue="true"/>
 	<jsp:directive.attribute name="oviMargin" type="java.lang.String" required="false" rtexprvalue="true"/>
-	<jsp:directive.attribute name="mapExternUrl" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="cssStyle" type="java.lang.String" required="false" rtexprvalue="true"/>
 	<jsp:directive.attribute name="vorgangTyp" type="java.lang.String" required="false" rtexprvalue="true"/>
 	<jsp:directive.attribute name="vorgangStatus" type="java.lang.String" required="false" rtexprvalue="true"/>
@@ -148,9 +147,12 @@
                     "${wmsUrl}", {
                         layers: "${wmsLayers}",
                         format: "${wmsFormat}",
-                        transparent: "${wmsTransparent}",
-                        minScale: "${wmsMinScale}",
-                        singleTile: "${wmsSingleTile}"
+                        transparent: "${wmsTransparent}"
+                    }, {
+                        displayInLayerSwitcher: true,
+                        isBaseLayer: false,
+                        minScale: 1100,
+                        singleTile: Boolean("${wmsSingleTile}")
                     } );
                 map.addLayer(poiLayer);
         
@@ -177,9 +179,5 @@
 	
             initOpenLayers();
 		</script>
-
-        <c:if test="${not empty mapExternUrl}">
-            <div style="margin-top:10px;">Position in <a target="_blank" href="${mapExternUrl}">Geoport.HRO</a> anzeigen</div>
-        </c:if>
 
 </jsp:root>
