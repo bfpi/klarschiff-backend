@@ -45,17 +45,17 @@ public class JobRun {
 	Date datum;
 
 	/**
-	 * ConnectorPort des Servers, der den Job ausführt
+	 * ConnectorPort des Servers, der den Job ausfÃ¼hrt
 	 */
 	String serverPort;
 	
 	/**
-	 * IPs des Servers, der den Job ausführt
+	 * IPs des Servers, der den Job ausfÃ¼hrt
 	 */
 	String serverIp;
 	
 	/**
-	 * Rechnername des Servers, der den Job ausführt
+	 * Rechnername des Servers, der den Job ausfÃ¼hrt
 	 */
 	String serverName;
 	

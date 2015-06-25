@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -25,9 +26,10 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 
 import de.fraunhofer.igd.klarschiff.context.AppContext;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
- * VO für die Kategorien der Vorgänge. <br/>
+ * VO fÃ¼r die Kategorien der VorgÃ¤nge. <br/>
  * Hauptkategorien haben ein <code>typ</code> aber kein <code>parent</code><br/>
  * Unterkategorien haben keinen <code>typ</code> aber ein <code>parent</code>
  * @author Stefan Audersch (Fraunhofer IGD)
@@ -64,13 +66,13 @@ public class Kategorie implements Serializable {
     private String name;
 
 	/**
-	 * Ist eine nähere Beschreibung durch das Feld Betreff und/oder Details notwendig?
+	 * Ist eine nÃ¤here Beschreibung durch das Feld Betreff und/oder Details notwendig?
 	 */
 	@Enumerated(EnumType.STRING)
 	private EnumNaehereBeschreibungNotwendig naehereBeschreibungNotwendig = EnumNaehereBeschreibungNotwendig.keine; 
 	
 	/**
-	 * übergeordnete Kategorie
+	 * Ã¼bergeordnete Kategorie
 	 */
     @ManyToOne
     private Kategorie parent;
@@ -78,20 +80,22 @@ public class Kategorie implements Serializable {
     /**
      * untergeordnete Kategorien
      */
+    @JsonIgnore
     @ManyToMany(cascade = CascadeType.ALL, mappedBy = "parent")
     @OrderBy(value="name")
     private List<de.fraunhofer.igd.klarschiff.vo.Kategorie> children = new ArrayList<de.fraunhofer.igd.klarschiff.vo.Kategorie>();
 
     /**
-     * Liste von intialen Zuständigkeiten für die Vorgänge mit der Kategorie
+     * Liste von intialen ZustÃ¤ndigkeiten fÃ¼r die VorgÃ¤nge mit der Kategorie
      */
+  @JsonIgnore
 	@ElementCollection(fetch=FetchType.EAGER)
     private List<String> initialZustaendigkeiten;
     
 	/* --------------- transient ----------------------------*/
     
 	/**
-	 * Gibt den Namen der Kategorie als "escaped HTML" zurück.
+	 * Gibt den Namen der Kategorie als "escaped HTML" zurÃ¼ck.
 	 */
     @Transient
     public String getNameEscapeHtml() {
@@ -99,8 +103,8 @@ public class Kategorie implements Serializable {
     }
     
     /**
-     * Setzt die Liste der initialen Zuständigkeiten
-     * @param zustaendigkeiten initiale zuständigkeiten als komma-separierter String
+     * Setzt die Liste der initialen ZustÃ¤ndigkeiten
+     * @param zustaendigkeiten initiale zustÃ¤ndigkeiten als komma-separierter String
      */
     @Transient
     public void setInitialZustaendigkeit(String zustaendigkeiten) {
@@ -111,10 +115,15 @@ public class Kategorie implements Serializable {
     }
     
 
+  @NotNull
+  @Column(columnDefinition = "boolean default false")
+  private boolean geloescht = false;
+
+
     /* --------------- Persitenzfunktionen ----------------------------*/
 
 	/**
-	 * Ermittelt die Kategorie anhand der Id. (Die Methode wird für das Binding bei WebMVC benötigt.)
+	 * Ermittelt die Kategorie anhand der Id. (Die Methode wird fÃ¼r das Binding bei WebMVC benÃ¶tigt.)
 	 * @param id Id der Kategorie
 	 */
 	public static Kategorie findKategorie(Long id) {

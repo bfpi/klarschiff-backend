@@ -39,7 +39,7 @@ public class FehlerController {
 	/**
 	 * Die Methode verarbeitet den GET-Request auf der URL <code>/uncaughtException</code><br/>
 	 * Seitenbeschreibung: Eine Fehlerseite
-	 * @param model Model in dem ggf. Daten für die View abgelegt werden
+	 * @param model Model in dem ggf. Daten fÃ¼r die View abgelegt werden
 	 * @param request Request
 	 * @return View, die zum Rendern des Request verwendet wird
 	 */
@@ -51,7 +51,7 @@ public class FehlerController {
 	/**
 	 * Die Methode verarbeitet den GET-Request auf der URL <code>/resourceNotFound</code><br/>
 	 * Seitenbeschreibung: Eine Fehlerseite
-	 * @param model Model in dem ggf. Daten für die View abgelegt werden
+	 * @param model Model in dem ggf. Daten fÃ¼r die View abgelegt werden
 	 * @param request Request
 	 * @return View, die zum Rendern des Request verwendet wird
 	 */
@@ -63,7 +63,7 @@ public class FehlerController {
 	/**
 	 * Die Methode verarbeitet den GET-Request auf der URL <code>/dataAccessFailure</code><br/>
 	 * Seitenbeschreibung: Eine Fehlerseite
-	 * @param model Model in dem ggf. Daten für die View abgelegt werden
+	 * @param model Model in dem ggf. Daten fÃ¼r die View abgelegt werden
 	 * @param request Request
 	 * @return View, die zum Rendern des Request verwendet wird
 	 */
@@ -74,9 +74,9 @@ public class FehlerController {
 
 	
 	/**
-	 * Fasst verschiedene Daten einer Exception und zusätzliche Daten für die Darstellung von Exceptions in der GUI zusammen (z.B. exceptionId, 
-	 * exceptionText, showFehlerDetails, bugTrackingUrl) und fügt diese Attribute zur übergebenen Modellmap hinzu.
-	 * @param model Model in dem ggf. Daten für die View abgelegt werden
+	 * Fasst verschiedene Daten einer Exception und zusÃ¤tzliche Daten fÃ¼r die Darstellung von Exceptions in der GUI zusammen (z.B. exceptionId, 
+	 * exceptionText, showFehlerDetails, bugTrackingUrl) und fÃ¼gt diese Attribute zur Ã¼bergebenen Modellmap hinzu.
+	 * @param model Model in dem ggf. Daten fÃ¼r die View abgelegt werden
 	 * @param request Request
 	 * @param typ 
 	 * @return typ 
@@ -170,10 +170,10 @@ public class FehlerController {
     }
     
 	/**
-	 * Fasst verschiedene Daten einer Exception und zusätzliche Daten für die Darstellung von Exceptions in der GUI in einer Map zusammen (z.B. exceptionId, 
+	 * Fasst verschiedene Daten einer Exception und zusÃ¤tzliche Daten fÃ¼r die Darstellung von Exceptions in der GUI in einer Map zusammen (z.B. exceptionId, 
 	 * exceptionText, showFehlerDetails, bugTrackingUrl).
 	 * @param exception Exception aus der die Daten ermittelt werden sollen
-	 * @return Map mit Daten über die Exception und zur anzeige der Exception in der GUI
+	 * @return Map mit Daten Ã¼ber die Exception und zur anzeige der Exception in der GUI
 	 */
 	public static Map<String, Object> processException(Throwable exception) {
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -226,8 +226,8 @@ public class FehlerController {
 	}
 
 	/**
-	 * Prüft ob der übergebene String (<code>str</code>) mindestens einen der als Liste 
-	 * übergebenen Strings (<code>strs</code>) enthält
+	 * PrÃ¼ft ob der Ã¼bergebene String (<code>str</code>) mindestens einen der als Liste 
+	 * Ã¼bergebenen Strings (<code>strs</code>) enthÃ¤lt
 	 * @param str
 	 * @param strs
 	 * @return
@@ -242,8 +242,8 @@ public class FehlerController {
     }
 
 	/**
-	 * Prüft ob der übergebene String (<code>str</code>) mindestens einen der als Liste 
-	 * übergebenen Regexe (<code>strs</code>) matcht
+	 * PrÃ¼ft ob der Ã¼bergebene String (<code>str</code>) mindestens einen der als Liste 
+	 * Ã¼bergebenen Regexe (<code>strs</code>) matcht
 	 * @param str
 	 * @param regex
 	 * @return

@@ -1,0 +1,241 @@
+<jsp:root 
+	xmlns:c="http://java.sun.com/jsp/jstl/core" 
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions" 
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:spring="http://www.springframework.org/tags" 
+	xmlns:jsp="http://java.sun.com/JSP/Page" 
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:map="urn:jsptagdir:/WEB-INF/tags/map"
+	xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu"
+	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+	xmlns:tiles="http://tiles.apache.org/tags-tiles" 
+	version="2.0"
+	>
+	<jsp:directive.page contentType="text/html;charset=UTF-8"/>
+  
+  <!-- Datepicker-->
+ 	<c:url value="/script/jquery-ui/jquery.ui.core.js" var="url"/>
+ 	<script src="${url}" type="text/javascript"><!-- //jquery.ui.datepicker --></script>
+ 	<c:url value="/script/jquery-ui/jquery.ui.datepicker.js" var="url"/>
+ 	<script src="${url}" type="text/javascript"><!-- //jquery.ui.datepicker --></script>
+ 	<c:url value="/script/jquery-ui/jquery.ui.datepicker-de.js" var="url"/>
+ 	<script src="${url}" type="text/javascript"><!-- //jquery.ui.datepicker-de --></script>
+ 	<c:url value="/script/jquery-ui/jquery.ui.widget.js" var="url"/>
+ 	<script src="${url}" type="text/javascript"><!-- //jjquery.ui.widget --></script>
+ 	<c:url value="/script/jquery-ui/jquery.ui.mouse.js" var="url"/>
+ 	<script src="${url}" type="text/javascript"><!-- //jquery.ui.mouse --></script>
+ 	<c:url value="/script/jquery-ui/jquery.ui.sortable.js" var="url"/>
+ 	<script src="${url}" type="text/javascript"><!-- //jquery.ui.sortable --></script>
+ 	<c:url value="/script/resulttable.js" var="url"/>
+ 	<script src="${url}" type="text/javascript"><!-- //resulttable --></script>
+ 	<c:url value="/script/sortable_table.js" var="url"/>
+ 	<script src="${url}" type="text/javascript"><!-- //sortable_table --></script>
+ 
+	<c:url value="/script/jquery-ui/css/jquery.ui.all.css" var="url"/>
+	<link rel="stylesheet" type="text/css" href="${url}"> <!-- styles.css --> </link>
+
+	<!-- CONTENTTITLE -->
+	<div id="root_style_content_title">
+		Au&amp;szlig;endienst
+	</div>
+	
+	<!-- TABMENU -->
+	<tiles:importAttribute name="tabmenu_item" ignore="true" toName="tabmenu_item"/>
+	<menu:tabmenuaussendienst currentId="${team}"/>
+	
+	<!-- CONTENT -->
+	<div id="root_style_content">
+    <c:url value="/aussendienst/${team}" var="formurl" />
+    <form:form method="POST" action="${formurl}" modelAttribute="cmdaussendienst">
+			<div>
+        <form:label path="datum">Datum</form:label>
+        <form:input path="datum" id="datum" cssClass="inputtext" />
+      </div>
+      <script type="text/javascript">
+        $(function() {
+          $('#datum').datepicker();
+        });
+      </script>
+      <input type="submit" value="Anzeigen"/>
+    </form:form>
+
+		<c:choose>
+			<c:when test="${not empty auftraege}">
+
+        <c:url value="/aussendienst/${team}/update_sorting" var="url"/>
+		    <table class="resulttable sortable" data-updateUrl="${url}">
+		      <thead>
+		        <tr>
+              <th>#</th>
+              <th>Typ</th>
+              <th>Erstellung</th>
+              <th colspan="2">Haupt- und Unterkategorie</th>
+              <th>Vorgangsstatus</th>
+              <th>Auftragsstatus</th>
+              <th colspan="2">Aktionen</th>
+		        </tr>
+		      </thead>
+			    <tbody>
+				  	<c:forEach items="${auftraege}" var="auftrag" varStatus="rowCounter">
+				  		<c:set value="${auftrag.vorgang}" var="vorgang"/>
+                        <fmt:formatDate value="${vorgang.datum}" pattern="dd.MM.yyyy" var="erstellung_datum"/>
+                        <fmt:formatDate value="${vorgang.datum}" pattern="dd.MM.yyyy HH:mm:ss" var="erstellung_datum_uhrzeit"/>
+                        <fmt:formatDate value="${vorgang.datum}" pattern="HH:mm:ss" var="erstellung_uhrzeit"/>
+                        <jsp:useBean id="heute" class="java.util.Date" />
+                        <fmt:formatDate value="${heute}" pattern="dd.MM.yyyy" var="heute_datum"/>
+				      <tr class="row ${(rowCounter.count%2==0)? 'odd' : 'even'}">
+				        <td class="id" style="text-align: center;">
+									<span class="show-tooltip" title="Vorgangsnummer: ${vorgang.id}" data-id="${vorgang.id}">${vorgang.id}</span>
+								</td>
+				        <td style="text-align: center;">
+				        	<c:url value="/images/${vorgang.typ}_15.png" var="url"/>
+									<img alt="${vorgang.typ.text}" src="${url}" height="15" width="15"  title="Typ: ${vorgang.typ.text}"/>
+								</td>
+				        <c:choose>
+                                    <c:when test="${erstellung_datum eq heute_datum}">
+                                        <td style="text-align: center;" title="${erstellung_datum_uhrzeit}">${erstellung_uhrzeit}</td>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <td style="text-align: center;" title="${erstellung_datum_uhrzeit}">${erstellung_datum}</td>
+                                    </c:otherwise>
+                                </c:choose>
+				        <td>
+									${vorgang.kategorie.parent.name}
+								</td>
+				        <td>
+									${vorgang.kategorie.name}
+								</td>
+				        <td style="text-align: center;">
+				        	<c:url value="/images/${vorgang.typ}_${vorgang.status}_15.png" var="url"/>
+									<img alt="${vorgang.status}" src="${url}"  title="Status: ${vorgang.status.text}"/>
+								</td>
+				        <td style="font-size: 17px; text-align: center;">
+                  <c:if test="${not empty auftrag.status}">
+                    <c:choose>
+                      <c:when test="${auftrag.status == 'abgehakt'}">
+                        <c:url value="/images/abgehakt.png" var="image_url"/>
+                        <span title="Auftragsstatus: abgehakt"><img src="${image_url}" alt="Auftragsstatus: abgehakt"/></span>
+                      </c:when>
+                      <c:when test="${auftrag.status == 'nicht_abgehakt'}">
+                        <c:url value="/images/nicht_abgehakt.png" var="image_url"/>
+                        <span title="Auftragsstatus: (noch) nicht abgehakt"><img src="${image_url}" alt="Auftragsstatus: (noch) nicht abgehakt"/></span>
+                      </c:when>
+                      <c:when test="${auftrag.status == 'nicht_abarbeitbar'}">
+                        <c:url value="/images/nicht_abarbeitbar.png" var="image_url"/>
+                        <span title="Auftragsstatus: nicht abarbeitbar"><img src="${image_url}" alt="Auftragsstatus: nicht abarbeitbar"/></span>
+                      </c:when>
+                    </c:choose>
+                  </c:if>
+								</td>
+                <td style="text-align: center;">
+                  <c:url value="/images/sort.png" var="image_url"/>
+                  <span class="sorting-arrows" title="Auftrag umsortien"><img src="${image_url}" alt="Auftrag umsortien"/></span>
+                </td>
+                <td style="text-align: center;">
+                  <c:url value="/aussendienst/${team}/entfernen/${auftrag.id}" var="url"/>
+                  <c:url value="/images/delete.png" var="image_url"/>
+                  <a href="${url}" title="Auftrag aus Liste entfernen"><img src="${image_url}" alt="Auftrag aus Liste entfernen"/></a>
+                </td>
+				      </tr>
+						</c:forEach>
+			    </tbody>
+          <tfoot>
+            <tr class="footer">
+              <td colspan="9" style="text-align: right;">
+                <c:url value="/aussendienst/${team}/reset_sorting" var="url"/>
+                <form:form action="${url}" method="POST" modelAttribute="cmdaussendienst">
+                  <form:hidden path="datum" />
+                  <input type="submit" value="Aufträge nach Erstellung aufsteigend sortieren"/>
+                </form:form>
+              </td>
+            </tr>
+          </tfoot>
+		    </table>
+<br/>
+<br/>
+        <map:multiview
+       		projection="${geoService.mapProjection}"
+       		tmsUrl="${geoService.mapTmsServer}" 
+       		tmsLayers="${geoService.mapTmsServerLayers}" 
+       		maxExtent="${geoService.mapMaxExtent}"
+       		restrictedExtent="${geoService.mapRestrictedExtent}"
+       		resolutions="${geoService.mapResolutions}"
+       		serverResolutions="${geoService.mapServerResolutions}"
+       		vorgaenge="${vorgaenge}"
+       		oviMargin="${geoService.mapOviMargin}" 
+       		cssStyle="height: 500px; width: 100%;"
+            wmsUrl="${geoService.wmsUrl}"
+            wmsTitle="${geoService.wmsTitle}"
+            wmsLayers="${geoService.wmsLayers}"
+            wmsFormat="${geoService.wmsFormat}"
+            wmsTransparent="${geoService.wmsTransparent}"
+            wmsMinScale="${geoService.wmsMinScale}"
+            wmsSingleTile="${geoService.wmsSingleTile}"
+       		/>
+			</c:when>
+			<c:otherwise>
+				<div style="margin:20px 0px 0px 10px;">Das Außendiensteinheiten-Team <span style="font-style:italic">${team}</span> hat am gewählten Tag keine Aufträge.</div>
+			</c:otherwise>
+		</c:choose>
+	</div>
+        
+  <!-- HELP -->
+  <div id="root_style_help">
+    <p>
+      Legende:
+      <c:url value="/images/" var="url"/>
+      <table>
+        <tr>
+          <td><img alt="Problem" src="${url}problem_15.png" height="15" width="15" title="Typ: Problem"/></td>
+          <td style="vertical-align:top;">Problem</td>
+          <td width="20px"></td>
+          <td><img alt="gemeldet" src="${url}status_gemeldet_15.png" height="15" width="15"  title="Status: gemeldet"/></td>
+          <td style="vertical-align:top;">gemeldet</td>
+          <td width="20px"></td>
+          <td width="15"><div class="missbrauchsmeldungLegende" style="height:15px;"></div></td>
+          <td style="vertical-align:top;"  title="Status: Missbrauch gemeldet">Missbrauch gemeldet</td>
+          <td width="20px"></td>
+          <td><img alt="abgehakt" src="${url}abgehakt.png" height="15" width="15" title="Autragsstatus: abgehakt"/></td>
+          <td style="vertical-align:top;">abgehakt</td>
+        </tr>
+        <tr>
+          <td><img alt="Idee" src="${url}idee_15.png" height="15" width="15" title="Typ: Idee"/></td>
+          <td style="vertical-align:top;">Idee</td>
+          <td></td>
+          <td><img alt="offen" src="${url}status_offen_15.png" height="15" width="15" title="Status: offen"/></td>
+          <td style="vertical-align:top;">offen</td>
+          <td></td>
+          <td><img alt="offen" src="${url}archiviert_15.png" height="15" width="15" title="archiviert"/></td>
+          <td style="vertical-align:top;"  title="archiviert">archiviert</td>
+          <td></td>
+          <td><img alt="(noch) nicht abgehakt" src="${url}nicht_abgehakt.png" height="15" width="15" title="Autragsstatus: (noch) nicht abgehakt"/></td>
+          <td style="vertical-align:top;">(noch) nicht abgehakt</td>
+        </tr>
+        <tr>
+          <td colspan="3"></td>
+          <td><img alt="in Bearbeitung" src="${url}status_inBearbeitung_15.png" height="15" width="15" title="Status: in Bearbeitung"/></td>
+          <td style="vertical-align:top;">in Bearbeitung</td>
+          <td colspan="4"></td>
+          <td><img alt="nicht abarbeitbar" src="${url}nicht_abarbeitbar.png" height="15" width="15" title="Autragsstatus: nicht abarbeitbar"/></td>
+          <td style="vertical-align:top;">nicht abarbeitbar</td>
+        </tr>
+        <tr>
+          <td colspan="3"></td>
+          <td><img alt="wird nicht bearbeitet/Duplikat" src="${url}status_wirdNichtBearbeitet_15.png" height="15" width="15"  title="Status: wird nicht bearbeitet/Duplikat"/></td>
+          <td style="vertical-align:top;">wird nicht bearbeitet / Duplikat</td>
+        </tr>
+        <tr>
+          <td colspan="3"></td>
+          <td><img alt="abgeschlossen" src="${url}status_abgeschlossen_15.png" height="15" width="15"  title="Status: abgeschlossen"/></td>
+          <td style="vertical-align:top;">abgeschlossen</td>
+        </tr>
+        <tr>
+          <td colspan="3"></td>
+          <td><img alt="gelöscht" src="${url}status_geloescht_15.png" height="15" width="15"  title="Status: gelöscht"/></td>
+          <td style="vertical-align:top;">gelöscht</td>
+        </tr>
+      </table>
+    </p>
+  </div>
+
+</jsp:root>

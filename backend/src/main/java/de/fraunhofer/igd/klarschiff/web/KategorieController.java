@@ -31,7 +31,7 @@ public class KategorieController {
 	/**
 	 * Die Methode verarbeitet den GET-Request mit <code>"Accept=application/json"</code>auf der URL <code>/kategorien</code>
 	 * bei vorhandenem Parameter <code>kategorie</code> (Long)<br/>
-	 * Funktionsbeschreibung: Liefert die Unterkategorien zur im Parameter übergebenen Kategorie-ID als JSON
+	 * Funktionsbeschreibung: Liefert die Unterkategorien zur im Parameter Ã¼bergebenen Kategorie-ID als JSON
 	 * @param kategorie Kategorie-ID
 	 * @return View, die zum Rendern des Request verwendet wird
 	 */
@@ -50,7 +50,7 @@ public class KategorieController {
 	/**
 	 * Die Methode verarbeitet den GET-Request mit <code>"Accept=application/json"</code>auf der URL <code>/kategorien</code>
 	 * bei vorhandenem Parameter <code>typ</code> (Long)<br/>
-	 * Funktionsbeschreibung: Liefert eine Liste aller Haupt-Kategorien zum im Parameter übergebenen Vorgangs-Typ als JSON.
+	 * Funktionsbeschreibung: Liefert eine Liste aller Haupt-Kategorien zum im Parameter Ã¼bergebenen Vorgangs-Typ als JSON.
 	 * @param typ Typ-Bezeichner
 	 * @return View, die zum Rendern des Request verwendet wird
 	 */
@@ -69,7 +69,7 @@ public class KategorieController {
 	/**
 	 * Die Methode verarbeitet den GET-Request mit <code>"Accept=application/json"</code>auf der URL 
 	 * <code>/kategorien/viewNaehereBeschreibung</code><br/>
-	 * Funktionsbeschreibung: Liefert eine detailliertere Beschreibung der über beide Parameter bestimmten Kategorie.
+	 * Funktionsbeschreibung: Liefert eine detailliertere Beschreibung der Ã¼ber beide Parameter bestimmten Kategorie.
 	 * @param hauptkategorie
 	 * @param unterkategorie
 	 * @return View, die zum Rendern des Request verwendet wird

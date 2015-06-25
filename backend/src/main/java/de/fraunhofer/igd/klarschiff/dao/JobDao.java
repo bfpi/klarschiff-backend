@@ -20,7 +20,7 @@ import de.fraunhofer.igd.klarschiff.vo.JobRun;
 import de.fraunhofer.igd.klarschiff.vo.JobRun.Ergebnis;
 
 /**
- * Die DAO-Klasse unterstützt bei der Synchronisation von Jobs in einem Cluster. Hierzu können die laufenden Jobs
+ * Die DAO-Klasse unterstÃ¼tzt bei der Synchronisation von Jobs in einem Cluster. Hierzu kÃ¶nnen die laufenden Jobs
  * in der DB registriert werden.
  * @author Stefan Audersch (Fraunhofer IGD)
  */
@@ -35,15 +35,15 @@ public class JobDao {
 
 
 	/**
-	 * Registriert einen Job in der DB. Die Id des Jobs wird dabei für die Synchronisation der Jobs verwendet. Die
+	 * Registriert einen Job in der DB. Die Id des Jobs wird dabei fÃ¼r die Synchronisation der Jobs verwendet. Die
 	 * Id setzt sich aus einem abgerundetem Datum und dem Namen des Jobs zusammen
 	 * @param datum Zeit bei der der Job gestartet wurde
 	 * @param name Name des Jobs
 	 * @param serverIp IPs des aktuellen Servers
 	 * @param serverName Rechnername des aktuellen Servers
-	 * @param serverConnectorPort ConnectionPort auf dem der aktuellen Server läuft 
+	 * @param serverConnectorPort ConnectionPort auf dem der aktuellen Server lÃ¤uft 
 	 * @param truncateField Feld bei der Zeit, auf das abgerundet werden soll
-	 * @return Id des Job oder <code>null</code>, wenn der Job bereits von einer anderen Serverinstance ausgeführt wird.
+	 * @return Id des Job oder <code>null</code>, wenn der Job bereits von einer anderen Serverinstance ausgefÃ¼hrt wird.
 	 */
 	@Transactional
 	public String registerJobRun(Date datum, String name, String serverIp, String serverName, String serverConnectorPort, int truncateField) {
@@ -115,8 +115,8 @@ public class JobDao {
 
 	
 	/**
-	 * Ermittelt die Anzahl der korrekt abgeschlossen Jobs, die im Cluster ausgeführt wurden. 
-	 * @return Anzahl der korrekt ausgeführten Jobs
+	 * Ermittelt die Anzahl der korrekt abgeschlossen Jobs, die im Cluster ausgefÃ¼hrt wurden. 
+	 * @return Anzahl der korrekt ausgefÃ¼hrten Jobs
 	 */
 	public Long getAnzahlAbgeschlosseneJobs() {
 		return (Long)em.createQuery("SELECT COUNT(*) FROM JobRun j WHERE j.ergebnis=:ergebnis").setParameter("ergebnis", JobRun.Ergebnis.abgeschlossen).getSingleResult();
@@ -124,8 +124,8 @@ public class JobDao {
 
 	
 	/**
-	 * Ermittelt die fehlerhaft ausgeführten Jobs, die im Cluster ausgeführt wurden.
-	 * @return Liste der fehlerhaft ausgeführten Jobs, die im Cluster ausgeführt wurden.
+	 * Ermittelt die fehlerhaft ausgefÃ¼hrten Jobs, die im Cluster ausgefÃ¼hrt wurden.
+	 * @return Liste der fehlerhaft ausgefÃ¼hrten Jobs, die im Cluster ausgefÃ¼hrt wurden.
 	 */
 	@SuppressWarnings("unchecked")
 	public List<JobRun> getFehlerhafteJobs() {

@@ -14,7 +14,7 @@ import de.fraunhofer.igd.klarschiff.vo.Vorgang;
 import de.fraunhofer.igd.klarschiff.web.AdminLobHinweiseKritikCommand;
 
 /**
- * Die Dao-Klasse ermöglicht den Zugriff auf Lob, Hinweise oder Kritik zu einem Vorgang
+ * Die Dao-Klasse ermÃ¶glicht den Zugriff auf Lob, Hinweise oder Kritik zu einem Vorgang
  * @author Sebastian Schwarz (Hansestadt Rostock)
  */
 @Repository

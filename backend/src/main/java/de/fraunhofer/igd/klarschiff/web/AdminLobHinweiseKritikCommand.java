@@ -3,9 +3,9 @@ package de.fraunhofer.igd.klarschiff.web;
 import java.io.Serializable;
 
 /**
- * Command für Lob/Hinweise/Kritik im Adminbereich
+ * Command fÃ¼r Lob/Hinweise/Kritik im Adminbereich
  * <code>page</code>: die aktuelle Seitenzahl<br/>
- * <code>size</code>: die konfigurierte Anzahl von Einträgen pro Seite<br/>
+ * <code>size</code>: die konfigurierte Anzahl von EintrÃ¤gen pro Seite<br/>
  * <code>order</code>: die Spalte nach der sortiert wird<br/>
  * <code>orderDirection</code>: die Sortierreihenfolge (1:absteigend,default:aufsteigend)
  * @author Sebastian Schwarz (Hansestadt Rostock)

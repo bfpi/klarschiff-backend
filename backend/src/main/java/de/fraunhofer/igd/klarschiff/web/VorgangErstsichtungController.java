@@ -32,7 +32,7 @@ import de.fraunhofer.igd.klarschiff.vo.Verlauf;
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
 
 /**
- * Controller zur Durchf¸hrung der Erstsichtung neuer Vorg‰nge im Backend.
+ * Controller zur Durchf√ºhrung der Erstsichtung neuer Vorg√§nge im Backend.
  * @author Stefan Audersch (Fraunhofer IGD)
  */
 @SessionAttributes("cmd")
@@ -59,8 +59,8 @@ public class VorgangErstsichtungController {
 	ImageService imageService;
 
 	/**
-	 * Liefert die Liste der Zust‰ndigkeiten (<code>Role</code>) f¸r den aktuellen Benutzer. 
-	 * @return Liste der Zust‰ndigkeiten
+	 * Liefert die Liste der Zust√§ndigkeiten (<code>Role</code>) f√ºr den aktuellen Benutzer.
+	 * @return Liste der Zust√§ndigkeiten
 	 */
 	@ModelAttribute("currentZustaendigkeiten")
     public List<Role> currentZustaendigkeiten() {
@@ -68,8 +68,8 @@ public class VorgangErstsichtungController {
     }
 	
 	/**
-	 * Liefert die Liste aller Zust‰ndigkeiten (<code>Role</code>) im System. 
-	 * @return Liste der Zust‰ndigkeiten
+	 * Liefert die Liste aller Zust√§ndigkeiten (<code>Role</code>) im System.
+	 * @return Liste der Zust√§ndigkeiten
 	 */
 	@ModelAttribute("allZustaendigkeiten")
     public List<Role> allZustaendigkeiten() {
@@ -85,7 +85,7 @@ public class VorgangErstsichtungController {
 	 * Die Methode verarbeitet den GET-Request auf der URL <code>/vorgang/{id}/erstsichtung</code><br/>
 	 * Seitenbeschreibung: Darstellung des Erstsichtungsformulars mit Vorgangsdetails, Kartenposition und Foto
 	 * @param id Vorgangs-ID
-	 * @param model Model in der ggf. Daten f¸r die View abgelegt werden
+	 * @param model Model in der ggf. Daten f√ºr die View abgelegt werden
 	 * @param request HttpServletRequest-Objekt
 	 * @return View, die zum Rendern des Request verwendet wird
 	 */
@@ -99,6 +99,7 @@ public class VorgangErstsichtungController {
 		VorgangErstsichtungCommand cmd = new VorgangErstsichtungCommand();
 		cmd.setVorgang(vorgang);
 		model.put("cmd", cmd);
+		model.put("mapExternName", geoService.getMapExternName());
 		model.put("mapExternUrl", geoService.getMapExternUrl(vorgang));
 		
 		return "vorgang/erstsichtung/zustaendigkeit";
@@ -106,26 +107,26 @@ public class VorgangErstsichtungController {
 	/**
 	 * Die Methode verarbeitet den POST-Request auf der URL <code>/vorgang/{id}/erstsichtung</code><br/>
 	 * Funktionsbeschreibung: 
-	 * <br/>In Abh‰ngigkeit vom <code>action</code> Parameter sind folgende Funktionalit‰ten mˆglich:
+	 * <br/>In Abh√§ngigkeit vom <code>action</code> Parameter sind folgende Funktionalit√§ten m√∂glich:
 	 * <ul>
-	 * <li>Zust‰ndigkeit zuweisen (<code>zuweisen</code>)</li>
-	 * <li>Zust‰ndigkeit neu zuweisen (<code>neu zuweisen</code>)</li>
-	 * <li>zugewiesene Zust‰ndigkeit akzeptieren (<code>akzeptieren</code>)</li>
-	 * <li>Zust‰ndigkeit selbst ¸bernehmen und akzeptieren (<code>&uuml;bernehmen und akzeptieren</code>)</li>
-	 * <li>Erstpr¸fung abschlieﬂen (<code>Pr&uuml;fung abschlie&szlig;en</code>)</li>
+	 * <li>Zust√§ndigkeit zuweisen (<code>zuweisen</code>)</li>
+	 * <li>Zust√§ndigkeit neu zuweisen (<code>neu zuweisen</code>)</li>
+	 * <li>zugewiesene Zust√§ndigkeit akzeptieren (<code>akzeptieren</code>)</li>
+	 * <li>Zust√§ndigkeit selbst √ºbernehmen und akzeptieren (<code>&uuml;bernehmen und akzeptieren</code>)</li>
+	 * <li>Erstpr√ºfung abschlie√üen (<code>Pr&uuml;fung abschlie&szlig;en</code>)</li>
 	 * <li>Rotiertes Foto speichern (<code>fotoRotate</code>)</li>
 	 * <li>Bearbeitetes (zensiertes) Foto speichern (<code>fotoSave</code>)</li>
-	 * <li>Freigabestatus von Betreff, Details oder Foto ‰ndern (<code>freigabeStatus_Betreff; freigabeStatus_Details; freigabeStatus_Foto;</code>)</li>
+	 * <li>Freigabestatus von Betreff, Details oder Foto √§ndern (<code>freigabeStatus_Betreff; freigabeStatus_Details; freigabeStatus_Foto;</code>)</li>
 	 * </ul>
 	 * 
 	 * @param cmd Command
 	 * @param result BindingResult
 	 * @param id Vorgangs-ID
 	 * @param action Stringparameter zur funktionalen Steuerung
-	 * @param censorRectangleString Lagebeschreibung der Rechtecke f¸r die Bildzensur
-	 * @param censoringWidth Breitenangabe benˆtigt f¸r Bildzensur
-	 * @param censoringHeight Hˆhenangabe benˆtigt f¸r Bildzensur
-	 * @param model Model in der ggf. Daten f¸r die View abgelegt werden
+	 * @param censorRectangleString Lagebeschreibung der Rechtecke f√ºr die Bildzensur
+	 * @param censoringWidth Breitenangabe ben√∂tigt f√ºr Bildzensur
+	 * @param censoringHeight H√∂henangabe ben√∂tigt f√ºr Bildzensur
+	 * @param model Model in der ggf. Daten f√ºr die View abgelegt werden
 	 * @param request HttpServletRequest-Objekt
 	 * @return View, die zum Rendern des Request verwendet wird
 	 */
@@ -149,6 +150,7 @@ public class VorgangErstsichtungController {
 			if (result.hasErrors()) {
 				cmd.getVorgang().setZustaendigkeit(vorgangDao.findVorgang(id).getZustaendigkeit());
 				cmd.getVorgang().setZustaendigkeitFrontend(vorgangDao.findVorgang(id).getZustaendigkeitFrontend());
+                model.put("mapExternName", geoService.getMapExternName());
 				model.put("mapExternUrl", geoService.getMapExternUrl(cmd.getVorgang()));
 	            return "vorgang/erstsichtung/zustaendigkeit";
 	        }
@@ -184,6 +186,7 @@ public class VorgangErstsichtungController {
 			if (result.hasErrors()) {
 				cmd.getVorgang().setZustaendigkeit(vorgangDao.findVorgang(id).getZustaendigkeit());
                 cmd.getVorgang().setZustaendigkeitFrontend(securityService.getZustaendigkeit(vorgangDao.findVorgang(id).getZustaendigkeit()).getL());
+                model.put("mapExternName", geoService.getMapExternName());
 				model.put("mapExternUrl", geoService.getMapExternUrl(cmd.getVorgang()));
 	            return "vorgang/erstsichtung/zustaendigkeit";
 	        }
@@ -197,9 +200,9 @@ public class VorgangErstsichtungController {
 		
 		} else if (action.equals("Pr&uuml;fung abschlie&szlig;en")) {
 		
-			//Verlauf? betreff u/o freigabestatus ge‰ndert
-			//Verlauf? details u/o freigabestatus ge‰ndert
-			//Verlauf? foto u/o freigabestatus ge‰ndert
+			//Verlauf? betreff u/o freigabestatus ge√§ndert
+			//Verlauf? details u/o freigabestatus ge√§ndert
+			//Verlauf? foto u/o freigabestatus ge√§ndert
 			
 			//Verlauf verlauf = verlaufDao.addVerlaufToVorgang(cmd.getVorgang(), EnumVerlaufTyp.status, cmd.getVorgang().getStatus().name(), null);
 			cmd.getVorgang().setErstsichtungErfolgt(true);

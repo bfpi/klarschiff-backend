@@ -100,7 +100,7 @@ public class SqlQueryHelper {
 		return this;
 	}
 	public String getSqlQuery() {
-		if (selectAttributes.size()<1) throw new RuntimeException("Es sind keine Attributte für die Projektion angegeben");
+		if (selectAttributes.size()<1) throw new RuntimeException("Es sind keine Attributte fÃ¼r die Projektion angegeben");
 		if (fromTables.size()<1) throw new RuntimeException("Es sind keine Tabellen angegeben");
 
 		StringBuilder str = new StringBuilder();

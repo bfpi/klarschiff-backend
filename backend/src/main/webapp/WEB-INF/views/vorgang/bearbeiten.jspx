@@ -15,6 +15,19 @@
 	version="2.0"
 	>
 	<jsp:directive.page contentType="text/html;charset=UTF-8"/>
+  
+  <!-- Datepicker - nur laden, wenn User Koordinator ist (für Auswahl der Außendiensteinheit) -->
+  <sec:authorize access="hasRole('ROLE_KOORDINATOR')">
+    <c:url value="/script/jquery-ui/jquery.ui.core.js" var="url"/>
+    <script src="${url}" type="text/javascript"><!-- //jquery.ui.datepicker --></script>
+    <c:url value="/script/jquery-ui/jquery.ui.datepicker.js" var="url"/>
+    <script src="${url}" type="text/javascript"><!-- //jquery.ui.datepicker --></script>
+    <c:url value="/script/jquery-ui/jquery.ui.datepicker-de.js" var="url"/>
+    <script src="${url}" type="text/javascript"><!-- //jquery.ui.datepicker-de --></script>
+
+    <c:url value="/script/jquery-ui/css/jquery.ui.all.css" var="url"/>
+    <link rel="stylesheet" type="text/css" href="${url}"> <!-- styles.css --> </link>
+  </sec:authorize>
 
 	<c:set value="${cmd.vorgang}" var="vorgang"/>
 
@@ -182,222 +195,6 @@
 				</div>
 				<util:ddpanel name="zustaendigkeit"/>
 
-				<!-- Status -->
-				<c:if test="${cmd.vorgang.status!='gemeldet'}">
-					<div class="fieldset" id="statuspanel">
-						<div class="fieldsettitle closepanel" id="statustab"><div style="width:100%; height:15px;">Status</div></div>
-						<div id="statuscontent">
-							<form:form method="POST" modelAttribute="cmd.vorgang" >
-								<div>
-									<form:label path="status" cssErrorClass="error">Status</form:label>
-									<form:select path="status" cssErrorClass="error">
-						            	<form:option value="" label="Status wählen" cssClass="info"/>
-                                        <c:if test="${cmd.vorgang.typ == 'idee'}">
-                                            <c:if test="${!(cmd.vorgang.unterstuetzer.size() >= vorgangIdeenUnterstuetzer)}">
-                                                <form:options items="${allVorgangStatusMitOffenen}" itemLabel="text" htmlEscape="false"/>
-                                            </c:if>
-                                        </c:if>
-                                        <c:if test="${cmd.vorgang.typ != 'idee' or cmd.vorgang.unterstuetzer.size() >= vorgangIdeenUnterstuetzer}">
-                                            <form:options items="${allVorgangStatus}" itemLabel="text" htmlEscape="false"/>
-                                        </c:if>
-									</form:select>
-								</div>
-                                <div>
-									<table width="100%" cellpadding="0" cellspacing="0">
-										<tr>
-											<td valign="top" width="470px;">
-												<form:label path="statusKommentar" cssErrorClass="error">Kommentar</form:label>
-												<form:textarea path="statusKommentar" id="statusKommentar" cols="6" maxlength="${vorgangStatusKommentarTextlaengeMaximal}" cssStyle="width:350px;height:100px" onKeyUp="$('#zeichenAnzahl').html(verbleibendeZeichen(${vorgangStatusKommentarTextlaengeMaximal}, $('#statusKommentar')[0].value.length));"/>
-                                                <br/>
-                                                <label style="width:350px;margin-left:100px">Sie können noch <span id="zeichenAnzahl">${vorgangStatusKommentarTextlaengeMaximal}</span> Zeichen eingeben.</label>
-											</td>
-											<td valign="top" style="padding-left:10px;">
-												<select id="vorlage" onchange="vorlageSelect()">
-													<option class="info">Vorlage wählen</option>
-													<c:forEach items="${allStatusKommentarVorlage}" var="statusKommentarVorlage">
-														<option title="${statusKommentarVorlage.text}" value="${statusKommentarVorlage.text}">${statusKommentarVorlage.titelAbbreviate}</option>
-													</c:forEach>
-												</select>
-											
-												<script type="text/javascript">
-													function vorlageSelect() {
-														$('#statusKommentar')[0].value = $('select#vorlage')[0].value;
-                                                        $('#zeichenAnzahl').html(verbleibendeZeichen(${vorgangStatusKommentarTextlaengeMaximal}, $('#statusKommentar')[0].value.length));
-														$('select#vorlage')[0].selectedIndex = 0;
-													}
-                                                    
-                                                    function verbleibendeZeichen(vorgangStatusKommentarTextlaengeMaximal, textlaengeAktuell) {
-                                                        return vorgangStatusKommentarTextlaengeMaximal - textlaengeAktuell;
-                                                    }
-												</script>
-
-											</td>
-										</tr>
-										<form:errors path="statusKommentar">
-											<tr><td><form:errors cssClass="error" cssStyle="font-size: 0.8em; padding-left: 100px" element="div" path="statusKommentar"/></td></tr>
-										</form:errors>
-									</table>
-								</div>
-                                <input type="submit" value="Änderungen übernehmen" name="action"/>
-							</form:form>
-						</div>
-					</div>
-					<util:ddpanel name="status"/>
-				</c:if>
-
-				<!-- Vorgangsdaten -->		
-				<div class="fieldset" id="vorgangpanel">
-					<div class="fieldsettitle closepanel" id="vorgangtab"><div style="width:100%; height:15px;">Vorgangsdaten</div></div>
-					<div id="vorgangcontent">
-						<form:form method="POST" modelAttribute="cmd">
-					        <div>
-					        	<form:label path="vorgang.typ" cssErrorClass="error">Typ</form:label>
-					            <form:select path="vorgang.typ" id="typ" onchange="updateHauptkategorie()" style="width:358px;">
-					            	<form:option value="" label="Typ wählen" cssClass="info"/>
-					            	<c:forEach items="${vorgangtypen}" var="vorgangtyp">
-					            		<c:url value="/images/${vorgangtyp}_15.png" var="url"/>
-					            		<form:option value="${vorgangtyp}" label="${vorgangtyp.text}" cssStyle="background-image:url(${url});" cssClass="suffixiconsmall"/>
-					            	</c:forEach>
-					            </form:select>
-					        </div>
-					
-					        <div>
-					        	<form:label path="kategorie" cssErrorClass="error">Hauptkategorie</form:label>
-					            <form:select path="kategorie" id="hauptkategorie" onchange="updateUnterkategorie()" style="width:358px;">
-					            	<form:option value="" label="Hauptkategorie wählen" cssClass="info"/>
-									<form:options items="${hauptkategorien}" itemValue="id" itemLabel="name"/>
-					            </form:select>
-					        </div>
-					        
-					        <div>
-					        	<form:label path="vorgang.kategorie" cssErrorClass="error">Unterkategorie</form:label>
-					            <form:select path="vorgang.kategorie" id="unterkategorie" onchange="updateInfo()" cssStyle="width:358px;">
-					            	<form:option value="" label="Unterkategorie wählen" cssClass="info"/>
-									<form:options items="${unterkategorien}" itemValue="id" itemLabel="name"/>
-					            </form:select>
-					        </div>
-			
-							<c:url value="/kategorien" var="url"/>						
-							<script type="text/javascript">
-							
-							function isBlank(obj){
-								return(!obj || $.trim(obj) === "");
-							}
-			
-							function updateHauptkategorie()
-							{
-								var items = [];	  
-								items.push('<option value="" class="info">Hauptkategorie wählen</option>');
-							
-								var value = $('select#typ')[0].value;
-								var node = $('select#hauptkategorie');
-								node.empty();
-								node.append(items.join(''));
-								node.attr("disabled", "disabled");
-								
-								//Json-Anfrage
-								$.ajaxSetup({ scriptCharset: "utf-8" , contentType: "application/json; charset=utf-8"});
-								$.getJSON('${url}/kategorieTyp?typ='+value, function(data) {
-									$.each(data, function(index, val) {
-										items.push('<option value="' + val.id + '">' + val.nameEscapeHtml + '</option>');
-									});
-									node.empty();
-									node.append(items.join(''));
-									if (items.length>1) node.removeAttr("disabled"); 
-									updateUnterkategorie('');
-								});
-							}
-							
-							function updateUnterkategorie()
-							{
-								var value = $('select#hauptkategorie')[0].value;
-								var items = [];	  
-								items.push('<option value="" class="info">Unterkategorie wählen</option>');
-							
-								var node = $('select#unterkategorie');
-								node.empty();
-								node.append(items.join(''));
-								node.attr("disabled", "disabled");
-								
-								//Json-Anfrage
-								$.ajaxSetup({ scriptCharset: "utf-8" , contentType: "application/json; charset=utf-8"});
-								$.getJSON('${url}/kategorie?kategorie='+value, function(data) {
-									$.each(data, function(index, val) {
-										items.push('<option value="' + val.id + '">' + val.nameEscapeHtml + '</option>');
-									});
-									node.empty();
-									node.append(items.join(''));
-									if (items.length>1) node.removeAttr("disabled"); 
-								});
-							}
-							
-							function init()
-							{
-								typ = $('select#typ')[0].value;
-								hauptkategorie = $('select#hauptkategorie')[0].value;
-                                
-                                $('#zeichenAnzahl').html(verbleibendeZeichen(${vorgangStatusKommentarTextlaengeMaximal}, $('#statusKommentar')[0].value.length));
-			
-								if (isBlank(typ)) {
-									updateHauptkategorie();
-								} else {
-									$('select#hauptkategorie').removeAttr("disabled");
-									if (isBlank(hauptkategorie)) {
-										updateUnterkategorie();
-									} else {
-										$('select#unterkategorie').removeAttr("disabled");
-									}
-								}
-							}
-							
-							init();
-							</script>
-			
-					        <div>
-					        	<form:label path="vorgang.betreff" cssErrorClass="error">Betreff</form:label>
-					        	<table cellpadding="0" cellspacing="0">
-					        		<tr>
-					        			<td valign="top">
-					        				<util:freigabestatus status="${cmd.vorgang.betreffFreigabeStatus}"/>
-								            <form:input path="vorgang.betreff" cssClass="inputtext" cssStyle="width:331px;"/>
-					        			</td>
-					        			<td valign="top" style="padding-left:5px;">
-											<util:freigabestatusbutton name="Betreff" status="${cmd.vorgang.betreffFreigabeStatus}"/>
-					        			</td>
-					        		</tr>
-					        	</table>
-					        </div>
-						
-					        <div>
-					        	<form:label path="vorgang.details" cssErrorClass="error">Details</form:label>
-					        	<table cellpadding="0" cellspacing="0">
-					        		<tr>
-					        			<td valign="top">
-					        				<util:freigabestatus status="${cmd.vorgang.detailsFreigabeStatus}"/>
-								            <form:textarea path="vorgang.details" cols="6" cssStyle="width:331px;height:100px"/>
-					        			</td>
-					        			<td valign="top" style="padding-left:5px;">
-											<util:freigabestatusbutton name="Details" status="${cmd.vorgang.detailsFreigabeStatus}"/>
-					        			</td>
-					        			
-					        		</tr>
-					        	</table>
-					        </div>
-					        <div>
-					        	<form:label path="vorgang.adresse">Adresse</form:label>
-					            <form:input path="vorgang.adresse" cssClass="inputtext" cssStyle="width:351px;"/>
-				       		</div>
-                            <div>
-					        	<form:label path="vorgang.flurstueckseigentum">Flurstückseigentum</form:label>
-					            <form:input path="vorgang.flurstueckseigentum" cssClass="inputtext" cssStyle="width:351px;"/>
-				       		</div>
-					        
-							<input type="submit" value="Änderungen übernehmen " name="action"/>
-						</form:form>
-					</div>
-				</div>
-				<util:ddpanel name="vorgang"/>
-
 				
 				<!-- interne Kommentare -->
 				<div class="fieldset" id="kommentarpanel">
@@ -480,6 +277,222 @@
 					</div>	
 				</div>
 				<util:ddpanel name="kommentar"/>
+
+				<!-- Status -->
+				<c:if test="${cmd.vorgang.status!='gemeldet'}">
+					<div class="fieldset" id="statuspanel">
+						<div class="fieldsettitle closepanel" id="statustab"><div style="width:100%; height:15px;">Status</div></div>
+						<div id="statuscontent">
+							<form:form method="POST" modelAttribute="cmd.vorgang" >
+								<div>
+									<form:label path="status" cssErrorClass="error">Status</form:label>
+									<form:select path="status" cssErrorClass="error">
+						            	<form:option value="" label="Status wählen" cssClass="info"/>
+                                        <c:if test="${cmd.vorgang.typ == 'idee'}">
+                                            <c:if test="${!(cmd.vorgang.unterstuetzer.size() >= vorgangIdeenUnterstuetzer)}">
+                                                <form:options items="${allVorgangStatusMitOffenen}" itemLabel="text" htmlEscape="false"/>
+                                            </c:if>
+                                        </c:if>
+                                        <c:if test="${cmd.vorgang.typ != 'idee' or cmd.vorgang.unterstuetzer.size() >= vorgangIdeenUnterstuetzer}">
+                                            <form:options items="${allVorgangStatus}" itemLabel="text" htmlEscape="false"/>
+                                        </c:if>
+									</form:select>
+								</div>
+                                <div>
+									<table width="100%" cellpadding="0" cellspacing="0">
+										<tr>
+											<td valign="top" width="470px;">
+												<form:label path="statusKommentar" cssErrorClass="error">öffentliche Statusinformation</form:label>
+												<form:textarea path="statusKommentar" id="statusKommentar" cols="6" maxlength="${vorgangStatusKommentarTextlaengeMaximal}" cssStyle="width:350px;height:100px" onKeyUp="$('#zeichenAnzahl').html(verbleibendeZeichen(${vorgangStatusKommentarTextlaengeMaximal}, $('#statusKommentar')[0].value.length));"/>
+                                                <br/>
+                                                <label style="width:350px;margin-left:100px">Sie können noch <span id="zeichenAnzahl">${vorgangStatusKommentarTextlaengeMaximal}</span> Zeichen eingeben.</label>
+											</td>
+											<td valign="top" style="padding-left:10px;">
+												<select id="vorlage" onchange="vorlageSelect()">
+													<option class="info">Vorlage wählen</option>
+													<c:forEach items="${allStatusKommentarVorlage}" var="statusKommentarVorlage">
+														<option title="${statusKommentarVorlage.text}" value="${statusKommentarVorlage.text}">${statusKommentarVorlage.titelAbbreviate}</option>
+													</c:forEach>
+												</select>
+											
+												<script type="text/javascript">
+													function vorlageSelect() {
+														$('#statusKommentar')[0].value = $('select#vorlage')[0].value;
+                                                        $('#zeichenAnzahl').html(verbleibendeZeichen(${vorgangStatusKommentarTextlaengeMaximal}, $('#statusKommentar')[0].value.length));
+														$('select#vorlage')[0].selectedIndex = 0;
+													}
+                                                    
+                                                    function verbleibendeZeichen(vorgangStatusKommentarTextlaengeMaximal, textlaengeAktuell) {
+                                                        return vorgangStatusKommentarTextlaengeMaximal - textlaengeAktuell;
+                                                    }
+												</script>
+
+											</td>
+										</tr>
+										<form:errors path="statusKommentar">
+											<tr><td><form:errors cssClass="error" cssStyle="font-size: 0.8em; padding-left: 100px" element="div" path="statusKommentar"/></td></tr>
+										</form:errors>
+									</table>
+								</div>
+                                <input type="submit" value="Änderungen übernehmen" name="action"/>
+							</form:form>
+						</div>
+					</div>
+					<util:ddpanel name="status"/>
+				</c:if>
+
+				<!-- Vorgangsdaten -->		
+				<div class="fieldset" id="vorgangpanel">
+					<div class="fieldsettitle closepanel" id="vorgangtab"><div style="width:100%; height:15px;">Vorgangsdaten</div></div>
+					<div id="vorgangcontent">
+						<form:form method="POST" modelAttribute="cmd">
+					        <div>
+					        	<form:label path="vorgang.typ" cssErrorClass="error">Typ</form:label>
+					            <form:select path="vorgang.typ" id="typ" onchange="updateHauptkategorie()" style="width:358px;">
+					            	<form:option value="" label="Typ wählen" cssClass="info"/>
+					            	<c:forEach items="${vorgangtypen}" var="vorgangtyp">
+					            		<c:url value="/images/${vorgangtyp}_15.png" var="url"/>
+					            		<form:option value="${vorgangtyp}" label="${vorgangtyp.text}" cssStyle="background-image:url(${url});" cssClass="suffixiconsmall"/>
+					            	</c:forEach>
+					            </form:select>
+					        </div>
+					
+					        <div>
+					        	<form:label path="kategorie" cssErrorClass="error">Hauptkategorie</form:label>
+					            <form:select path="kategorie" id="hauptkategorie" onchange="updateUnterkategorie()" style="width:358px;">
+					            	<form:option value="" label="Hauptkategorie wählen" cssClass="info"/>
+									<form:options items="${hauptkategorien}" itemValue="id" itemLabel="name"/>
+					            </form:select>
+					        </div>
+					        
+					        <div>
+					        	<form:label path="vorgang.kategorie" cssErrorClass="error">Unterkategorie</form:label>
+					            <form:select path="vorgang.kategorie" id="unterkategorie" cssStyle="width:358px;">
+					            	<form:option value="" label="Unterkategorie wählen" cssClass="info"/>
+									<form:options items="${unterkategorien}" itemValue="id" itemLabel="name"/>
+					            </form:select>
+					        </div>
+			
+							<c:url value="/kategorien" var="url"/>						
+							<script type="text/javascript">
+							
+							function isBlank(obj){
+								return(!obj || $.trim(obj) === "");
+							}
+			
+							function updateHauptkategorie()
+							{
+								var items = [];	  
+								items.push('<option value="" class="info">Hauptkategorie wählen</option>');
+							
+								var value = $('select#typ')[0].value;
+								var node = $('select#hauptkategorie');
+								node.empty();
+								node.append(items.join(''));
+								node.attr("disabled", "disabled");
+								
+								//Json-Anfrage
+								$.ajaxSetup({ scriptCharset: "utf-8" , contentType: "application/json; charset=utf-8"});
+								$.getJSON('${url}/kategorieTyp?typ='+value, function(data) {
+									$.each(data, function(index, val) {
+										items.push($('<option></option>').val(val.id).html(val.nameEscapeHtml)[0].outerHTML);
+									});
+									node.empty();
+									node.append(items.join(''));
+									if (items.length>1) node.removeAttr("disabled"); 
+									updateUnterkategorie('');
+								});
+							}
+							
+							function updateUnterkategorie()
+							{
+								var value = $('select#hauptkategorie')[0].value;
+								var items = [];	  
+								items.push('<option value="" class="info">Unterkategorie wählen</option>');
+							
+								var node = $('select#unterkategorie');
+								node.empty();
+								node.append(items.join(''));
+								node.attr("disabled", "disabled");
+								
+								//Json-Anfrage
+								$.ajaxSetup({ scriptCharset: "utf-8" , contentType: "application/json; charset=utf-8"});
+								$.getJSON('${url}/kategorie?kategorie='+value, function(data) {
+									$.each(data, function(index, val) {
+										items.push($('<option></option>').val(val.id).html(val.nameEscapeHtml)[0].outerHTML);
+									});
+									node.empty();
+									node.append(items.join(''));
+									if (items.length>1) node.removeAttr("disabled"); 
+								});
+							}
+							
+							function init()
+							{
+								typ = $('select#typ')[0].value;
+								hauptkategorie = $('select#hauptkategorie')[0].value;
+                                
+                                $('#zeichenAnzahl').html(verbleibendeZeichen(${vorgangStatusKommentarTextlaengeMaximal}, $('#statusKommentar')[0].value.length));
+			
+								if (isBlank(typ)) {
+									updateHauptkategorie();
+								} else {
+									$('select#hauptkategorie').removeAttr("disabled");
+									if (isBlank(hauptkategorie)) {
+										updateUnterkategorie();
+									} else {
+										$('select#unterkategorie').removeAttr("disabled");
+									}
+								}
+							}
+							
+							init();
+							</script>
+			
+					        <div>
+					        	<form:label path="vorgang.betreff" cssErrorClass="error">Betreff</form:label>
+					        	<table cellpadding="0" cellspacing="0">
+					        		<tr>
+					        			<td valign="top">
+					        				<util:freigabestatus status="${cmd.vorgang.betreffFreigabeStatus}"/>
+								            <form:input path="vorgang.betreff" cssClass="inputtext" cssStyle="width:331px;"/>
+					        			</td>
+					        			<td valign="top" style="padding-left:5px;">
+											<util:freigabestatusbutton name="Betreff" status="${cmd.vorgang.betreffFreigabeStatus}"/>
+					        			</td>
+					        		</tr>
+					        	</table>
+					        </div>
+						
+					        <div>
+					        	<form:label path="vorgang.details" cssErrorClass="error">Details</form:label>
+					        	<table cellpadding="0" cellspacing="0">
+					        		<tr>
+					        			<td valign="top">
+					        				<util:freigabestatus status="${cmd.vorgang.detailsFreigabeStatus}"/>
+								            <form:textarea path="vorgang.details" cols="6" cssStyle="width:331px;height:100px"/>
+					        			</td>
+					        			<td valign="top" style="padding-left:5px;">
+											<util:freigabestatusbutton name="Details" status="${cmd.vorgang.detailsFreigabeStatus}"/>
+					        			</td>
+					        			
+					        		</tr>
+					        	</table>
+					        </div>
+					        <div>
+					        	<form:label path="vorgang.adresse">Adresse</form:label>
+					            <form:input path="vorgang.adresse" cssClass="inputtext" cssStyle="width:351px;"/>
+				       		</div>
+                            <div>
+					        	<form:label path="vorgang.flurstueckseigentum">Flurstückseigentum</form:label>
+					            <form:input path="vorgang.flurstueckseigentum" cssClass="inputtext" cssStyle="width:351px;"/>
+				       		</div>
+					        
+							<input type="submit" value="Änderungen übernehmen " name="action"/>
+						</form:form>
+					</div>
+				</div>
+				<util:ddpanel name="vorgang"/>
                 
                 
                 <c:if test="${not empty allelobhinweisekritik}">
@@ -560,6 +573,44 @@
                     </c:otherwise>
                 </c:choose>
 
+				<!-- Außendiensteinheiten -->
+        <sec:authorize access="hasRole('ROLE_KOORDINATOR')">
+          <div class="fieldset" id="aussendienstpanel">
+            <div class="fieldsettitle closepanel" id="aussendiensttab"><div style="width:100%; height:15px;">Außendiensteinheiten-Team zuweisen</div></div>
+            <div id="aussendienstcontent">
+              <c:choose>
+                <c:when test="${cmd.vorgang.zustaendigkeitStatus == 'akzeptiert' and cmd.vorgang.status != 'gemeldet' and cmd.vorgang.status != 'geloescht'}">
+                  <form:form method="POST" modelAttribute="cmd.vorgang.auftrag" >
+                    <div>
+                      <form:label path="team" cssErrorClass="error">Team</form:label>
+                      <form:select path="team" id="team">
+                        <form:option value="" label="Außendienst wählen" cssClass="info" />
+                        <form:options items="${koordinatorAussendienstTeams}" />
+                      </form:select>
+                    </div>
+                    <div>
+                      <form:label path="datum">Datum</form:label>
+                      <form:input path="datum" id="aussendienst_datum" cssClass="inputtext" />
+                    </div>
+                      <script type="text/javascript">
+                        $(function() {
+                            $('#aussendienst_datum').datepicker();
+                        });
+                    </script>
+
+                    <input type="submit" value="Auftrag zuweisen" name="action" />
+                  </form:form>
+                </c:when>
+                <c:otherwise>
+                  <c:url value="/images/" var="urlStaticIcon"/>
+                  Das Zuweisen einer Außendiensteinheit ist nur dann möglich, wenn der Vorgang <span class="statistic_accepted" title="akzeptiert">✔</span> ist und er gleichzeitig nicht <img alt="gemeldet" src="${urlStaticIcon}status_gemeldet_15.png" height="15" width="15" title="gemeldet" class="statistic_icon"/> oder <img alt="geloescht" src="${urlStaticIcon}status_geloescht_15.png" height="15" width="15" title="gelöscht" class="statistic_icon"/> ist.
+                </c:otherwise>
+              </c:choose>
+            </div>
+          </div>
+          <util:ddpanel name="aussendienst"/>
+        </sec:authorize>
+        
 				<!-- Priorität -->
 				<div class="fieldset" id="prioritaetpanel">
 					<div class="fieldsettitle closepanel" id="prioritaettab"><div style="width:100%; height:15px;">Priorität</div></div>

@@ -9,16 +9,16 @@ import org.apache.commons.lang.StringEscapeUtils;
  *
  */
 public enum EnumVorgangStatus implements EnumText {
-    gemeldet("gemeldet"),				//Ersteller hat seine E-Mail noch nicht best‰tigt
-    offen("offen"),					//ErstellerEmail wurde best‰tigt
-    inBearbeitung("in Bearbeitung"),			//wenn das erste mal die Zust‰ndigkeit durch einen Sachbearbeiter akzeptiert wurde
+    gemeldet("gemeldet"),
+    offen("offen"),
+    inBearbeitung("in Bearbeitung"),
     wirdNichtBearbeitet("wird nicht bearbeitet"),
     duplikat("Duplikat"),
     abgeschlossen("abgeschlossen"),
     geloescht("gel&#246;scht");
 
     /**
-     * Gibt alle Status zur¸ck bei denen der Vorgang noch offen ist.
+     * Gibt alle Status zur√ºck, bei denen der Vorgang noch offen ist.
      * @return offen Status
      */
     public static EnumVorgangStatus[] openVorgangStatus() {
@@ -26,7 +26,7 @@ public enum EnumVorgangStatus implements EnumText {
     }
     
     /**
-     * Gibt alle Status zur¸ck bei denen der Vorgang noch in Bearbeitung ist.
+     * Gibt alle Status zur√ºck, bei denen der Vorgang noch in Bearbeitung ist.
      * @return inBearbeitung Status
      */
     public static EnumVorgangStatus[] inProgressVorgangStatus() {
@@ -34,11 +34,27 @@ public enum EnumVorgangStatus implements EnumText {
     }
     
     /**
-     * Gibt alle Status zur¸ck, bei denen der Vorgang geschlossen ist
+     * Gibt alle Status zur√ºck, bei denen der Vorgang geschlossen ist
      * @return geschlossen Status
      */
     public static EnumVorgangStatus[] closedVorgangStatus() {
     	return new EnumVorgangStatus[] {wirdNichtBearbeitet, duplikat, abgeschlossen, geloescht};
+    }
+    
+    /**
+     * Gibt alle Status zur√ºck, die f√ºr den Au√üendienst ber√ºcksichtigt werden
+     * @return geschlossen Status
+     */
+    public static EnumVorgangStatus[] aussendienstVorgangStatus() {
+    	return new EnumVorgangStatus[] {offen, inBearbeitung, wirdNichtBearbeitet, duplikat, abgeschlossen};
+    }
+    
+    /**
+     * Gibt alle Status zur√ºck, die auch f√ºr Externe (Delegiert) vorgesehen sind
+     * @return delegiert Status
+     */
+    public static EnumVorgangStatus[] delegiertVorgangStatus() {
+    	return new EnumVorgangStatus[] {inBearbeitung, wirdNichtBearbeitet, duplikat, abgeschlossen};
     }
     
     private String text;

@@ -10,7 +10,7 @@ import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 
 /**
- * VO f¸r die Redaktionskriterien
+ * VO f√ºr die Redaktionskriterien
  * @author Sebastian Schwarz (Hansestadt Rostock)
  */
 @SuppressWarnings("serial")
@@ -33,43 +33,43 @@ public class RedaktionKriterien implements Serializable {
     private Short stufe;
     
     /**
-     * Tage, die Vorg‰nge mit dem Status 'offen', die bisher nicht akzeptiert wurden, mindestens zugewiesen sein sollen
+     * Tage, die Vorg√§nge mit dem Status 'offen', die bisher nicht akzeptiert wurden, mindestens zugewiesen sein sollen
      */
     @NotNull
     private Short tageOffenNichtAkzeptiert;
     
     /**
-     * Tage, die Vorg‰nge mit dem Status 'in Bearbeitung', die bisher keine Info der Verwaltung aufweisen, unver‰ndert geblieben sein sollen
+     * Tage, die Vorg√§nge mit dem Status 'in Bearbeitung', die bisher keine Info der Verwaltung aufweisen, unver√§ndert geblieben sein sollen
      */
     @NotNull
     private Short tageInbearbeitungOhneStatusKommentar;
     
     /**
-     * Tage, die Ideen mit dem Status 'offen', die bisher nicht die Zahl der notwendigen Unterst¸tzungen aufweisen, seit der Erstsichtung ¸berdauert haben sollen
+     * Tage, die Ideen mit dem Status 'offen', die bisher nicht die Zahl der notwendigen Unterst√ºtzungen aufweisen, seit der Erstsichtung √ºberdauert haben sollen
      */
     @NotNull
     private Short tageIdeeOffenOhneUnterstuetzung;
     
     /**
-     * Vorg‰nge ausweisen mit dem Status 'wird nicht bearbeitet', die bisher keine Info der Verwaltung aufweisen?
+     * Vorg√§nge ausweisen mit dem Status 'wird nicht bearbeitet', die bisher keine Info der Verwaltung aufweisen?
      */
     @NotNull
     private Boolean wirdnichtbearbeitetOhneStatuskommentar;
     
     /**
-     * Vorg‰nge ausweisen mit dem Status 'offen', die bisher nicht akzeptiert wurden?
+     * Vorg√§nge ausweisen mit dem Status 'offen', die bisher nicht akzeptiert wurden?
      */
     @NotNull
     private Boolean nichtMehrOffenNichtAkzeptiert;
     
     /**
-     * Vorg‰nge ausweisen, die ihre Erstsichtung bereits hinter sich haben, deren Betreff, Details und/oder Foto aber noch nicht freigegeben wurde?
+     * Vorg√§nge ausweisen, die ihre Erstsichtung bereits hinter sich haben, deren Betreff, Details und/oder Foto aber noch nicht freigegeben wurde?
      */
     @NotNull
     private Boolean ohneRedaktionelleFreigaben;
     
     /**
-     * Vorg‰nge ausweisen, die auf Grund von Kommunikationsfehlern keine Eintr‰ge in den Datenfeldern 'zustaendigkeit' und 'zustaendigkeit_status' aufweisen?
+     * Vorg√§nge ausweisen, die auf Grund von Kommunikationsfehlern keine Eintr√§ge in den Datenfeldern 'zustaendigkeit' und 'zustaendigkeit_status' aufweisen?
      */
     @NotNull
     private Boolean ohneZustaendigkeit;

@@ -26,11 +26,11 @@ import de.fraunhofer.igd.klarschiff.vo.VorgangFeatures;
 
 
 /**
- * Der FeatureService dient zum Initialisieren und Berechnen der Features, so wie sie vom Klassifikator für das Initialisieren, Trainieren
- * und Klassifizieren benötigt werden.
- * Bei der Berechnung der Features werden ggf. nicht änderbare Featurewerte persistiert. 
+ * Der FeatureService dient zum Initialisieren und Berechnen der Features, so wie sie vom Klassifikator fÃ¼r das Initialisieren, Trainieren
+ * und Klassifizieren benÃ¶tigt werden.
+ * Bei der Berechnung der Features werden ggf. nicht Ã¤nderbare Featurewerte persistiert. 
  * @author Stefan Audersch (Fraunhofer IGD)
- * @author Marcus Kröller (Fraunhofer IGD)
+ * @author Marcus KrÃ¶ller (Fraunhofer IGD)
  */
 @Service
 public class FeatureService {
@@ -56,14 +56,14 @@ public class FeatureService {
 	
 	
 	/**
-	 * Initialisiert den Klassifikatorkontext mit den für die Klassifikation verwendeten Features.
+	 * Initialisiert den Klassifikatorkontext mit den fÃ¼r die Klassifikation verwendeten Features.
 	 * @param classificationContext Kontext, der initialisiert werden soll
 	 */
 	@SuppressWarnings("unchecked")
 	public void initClassificationContext(ClassificationContext classificationContext) {
 		FastVector attributes = new FastVector();
 		
-		//Zuständigkeit
+		//ZustÃ¤ndigkeit
 		List<String> zustaendigkeiten = new ArrayList<String>();
 		for(Role zustaendigkeit : securityService.getAllZustaendigkeiten(false)) zustaendigkeiten.add(zustaendigkeit.getId());
 		Attribute classAttribute = Attribute.createClassAttribute("zustaendigkeit", zustaendigkeiten);
@@ -81,30 +81,22 @@ public class FeatureService {
                         settingsService.getPropertyValue("geo.wfs.geomname")+"...)");
 		attributes.appendElements(Attribute.createGeoAttributes(
 				"geo_bewirtschaftung_"+b, 
-				//"klarschiff_zufi:bewirtschaftung", 
-				//"zufi:bewirtschaftung", 
 				settingsService.getPropertyValue("geo.wfs.zufiprefex")+":bewirtschaftung", 
 				"bewirtschafter", 
 				b, 
-				//"the_geom", 
-				//"geom",
-                                settingsService.getPropertyValue("geo.wfs.geomname") , 
+        settingsService.getPropertyValue("geo.wfs.geomname") , 
 				false));
 		}
 		
-		//Flächentypen vom WFS
+		//FlÃ¤chentypen vom WFS
 		for(String f : flaechenFeatures) {
                         logger.debug("attributes.appendElements(Attribute.createGeoAttributes(...,"+
                                 settingsService.getPropertyValue("geo.wfs.zufiprefex")+":"+f+","+
                                 settingsService.getPropertyValue("geo.wfs.geomname")+"...)");
 			attributes.appendElements(Attribute.createGeoAttributes(
 					"geo_"+f, 
-					//"zufi:"+f, 
-					//"the_geom", 
-					//"klarschiff_zufi:"+f, 
-					//"geom", 
-                                        settingsService.getPropertyValue("geo.wfs.zufiprefex")+":"+f,
-                                        settingsService.getPropertyValue("geo.wfs.geomname") ,
+          settingsService.getPropertyValue("geo.wfs.zufiprefex")+":"+f,
+          settingsService.getPropertyValue("geo.wfs.geomname") ,
 					false));
 		}
 		Map<String, Attribute> attributMap = new HashMap<String, Attribute>();
@@ -119,7 +111,7 @@ public class FeatureService {
 
 	
 	/**
-	 * Entfernt nicht änderbare Features aus der DB
+	 * Entfernt nicht Ã¤nderbare Features aus der DB
 	 * @param vorgang
 	 */
 	public void removeNonUpdatableFeatures(Vorgang vorgang) {
@@ -130,16 +122,16 @@ public class FeatureService {
             if (vorgangFeatures != null)
                 vorgangDao.remove(vorgangFeatures);
 		} catch (Exception e) {
-			logger.error("Entfernen eines nicht änderbaren Features aus der Datenbank fehlgeschlagen.", e);
+			logger.error("Entfernen eines nicht Ã¤nderbaren Features aus der Datenbank fehlgeschlagen.", e);
 		}
 	}
 	
 	/**
-	 * Ermittelt für einen Vorgang die Features für den Klassifikator. Featurewerte, die nicht änderbar sind und für den Vorgang 
+	 * Ermittelt fÃ¼r einen Vorgang die Features fÃ¼r den Klassifikator. Featurewerte, die nicht Ã¤nderbar sind und fÃ¼r den Vorgang 
 	 * bereits gespeichert wurden, werden nicht neu berechnet, sondern aus der DB gelesen.
-	 * Nach der Berechnung der Features werden nicht änderbare Features in der DB gespeichert.
-	 * @param vorgang Vorgang, für den die Features berechnet werden sollen
-	 * @param inclClassAttribute Soll der Wert der aktuellen Zuständigkeit ebenfalls mit in die Features aufgenommen werden (z.B. für ein Trainingsset)?
+	 * Nach der Berechnung der Features werden nicht Ã¤nderbare Features in der DB gespeichert.
+	 * @param vorgang Vorgang, fÃ¼r den die Features berechnet werden sollen
+	 * @param inclClassAttribute Soll der Wert der aktuellen ZustÃ¤ndigkeit ebenfalls mit in die Features aufgenommen werden (z.B. fÃ¼r ein Trainingsset)?
 	 * @param ctx Klassifikatorkontext
 	 * @return berechnete Features
 	 * @throws Exception
@@ -214,13 +206,13 @@ public class FeatureService {
 
 	
 	/**
-	 * Erzeugt eine Liste von Features nur auf Basis der Kategorie. Der Klassifikator wird bis zu einer bestimmten Trainingsmenge zusätzlich
-	 * mit initialen Zuständigkeiten, die für die einzelnen Kategorien definiert werden können, trainiert. Die Erzeugung der Features
-	 * für dieses Trainingsset erfolgt auf Basis dieser Funktion.
-	 * @param kategorie Kategorie, für die die Features ermittelt werden sollen
-	 * @param inclClassAttribute Soll die Zuständigkeit mit in die Features aufgenommen werden?
+	 * Erzeugt eine Liste von Features nur auf Basis der Kategorie. Der Klassifikator wird bis zu einer bestimmten Trainingsmenge zusÃ¤tzlich
+	 * mit initialen ZustÃ¤ndigkeiten, die fÃ¼r die einzelnen Kategorien definiert werden kÃ¶nnen, trainiert. Die Erzeugung der Features
+	 * fÃ¼r dieses Trainingsset erfolgt auf Basis dieser Funktion.
+	 * @param kategorie Kategorie, fÃ¼r die die Features ermittelt werden sollen
+	 * @param inclClassAttribute Soll die ZustÃ¤ndigkeit mit in die Features aufgenommen werden?
 	 * @param ctx Klassifikatorkontext
-	 * @return Liste mit Features (eine Kategorie kann initial für mehrere Zuständigkeiten gedacht sein)
+	 * @return Liste mit Features (eine Kategorie kann initial fÃ¼r mehrere ZustÃ¤ndigkeiten gedacht sein)
 	 */
 	public List<Instance> createFeature(Kategorie kategorie, boolean inclClassAttribute, ClassificationContext ctx) {
 	
