@@ -77,26 +77,26 @@ public class FeatureService {
 		//Bewirtschaftung vom WFS
 		for(String b : bewirtschaftungFeatures) {
                 logger.debug("attributes.appendElements(Attribute.createGeoAttributes(geo_bewirtschaftung_"+b+","+
-                        settingsService.getPropertyValue("geo.wfs.zufiprefex")+":bewirtschaftung,...,"+
-                        settingsService.getPropertyValue("geo.wfs.geomname")+"...)");
+                        settingsService.getPropertyValue("geo.wfszufi.featureprefix")+":bewirtschaftung,...,"+
+                        settingsService.getPropertyValue("geo.wfszufi.geomname")+"...)");
 		attributes.appendElements(Attribute.createGeoAttributes(
 				"geo_bewirtschaftung_"+b, 
-				settingsService.getPropertyValue("geo.wfs.zufiprefex")+":bewirtschaftung", 
+				settingsService.getPropertyValue("geo.wfszufi.featureprefix")+":bewirtschaftung", 
 				"bewirtschafter", 
 				b, 
-        settingsService.getPropertyValue("geo.wfs.geomname") , 
+        settingsService.getPropertyValue("geo.wfszufi.geomname") , 
 				false));
 		}
 		
 		//Flächentypen vom WFS
 		for(String f : flaechenFeatures) {
                         logger.debug("attributes.appendElements(Attribute.createGeoAttributes(...,"+
-                                settingsService.getPropertyValue("geo.wfs.zufiprefex")+":"+f+","+
-                                settingsService.getPropertyValue("geo.wfs.geomname")+"...)");
+                                settingsService.getPropertyValue("geo.wfszufi.featureprefix")+":"+f+","+
+                                settingsService.getPropertyValue("geo.wfszufi.geomname")+"...)");
 			attributes.appendElements(Attribute.createGeoAttributes(
 					"geo_"+f, 
-          settingsService.getPropertyValue("geo.wfs.zufiprefex")+":"+f,
-          settingsService.getPropertyValue("geo.wfs.geomname") ,
+          settingsService.getPropertyValue("geo.wfszufi.featureprefix")+":"+f,
+          settingsService.getPropertyValue("geo.wfszufi.geomname") ,
 					false));
 		}
 		Map<String, Attribute> attributMap = new HashMap<String, Attribute>();

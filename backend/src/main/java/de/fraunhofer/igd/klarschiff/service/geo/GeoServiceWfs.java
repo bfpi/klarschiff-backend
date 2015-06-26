@@ -37,8 +37,8 @@ public class GeoServiceWfs {
 				}
 			)
 		)
-	public Double[] getGeoFeatures(Point ovi, double oviBuffer, String typeName, String geomPropertyName, String propertyName, String propertyValue) {
-		return geoService.getGeoFeatures(ovi, oviBuffer, typeName, geomPropertyName, propertyName, propertyValue);
+	public Double[] getGeoFeatures(Point ovi, double wfsZufiOviBuffer, String typeName, String geomPropertyName, String propertyName, String propertyValue) {
+		return geoService.getGeoFeatures(ovi, wfsZufiOviBuffer, typeName, geomPropertyName, propertyName, propertyValue);
 	}
 
 	
@@ -56,7 +56,7 @@ public class GeoServiceWfs {
 				}
 			)
 		)
-	public List<GeoFeature> getGeoFeatures(Point ovi, double oviBuffer, String typeName, String geomPropertyName, String propertyName) {
-		return geoService.getGeoFeatures(ovi, oviBuffer, typeName, geomPropertyName, propertyName);
+	public List<GeoFeature> getGeoFeatures(Point ovi, double wfsZufiOviBuffer, String typeName, String geomPropertyName, String propertyName) {
+		return geoService.getGeoFeatures(ovi, wfsZufiOviBuffer, typeName, geomPropertyName, propertyName);
 	}
 }

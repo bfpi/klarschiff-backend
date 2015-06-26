@@ -58,8 +58,6 @@ import de.fraunhofer.igd.klarschiff.vo.Vorgang;
  */
 public class GeoService {
 	private static final Logger logger = Logger.getLogger(GeoService.class);
-
-	public enum WfsExceptionHandling { warn, error };
 	
 	@Autowired
 	GeoServiceWfs geoServiceWfs;
@@ -88,12 +86,15 @@ public class GeoService {
     Integer wmsMinScale;
     Boolean wmsSingleTile;
 	
-	String wfsCapabilitiesUrl;
-	double oviBuffer = 10d;
-	WfsExceptionHandling wfsExceptionHandling = WfsExceptionHandling.error;
-	
 	String wfsVorgaengeUrl;
 	String wfsVorgaengeFeatureNs;
+	String wfsVorgaengeFeaturePrefix;
+	String wfsVorgaengeFeatureType;
+	
+	public enum WfsZufiExceptionHandling { warn, error };
+	WfsZufiExceptionHandling wfsZufiExceptionHandling = WfsZufiExceptionHandling.error;
+	String wfsZufiCapabilitiesUrl;
+	double wfsZufiOviBuffer = 10d;
 	
 	String adressensucheUrl;
 	
@@ -109,7 +110,7 @@ public class GeoService {
 		try {
 			//ConnectionParameter setzen
 			Map<String, String> connectionParameters = new HashMap<String, String>();
-			connectionParameters.put("WFSDataStoreFactory:GET_CAPABILITIES_URL", wfsCapabilitiesUrl);
+			connectionParameters.put("WFSDataStoreFactory:GET_CAPABILITIES_URL", wfsZufiCapabilitiesUrl);
 
 			//ggf. Proxy setzen
 			if (!StringUtils.isBlank(settingsService.getProxyHost()) && !StringUtils.isBlank(settingsService.getProxyPort())) {
@@ -147,7 +148,7 @@ public class GeoService {
 				filterFactory = CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());
 
 			} catch (Exception e) {
-				switch (wfsExceptionHandling) {
+				switch (wfsZufiExceptionHandling) {
 				case warn:
 					dataStore = null;
 					logger.error("Verbindung zum WFS konnte nicht richtig initialisiert werden.", e);
@@ -228,7 +229,7 @@ public class GeoService {
     public Double calculateFeature(Point ovi, Attribute attribute) {
 		if (dataStore==null) return null;
     	
-		Double[] features = geoServiceWfs.getGeoFeatures(ovi, oviBuffer, attribute.getTypeName(), attribute.getGeomPropertyName(), attribute.getPropertyName(), attribute.getPropertyValue());
+		Double[] features = geoServiceWfs.getGeoFeatures(ovi, wfsZufiOviBuffer, attribute.getTypeName(), attribute.getGeomPropertyName(), attribute.getPropertyName(), attribute.getPropertyValue());
 		
 		/*switch(attribute.getGeoMeasure()) {
 			case abstandAusserhalb: return features[0];
@@ -254,7 +255,7 @@ public class GeoService {
      * über die Funktion {@link GeoServiceWfs#getGeoFeatures(Point, double, String, String, String, String)} kann ein ggf.
      * gecachtes Ergebnis der Funktion aufgerufen werden.
      * @param ovi Punkt für den die Features berechnet werden sollen
-     * @param oviBuffer Umkreis des Punktes der mit berücksichtigt werden soll
+     * @param wfsZufiOviBuffer Umkreis des Punktes der mit berücksichtigt werden soll
      * @param typeName Typ des Features beim WFS
      * @param geomPropertyName Name des Geometrieattributs beim WFS
      * @param propertyName PropertyName beim WFS
@@ -262,10 +263,10 @@ public class GeoService {
      * @return Featurwerte für den Punkt [0] abstandAusserhalb, [1] abstandInnerhalb und [2] flaechenGroesse
      * @see GeoServiceWfs#getGeoFeatures(Point, double, String, String, String, String)
      */
-	protected Double[] getGeoFeatures(Point ovi, double oviBuffer, String typeName, String geomPropertyName, String propertyName, String propertyValue) {
+	protected Double[] getGeoFeatures(Point ovi, double wfsZufiOviBuffer, String typeName, String geomPropertyName, String propertyName, String propertyValue) {
 		logger.debug("getGeoFeatures L2: ovi=" +ovi.getX()+","+ovi.getY()+" typeName="+typeName+" geomPropertyName="+geomPropertyName+" propertyName="+propertyName+" propertyValue="+propertyValue);
 		//Features für ein typeName über den WFS ermitteln
-		List<GeoFeature> features = geoServiceWfs.getGeoFeatures(ovi, oviBuffer, typeName, geomPropertyName, propertyName);
+		List<GeoFeature> features = geoServiceWfs.getGeoFeatures(ovi, wfsZufiOviBuffer, typeName, geomPropertyName, propertyName);
 		
 		//ggf. Feature bei Attributen mit angegebenem propertyName und propertyValue herausfiltern
 		if (propertyName!=null && propertyValue!=null) {
@@ -280,7 +281,7 @@ public class GeoService {
 		Geometry _ovi = ovi.buffer(0.001,1);
 
 		//Fläche im das ovi bestimmen
-		Polygon oviWithBuffer = (Polygon) ovi.buffer(oviBuffer);
+		Polygon oviWithBuffer = (Polygon) ovi.buffer(wfsZufiOviBuffer);
 		
 		//HilfsObjekt zur Abstandsberechnung
 		PointPairDistance ppd = new PointPairDistance();
@@ -327,7 +328,7 @@ public class GeoService {
 	 * {@link GeoServiceWfs#getGeoFeatures(Point, double, String, String, String)} kann ein ggf. gecachtes Ergebnis 
 	 * der Funktion aufgerufen werden.
 	 * @param ovi Punkt für den die WFS-Features ermittelt werden sollen
-	 * @param oviBuffer Umkreis um den Punkt, der berücksichtigt werden soll
+	 * @param wfsZufiOviBuffer Umkreis um den Punkt, der berücksichtigt werden soll
 	 * @param typeName Typ des Features beim WFS
      * @param geomPropertyName Name des Geometrieattributs beim WFS
 	 * @param propertyName PropertyName beim WFS
@@ -335,11 +336,11 @@ public class GeoService {
 	 * @see de.fraunhofer.igd.klarschiff.service.geo.GeoServiceWfs#getGeoFeatures(Point, double, String, String, String)
 	 * @see de.fraunhofer.igd.klarschiff.service.geo.GeoFeature
 	 */
-	protected List<GeoFeature> getGeoFeatures(Point ovi, double oviBuffer, String typeName, String geomPropertyName, String propertyName) {
+	protected List<GeoFeature> getGeoFeatures(Point ovi, double wfsZufiOviBuffer, String typeName, String geomPropertyName, String propertyName) {
 		logger.debug("getGeoFeatures L1: ovi=" +ovi.getX()+","+ovi.getY()+" typeName="+typeName+" geomPropertyName="+geomPropertyName+" propertyName="+propertyName);
 		try {
 			//Fläche um das ovi bestimmen
-			Polygon oviWithBuffer = (Polygon)ovi.buffer(oviBuffer);
+			Polygon oviWithBuffer = (Polygon)ovi.buffer(wfsZufiOviBuffer);
 			
 			//Filter für die WFS-anfrage bestimmen
 			Filter filter = filterFactory.intersects(filterFactory.property(geomPropertyName), filterFactory.literal(oviWithBuffer)); 
@@ -474,23 +475,23 @@ public class GeoService {
 	public void setWmsSingleTile(Boolean wmsSingleTile) {
 		this.wmsSingleTile = wmsSingleTile;
 	}
-    public String getWfsCapabilitiesUrl() {
-		return wfsCapabilitiesUrl;
+    public String getWfsZufiCapabilitiesUrl() {
+		return wfsZufiCapabilitiesUrl;
 	}
-    public void setWfsCapabilitiesUrl(String wfsCapabilitiesUrl) {
-		this.wfsCapabilitiesUrl = wfsCapabilitiesUrl;
+    public void setWfsZufiCapabilitiesUrl(String wfsZufiCapabilitiesUrl) {
+		this.wfsZufiCapabilitiesUrl = wfsZufiCapabilitiesUrl;
 	}
-    public double getOviBuffer() {
-		return oviBuffer;
+    public double getWfsZufiOviBuffer() {
+		return wfsZufiOviBuffer;
 	}
-    public void setOviBuffer(double oviBuffer) {
-		this.oviBuffer = oviBuffer;
+    public void setWfsZufiOviBuffer(double wfsZufiOviBuffer) {
+		this.wfsZufiOviBuffer = wfsZufiOviBuffer;
 	}
-    public WfsExceptionHandling getWfsExceptionHandling() {
-		return wfsExceptionHandling;
+    public WfsZufiExceptionHandling getWfsZufiExceptionHandling() {
+		return wfsZufiExceptionHandling;
 	}
-    public void setWfsExceptionHandling(WfsExceptionHandling wfsExceptionHandling) {
-		this.wfsExceptionHandling = wfsExceptionHandling;
+    public void setWfsZufiExceptionHandling(WfsZufiExceptionHandling wfsZufiExceptionHandling) {
+		this.wfsZufiExceptionHandling = wfsZufiExceptionHandling;
 	}
     public String getWfsVorgaengeUrl() {
 		return wfsVorgaengeUrl;
@@ -503,6 +504,18 @@ public class GeoService {
 	}
     public void setWfsVorgaengeFeatureNs(String wfsVorgaengeFeatureNs) {
 		this.wfsVorgaengeFeatureNs = wfsVorgaengeFeatureNs;
+	}
+    public String getWfsVorgaengeFeaturePrefix() {
+		return wfsVorgaengeFeaturePrefix;
+	}
+    public void setWfsVorgaengeFeaturePrefix(String wfsVorgaengeFeaturePrefix) {
+		this.wfsVorgaengeFeaturePrefix = wfsVorgaengeFeaturePrefix;
+	}
+    public String getWfsVorgaengeFeatureType() {
+		return wfsVorgaengeFeatureType;
+	}
+    public void setWfsVorgaengeFeatureType(String wfsVorgaengeFeatureType) {
+		this.wfsVorgaengeFeatureType = wfsVorgaengeFeatureType;
 	}
     public String getAdressensucheUrl() {
 		return adressensucheUrl;
