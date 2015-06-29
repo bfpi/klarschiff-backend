@@ -35,11 +35,13 @@
 		p:wmsTransparent="${geo.wms.transparent}"
 		p:wmsMinScale="${geo.wms.minScale}"
 		p:wmsSingleTile="${geo.wms.singleTile}"
-		p:oviBuffer="${geo.wfs.ovi.buffer}"
-		p:wfsCapabilitiesUrl="${geo.wfs.url}"
-		p:wfsExceptionHandling="${geo.wfs.wfs.exception.handling}"
 		p:wfsVorgaengeUrl="${geo.wfsvorgaenge.url}"
 		p:wfsVorgaengeFeatureNs="${geo.wfsvorgaenge.featurens}"
+		p:wfsVorgaengeFeaturePrefix="${geo.wfsvorgaenge.featureprefix}"
+		p:wfsVorgaengeFeatureType="${geo.wfsvorgaenge.featuretype}"
+		p:wfsZufiExceptionHandling="${geo.wfszufi.exception.handling}"
+        p:wfsZufiOviBuffer="${geo.wfszufi.ovi.buffer}"
+		p:wfsZufiCapabilitiesUrl="${geo.wfszufi.capabilities.url}"
 		p:adressensucheUrl="${geo.adressensuche.url}"
 	/>
 </beans>

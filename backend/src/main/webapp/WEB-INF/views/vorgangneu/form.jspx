@@ -78,6 +78,8 @@
                         wmsSingleTile="${geoService.wmsSingleTile}"
                         wfsVorgaengeUrl="${geoService.wfsVorgaengeUrl}"
                         wfsVorgaengeFeatureNs="${geoService.wfsVorgaengeFeatureNs}"
+                        wfsVorgaengeFeaturePrefix="${geoService.wfsVorgaengeFeaturePrefix}"
+                        wfsVorgaengeFeatureType="${geoService.wfsVorgaengeFeatureType}"
 		        		/>			
 		        </div>
                 
