@@ -150,8 +150,8 @@ public class Kategorie implements Serializable {
     }
 
 	public List<Kategorie> getChildren() {
-        return this.children;
-    }
+    return this.children;
+  }
 
 	public void setChildren(List<Kategorie> children) {
         this.children = children;
@@ -190,4 +190,12 @@ public class Kategorie implements Serializable {
 	public void setInitialZustaendigkeiten(List<String> initialZustaendigkeiten) {
 		this.initialZustaendigkeiten = initialZustaendigkeiten;
 	}
+
+  public boolean isGeloescht() {
+    return geloescht;
+  }
+
+  public void setGeloescht(boolean geloescht) {
+    this.geloescht = geloescht;
+  }
 }

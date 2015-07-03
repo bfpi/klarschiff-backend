@@ -474,6 +474,15 @@ select option.info {
 	color: #cccccc;
 }
 
+select.kategorie {
+  width: 358px;
+}
+
+select.kategorie option.deleted {
+  color: #AAAAAA;
+  font-style: italic;
+}
+
 .watermark {
 	color: #666;
 }

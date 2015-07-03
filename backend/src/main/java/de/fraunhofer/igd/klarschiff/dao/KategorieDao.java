@@ -13,50 +13,62 @@ import de.fraunhofer.igd.klarschiff.vo.Kategorie;
 
 /**
  * Die Dao-Klasse erlaubt den Zugriff auf die Kategorien in der DB.
+ *
  * @author Stefan Audersch (Fraunhofer IGD)
  */
 @Repository
 public class KategorieDao {
-	
-	@PersistenceContext
-	EntityManager entityManager;
-	
-	public List<Kategorie> findRootKategorien() {
-		return entityManager.createQuery("SELECT o FROM Kategorie o WHERE o.parent IS NULL ORDER BY o.name", Kategorie.class).getResultList();
-	}
 
-	public List<Kategorie> findUnterKategorien() {
-		return entityManager.createQuery("SELECT o FROM Kategorie o WHERE o.parent IS NOT NULL ORDER BY o.name", Kategorie.class).getResultList();
-	}
+  @PersistenceContext
+  EntityManager entityManager;
 
-	public List<Kategorie> findRootKategorienForTyp(EnumVorgangTyp typ) {
-		return entityManager.createQuery("SELECT o FROM Kategorie o WHERE o.parent IS NULL AND o.typ=:typ ORDER BY o.name", Kategorie.class).setParameter("typ", typ).getResultList();
-	}
-	
-	public Kategorie findKategorie(Long id) {
-        if (id == null) return null;
-        return entityManager.find(Kategorie.class, id);
+  public List<Kategorie> findRootKategorien() {
+    return entityManager.createQuery("SELECT o FROM Kategorie o "
+      + "WHERE o.parent IS NULL ORDER BY o.name",
+      Kategorie.class).getResultList();
+  }
+
+  public List<Kategorie> getKategorien() {
+    return entityManager.createQuery("SELECT o FROM Kategorie o "
+      + "WHERE o.parent IS NOT NULL ORDER BY o.name",
+      Kategorie.class).getResultList();
+  }
+
+  public List<Kategorie> findRootKategorienForTyp(EnumVorgangTyp typ) {
+    return entityManager.createQuery("SELECT o FROM Kategorie o "
+      + "WHERE o.parent IS NULL AND o.typ=:typ ORDER BY o.name",
+      Kategorie.class).setParameter("typ", typ).getResultList();
+  }
+
+  public Kategorie findKategorie(Long id) {
+    if (id == null) {
+      return null;
+    }
+    return entityManager.find(Kategorie.class, id);
+  }
+
+  public EnumNaehereBeschreibungNotwendig viewNaehereBeschreibung(Long hauptkategorie, Long unterkategorie) {
+    EnumNaehereBeschreibungNotwendig naehereBeschreibungNotwendig = EnumNaehereBeschreibungNotwendig.keine;
+    try {
+      naehereBeschreibungNotwendig = (EnumNaehereBeschreibungNotwendig) entityManager.createQuery(
+        "SELECT o.naehereBeschreibungNotwendig FROM Kategorie o WHERE o.id = :kategorie"
+      ).setParameter("kategorie", unterkategorie).getSingleResult();
+    } catch (Exception e) {
+    }
+    if (naehereBeschreibungNotwendig != EnumNaehereBeschreibungNotwendig.keine) {
+      return naehereBeschreibungNotwendig;
     }
 
-	public EnumNaehereBeschreibungNotwendig viewNaehereBeschreibung(Long hauptkategorie, Long unterkategorie) {
-		EnumNaehereBeschreibungNotwendig naehereBeschreibungNotwendig = EnumNaehereBeschreibungNotwendig.keine;
-		try {
-			naehereBeschreibungNotwendig = (EnumNaehereBeschreibungNotwendig)entityManager.createQuery("SELECT o.naehereBeschreibungNotwendig FROM Kategorie o WHERE o.id=:kategorie").setParameter("kategorie", unterkategorie).getSingleResult();
-		} catch (Exception e) {}
-		if (naehereBeschreibungNotwendig!=EnumNaehereBeschreibungNotwendig.keine) return naehereBeschreibungNotwendig;
+    try {
+      naehereBeschreibungNotwendig = (EnumNaehereBeschreibungNotwendig) entityManager.createQuery(
+        "SELECT o.naehereBeschreibungNotwendig FROM Kategorie o WHERE o.id = :kategorie"
+      ).setParameter("kategorie", hauptkategorie).getSingleResult();
+    } catch (Exception e) {
+    }
+    return naehereBeschreibungNotwendig;
+  }
 
-		try {
-			naehereBeschreibungNotwendig = (EnumNaehereBeschreibungNotwendig)entityManager.createQuery("SELECT o.naehereBeschreibungNotwendig FROM Kategorie o WHERE o.id=:kategorie").setParameter("kategorie", hauptkategorie).getSingleResult();
-		} catch (Exception e) {}
-		return naehereBeschreibungNotwendig;
-	}
-
-	public EnumNaehereBeschreibungNotwendig viewNaehereBeschreibung(Kategorie hauptkategorie, Kategorie unterkategorie) {
-		return viewNaehereBeschreibung(hauptkategorie==null ? null : hauptkategorie.getId(), unterkategorie==null ? null : unterkategorie.getId());
-	}
-	
-	public List<Kategorie> getKategorien() {
-		return entityManager.createQuery("SELECT o FROM Kategorie o WHERE o.parent IS NOT NULL", Kategorie.class).getResultList();
-	}
-
+  public EnumNaehereBeschreibungNotwendig viewNaehereBeschreibung(Kategorie hk, Kategorie uk) {
+    return viewNaehereBeschreibung(hk == null ? null : hk.getId(), uk == null ? null : uk.getId());
+  }
 }

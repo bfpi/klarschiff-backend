@@ -1164,7 +1164,7 @@ public class BackendController {
       HttpServletResponse response) throws IOException {
     
     try {
-      List<Kategorie> kategorien = kategorieDao.findUnterKategorien();
+      List<Kategorie> kategorien = kategorieDao.getKategorien();
       sendOk(response, mapper.writeValueAsString(kategorien));
     } catch (Exception ex) {
       java.util.logging.Logger.getLogger(BackendController.class.getName()).log(Level.SEVERE, null, ex);

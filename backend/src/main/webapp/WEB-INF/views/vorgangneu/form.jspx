@@ -40,18 +40,22 @@
 	
 		        <div>
 		        	<form:label path="kategorie">Hauptkategorie</form:label>
-		            <form:select path="kategorie" id="hauptkategorie" disabled="true" onchange="updateUnterkategorie()" style="width:358px;">
+		            <form:select path="kategorie.id" id="hauptkategorie" cssClass="kategorie" disabled="true" onchange="updateUnterkategorie()">
 		            	<form:option value="" label="Hauptkategorie wählen" cssClass="info"/>
-						<form:options items="${hauptkategorien}" itemValue="id" itemLabel="name"/>
-		            </form:select>
+                  <c:forEach items="${hauptkategorien}" var="hauptkategorie">
+                    <form:option value="${hauptkategorie.id}" label="${hauptkategorie.name}" cssClass="${hauptkategorie.geloescht ? 'deleted' : ''}"/>
+                  </c:forEach>
+                </form:select>
 		        </div>
 		        
 		        <div>
 		        	<form:label path="vorgang.kategorie">Unterkategorie</form:label>
-		            <form:select path="vorgang.kategorie" id="unterkategorie" disabled="true" onchange="updateInfo()" cssStyle="width:358px;">
-		            	<form:option value="" label="Unterkategorie wählen" cssClass="info"/>
-						<form:options items="${unterkategorien}" itemValue="id" itemLabel="name"/>
-		            </form:select>
+		            <form:select path="vorgang.kategorie.id" id="unterkategorie" cssClass="kategorie" disabled="true" onchange="updateInfo()">
+                  <form:option value="" label="Unterkategorie wählen" cssClass="info"/>
+                  <c:forEach items="${unterkategorien}" var="unterkategorie">
+                    <form:option value="${unterkategorie.id}" label="${unterkategorie.name}" cssClass="${unterkategorie.geloescht ? 'deleted' : ''}"/>
+                  </c:forEach>
+                </form:select>
 		        </div>
 		
 		        <div>
@@ -203,7 +207,11 @@
 					$.ajaxSetup({ scriptCharset: "utf-8" , contentType: "application/json; charset=utf-8"});
 					$.getJSON('${url}/kategorieTyp?typ='+value, function(data) {
 						$.each(data, function(index, val) {
-							items.push($('<option></option>').val(val.id).html(val.nameEscapeHtml)[0].outerHTML);
+							var option = $('<option></option>').val(val.id).html(val.nameEscapeHtml);
+              if (val.geloescht) {
+                option.addClass('deleted');
+              }
+							items.push(option[0].outerHTML);
 						});
 						node.empty();
 						node.append(items.join(''));
@@ -227,7 +235,11 @@
 					$.ajaxSetup({ scriptCharset: "utf-8" , contentType: "application/json; charset=utf-8"});
 					$.getJSON('${url}/kategorie?kategorie='+value, function(data) {
 						$.each(data, function(index, val) {
-							items.push($('<option></option>').val(val.id).html(val.nameEscapeHtml)[0].outerHTML);
+							var option = $('<option></option>').val(val.id).html(val.nameEscapeHtml);
+              if (val.geloescht) {
+                option.addClass('deleted');
+              }
+							items.push(option[0].outerHTML);
 						});
 						node.empty();
 						node.append(items.join(''));

@@ -1,5 +1,4 @@
 -- =======================================================================================
--- vim: set filetype=pgsql :
 -- @author Stefan Audersch (Fraunhofer IGD)
 -- @author Peter Koenig (WhereGroup)
 -- @author Alexander Kruth (BFPI GmbH)
@@ -218,85 +217,58 @@ DECLARE
   query text;
 
 BEGIN
-  PERFORM dblink_connect('hostaddr=${f_host} port=${f_port} dbname=${f_dbname} user=${f_username} password=${f_password}');
+  PERFORM dblink_connect('hostaddr=${f_host} port=${f_port} dbname=${f_dbname} ' ||
+    'user=${f_username} password=${f_password}');
 
-  IF TG_OP = 'DELETE' THEN
-    query := 'DELETE FROM ${f_schema}.klarschiff_kategorie WHERE id = ' || old.id;
-    RAISE DEBUG 'Query : %', query;
-    EXECUTE 'SELECT dblink_exec(' || quote_literal(query) || ');';
-    PERFORM dblink_disconnect();
-    RETURN old;
+  query := CASE TG_OP
+    WHEN 'DELETE' THEN
+      'DELETE FROM ${f_schema}.klarschiff_kategorie WHERE id = ' || old.id
 
-  ELSIF TG_OP = 'UPDATE' THEN
-    query := 'UPDATE ${f_schema}.klarschiff_kategorie ' ||
-      'SET "name" = ' || quote_literal(new."name") || ', ';
-    --parent
-    IF new.parent IS NOT NULL THEN
-        query := query || 'parent = ' || new.parent || ', ';
-     ELSE
-        query := query || 'parent = NULL, ';
-    END IF;
-    --typ
-    IF new.typ IS NOT NULL THEN
-        query := query || 'vorgangstyp = ' || quote_literal(new.typ) || ', ';
-     ELSE
-        query := query || 'vorgangstyp = NULL, ';
-    END IF;
-    --naehere_beschreibung_notwendig
-    IF new.naehere_beschreibung_notwendig IS NOT NULL THEN
-        query := query || 'naehere_beschreibung_notwendig = ' || quote_literal(new.naehere_beschreibung_notwendig) || ', ';
-     ELSE
-        query := query || 'naehere_beschreibung_notwendig = NULL, ';
-    END IF;
-    --aufforderung  --########### @deprecated ############
-    IF new.naehere_beschreibung_notwendig IS NULL OR new.naehere_beschreibung_notwendig = 'keine' THEN
-        query := query || 'aufforderung = FALSE ';
-     ELSE
-        query := query || 'aufforderung = TRUE ';
-    END IF;
-    query := query || 'WHERE id = ' || new.id;
-    RAISE DEBUG 'Query : %', query;
-    EXECUTE 'SELECT dblink_exec(' || quote_literal(query) || ');';
-    PERFORM dblink_disconnect();
-    RETURN new;
+    WHEN 'UPDATE' THEN
+      'UPDATE ${f_schema}.klarschiff_kategorie ' ||
+      'SET "name" = ' || quote_literal(new."name") || ', ' ||
+      'parent = ' || COALESCE(new.parent::text, 'NULL') || ', ' ||
+      'vorgangstyp = ' || COALESCE(quote_literal(new.typ), 'NULL') || ', ' ||
+      'naehere_beschreibung_notwendig = ' || 
+        COALESCE(quote_literal(new.naehere_beschreibung_notwendig), 'NULL') || ', ' ||
+      'aufforderung = ' || --########### @deprecated ############
+        CASE WHEN COALESCE(new.naehere_beschreibung_notwendig, 'keine') = 'keine' THEN
+          'FALSE'
+        ELSE
+          'TRUE'
+        END || ', ' ||
+      'geloescht = ' || new.geloescht || ' ' ||
+      'WHERE id = ' || new.id
+    
+    WHEN 'INSERT' THEN
+      'INSERT INTO ${f_schema}.klarschiff_kategorie (id, "name", parent, ' ||
+      'vorgangstyp, naehere_beschreibung_notwendig, aufforderung, geloescht) ' ||
+      'VALUES (' || new.id || ', ' || quote_literal(new."name") || ', ' ||
+      COALESCE(new.parent::text, 'NULL') || ', ' ||
+      COALESCE(quote_literal(new.typ), 'NULL') || ', ' ||
+      COALESCE(quote_literal(new.naehere_beschreibung_notwendig), 'NULL') || ', ' ||
+      --aufforderung  --########### @deprecated ############
+      CASE WHEN COALESCE(new.naehere_beschreibung_notwendig, 'keine') = 'keine' THEN
+        'FALSE'
+      ELSE
+        'TRUE'
+      END || ', ' ||
+      new.geloescht || ')'
+    ELSE
+      'SELECT 1'
+    END;
 
-  ELSIF TG_OP = 'INSERT' THEN
-    query := 'INSERT INTO ${f_schema}.klarschiff_kategorie (id, "name", parent, ' ||
-      'vorgangstyp, naehere_beschreibung_notwendig, aufforderung) ' ||
-      'VALUES (' || new.id || ', ' || quote_literal(new."name") || ', '; 
-    --parent
-    IF new.parent IS NOT NULL THEN
-        query := query || new.parent || ', ';
-     ELSE
-        query := query || 'NULL, ';
-    END IF;
-    --typ
-    IF new.typ IS NOT NULL THEN
-        query := query || quote_literal(new.typ) || ', ';
-     ELSE
-        query := query || 'NULL, ';
-    END IF;
-    --naehere_beschreibung_notwendig
-    IF new.naehere_beschreibung_notwendig IS NOT NULL THEN
-        query := query || quote_literal(new.naehere_beschreibung_notwendig) || ', ';
-     ELSE
-        query := query || 'NULL, ';
-    END IF;
-    --aufforderung  --########### @deprecated ############
-    IF new.naehere_beschreibung_notwendig IS NULL OR new.naehere_beschreibung_notwendig = 'keine' THEN
-        query := query || 'FALSE)';
-     ELSE
-        query := query || 'TRUE)';
-    END IF;
-    RAISE DEBUG 'Query : %', query;
-    EXECUTE 'SELECT dblink_exec(' || quote_literal(query) || ');';
-    PERFORM dblink_disconnect();
-    RETURN new;
-   
-  END IF;
-   
+  RAISE DEBUG 'Query : %', query;
+  EXECUTE 'SELECT dblink_exec(' || quote_literal(query) || ');';
   PERFORM dblink_disconnect();
-  RETURN NULL;
+
+  IF TG_OP = 'DELETE' THEN 
+    RETURN old;
+  ELSIF TG_OP IN ('INSERT', 'UPDATE') THEN
+    RETURN new;
+  ELSE
+    RETURN NULL;
+  END IF;
 EXCEPTION WHEN others THEN
   PERFORM dblink_disconnect();
   RAISE;
@@ -1120,12 +1092,12 @@ BEGIN
   THEN
     -- räumliche Abfrage durchführen
     -- wenn das Ergebnis nicht NULL ist: Information über das Eigentum des Flürstücks zuweisen
-    IF (SELECT eigentumsangabe FROM eigentumsangaben WHERE ST_Within(NEW.ovi, geometrie) LIMIT 1) IS NOT NULL THEN
-      NEW.flurstueckseigentum := eigentumsangabe FROM eigentumsangaben WHERE ST_Within(NEW.ovi, geometrie) LIMIT 1;
+    --IF (SELECT eigentumsangabe FROM eigentumsangaben WHERE ST_Within(NEW.ovi, geometrie) LIMIT 1) IS NOT NULL THEN
+    --  NEW.flurstueckseigentum := eigentumsangabe FROM eigentumsangaben WHERE ST_Within(NEW.ovi, geometrie) LIMIT 1;
     -- ansonsten: "nicht zuordenbar" zuweisen
-    ELSE
+    --ELSE
       NEW.flurstueckseigentum := 'nicht zuordenbar';
-    END IF;
+    --END IF;
   END IF;
   RETURN NEW;
 

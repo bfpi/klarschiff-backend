@@ -77,7 +77,8 @@ CREATE TABLE klarschiff_kategorie (
     parent bigint,
     vorgangstyp character varying(255),
 	aufforderung boolean,                                  --########### @deprecated ############
-    naehere_beschreibung_notwendig character varying(255)
+    naehere_beschreibung_notwendig character varying(255),
+    geloescht boolean
 );
 ALTER TABLE klarschiff_kategorie OWNER TO ${f_username};
 
