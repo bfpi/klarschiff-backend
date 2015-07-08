@@ -1,0 +1,302 @@
+<jsp:root 
+	xmlns:c="http://java.sun.com/jsp/jstl/core" 
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions" 
+	xmlns:spring="http://www.springframework.org/tags" 
+	xmlns:jsp="http://java.sun.com/JSP/Page" 
+	xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu"
+	xmlns:tiles="http://tiles.apache.org/tags-tiles" 
+	xmlns:fx="http://igd.fraunhofer.de/tags/elfunctions"
+	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+	version="2.0"
+	>
+	<jsp:directive.page contentType="text/html;charset=UTF-8"/>
+
+	<!-- CONTENTTITLE -->
+	<div id="root_style_content_title">
+		Test
+	</div>
+	
+	<!-- TABMENU -->
+	<tiles:importAttribute name="tabmenu_item" ignore="true" toName="tabmenu_item"/>
+	<menu:tabmenuadmin currentId="${tabmenu_item}"/>
+	
+	<!-- CONTENT -->
+	<div id="root_style_content">
+	
+		<div style="color: red;margin-bottom:20pX;">Achtung! Hier können Änderungen an den aktuellen Daten in der Datenbank vorgenommen werden.</div>
+
+		<div class="fieldset" id="jobServiceTestpanel">
+			<div class="fieldsettitle closepanel" id="jobServiceTesttab"><div style="width:100%; height:15px;">Job-Service-Tests</div></div>
+			<div id="jobServiceTestcontent">
+
+				<div class="subtitle">removeUnbestaetigtVorgang</div>
+				<p class="help">
+                    Alle Vorgänge, die gemeldet, aber nach einem bestimmten Zeitraum noch nicht bestätigt wurden, werden gelöscht.
+				</p>
+				<ul class="help">
+					<li>Ausführungszeitpunkt: täglich um *:43 Uhr</li>
+					<li>Bedingung: Gemeldete Vorgänge wurden nach einem bestimmten Zeitraum noch nicht bestätigt.</li>
+				</ul>
+				<form method="post">
+					<input type="hidden" name="action" value="removeUnbestaetigtVorgang"/>
+					<input type="submit" value="Ausführen"/>
+				</form>
+	
+				<div class="subtitle">removeUnbestaetigtUnterstuetzer</div>
+				<p class="help">
+                    Alle Unterstützungen, die eingegangen sind, aber nach einem bestimmten Zeitraum noch nicht bestätigt wurden, werden gelöscht.
+				</p>
+				<ul class="help">
+					<li>Ausführungszeitpunkt: täglich um *:46 Uhr</li>
+					<li>Bedingung: Eingegangene Unterstützungen wurden nach einem bestimmten Zeitraum noch nicht bestätigt.</li>
+				</ul>
+				<form method="post">
+					<input type="hidden" name="action" value="removeUnbestaetigtUnterstuetzer"/>
+					<input type="submit" value="Ausführen"/>
+				</form>
+	
+				<div class="subtitle">removeUnbestaetigtMissbrauchsmeldung</div>
+				<p class="help">
+					Alle Missbrauchsmeldungen, die eingegangen sind, aber nach einem bestimmten Zeitraum noch nicht bestätigt wurden, werden gelöscht.
+				</p>
+				<ul class="help">
+					<li>Ausführungszeitpunkt: täglich um *:49 Uhr</li>
+					<li>Bedingung: Eingegangene Missbrauchsmeldungen wurden nach einem bestimmten Zeitraum noch nicht bestätigt.</li>
+				</ul>
+				<form method="post">
+					<input type="hidden" name="action" value="removeUnbestaetigtMissbrauchsmeldung"/>
+					<input type="submit" value="Ausführen"/>
+				</form>
+	
+				<div class="subtitle">reBuildClassifier</div>
+				<p class="help">
+					Der Klassifikator für den Zuständigkeitsfinder wird aktualisiert.
+				</p>
+				<ul class="help">
+					<li>Ausführungszeitpunkt: täglich um *:52 Uhr</li>
+					<li>Anmerkung: Es werden je Kategorie maximal die 10 neuesten Vorgänge herangezogen, deren Zuständigkeit akzeptiert ist. Insgesamt werden maximal 1.000 Vorgänge herangezogen.</li>
+				</ul>
+				<form method="post">
+					<input type="hidden" name="action" value="reBuildClassifier"/>
+					<input type="submit" value="Ausführen"/>
+				</form>
+                
+                <div class="subtitle">archivVorgaenge</div>
+				<p class="help">
+					Alle Vorgänge, die abgeschlossen sind und seit einem bestimmten Zeitraum nicht mehr bearbeitet wurden, werden archiviert.
+				</p>
+				<ul class="help">
+					<li>Ausführungszeitpunkt: täglich um 00:40 Uhr</li>
+					<li>Bedingung: Abgeschlosse Vorgänge wurden seit einem bestimmten Zeitraum nicht mehr bearbeitet.</li>
+				</ul>
+				<form method="post">
+					<input type="hidden" name="action" value="archivVorgaenge"/>
+					<input type="submit" value="Ausführen"/>
+				</form>
+                
+                <div class="subtitle">informRedaktionEmpfaenger</div>
+				<p class="help">
+					Die Empfänger redaktioneller E-Mails werden informiert. 
+				</p>
+				<ul class="help">
+					<li>Ausführungszeitpunkt: täglich um 01:40 Uhr</li>
+				</ul>
+				<form method="post">
+					<input type="hidden" name="action" value="informRedaktionEmpfaenger"/>
+					<input type="submit" value="Ausführen"/>
+				</form>
+	
+				<div class="subtitle">informExtern</div>
+				<p class="help">
+					Externe Nutzer werden mittels E-Mail über diejenigen Vorgänge informiert, die innerhalb der letzten 24 Stunden an sie delegiert wurden.
+				</p>
+				<ul class="help">
+					<li>Ausführungszeitpunkt: täglich um 05:00 Uhr</li>
+					<li>Anmerkung: Es werden immer alle Vorgänge berücksichtigt, bei denen das Delegieren innerhalb der letzten 24 Stunden stattfand.</li>
+				</ul>
+				<form method="post">
+					<input type="hidden" name="action" value="informExtern"/>
+					<input type="submit" value="Ausführen"/>
+				</form>
+	
+				<div class="subtitle">informDispatcher</div>
+				<p class="help">
+					Die Dispatcher werden mittels E-Mail über diejenigen Vorgänge informiert, die innerhalb der letzten 24 Stunden durch wiederholtes automatisches Zuweisung keiner Zuständigkeit zugeordnet werden konnten und somit letztendlich der Dispatcher-Gruppe zugewiesen wurden.
+				</p>
+				<ul class="help">
+					<li>Ausführungszeitpunkt: täglich um 05:05 Uhr</li>
+					<li>Anmerkung: Es werden immer alle Vorgänge berücksichtigt, die innerhalb der letzten 24 Stunden der Dispatcher-Gruppe zugeordnet wurden.</li>
+				</ul>
+				<form method="post">
+					<input type="hidden" name="action" value="informDispatcher"/>
+					<input type="submit" value="Ausführen"/>
+				</form>
+	
+				<div class="subtitle">informErstellerInBearbeitung</div>
+				<p class="help">
+					Die Ersteller von Vorgängen werden darüber informiert, dass ihre Vorgänge innerhalb der letzten 24 Stunden in Bearbeitung genommen wurden.
+				</p>
+				<ul class="help">
+					<li>Ausführungszeitpunkt: täglich um 10:05 Uhr</li>
+					<li>Anmerkung: Es werden immer alle Vorgänge berücksichtigt, die innerhalb der letzten 24 Stunden in Bearbeitung genommen wurden.</li>
+				</ul>
+				<form method="post">
+					<input type="hidden" name="action" value="informErstellerInBearbeitung"/>
+					<input type="submit" value="Ausführen"/>
+				</form>
+	
+				<div class="subtitle">informErstellerAbschluss</div>
+				<p class="help">
+                    Die Ersteller von Vorgängen werden darüber informiert, dass ihre Vorgänge innerhalb der letzten 24 Stunden abgeschlossen wurden.
+				</p>
+				<ul class="help">
+					<li>Ausführungszeitpunkt: täglich um 10:10 Uhr</li>
+                    <li>Anmerkung: Es werden immer alle Vorgänge berücksichtigt, die innerhalb der letzten 24 Stunden abgeschlossen wurden.</li>
+				</ul>
+				<form method="post">
+					<input type="hidden" name="action" value="informErstellerAbschluss"/>
+					<input type="submit" value="Ausführen"/>
+				</form>
+			</div>
+		</div>
+		<util:ddpanel name="jobServiceTest"/>
+	
+		<div class="fieldset" id="backendServiceTestpanel">
+			<div class="fieldsettitle closepanel" id="backendServiceTesttab"><div style="width:100%; height:15px;">Backend-Service-Tests</div></div>
+			<div id="backendServiceTestcontent">
+
+				<div class="subtitle">neuer Vorgang</div>	
+				<p class="help">
+					Ein neuer Vorgang wird erzeugt. Dieser hat dann den Status "gemeldet". An den Autor des Vorganges (autorEmail) wird eine
+					E-Mail mit einer URL zum Bestätigen und eine URL zum Löschen des Vorganges geschickt. Rückgabe der Funktion ist der Hash-Wert,
+					der zum Bestätigen oder Löschen des Vorganges notwendig ist.
+				</p>
+				<c:url value="/service/vorgang" var="url"/>	
+				<form action="${url}" target="_blank" method="post">
+					<label for="typ">typ</label><input type="text" name="typ" value="problem"/><br/>
+					<label for="typ">kategorie</label><input type="text" name="kategorie" value="2"/><br/>
+					<label for="typ">oviWkt</label><input type="text" name="oviWkt" value="POINT(311279.42193707 6002855.152289)"/><br/>
+					<label for="typ">autorEmail</label><input type="text" name="autorEmail" value="test@test.de"/><br/>
+					<label for="typ">betreff</label><input type="text" name="betreff" value="betreff"/><br/>
+					<label for="typ">details</label><input type="text" name="details" value="details"/><br/>
+					<label for="typ">bild</label><input type="text" name="bild" value="/9j/4AAQSkZJRgABAQEASABIAAD//gATQ3JlYXRlZCB3aXRoIEdJTVD/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAAdADgDASIAAhEBAxEB/8QAGwABAQACAwEAAAAAAAAAAAAAAAUDBgECBAf/xAAlEAACAgMAAgICAgMAAAAAAAABAgMEAAUREjEhQQYTFGFRgZH/xAAaAQACAwEBAAAAAAAAAAAAAAABAwAEBQIH/8QAJREAAQMDBAICAwAAAAAAAAAAAQACEQMhQQQxUWEFEhNCgbHw/9oADAMBAAIRAxEAPwD4fjJn5BckpJSdJREr240lY854Hve99eveYdptog9FKF6B2ktxpIqOrkoe9/zz6+cwW0nOgjK9Yq66lSLmuN2xxeeLqzjJ13arVsNEaGwlC87JFB5J677zzbW8Jq2rs053Ec12JSVJHkp70H/nrIKTjHalTW0mB0GS3H5AyO+1axkepaMe53JsTsIIBCQGY+KDwJPB9Z2g39OSWNXhtwpKeRyyxeKMT64cJpOwg3X0fuYMkX6MfvmFWxjGKVxSfyWu1hKCCEzKLsZkUL5Dx+ek/wBZh3OtgjfXvSoRqy3Yi7QwgEL89J4PXrLmMa2qWwBhUquhp1S9zt3RgWjhatarPLs7S7HXX7rNIf4/62IiCfQ70c/vFWrZXQaWI1phJHfV3Uoeqvm/yR9D5GbTjO/nMAR/RCrDxLA5zvbecCbuDrnc7RfC127r7NuxvokjZf3rB+pmHA5VekA/65nGwnubakutTV2a7uy/skkXiRgEEkH79ZseMArbW2THeNB9gHkB0zYXBJMdbkSMdpjGMQtJf//Z"/><br/>
+					<label for="typ">resultHashOnSubmit</label><input type="text" name="resultHashOnSubmit" value="true"/><br/>
+					<input type="submit" value="Ausführen"/>
+				</form>
+	
+				<div class="subtitle">Vorgang bestätigen</div>	
+				<p class="help">
+					Ein Vorgang wird anhand des Hash-Wertes bestätigt. Beim Vorgang wird automatisch die Zuständigkeit gesetzt und der Vorgang
+					ändert den Status in "offen".
+				</p>
+				<c:url value="/service/vorgangBestaetigung" var="url"/>	
+				<form action="${url}" target="_blank" method="get">
+					<label for="typ">hash</label><input type="text" name="hash" value=""/><br/>
+					<input type="submit" value="Ausführen"/>
+				</form>
+	
+				<div class="subtitle">Vorgang löschen</div>	
+				<p class="help">
+					Ein Vorgang wird anhand des Hash-Wertes gelöscht. Dies ist nur möglich solange der Vorgang noch im Status "gemeldet" oder "offen" ist.
+				</p>
+				<c:url value="/service/vorgangLoeschen" var="url"/>	
+				<form action="${url}" target="_blank" method="get">
+					<label for="typ">hash</label><input type="text" name="hash" value=""/><br/>
+					<input type="submit" value="Ausführen"/>
+				</form>
+	
+				<div class="subtitle">Unterstützung</div>	
+				<p class="help">
+					Eine Unterstützung für einen Vorgang wird angelegt. Eine E-Mail an den Autor (email) wird zum Bestätigen der Unterstützung 
+					versendet. Rückgabe der Funktion ist ein Hash-Wert, der zum Bestätigen der Unterstützung notwendig ist.
+				</p>
+				<c:url value="/service/unterstuetzer" var="url"/>	
+				<form action="${url}" target="_blank" method="post">
+					<label for="typ">vorgang</label><input type="text" name="vorgang" value="1"/><br/>
+					<label for="typ">email</label><input type="text" name="email" value="test@test.de"/><br/>
+					<label for="typ">resultHashOnSubmit</label><input type="text" name="resultHashOnSubmit" value="true"/><br/>
+					<input type="submit" value="Ausführen"/>
+				</form>
+	
+				<div class="subtitle">Unterstützung bestätigen</div>	
+				<p class="help">
+					Eine Unterstützung für einen Vorgang wird anhand des Hash-Wertes bestätigt.
+				</p>
+				<c:url value="/service/unterstuetzerBestaetigung" var="url"/>	
+				<form action="${url}" target="_blank" method="get">
+					<label for="typ">hash</label><input type="text" name="hash" value=""/><br/>
+					<input type="submit" value="Ausführen"/>
+				</form>
+	
+				<div class="subtitle">Missbrauchsmeldung</div>
+				<p class="help">
+					Eine Missbrauchsmeldung für einen Vorgang wird angelegt. Eine E-Mail an den Autor (email) wird zum Bestätigen der Missbrachsmeldung 
+					versendet. Rückgabe der Funktion ist ein Hash-Wert, der zum Bestätigen der Missbrauchsmeldung notwendig ist.
+				</p>
+				<c:url value="/service/missbrauchsmeldung" var="url"/>	
+				<form action="${url}" target="_blank" method="post">
+					<label for="typ">vorgang</label><input type="text" name="vorgang" value="1"/><br/>
+					<label for="typ">text</label><input type="text" name="text" value="1"/><br/>
+					<label for="typ">email</label><input type="text" name="email" value="test@test.de"/><br/>
+					<label for="typ">resultHashOnSubmit</label><input type="text" name="resultHashOnSubmit" value="true"/><br/>
+					<input type="submit" value="Ausführen"/>
+				</form>
+	
+				<div class="subtitle">Missbrauchsmeldung bestätigen</div>	
+				<p class="help">
+					Eine Missbrachsmeldung für einen Vorgang wird anhand des Hash-Wertes bestätigt. Danach wird die Missbrauchsmeldung im
+					Backend sichtbar und der Vorgang wird entsprechend gekennzeichnet.
+				</p>
+				<c:url value="/service/missbrauchsmeldungBestaetigung" var="url"/>	
+				<form action="${url}" target="_blank" method="get">
+					<label for="typ">hash</label><input type="text" name="hash" value=""/><br/>
+					<input type="submit" value="Ausführen"/>
+				</form>
+                
+                <div class="subtitle">Lob, Hinweise oder Kritik zu einem Vorgang</div>
+				<p class="help">
+					Lob, Hinweise oder Kritik zu einem Vorgang werden angelegt.
+				</p>
+				<c:url value="/service/lobHinweiseKritik" var="url"/>	
+				<form action="${url}" target="_blank" method="post">
+					<label for="typ">vorgang</label><input type="text" name="vorgang" value="1"/><br/>
+					<label for="typ">email</label><input type="text" name="email" value="test@test.de"/><br/>
+					<label for="typ">freitext</label><input type="text" name="freitext" value="1"/><br/>
+					<input type="submit" value="Ausführen"/>
+				</form>
+	
+				<div class="subtitle">GeoRss anlegen</div>
+				<p class="help">
+					Ein GeoRss wird angelegt. Rückgabewert ist die ID des GeoRss. 
+				</p>
+				<ul class="help">
+					<li>oviWkt kann ein Multipolygon sein.</li>
+					<li>Die Felder problemkategoerie und ideenKategorie sind vom Typ String. Hier können die Daten so abgelegt werden,
+						wie sie vom Frontend verarbeitbar sind.</li>
+				</ul>
+				<c:url value="/service/geoRss" var="url"/>	
+				<form action="${url}" target="_blank" method="post">
+					<label for="typ">oviWkt</label><textarea name="oviWkt" rows="5">MULTIPOLYGON(((315129.753362536 6000091.86401355,315116.297772146 6000080.46184199,314976.445229643 6000231.98396256,314910.176707766 6000308.23051262,314804.795885338 6000429.98730816,314630.707286658 6000630.04676198,314431.185953021 6000859.42840862,314294.956602896 6001015.77332834,314208.940913093 6001108.81697558,314128.245294538 6001191.42323208,313868.818844382 6001444.29361379,313774.172109723 6001535.33146942,313557.785446118 6001745.7388284,313313.54008001 6001982.97885934,313209.215387251 6002082.35722145,313256.537016104 6002149.07558294,313235.670730723 6002156.0486715,313221.979849763 6002158.94273984,313217.734558851 6002169.99538464,313199.898522546 6002220.12896219,313194.273507717 6002238.93895225,313181.916094818 6002274.20323615,313175.813402657 6002292.65308417,313168.265616234 6002313.62710475,313157.840316907 6002343.25302729,313141.32261839 6002393.32063409,313119.923318343 6002454.42788471,313111.826424506 6002478.60885672,313104.514852731 6002497.95101566,313100.45960944 6002508.03451046,313088.661184973 6002534.68532363,313081.841318584 6002552.38476006,313077.535630634 6002569.59698501,313070.903218193 6002613.67846106,313057.942443515 6002689.36433956,313049.608869452 6002733.8284293,313046.385438355 6002761.74691979,313039.386368418 6002800.88834888,313037.312706904 6002834.10408689,313027.748457496 6002904.21956498,313023.631931691 6002923.74640962,313023.91766234 6002928.52972644,313024.757701342 6002931.97800891,313027.091139074 6002935.98356799,313083.384616756 6002995.03245836,313170.455802583 6003087.42345243,313183.823245367 6003100.63134076,313189.321624934 6003104.50246781,313202.171757337 6003107.28045029,313270.518315915 6003117.68262428,313307.963706749 6003122.93995072,313344.665788175 6003127.99858476,313369.324611102 6003130.22494488,313417.128268671 6003132.46938838,313460.986711195 6003134.75125155,313525.464246588 6003042.01051298,313714.693959069 6002846.21039331,314033.822530443 6002519.03112432,314385.810737677 6002864.25900823,314523.739109762 6002722.6774825,314597.028531333 6002797.56283092,314645.448680004 6002747.84249068,314659.454827796 6002733.32189585,314670.303143302 6002724.35153763,314679.032549941 6002718.56466725,314714.072429508 6002701.98942328,314754.232168191 6002683.48480279,314781.60869683 6002746.204167,314787.992371866 6002761.2002685,314793.051341366 6002771.05676873,314797.137176486 6002776.46953835,314802.394052263 6002779.71017594,314826.172081301 6002782.00399706,314827.022520443 6002726.01474241,314827.490488668 6002668.99054702,314831.297697539 6002606.79885974,315447.252505242 6002307.50105241,315642.097258812 6002212.05799498,315927.566373049 6002058.43536843,315836.133951492 6001961.88557453,315818.543980135 6001949.17747574,315754.982705961 6001883.8403606,315671.179873715 6001799.74075996,315596.19149725 6001726.4393295,315504.98165987 6001647.3794682,315490.49429123 6001634.81988002,315392.318461166 6001596.46122965,315283.563368503 6001553.96664191,315275.481624512 6001529.70213761,315271.691684851 6001504.42443964,315270.917238183 6001496.2981406,315272.188089307 6001288.43019174,315264.430676102 6001132.5837706,315258.017238913 6001071.9675573,315257.716229743 6001067.79562773,315256.001083782 6001065.51581083,315254.329693719 6001063.29420346,315249.390934344 6001062.68299862,315249.620512597 6001059.33949616,315220.617990851 6000988.25963006,315212.405245355 6000970.04747144,315206.819239899 6000954.77720955,315173.865580532 6000874.45449431,315167.576468649 6000859.15401565,315165.200381618 6000851.22586825,315163.547254419 6000845.73980683,315156.378210106 6000821.96710633,315152.982275199 6000811.79969273,315138.298998479 6000778.87539637,315138.360919064 6000777.61134616,315138.55177294 6000773.93911465,315140.424785043 6000756.01948638,315140.488713237 6000755.38606139,315142.702601329 6000736.16050442,315142.793132349 6000735.37578068,315144.644049244 6000719.26913254,315145.781033793 6000705.40529201,315147.882245924 6000694.80422963,315149.238254314 6000686.48734761,315154.708047822 6000669.07573872,315159.153520598 6000655.54194412,315162.935310954 6000645.23993955,315164.331453247 6000638.06263977,315172.081733562 6000637.02274725,315188.7647119 6000608.34285553,315211.19948903 6000574.1427967,315231.677077099 6000537.21268312,315234.929754418 6000527.2835459,315238.576513619 6000515.74588358,315255.511011573 6000482.09975247,315263.299793234 6000466.02130334,315273.312587303 6000445.73378971,315276.167755642 6000439.66586221,315258.335622859 6000411.5305059,315222.544441868 6000353.24289106,315181.989661777 6000288.9405194,315167.709671719 6000263.56759438,315159.750482508 6000244.71392893,315156.366443745 6000233.46478454,315150.024018233 6000208.54571555,315142.445314258 6000185.04067072,315136.172493512 6000163.12202615,315132.848636368 6000145.12272412,315131.902503668 6000124.5897246,315129.753362536 6000091.86401355)),((314847.62121901 6010930.19441582,315066.293180217 6010806.0286662,315050.444620132 6010796.23058003,315037.578971083 6010783.18215971,315005.377808606 6010730.1696484,314913.034779508 6010571.71176678,314903.05671259 6010557.24911504,314874.064188181 6010523.58214942,314834.825724322 6010490.71113028,314757.710473175 6010431.16824353,314697.402883229 6010386.69868847,314680.719677509 6010374.5533384,314621.379676972 6010335.55885785,314611.03511306 6010327.81934029,314605.60634189 6010316.84743909,314602.089908358 6010298.80634305,314582.492620287 6010231.12189084,314564.195699788 6010133.61848235,314568.59355811 6010124.61156273,314569.281139231 6010106.21155484,314562.197891338 6010060.5906995,314558.253558833 6010045.6913185,314562.375971759 6010004.36954185,314566.472180072 6009983.99257157,314577.480120143 6009957.80556687,314613.076987913 6009814.29186762,314621.985190916 6009777.36188044,314702.562647233 6009806.0831999,314837.201681108 6009861.8997517,315008.995991849 6009936.15948858,315264.567252044 6010045.07108252,315364.77807382 6010086.00234324,315739.683869716 6009865.06533672,315653.114484644 6009660.79095437,315514.154500611 6009339.34874587,315248.439344161 6008723.85585594,315731.977498113 6008575.87167978,315971.549799791 6008509.066168,315906.56567385 6008449.73817098,315901.774609773 6008440.75145541,315899.730797502 6008427.2430296,315897.963477806 6008290.65447277,315894.074255876 6008276.85405677,315889.87657916 6008264.53840399,315789.861565846 6008089.86764362,315783.145258399 6007914.53552163,315771.937150649 6007869.18027574,315736.077077461 6007786.19913868,315719.486646045 6007732.9034134,315693.07007749 6007630.04901477,315682.261553867 6007574.6654905,315678.330876316 6007534.04662983,315670.782663455 6007442.88444492,315664.00025646 6007395.77932803,315626.24965223 6007294.14732879,315620.495780875 6007271.24578264,315613.631034531 6007230.75158626,315610.792781609 6007198.54580927,315613.073543952 6007165.75209036,315631.149918063 6007106.92862651,315651.102123995 6007066.40614831,315662.806464746 6007021.81918442,315238.151810974 6007138.83549712,314923.818919873 6007231.63221069,314621.384386031 6007318.22713575,314516.061795932 6007348.58199224,314317.89046141 6007405.93852506,314301.852746242 6007365.84388723,314269.665104185 6007334.50465526,313926.908579856 6007041.55121758,313854.710482936 6006976.65204582,313802.005190023 6006920.84579001,313680.365703365 6006816.52027305,313616.535694956 6006767.06330503,313601.975099294 6006752.98532386,313592.124207102 6006737.23554868,313572.335420577 6006721.17721578,313547.458568963 6006706.43632786,313518.348823793 6006687.0998742,313342.419814738 6006580.04514691,313354.203685417 6006742.1391933,313366.961462044 6006862.0539647,313364.589331794 6006872.29628437,313360.579628685 6006880.72604942,313327.771951796 6006919.71283497,313319.110429949 6006928.65062132,313306.217558162 6006948.38026921,313302.295931428 6006958.68843479,313300.618722715 6006967.01909082,313300.161604219 6006974.5270262,313300.265264174 6006995.42638035,313302.541831407 6007008.58470863,313309.348191006 6007021.86090639,313319.460526555 6007039.68194823,313336.75457501 6007068.73092348,313355.974092995 6007098.789315,313375.767989768 6007142.55890104,313400.707189001 6007182.66592456,313425.169749957 6007229.82117683,313430.559590492 6007239.10294708,313442.970277973 6007274.28613652,313442.133728008 6007280.24841736,313437.736007119 6007283.23847816,313433.082743051 6007283.9067482,313428.342797487 6007289.72454756,313427.798038145 6007295.36407698,313434.279374582 6007319.25611362,313437.679131743 6007347.96442075,313438.500660513 6007400.32903666,313434.627453905 6007426.54321983,313426.445127259 6007443.25952072,313424.999451502 6007453.15212334,313415.879293475 6007480.83068846,313390.683236607 6007541.15872411,313376.809985205 6007574.34531175,313342.439030141 6007646.29603039,313334.876635745 6007673.9084175,313332.073782388 6007692.27827051,313331.823614611 6007708.34715322,313333.42687951 6007749.76617462,313339.685061128 6007814.45405018,313347.277153097 6007824.26292777,313329.993639991 6007824.99741729,313311.637673559 6007818.75950502,313288.515538854 6007806.64722863,313277.289121168 6007803.21987273,313262.890372277 6007805.19331627,313255.918391095 6007810.36514407,313250.708660915 6007816.20292506,313244.729103788 6007822.38377419,313225.458857976 6007842.23433415,313210.255437919 6007855.19443172,313186.609762262 6007871.1763283,313153.542254915 6007893.16500369,313112.042901524 6007925.80372264,312869.676082993 6008123.55708328,312789.316633815 6008184.29750774,312858.713553319 6008253.21010777,312842.320768085 6008269.46449931,312843.45059012 6008270.59782898,312859.851192509 6008254.33309382,312873.868989407 6008268.26390138,312927.663410972 6008324.81470519,312910.995531144 6008339.25871384,312912.045905793 6008340.465499,312928.769780863 6008325.97906498,312998.096291982 6008398.8690883,312985.659491739 6008411.84181005,312986.821007767 6008412.94375701,312999.202237206 6008400.02345396,313041.354414548 6008444.33448667,313067.736651622 6008467.68109912,313038.118178966 6008489.61340324,313039.073047211 6008490.90433707,313068.963254288 6008468.76025637,313098.934051857 6008494.55731152,313134.767329006 6008538.03560406,313205.037610291 6008616.81211539,313269.7212102 6008692.36207303,313331.888143695 6008772.61416902,313363.87001754 6008810.75980814,313397.260772788 6008848.44510097,313429.805666824 6008885.65575207,313464.654218074 6008925.39146223,313495.930635797 6008960.34337491,313528.082171884 6009001.31496285,313564.879917037 6009049.41738643,313589.034599538 6009081.54840896,313609.014438421 6009102.87439521,313642.356961152 6009147.38939974,313675.720281589 6009194.33626804,313677.731301718 6009197.1641007,313759.462022707 6009293.61368805,313778.92433975 6009331.32019687,313827.178538973 6009402.44223022,313851.678363161 6009437.64200053,313888.063530076 6009477.20210137,313944.632235867 6009557.06096679,314004.038049439 6009639.56233026,314041.638015036 6009692.35579186,314078.564679093 6009747.18012337,314101.700247435 6009785.83164731,314116.65916637 6009813.9383769,314173.346712501 6009882.79956005,314229.990022808 6009961.30350723,314231.15654899 6009963.10601988,314272.203846856 6010026.87542842,314321.508360898 6010102.30742276,314360.636686083 6010161.72332742,314408.795109571 6010231.94802771,314448.966139004 6010303.07286253,314502.285022431 6010387.47442663,314532.676715776 6010431.52380927,314567.324474941 6010481.48915402,314600.771767537 6010541.86723398,314654.859806836 6010610.75847821,314694.765382235 6010685.34834946,314816.029405998 6010865.1023493,314828.024466488 6010889.33038126,314847.62121901 6010930.19441582)))</textarea><br/>
+					<label for="typ">probleme</label><input type="text" name="probleme" value="true"/><br/>
+					<label for="typ">problemeKategorien</label><input type="text" name="problemeKategorien" value=""/><br/>
+					<label for="typ">ideen</label><input type="text" name="ideen" value="true"/><br/>
+					<label for="typ">ideenKategorien</label><input type="text" name="ideenKategorien" value=""/><br/>
+					<input type="submit" value="Ausführen"/>
+				</form>
+			</div>
+		</div>
+		<util:ddpanel name="backendServiceTest"/>
+	</div>
+	
+	<!-- HELP -->
+	<div id="root_style_help">
+		<p>
+			Hier finden Sie eine Übersicht zu <util:help anchor="AutomatischeJobsimHintergrund">Jobs</util:help>, die zu bestimmten Zeiten automatisch im Hintergrund ablaufen. Sie
+			können die Ausführung des jeweiligen Jobs hier manuell anstoßen. 
+		</p>
+		<p>
+			Diverse Möglichkeiten zum Testen der Schnittstelle, die vom <util:help anchor="FrontendundBackend">Frontend</util:help> zur Kommunikation mit dem <util:help anchor="FrontendundBackend">Backend</util:help> genutzt wird, finden Sie unter Backend-Service-Test. Die einzelnen Funktionen können von dort aus getestet werden.
+		</p>
+	</div>
+
+</jsp:root>
