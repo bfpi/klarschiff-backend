@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+	http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.5.xsd
+	">
+
+    <!-- <context:property-placeholder location="classpath*:settings.properties"/>-->
+
+
+	<bean class="de.fraunhofer.igd.klarschiff.service.geo.GeoService" id="geoService"
+		p:mapProjection="${geo.map.projection}"
+		p:mapMaxExtent="${geo.map.maxExtent}"
+		p:mapRestrictedExtent="${geo.map.restrictedExtent}"
+		p:mapResolutions="${geo.map.resolutions}"
+		p:mapServerResolutions="${geo.map.serverResolutions}"
+		p:mapOviMargin="${geo.map.ovi.margin}"
+		p:mapTmsServer="${geo.map.tms.server}"
+		p:mapTmsServerLayers="${geo.map.tms.server.layers}"
+		p:mapExternProjection="${geo.map.extern.projection}"
+		p:mapExternName="${geo.map.extern.name}"
+		p:mapExternUrl="${geo.map.extern.url}"
+		p:mapExternExternUrl="${geo.map.extern.extern.url}"
+		p:wmsUrl="${geo.wms.url}"
+		p:wmsTitle="${geo.wms.title}"
+		p:wmsLayers="${geo.wms.layers}"
+		p:wmsFormat="${geo.wms.format}"
+		p:wmsTransparent="${geo.wms.transparent}"
+		p:wmsMinScale="${geo.wms.minScale}"
+		p:wmsSingleTile="${geo.wms.singleTile}"
+		p:wfsVorgaengeUrl="${geo.wfsvorgaenge.url}"
+		p:wfsVorgaengeFeatureNs="${geo.wfsvorgaenge.featurens}"
+		p:wfsVorgaengeFeaturePrefix="${geo.wfsvorgaenge.featureprefix}"
+		p:wfsVorgaengeFeatureType="${geo.wfsvorgaenge.featuretype}"
+		p:wfsZufiExceptionHandling="${geo.wfszufi.exception.handling}"
+        p:wfsZufiOviBuffer="${geo.wfszufi.ovi.buffer}"
+		p:wfsZufiCapabilitiesUrl="${geo.wfszufi.capabilities.url}"
+		p:adressensucheUrl="${geo.adressensuche.url}"
+	/>
+</beans>

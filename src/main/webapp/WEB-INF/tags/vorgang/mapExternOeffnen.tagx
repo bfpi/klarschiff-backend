@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<jsp:root 
+  xmlns:c="http://java.sun.com/jsp/jstl/core"
+  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+  xmlns:jsp="http://java.sun.com/JSP/Page"
+  xmlns:spring="http://www.springframework.org/tags"
+  version="2.0"
+  >
+  <jsp:output omit-xml-declaration="yes" />
+
+  <jsp:directive.attribute name="vorgang" type="de.fraunhofer.igd.klarschiff.vo.Vorgang" required="true" rtexprvalue="true"/>
+  <jsp:directive.attribute name="isLonelyIcon" type="java.lang.Boolean" required="false" rtexprvalue="true"/>
+
+  <c:set var="css_class" value="${(empty isLonelyIcon or not isLonelyIcon) ? 'mapExtern' : 'mapExternLonelyIcon'}"/>
+
+  <div class="${css_class}">
+    <c:url value="/images/map.png" var="imgurl"/>
+    <a href="${mapExternUrl}" target="_blank" title="Position des Vorgangs in ${mapExternName} anzeigen" style="padding:5px;"><img src="${imgurl}" alt="${mapExternName}" class="icon"/></a>
+  </div>
+
+</jsp:root>
