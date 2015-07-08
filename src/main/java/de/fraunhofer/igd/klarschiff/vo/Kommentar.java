@@ -20,128 +20,127 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  * VO für die Abbildung von Kommentaren.
+ *
  * @author Stefan Audersch (Fraunhofer IGD)
  */
 @SuppressWarnings("serial")
 @Entity
 public class Kommentar implements Serializable {
 
-	/* --------------- Attribute ----------------------------*/
+  /* --------------- Attribute ----------------------------*/
+  /**
+   * Id des Kommentars
+   */
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private Long id;
 
-	/**
-	 * Id des Kommentars
-	 */
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long id;
-	
-	/**
-	 * Vorgang zu dem der Kommentar gehört
-	 */
-    @NotNull
-    @ManyToOne
-    private Vorgang vorgang;
+  /**
+   * Vorgang zu dem der Kommentar gehört
+   */
+  @NotNull
+  @ManyToOne
+  private Vorgang vorgang;
 
-    /**
-     * Text des Kommentars
-     */
-    @NotNull
-    @Lob
-    @Type(type="org.hibernate.type.TextType")
-    private String text;
+  /**
+   * Text des Kommentars
+   */
+  @NotNull
+  @Lob
+  @Type(type = "org.hibernate.type.TextType")
+  private String text;
 
-    /**
-     * Erstellungszeit des Kommentars
-     */
-    @NotNull
-    @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(style = "S-")
-    private Date datum;
-	
-    /**
-     * Letzte Bearbeitung des Kommentars
-     */
-    @Version
-    @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(style = "S-")
-    @Column(columnDefinition = "timestamp default current_timestamp")
-	private Date zuletztBearbeitet;
-	
-	@NotNull
-	@Column(columnDefinition = "integer default 0")
-	private Integer anzBearbeitet;
+  /**
+   * Erstellungszeit des Kommentars
+   */
+  @NotNull
+  @Temporal(TemporalType.TIMESTAMP)
+  @DateTimeFormat(style = "S-")
+  private Date datum;
 
-    /**
-     * Id des Benutzer, der den Kommentar erstellt hat
-     */
-	private String nutzer; 
+  /**
+   * Letzte Bearbeitung des Kommentars
+   */
+  @Version
+  @Temporal(TemporalType.TIMESTAMP)
+  @DateTimeFormat(style = "S-")
+  @Column(columnDefinition = "timestamp default current_timestamp")
+  private Date zuletztBearbeitet;
 
-    @Column(columnDefinition = "boolean default false")
-    private boolean geloescht = false;
+  @NotNull
+  @Column(columnDefinition = "integer default 0")
+  private Integer anzBearbeitet;
 
-	/* --------------- GET + SET ----------------------------*/
+  /**
+   * Id des Benutzer, der den Kommentar erstellt hat
+   */
+  private String nutzer;
 
-	public Long getId() {
-        return this.id;
-    }
+  @Column(columnDefinition = "boolean default false")
+  private boolean geloescht = false;
 
-	public void setId(Long id) {
-        this.id = id;
-    }
+  /* --------------- GET + SET ----------------------------*/
+  public Long getId() {
+    return this.id;
+  }
 
-	public Vorgang getVorgang() {
-        return this.vorgang;
-    }
+  public void setId(Long id) {
+    this.id = id;
+  }
 
-	public void setVorgang(Vorgang vorgang) {
-        this.vorgang = vorgang;
-    }
+  public Vorgang getVorgang() {
+    return this.vorgang;
+  }
 
-	public String getText() {
-        return this.text;
-    }
+  public void setVorgang(Vorgang vorgang) {
+    this.vorgang = vorgang;
+  }
 
-	public void setText(String text) {
-        this.text = text;
-    }
+  public String getText() {
+    return this.text;
+  }
 
-	public Date getDatum() {
-        return this.datum;
-    }
+  public void setText(String text) {
+    this.text = text;
+  }
 
-	public void setDatum(Date datum) {
-        this.datum = datum;
-    }
+  public Date getDatum() {
+    return this.datum;
+  }
 
-    public Date getZuletztBearbeitet() {
-        return this.zuletztBearbeitet;
-    }
+  public void setDatum(Date datum) {
+    this.datum = datum;
+  }
 
-    public void setZuletztBearbeitet(Date datum) {
-        this.zuletztBearbeitet = datum;
-    }
+  public Date getZuletztBearbeitet() {
+    return this.zuletztBearbeitet;
+  }
 
-	public Integer getAnzBearbeitet() {
-		return anzBearbeitet;
-	}
+  public void setZuletztBearbeitet(Date datum) {
+    this.zuletztBearbeitet = datum;
+  }
 
-	public void setAnzBearbeitet(Integer anzBearbeitet) {
-		this.anzBearbeitet = anzBearbeitet;
-	}
+  public Integer getAnzBearbeitet() {
+    return anzBearbeitet;
+  }
 
-	public String getNutzer() {
-		return nutzer;
-	}
+  public void setAnzBearbeitet(Integer anzBearbeitet) {
+    this.anzBearbeitet = anzBearbeitet;
+  }
 
-	public void setNutzer(String nutzer) {
-		this.nutzer = nutzer;
-	}
-	
-	public boolean getGeloescht() {
-		return geloescht;
-	}
+  public String getNutzer() {
+    return nutzer;
+  }
 
-	public void setGeloescht(boolean geloescht) {
-		this.geloescht = geloescht;
-	}
+  public void setNutzer(String nutzer) {
+    this.nutzer = nutzer;
+  }
+
+  public boolean getGeloescht() {
+    return geloescht;
+  }
+
+  public void setGeloescht(boolean geloescht) {
+    this.geloescht = geloescht;
+  }
 }

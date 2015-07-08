@@ -1,53 +1,55 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <jsp:root xmlns:c="http://java.sun.com/jsp/jstl/core" 
-	xmlns:spring="http://www.springframework.org/tags" 
-	xmlns:jsp="http://java.sun.com/JSP/Page" 
-	xmlns:fx="http://igd.fraunhofer.de/tags/elfunctions" 
-	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
-	version="2.0"
-	>
-	<jsp:output omit-xml-declaration="yes" />
+          xmlns:spring="http://www.springframework.org/tags"
+          xmlns:jsp="http://java.sun.com/JSP/Page"
+          xmlns:fx="http://igd.fraunhofer.de/tags/elfunctions"
+          xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+          version="2.0"
+          >
+  <jsp:output omit-xml-declaration="yes" />
 
-<!-- SCRIPTS -->
-	<c:url value="/" var="webAppUrl"/>
-	<script type="text/javascript">
-		
-		imageId = "${vorgang.id}";
-		webAppUrl = "${webAppUrl}" ;
-		document.ondragstart = function () { return false; };
-	</script>	
-	
-	<c:url value="/script" var="scriptUrl"/>
-	<script defer="defer" type="text/javascript" src="${scriptUrl}/fotoBearbeitung.js">
-		<!-- crazy fix - confusing -->
-	</script>
-	<script type="text/javascript" language="JavaScript" src="${scriptUrl}/jquery/modalDialog/js/jquery.md.js">
-		<!-- crazy fix - confusing -->
-	</script>
-	
-    <button id="rotateAnchor" type="button" name="action" value="fotoRotate" title="Foto um 90° im Uhrzeigersinn rotieren">
-		<c:url value="/images/foto_edit_rotate.png" var="url"/>
- 		<img src="${url}" alt=""/>
-	</button>
-    
+  <!-- SCRIPTS -->
+  <c:url value="/" var="webAppUrl"/>
+  <script type="text/javascript">
+
+    imageId = "${vorgang.id}";
+    webAppUrl = "${webAppUrl}";
+    document.ondragstart = function () {
+      return false;
+    };
+  </script>
+
+  <c:url value="/script" var="scriptUrl"/>
+  <script defer="defer" type="text/javascript" src="${scriptUrl}/fotoBearbeitung.js">
+<!-- crazy fix - confusing -->
+  </script>
+  <script type="text/javascript" language="JavaScript" src="${scriptUrl}/jquery/modalDialog/js/jquery.md.js">
+<!-- crazy fix - confusing -->
+  </script>
+
+  <button id="rotateAnchor" type="button" name="action" value="fotoRotate" title="Foto um 90° im Uhrzeigersinn rotieren">
+    <c:url value="/images/foto_edit_rotate.png" var="url"/>
+    <img src="${url}" alt=""/>
+  </button>
+
  	<button id="editEnableAnchor" type="button" name="editEnable" value="editEnable" title="Foto bearbeiten">
-		<c:url value="/images/foto_edit_enable.png" var="url"/>
- 		<img src="${url}" alt=""/>
-	</button>
+    <c:url value="/images/foto_edit_enable.png" var="url"/>
+    <img src="${url}" alt=""/>
+  </button>
  	<button style="display:none" id="editDisabledAnchor" type="button" name="editDisabled" value="editDisabled" title="Bearbeitungsmodus für das Foto verlassen und Änderungen verwerfen">
-		<c:url value="/images/foto_edit_disabled.png" var="url"/>
- 		<img src="${url}" alt=""/>
-	</button>
+    <c:url value="/images/foto_edit_disabled.png" var="url"/>
+    <img src="${url}" alt=""/>
+  </button>
  	<button style="display:none" id="undoAnchor" type="button" name="undo" value="undo" title="zurück">
-		<c:url value="/images/foto_edit_undo.png" var="url"/>
- 		<img src="${url}" alt=""/>
-	</button>
-	<button style="display:none" id="redoAnchor" type="button" name="redo" value="redo" title="vor">
-		<c:url value="/images/foto_edit_redo.png" var="url"/>
- 		<img src="${url}" alt=""/>
-	</button>
-	<button  style="display:none" id="submitAnchor" type="button" name="action" value="fotoSave" title="Änderungen am Foto speichern">
-		<c:url value="/images/foto_edit_save.png" var="url"/>
- 		<img src="${url}" alt=""/>
-	</button>
+    <c:url value="/images/foto_edit_undo.png" var="url"/>
+    <img src="${url}" alt=""/>
+  </button>
+  <button style="display:none" id="redoAnchor" type="button" name="redo" value="redo" title="vor">
+    <c:url value="/images/foto_edit_redo.png" var="url"/>
+    <img src="${url}" alt=""/>
+  </button>
+  <button  style="display:none" id="submitAnchor" type="button" name="action" value="fotoSave" title="Änderungen am Foto speichern">
+    <c:url value="/images/foto_edit_save.png" var="url"/>
+    <img src="${url}" alt=""/>
+  </button>
 </jsp:root>

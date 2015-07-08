@@ -8,8 +8,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Die Dao-Klasse erlaubt die Verwaltung der Außendienst-Koordinatoren in der
- * DB.
+ * Die Dao-Klasse erlaubt die Verwaltung der Außendienst-Koordinatoren in der DB.
  *
  * @author Robert Voß (BFPI GmbH)
  */
@@ -36,7 +35,7 @@ public class AussendienstKoordinatorDao {
   }
 
   public boolean setTeamsForLogin(String login, String[] teams) {
-    if(teams != null) {
+    if (teams != null) {
       for (String team : teams) {
         AussendienstKoordinator ak = new AussendienstKoordinator();
         ak.setKoordinator(login);

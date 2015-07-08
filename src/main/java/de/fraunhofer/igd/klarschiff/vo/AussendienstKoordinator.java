@@ -5,7 +5,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 
-
 /**
  * VO für die Relation der Außendienst-Koordinatoren. <br/>
  *

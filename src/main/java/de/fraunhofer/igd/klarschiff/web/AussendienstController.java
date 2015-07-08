@@ -44,8 +44,7 @@ public class AussendienstController {
   SecurityService securityService;
 
   /**
-   * Die Methode verarbeitet den GET-Request auf der URL
-   * <code>/aussendienst</code><br/>
+   * Die Methode verarbeitet den GET-Request auf der URL <code>/aussendienst</code><br/>
    *
    * @param model Model in dem ggf. Daten für die View abgelegt werden
    * @param request Request
@@ -58,8 +57,7 @@ public class AussendienstController {
   }
 
   /**
-   * Die Methode verarbeitet den Request auf der URL
-   * <code>/aussendienst/{team}</code><br/>
+   * Die Methode verarbeitet den Request auf der URL <code>/aussendienst/{team}</code><br/>
    *
    * @param cmd
    * @param team
@@ -69,7 +67,7 @@ public class AussendienstController {
    */
   @RequestMapping(value = "/aussendienst/{team}")
   public String team(@ModelAttribute(value = "cmdaussendienst") AussendienstCommand cmd,
-          @PathVariable("team") String team, ModelMap model, HttpServletRequest request) {
+    @PathVariable("team") String team, ModelMap model, HttpServletRequest request) {
 
     if (cmd.getDatum() == null) {
       Calendar cal = Calendar.getInstance();
@@ -108,7 +106,7 @@ public class AussendienstController {
   @RequestMapping(value = "/aussendienst/{team}/update_sorting", method = RequestMethod.POST)
   public @ResponseBody
   String sortieren(@ModelAttribute(value = "cmdaussendienst") AussendienstCommand cmd,
-          @PathVariable("team") String team, ModelMap model, HttpServletRequest request) {
+    @PathVariable("team") String team, ModelMap model, HttpServletRequest request) {
 
     try {
       String[] ids = request.getParameterValues("ids[]");
@@ -143,7 +141,7 @@ public class AussendienstController {
    */
   @RequestMapping(value = "/aussendienst/{team}/reset_sorting", method = RequestMethod.POST)
   public String reset_sorting(@ModelAttribute(value = "cmdaussendienst") AussendienstCommand cmd,
-          @PathVariable("team") String team, ModelMap model, HttpServletRequest request) {
+    @PathVariable("team") String team, ModelMap model, HttpServletRequest request) {
 
     List<Auftrag> auftraege = auftragDao.findAuftraegeByTeamAndDate(team, cmd.getDatum());
     for (Auftrag auftrag : auftraege) {
@@ -166,8 +164,8 @@ public class AussendienstController {
    */
   @RequestMapping(value = "/aussendienst/{team}/entfernen/{auftrag_id}")
   public String entfernen(@ModelAttribute(value = "cmdaussendienst") AussendienstCommand cmd,
-          @PathVariable("team") String team, @PathVariable("auftrag_id") Integer auftrag_id,
-          ModelMap model, HttpServletRequest request) {
+    @PathVariable("team") String team, @PathVariable("auftrag_id") Integer auftrag_id,
+    ModelMap model, HttpServletRequest request) {
 
     Auftrag auftrag = auftragDao.find(auftrag_id);
     String datum = new SimpleDateFormat("dd.MM.yyyy").format(auftrag.getDatum());
@@ -175,7 +173,7 @@ public class AussendienstController {
       auftrag.getVorgang().setAuftrag(null);
       vorgangDao.remove(auftrag);
     }
-    return "redirect:/aussendienst/" + team +"?datum="+ datum;
+    return "redirect:/aussendienst/" + team + "?datum=" + datum;
   }
 
 }

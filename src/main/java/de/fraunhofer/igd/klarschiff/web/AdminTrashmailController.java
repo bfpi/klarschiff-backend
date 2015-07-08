@@ -17,58 +17,61 @@ import de.fraunhofer.igd.klarschiff.vo.Trashmail;
 
 /**
  * Controller zum Bearbeiten der Trashmails im Adminbereich
+ *
  * @author Stefan Audersch (Fraunhofer IGD)
  */
 @RequestMapping("/admin")
 @Controller
 @SessionAttributes("cmd")
 public class AdminTrashmailController {
-	
-	@Autowired
-	TrashmailDao trashmailDao;
-	
-	
-	/**
-	 * Die Methode verarbeitet den GET-Request auf der URL <code>/admin/trashmail</code><br/>
-	 * Seitenbeschreibung: Darstellung der Trashmails im Adminbereich
-	 * @param model Model in dem ggf. Daten für die View abgelegt werden
-	 * @param request Request
-	 * @return View, die zum Rendern des Request verwendet wird
-	 */
-	@RequestMapping(value="/trashmail", method = RequestMethod.GET)
-	public String trashmail(Model model, HttpServletRequest request){
-		AdminTrashmailCommand cmd = new AdminTrashmailCommand();
-		String trashmailStr = "";
-		for(Trashmail trashmail : trashmailDao.findAllTrashmail()) trashmailStr+=trashmail.getPattern()+"\n";
-		cmd.setTrashmailStr(trashmailStr);
-		model.addAttribute("cmd", cmd);
-		return "admin/trashmail";
-	}
-	
-	
-	/**
-	 * Die Methode verarbeitet den POST-Request auf der URL <code>/admin/trashmail</code><br/>
-	 * Seitenbeschreibung: Ändern der Trashmails im Adminbereich
-	 * @param cmd Command
-	 * @param model Model in dem ggf. Daten für die View abgelegt werden
-	 * @param request Request
-	 * @return View, die zum Rendern des Request verwendet wird
-	 */
-	@RequestMapping(value="/trashmail", method = RequestMethod.POST)
-	public String trashmailSubmit(@ModelAttribute(value = "cmd") AdminTrashmailCommand cmd, 
-    		BindingResult result, 
-    		Model model, 
-    		HttpServletRequest request) {
-		
-		trashmailDao.removeAll();
-		
-		for (String pattern : cmd.getTrashmailStr().split("\n")) {
-			if (!StringUtils.isBlank(pattern)) {
-				Trashmail trashmail = new Trashmail();
-				trashmail.setPattern(pattern.trim());
-				trashmailDao.persist(trashmail);
-			}
-		}
-		return trashmail(model, request);
-	}
+
+  @Autowired
+  TrashmailDao trashmailDao;
+
+  /**
+   * Die Methode verarbeitet den GET-Request auf der URL <code>/admin/trashmail</code><br/>
+   * Seitenbeschreibung: Darstellung der Trashmails im Adminbereich
+   *
+   * @param model Model in dem ggf. Daten für die View abgelegt werden
+   * @param request Request
+   * @return View, die zum Rendern des Request verwendet wird
+   */
+  @RequestMapping(value = "/trashmail", method = RequestMethod.GET)
+  public String trashmail(Model model, HttpServletRequest request) {
+    AdminTrashmailCommand cmd = new AdminTrashmailCommand();
+    String trashmailStr = "";
+    for (Trashmail trashmail : trashmailDao.findAllTrashmail()) {
+      trashmailStr += trashmail.getPattern() + "\n";
+    }
+    cmd.setTrashmailStr(trashmailStr);
+    model.addAttribute("cmd", cmd);
+    return "admin/trashmail";
+  }
+
+  /**
+   * Die Methode verarbeitet den POST-Request auf der URL <code>/admin/trashmail</code><br/>
+   * Seitenbeschreibung: Ändern der Trashmails im Adminbereich
+   *
+   * @param cmd Command
+   * @param model Model in dem ggf. Daten für die View abgelegt werden
+   * @param request Request
+   * @return View, die zum Rendern des Request verwendet wird
+   */
+  @RequestMapping(value = "/trashmail", method = RequestMethod.POST)
+  public String trashmailSubmit(@ModelAttribute(value = "cmd") AdminTrashmailCommand cmd,
+    BindingResult result,
+    Model model,
+    HttpServletRequest request) {
+
+    trashmailDao.removeAll();
+
+    for (String pattern : cmd.getTrashmailStr().split("\n")) {
+      if (!StringUtils.isBlank(pattern)) {
+        Trashmail trashmail = new Trashmail();
+        trashmail.setPattern(pattern.trim());
+        trashmailDao.persist(trashmail);
+      }
+    }
+    return trashmail(model, request);
+  }
 }

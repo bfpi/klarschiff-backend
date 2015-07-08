@@ -2,9 +2,9 @@
 /* @author Frank Christiner (Fraunhofer IGD) */
 
 .printButtons, .noViewOnPrint{
-	display: none;
+  display: none;
 }
 div#root_style_content {
-    background-color:transparent;
-    box-shadow: none;
+  background-color:transparent;
+  box-shadow: none;
 }

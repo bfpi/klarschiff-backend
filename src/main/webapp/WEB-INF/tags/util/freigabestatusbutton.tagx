@@ -1,57 +1,57 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <jsp:root xmlns:c="http://java.sun.com/jsp/jstl/core" 
-	xmlns:spring="http://www.springframework.org/tags" 
-	xmlns:jsp="http://java.sun.com/JSP/Page" 
-	xmlns:fx="http://igd.fraunhofer.de/tags/elfunctions" 
-	version="2.0"
-	>
-	<jsp:output omit-xml-declaration="yes" />
+          xmlns:spring="http://www.springframework.org/tags"
+          xmlns:jsp="http://java.sun.com/JSP/Page"
+          xmlns:fx="http://igd.fraunhofer.de/tags/elfunctions"
+          version="2.0"
+          >
+  <jsp:output omit-xml-declaration="yes" />
 
-	<jsp:directive.attribute name="name" type="java.lang.String" required="true" rtexprvalue="true" description="Name der Spalte" />
-	<jsp:directive.attribute name="status" type="de.fraunhofer.igd.klarschiff.vo.EnumFreigabeStatus" required="true" rtexprvalue="true" description="Name der Spalte" />
-	<jsp:directive.attribute name="geloeschtEnable" type="java.lang.String" required="false" rtexprvalue="true" description="Name der Spalte" />
-	<jsp:directive.attribute name="render" type="java.lang.Boolean" required="false" rtexprvalue="true" description="Indicate if the contents of this tag and all enclosed tags should be rendered (default 'true')" />
+  <jsp:directive.attribute name="name" type="java.lang.String" required="true" rtexprvalue="true" description="Name der Spalte" />
+  <jsp:directive.attribute name="status" type="de.fraunhofer.igd.klarschiff.vo.EnumFreigabeStatus" required="true" rtexprvalue="true" description="Name der Spalte" />
+  <jsp:directive.attribute name="geloeschtEnable" type="java.lang.String" required="false" rtexprvalue="true" description="Name der Spalte" />
+  <jsp:directive.attribute name="render" type="java.lang.Boolean" required="false" rtexprvalue="true" description="Indicate if the contents of this tag and all enclosed tags should be rendered (default 'true')" />
 
-  	<c:if test="${empty render or render}">
+  <c:if test="${empty render or render}">
 
-		<c:choose>
-			<c:when test="${not empty geloeschtEnable and geloeschtEnable}">
-				<c:set value="${fx:array('intern,extern,geloescht')}" var="statusAlle"/>
-			</c:when>
-			<c:otherwise>
-				<c:set value="${fx:array('intern,extern')}" var="statusAlle"/>
-			</c:otherwise>
-		</c:choose>
+    <c:choose>
+      <c:when test="${not empty geloeschtEnable and geloeschtEnable}">
+        <c:set value="${fx:array('intern,extern,geloescht')}" var="statusAlle"/>
+      </c:when>
+      <c:otherwise>
+        <c:set value="${fx:array('intern,extern')}" var="statusAlle"/>
+      </c:otherwise>
+    </c:choose>
 
-		<span class="freigabestatusbutton">
-			<c:forEach items="${statusAlle}" var="statusCurrent">
-				<c:choose>
-					<c:when test="${status==statusCurrent}">
-						<button disabled="disabled" name="action" value="freigabeStatus_${name}_${statusCurrent}" title="Freigabestatus: ${statusCurrent}">
-							<c:url value="/images/freigabeStatus_${statusCurrent}.png" var="url"/>
-					 		<img src="${url}" alt=""/>										
-						</button>
-					</c:when>
-					<c:otherwise>
-                        <c:choose>
-                            <c:when test="${statusCurrent=='geloescht'}">
-                                <button name="action" value="freigabeStatus_${name}_${statusCurrent}"  title="Freigabestatus auf „gelöscht“ setzen">
-                                    <c:url value="/images/freigabeStatus_${statusCurrent}.png" var="url" />
-                                    <img src="${url}" alt=""/>  												
-                                </button>
-                            </c:when>
-                            <c:otherwise>
-                                <button name="action" value="freigabeStatus_${name}_${statusCurrent}"  title="Freigabestatus auf „${statusCurrent}“ setzen">
-                                    <c:url value="/images/freigabeStatus_${statusCurrent}.png" var="url" />
-                                    <img src="${url}" alt=""/>  												
-                                </button>
-                            </c:otherwise>
-                        </c:choose>
-					</c:otherwise>
-				</c:choose>
-			
-			</c:forEach>
-		</span>
+    <span class="freigabestatusbutton">
+      <c:forEach items="${statusAlle}" var="statusCurrent">
+        <c:choose>
+          <c:when test="${status==statusCurrent}">
+            <button disabled="disabled" name="action" value="freigabeStatus_${name}_${statusCurrent}" title="Freigabestatus: ${statusCurrent}">
+              <c:url value="/images/freigabeStatus_${statusCurrent}.png" var="url"/>
+              <img src="${url}" alt=""/>
+            </button>
+          </c:when>
+          <c:otherwise>
+            <c:choose>
+              <c:when test="${statusCurrent=='geloescht'}">
+                <button name="action" value="freigabeStatus_${name}_${statusCurrent}"  title="Freigabestatus auf „gelöscht“ setzen">
+                  <c:url value="/images/freigabeStatus_${statusCurrent}.png" var="url" />
+                  <img src="${url}" alt=""/>
+                </button>
+              </c:when>
+              <c:otherwise>
+                <button name="action" value="freigabeStatus_${name}_${statusCurrent}"  title="Freigabestatus auf „${statusCurrent}“ setzen">
+                  <c:url value="/images/freigabeStatus_${statusCurrent}.png" var="url" />
+                  <img src="${url}" alt=""/>
+                </button>
+              </c:otherwise>
+            </c:choose>
+          </c:otherwise>
+        </c:choose>
 
-	</c:if>
+      </c:forEach>
+    </span>
+
+  </c:if>
 </jsp:root>

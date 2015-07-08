@@ -19,63 +19,62 @@ import de.fraunhofer.igd.klarschiff.util.StreamUtil;
 
 @Controller
 public class DokumentationController {
-	
-	@Autowired
-	ServletContext servletContext;
-	
-	@RequestMapping(value="/dokumentation/index", method = RequestMethod.GET)
-    public String dokumentationIndex() {
-		return "dokumentation/index";
-	}
 
-	@RequestMapping(value="/dokumentation/api", method = RequestMethod.GET)
-	public String dokumentationApi() {
-		return "dokumentation/api";
-	}
-	
-	@RequestMapping(value="/dokumentation/{id}.htm", method = RequestMethod.GET)
-    public String dokumentation(@PathVariable("id") String id, Model model) throws Exception {
-		String s = StreamUtil.readInputStreamToString(servletContext.getResourceAsStream("/dokumentation/"+id+".html"), "UTF-8");
-		s = StringUtils.substringAfter(s, "<body>");
-		s = StringUtils.substringBefore(s, "<body>");
-		s = s.replaceAll("href=\"Benutzerhandbuch", "href=\"Benutzerhandbuch.htm");
-		s = s.replaceAll("href=\"Administrationshandbuch", "href=\"Administrationshandbuch.htm");
-		s = s.replaceAll("href=\"Entwicklerdokumentation", "href=\"Entwicklerdokumentation.htm");
+  @Autowired
+  ServletContext servletContext;
 
-		model.addAttribute("content", s);
-		model.addAttribute("externUrlId", id);
-		return "dokumentation/"+id;
-	}
+  @RequestMapping(value = "/dokumentation/index", method = RequestMethod.GET)
+  public String dokumentationIndex() {
+    return "dokumentation/index";
+  }
+
+  @RequestMapping(value = "/dokumentation/api", method = RequestMethod.GET)
+  public String dokumentationApi() {
+    return "dokumentation/api";
+  }
+
+  @RequestMapping(value = "/dokumentation/{id}.htm", method = RequestMethod.GET)
+  public String dokumentation(@PathVariable("id") String id, Model model) throws Exception {
+    String s = StreamUtil.readInputStreamToString(servletContext.getResourceAsStream("/dokumentation/" + id + ".html"), "UTF-8");
+    s = StringUtils.substringAfter(s, "<body>");
+    s = StringUtils.substringBefore(s, "<body>");
+    s = s.replaceAll("href=\"Benutzerhandbuch", "href=\"Benutzerhandbuch.htm");
+    s = s.replaceAll("href=\"Administrationshandbuch", "href=\"Administrationshandbuch.htm");
+    s = s.replaceAll("href=\"Entwicklerdokumentation", "href=\"Entwicklerdokumentation.htm");
+
+    model.addAttribute("content", s);
+    model.addAttribute("externUrlId", id);
+    return "dokumentation/" + id;
+  }
 
 //	@RequestMapping(value="/dokumentation/benutzer", method = RequestMethod.GET)
 //	public String dokumentationBenutzer(Model model, HttpServletRequest request) {
 //		return "dokumentation/benutzer";
 //	}
-	
-	@RequestMapping(value="/dokumentation/{id}.html", method = RequestMethod.GET)
-	@ResponseBody
-	public void dokumentationHtml(
-			@PathVariable("id") String id, 
-//			@RequestParam(value = "intern", defaultValue="false") boolean intern, 
-			Model model, 
-			HttpServletRequest request, 
-			HttpServletResponse response) throws Exception {
-		String s = StreamUtil.readInputStreamToString(servletContext.getResourceAsStream("/dokumentation/"+id+".html"), "UTF-8");
-		s = s.replaceFirst("</head>", "<link rel=\"stylesheet\" type=\"text/css\" href=\"../styles/styles.css\"><title>Klarschiff Backend - "+id+"</title></head>");
-		s = s.replaceFirst("<body>", "<body><center><div id=\"documentationContent\">");
-		s = s.replaceFirst("</body>", "</div></center></body>");
+  @RequestMapping(value = "/dokumentation/{id}.html", method = RequestMethod.GET)
+  @ResponseBody
+  public void dokumentationHtml(
+    @PathVariable("id") String id,
+    //			@RequestParam(value = "intern", defaultValue="false") boolean intern,
+    Model model,
+    HttpServletRequest request,
+    HttpServletResponse response) throws Exception {
+    String s = StreamUtil.readInputStreamToString(servletContext.getResourceAsStream("/dokumentation/" + id + ".html"), "UTF-8");
+    s = s.replaceFirst("</head>", "<link rel=\"stylesheet\" type=\"text/css\" href=\"../styles/styles.css\"><title>Klarschiff Backend - " + id + "</title></head>");
+    s = s.replaceFirst("<body>", "<body><center><div id=\"documentationContent\">");
+    s = s.replaceFirst("</body>", "</div></center></body>");
 //		if (!intern) {
-			s = s.replaceAll("href=\"Benutzerhandbuch", "href=\"Benutzerhandbuch.html");
-			s = s.replaceAll("href=\"Administrationshandbuch", "href=\"Administrationshandbuch.html");
-			s = s.replaceAll("href=\"Entwicklerdokumentation", "href=\"Entwicklerdokumentation.html");
+    s = s.replaceAll("href=\"Benutzerhandbuch", "href=\"Benutzerhandbuch.html");
+    s = s.replaceAll("href=\"Administrationshandbuch", "href=\"Administrationshandbuch.html");
+    s = s.replaceAll("href=\"Entwicklerdokumentation", "href=\"Entwicklerdokumentation.html");
 //		}
-		response.setHeader("Content-Type", "text/html;charset=UTF-8");
-		response.setStatus(HttpServletResponse.SC_OK);
-		PrintWriter writer = response.getWriter();
-		writer.write(s);
-		response.flushBuffer();
-	}
-	
+    response.setHeader("Content-Type", "text/html;charset=UTF-8");
+    response.setStatus(HttpServletResponse.SC_OK);
+    PrintWriter writer = response.getWriter();
+    writer.write(s);
+    response.flushBuffer();
+  }
+
 //	@RequestMapping(value="/dokumentation/admin", method = RequestMethod.GET)
 //	public String dokumentationAdmin(Model model, HttpServletRequest request) {
 //		return "dokumentation/admin";
@@ -90,5 +89,4 @@ public class DokumentationController {
 //	public String dokumentationApidoc(Model model, HttpServletRequest request) {
 //		return "dokumentation/api";
 //	}
-	
 }

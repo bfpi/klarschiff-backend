@@ -14,9 +14,8 @@ public class GeoTools {
   public static final String wgs84Projection = "EPSG:4326";
 
   /**
-   * Sichere Tranformation eines Punktes von einer Projektion in eine andere.
-   * Berücksichtigung der eventuell notwendigen Koordinatenvertauschung, falls
-   * eine der Projektionen WGS84 ist.
+   * Sichere Tranformation eines Punktes von einer Projektion in eine andere. Berücksichtigung der
+   * eventuell notwendigen Koordinatenvertauschung, falls eine der Projektionen WGS84 ist.
    *
    * @param point mit Koordinatenformat [LAT, LONG]
    * @param sourceProjection Name der Quellprojektion

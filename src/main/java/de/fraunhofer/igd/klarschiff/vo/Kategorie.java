@@ -31,157 +31,159 @@ import org.codehaus.jackson.annotate.JsonIgnore;
  * VO für die Kategorien der Vorgänge. <br/>
  * Hauptkategorien haben ein <code>typ</code> aber kein <code>parent</code><br/>
  * Unterkategorien haben keinen <code>typ</code> aber ein <code>parent</code>
+ *
  * @author Stefan Audersch (Fraunhofer IGD)
  */
 @SuppressWarnings("serial")
 @Entity
 public class Kategorie implements Serializable {
 
-	/* --------------- Attribute ----------------------------*/
+  /* --------------- Attribute ----------------------------*/
+  /**
+   * Id der Kategorie
+   */
+  @Id
+  @TableGenerator(
+    name = "KategorieSequence",
+    table = "klarschiff_KategorieSequence",
+    initialValue = 1,
+    allocationSize = 1)
+  @GeneratedValue(strategy = GenerationType.TABLE, generator = "KategorieSequence")
+  private Long id;
 
-	/**
-	 * Id der Kategorie
-	 */
-	@Id
-	@TableGenerator(
-            name="KategorieSequence", 
-            table="klarschiff_KategorieSequence",
-            initialValue=1,
-            allocationSize=1)
-    @GeneratedValue(strategy=GenerationType.TABLE, generator="KategorieSequence")
-    private Long id;
+  /**
+   * Typ der Kategorie
+   */
+  @Enumerated(EnumType.STRING)
+  private EnumVorgangTyp typ;
 
-	/**
-	 * Typ der Kategorie
-	 */
-	@Enumerated(EnumType.STRING)
-	private EnumVorgangTyp typ;
-	
-	/**
-	 * Name der Kategorie
-	 */
-	@NotNull
-    @Size(max = 200)
-    private String name;
+  /**
+   * Name der Kategorie
+   */
+  @NotNull
+  @Size(max = 200)
+  private String name;
 
-	/**
-	 * Ist eine nähere Beschreibung durch das Feld Betreff und/oder Details notwendig?
-	 */
-	@Enumerated(EnumType.STRING)
-	private EnumNaehereBeschreibungNotwendig naehereBeschreibungNotwendig = EnumNaehereBeschreibungNotwendig.keine; 
-	
-	/**
-	 * übergeordnete Kategorie
-	 */
-    @ManyToOne
-    private Kategorie parent;
+  /**
+   * Ist eine nähere Beschreibung durch das Feld Betreff und/oder Details notwendig?
+   */
+  @Enumerated(EnumType.STRING)
+  private EnumNaehereBeschreibungNotwendig naehereBeschreibungNotwendig = EnumNaehereBeschreibungNotwendig.keine;
 
-    /**
-     * untergeordnete Kategorien
-     */
-    @JsonIgnore
-    @ManyToMany(cascade = CascadeType.ALL, mappedBy = "parent")
-    @OrderBy(value="name")
-    private List<de.fraunhofer.igd.klarschiff.vo.Kategorie> children = new ArrayList<de.fraunhofer.igd.klarschiff.vo.Kategorie>();
+  /**
+   * übergeordnete Kategorie
+   */
+  @ManyToOne
+  private Kategorie parent;
 
-    /**
-     * Liste von intialen Zuständigkeiten für die Vorgänge mit der Kategorie
-     */
+  /**
+   * untergeordnete Kategorien
+   */
   @JsonIgnore
-	@ElementCollection(fetch=FetchType.EAGER)
-    private List<String> initialZustaendigkeiten;
-    
-	/* --------------- transient ----------------------------*/
-    
-	/**
-	 * Gibt den Namen der Kategorie als "escaped HTML" zurück.
-	 */
-    @Transient
-    public String getNameEscapeHtml() {
-    	return StringEscapeUtils.escapeHtml(getName());
+  @ManyToMany(cascade = CascadeType.ALL, mappedBy = "parent")
+  @OrderBy(value = "name")
+  private List<de.fraunhofer.igd.klarschiff.vo.Kategorie> children = new ArrayList<de.fraunhofer.igd.klarschiff.vo.Kategorie>();
+
+  /**
+   * Liste von intialen Zuständigkeiten für die Vorgänge mit der Kategorie
+   */
+  @JsonIgnore
+  @ElementCollection(fetch = FetchType.EAGER)
+  private List<String> initialZustaendigkeiten;
+
+  /* --------------- transient ----------------------------*/
+  /**
+   * Gibt den Namen der Kategorie als "escaped HTML" zurück.
+   */
+  @Transient
+  public String getNameEscapeHtml() {
+    return StringEscapeUtils.escapeHtml(getName());
+  }
+
+  /**
+   * Setzt die Liste der initialen Zuständigkeiten
+   *
+   * @param zustaendigkeiten initiale zuständigkeiten als komma-separierter String
+   */
+  @Transient
+  public void setInitialZustaendigkeit(String zustaendigkeiten) {
+    initialZustaendigkeiten = new ArrayList<String>();
+    for (String zustaendigkeit : zustaendigkeiten.split(",")) {
+      if (!StringUtils.isBlank(zustaendigkeit)) {
+        initialZustaendigkeiten.add(zustaendigkeit.trim());
+      }
     }
-    
-    /**
-     * Setzt die Liste der initialen Zuständigkeiten
-     * @param zustaendigkeiten initiale zuständigkeiten als komma-separierter String
-     */
-    @Transient
-    public void setInitialZustaendigkeit(String zustaendigkeiten) {
-    	initialZustaendigkeiten = new ArrayList<String>();
-    	for(String zustaendigkeit : zustaendigkeiten.split(","))
-    		if (!StringUtils.isBlank(zustaendigkeit))
-    			initialZustaendigkeiten.add(zustaendigkeit.trim());
+  }
+
+
+  /* --------------- Persitenzfunktionen ----------------------------*/
+  /**
+   * Ermittelt die Kategorie anhand der Id. (Die Methode wird für das Binding bei WebMVC benötigt.)
+   *
+   * @param id Id der Kategorie
+   */
+  public static Kategorie findKategorie(Long id) {
+    if (id == null) {
+      return null;
     }
-    
+    return AppContext.getEntityManager().find(Kategorie.class, id);
+  }
 
-    /* --------------- Persitenzfunktionen ----------------------------*/
+  /* --------------- GET + SET ----------------------------*/
+  public String getName() {
+    return this.name;
+  }
 
-	/**
-	 * Ermittelt die Kategorie anhand der Id. (Die Methode wird für das Binding bei WebMVC benötigt.)
-	 * @param id Id der Kategorie
-	 */
-	public static Kategorie findKategorie(Long id) {
-		if (id == null) return null;
-		return AppContext.getEntityManager().find(Kategorie.class, id);
-	}
-	
-	/* --------------- GET + SET ----------------------------*/
-    
-	public String getName() {
-        return this.name;
-    }
+  public void setName(String name) {
+    this.name = name;
+  }
 
-	public void setName(String name) {
-        this.name = name;
-    }
+  public Kategorie getParent() {
+    return this.parent;
+  }
 
-	public Kategorie getParent() {
-        return this.parent;
-    }
+  public void setParent(Kategorie parent) {
+    this.parent = parent;
+  }
 
-	public void setParent(Kategorie parent) {
-        this.parent = parent;
-    }
+  public List<Kategorie> getChildren() {
+    return this.children;
+  }
 
-	public List<Kategorie> getChildren() {
-        return this.children;
-    }
+  public void setChildren(List<Kategorie> children) {
+    this.children = children;
+  }
 
-	public void setChildren(List<Kategorie> children) {
-        this.children = children;
-    }
+  public Long getId() {
+    return this.id;
+  }
 
+  public void setId(Long id) {
+    this.id = id;
+  }
 
-	public Long getId() {
-        return this.id;
-    }
+  public EnumVorgangTyp getTyp() {
+    return typ;
+  }
 
-	public void setId(Long id) {
-        this.id = id;
-    }
+  public void setTyp(EnumVorgangTyp typ) {
+    this.typ = typ;
+  }
 
-	public EnumVorgangTyp getTyp() {
-		return typ;
-	}
+  public EnumNaehereBeschreibungNotwendig getNaehereBeschreibungNotwendig() {
+    return naehereBeschreibungNotwendig;
+  }
 
-	public void setTyp(EnumVorgangTyp typ) {
-		this.typ = typ;
-	}
+  public void setNaehereBeschreibungNotwendig(
+    EnumNaehereBeschreibungNotwendig naehereBeschreibungNotwendig) {
+    this.naehereBeschreibungNotwendig = naehereBeschreibungNotwendig;
+  }
 
-	public EnumNaehereBeschreibungNotwendig getNaehereBeschreibungNotwendig() {
-		return naehereBeschreibungNotwendig;
-	}
+  public List<String> getInitialZustaendigkeiten() {
+    return initialZustaendigkeiten;
+  }
 
-	public void setNaehereBeschreibungNotwendig(
-			EnumNaehereBeschreibungNotwendig naehereBeschreibungNotwendig) {
-		this.naehereBeschreibungNotwendig = naehereBeschreibungNotwendig;
-	}
-
-	public List<String> getInitialZustaendigkeiten() {
-		return initialZustaendigkeiten;
-	}
-
-	public void setInitialZustaendigkeiten(List<String> initialZustaendigkeiten) {
-		this.initialZustaendigkeiten = initialZustaendigkeiten;
-	}
+  public void setInitialZustaendigkeiten(List<String> initialZustaendigkeiten) {
+    this.initialZustaendigkeiten = initialZustaendigkeiten;
+  }
 }

@@ -2,134 +2,134 @@ package de.fraunhofer.igd.klarschiff.service.settings;
 
 import org.springframework.stereotype.Service;
 
-
 /**
- * Die Klasse stellt einen Service bereit über den auf verschiedene Properties zugegriffen werden kann.
+ * Die Klasse stellt einen Service bereit über den auf verschiedene Properties zugegriffen werden
+ * kann.
+ *
  * @author Stefan Audersch (Fraunhofer IGD)
  */
 @Service
 public class SettingsService {
 
-	String version;
-	Long vorgangIdeeUnterstuetzer;
-	Integer vorgangStatusKommentarTextlaengeMaximal;
-	String proxyHost;
-	String proxyPort;
-	boolean showLogins;
-	boolean showFehlerDetails;
-	String bugTrackingUrl;
-	String contextAppTitle;
-	String contextAppArea;
-	boolean contextAppDemo;
-	
-	/**
-	 * Erlaubt den Zugriff auf ein beliebiges Property aus der <code>settings.properties</code> wobei das Profil berücksichtigt wird.
-	 * @param name Name der Property
-	 * @return Wert der Property
-	 */
-	public String getPropertyValue(String name) {
-		return PropertyPlaceholderConfigurer.getPropertyValue(name);
-	}
-	
-	
-	/**
-	 * Ermittelt das Verwendet Profil
-	 * @return Profil
-	 */
-	public String getProfile() {
-		return PropertyPlaceholderConfigurer.getProfile();
-	}
+  String version;
+  Long vorgangIdeeUnterstuetzer;
+  Integer vorgangStatusKommentarTextlaengeMaximal;
+  String proxyHost;
+  String proxyPort;
+  boolean showLogins;
+  boolean showFehlerDetails;
+  String bugTrackingUrl;
+  String contextAppTitle;
+  String contextAppArea;
+  boolean contextAppDemo;
 
-	/* --------------- GET + SET ----------------------------*/
-	
-	public String getVersion() {
-		return version;
-	}
+  /**
+   * Erlaubt den Zugriff auf ein beliebiges Property aus der <code>settings.properties</code> wobei
+   * das Profil berücksichtigt wird.
+   *
+   * @param name Name der Property
+   * @return Wert der Property
+   */
+  public String getPropertyValue(String name) {
+    return PropertyPlaceholderConfigurer.getPropertyValue(name);
+  }
 
-	public void setVersion(String version) {
-		this.version = version;
-	}
+  /**
+   * Ermittelt das Verwendet Profil
+   *
+   * @return Profil
+   */
+  public String getProfile() {
+    return PropertyPlaceholderConfigurer.getProfile();
+  }
 
-	public Long getVorgangIdeeUnterstuetzer() {
-		return vorgangIdeeUnterstuetzer;
-	}
+  /* --------------- GET + SET ----------------------------*/
+  public String getVersion() {
+    return version;
+  }
 
-	public void setVorgangIdeeUnterstuetzer(Long vorgangIdeeUnterstuetzer) {
-		this.vorgangIdeeUnterstuetzer = vorgangIdeeUnterstuetzer;
-	}
-    
-    public Integer getVorgangStatusKommentarTextlaengeMaximal() {
-		return vorgangStatusKommentarTextlaengeMaximal;
-	}
+  public void setVersion(String version) {
+    this.version = version;
+  }
 
-	public void setVorgangStatusKommentarTextlaengeMaximal(Integer vorgangStatusKommentarTextlaengeMaximal) {
-		this.vorgangStatusKommentarTextlaengeMaximal = vorgangStatusKommentarTextlaengeMaximal;
-	}
+  public Long getVorgangIdeeUnterstuetzer() {
+    return vorgangIdeeUnterstuetzer;
+  }
 
-	public String getProxyHost() {
-		return proxyHost;
-	}
+  public void setVorgangIdeeUnterstuetzer(Long vorgangIdeeUnterstuetzer) {
+    this.vorgangIdeeUnterstuetzer = vorgangIdeeUnterstuetzer;
+  }
 
-	public void setProxyHost(String proxyHost) {
-		this.proxyHost = proxyHost;
-	}
+  public Integer getVorgangStatusKommentarTextlaengeMaximal() {
+    return vorgangStatusKommentarTextlaengeMaximal;
+  }
 
-	public String getProxyPort() {
-		return proxyPort;
-	}
+  public void setVorgangStatusKommentarTextlaengeMaximal(Integer vorgangStatusKommentarTextlaengeMaximal) {
+    this.vorgangStatusKommentarTextlaengeMaximal = vorgangStatusKommentarTextlaengeMaximal;
+  }
 
-	public void setProxyPort(String proxyPort) {
-		this.proxyPort = proxyPort;
-	}
+  public String getProxyHost() {
+    return proxyHost;
+  }
 
-	public boolean getShowLogins() {
-		return showLogins;
-	}
+  public void setProxyHost(String proxyHost) {
+    this.proxyHost = proxyHost;
+  }
 
-	public void setShowLogins(boolean showLogins) {
-		this.showLogins = showLogins;
-	}
-        
-	public boolean getShowFehlerDetails() {
-		return showFehlerDetails;
-	}
+  public String getProxyPort() {
+    return proxyPort;
+  }
 
-	public void setShowFehlerDetails(boolean showFehlerDetails) {
-		this.showFehlerDetails = showFehlerDetails;
-	}
+  public void setProxyPort(String proxyPort) {
+    this.proxyPort = proxyPort;
+  }
 
-	public String getBugTrackingUrl() {
-		return bugTrackingUrl;
-	}
+  public boolean getShowLogins() {
+    return showLogins;
+  }
 
-	public void setBugTrackingUrl(String bugTrackingUrl) {
-		this.bugTrackingUrl = bugTrackingUrl;
-	}
+  public void setShowLogins(boolean showLogins) {
+    this.showLogins = showLogins;
+  }
 
-	public String getContextAppTitle() {
-		return contextAppTitle;
-	}
+  public boolean getShowFehlerDetails() {
+    return showFehlerDetails;
+  }
 
-	public void setContextAppTitle(String contextAppTitle) {
-		this.contextAppTitle = contextAppTitle;
-	}
+  public void setShowFehlerDetails(boolean showFehlerDetails) {
+    this.showFehlerDetails = showFehlerDetails;
+  }
 
-	public String getContextAppArea() {
-		return contextAppArea;
-	}
+  public String getBugTrackingUrl() {
+    return bugTrackingUrl;
+  }
 
-	public void setContextAppArea(String contextAppArea) {
-		this.contextAppArea = contextAppArea;
-	}
+  public void setBugTrackingUrl(String bugTrackingUrl) {
+    this.bugTrackingUrl = bugTrackingUrl;
+  }
 
-	public boolean getContextAppDemo() {
-		return contextAppDemo;
-	}
+  public String getContextAppTitle() {
+    return contextAppTitle;
+  }
 
-	public void setContextAppDemo(boolean contextAppDemo) {
-		this.contextAppDemo = contextAppDemo;
-	}
+  public void setContextAppTitle(String contextAppTitle) {
+    this.contextAppTitle = contextAppTitle;
+  }
 
+  public String getContextAppArea() {
+    return contextAppArea;
+  }
 
+  public void setContextAppArea(String contextAppArea) {
+    this.contextAppArea = contextAppArea;
+  }
+
+  public boolean getContextAppDemo() {
+    return contextAppDemo;
+  }
+
+  public void setContextAppDemo(boolean contextAppDemo) {
+    this.contextAppDemo = contextAppDemo;
+  }
 
 }

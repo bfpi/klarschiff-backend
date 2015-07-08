@@ -13,48 +13,51 @@ import de.fraunhofer.igd.klarschiff.vo.Kommentar;
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
 
 /**
- * Die Dao-Klasse ermöglicht den Zugriff auf die Kommentare der Vorgänge 
+ * Die Dao-Klasse ermöglicht den Zugriff auf die Kommentare der Vorgänge
+ *
  * @author Stefan Audersch (Fraunhofer IGD)
  */
 @Repository
 public class KommentarDao {
-	
-	@PersistenceContext
-	EntityManager em;
-	
-	@Transactional
-    public void persist(Kommentar kommentar) {
-        em.persist(kommentar);
+
+  @PersistenceContext
+  EntityManager em;
+
+  @Transactional
+  public void persist(Kommentar kommentar) {
+    em.persist(kommentar);
+  }
+
+  @Transactional
+  public void merge(Kommentar kommentar) {
+    em.merge(kommentar);
+    em.flush();
+  }
+
+  @Transactional
+  public List<Kommentar> findKommentareForVorgang(Vorgang vorgang) {
+    return em.createQuery("SELECT o FROM Kommentar o WHERE o.vorgang=:vorgang AND o.geloescht = 'false' ORDER BY o.datum DESC", Kommentar.class).setParameter("vorgang", vorgang).getResultList();
+  }
+
+  @Transactional
+  public List<Kommentar> findKommentareForVorgang(Vorgang vorgang, Integer page, Integer size) {
+    TypedQuery<Kommentar> query = em.createQuery("SELECT o FROM Kommentar o WHERE o.vorgang=:vorgang AND o.geloescht = 'false' ORDER BY o.datum DESC", Kommentar.class).setParameter("vorgang", vorgang);
+
+    if (page != null && size != null) {
+      query.setFirstResult((page - 1) * size);
     }
-    
-	@Transactional
-	public void merge(Kommentar kommentar) {
-		em.merge(kommentar);
-		em.flush();
-	}
-	
-	@Transactional
-	public List<Kommentar> findKommentareForVorgang(Vorgang vorgang) {
-		return em.createQuery("SELECT o FROM Kommentar o WHERE o.vorgang=:vorgang AND o.geloescht = 'false' ORDER BY o.datum DESC", Kommentar.class).setParameter("vorgang", vorgang).getResultList();
-	}
-	
-	@Transactional
-	public List<Kommentar> findKommentareForVorgang(Vorgang vorgang, Integer page, Integer size) {
-		TypedQuery<Kommentar> query = em.createQuery("SELECT o FROM Kommentar o WHERE o.vorgang=:vorgang AND o.geloescht = 'false' ORDER BY o.datum DESC", Kommentar.class).setParameter("vorgang", vorgang);
-		
-		if (page!=null && size!=null)
-			query.setFirstResult((page-1)*size);
-		if (size!=null)
-			query.setMaxResults(size);
+    if (size != null) {
+      query.setMaxResults(size);
+    }
 
-		return query.getResultList();
-	}
-	
-	public long countKommentare(Vorgang vorgang) {
-		return em.createQuery("SELECT COUNT(o) FROM Kommentar o WHERE o.vorgang=:vorgang AND o.geloescht = 'false'", Long.class).setParameter("vorgang", vorgang).getSingleResult();
-	}
+    return query.getResultList();
+  }
 
-	public Kommentar findById(long id) {
-		return em.find(Kommentar.class, id);
-	}
+  public long countKommentare(Vorgang vorgang) {
+    return em.createQuery("SELECT COUNT(o) FROM Kommentar o WHERE o.vorgang=:vorgang AND o.geloescht = 'false'", Long.class).setParameter("vorgang", vorgang).getSingleResult();
+  }
+
+  public Kommentar findById(long id) {
+    return em.find(Kommentar.class, id);
+  }
 }

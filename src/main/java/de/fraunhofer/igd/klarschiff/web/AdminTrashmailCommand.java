@@ -4,26 +4,25 @@ import java.io.Serializable;
 
 /**
  * Command für Trashmails im Adminbereich
+ *
  * @author Stefan Audersch (Fraunhofer IGD)
  */
 @SuppressWarnings("serial")
 public class AdminTrashmailCommand implements Serializable {
 
-	/* --------------- Attribute ----------------------------*/
+  /* --------------- Attribute ----------------------------*/
+  /**
+   * Strings mit einer Liste von Trashmailadressen
+   */
+  String trashmailStr;
 
-	/**
-	 * Strings mit einer Liste von Trashmailadressen
-	 */
-	String trashmailStr;
-	
-	/* --------------- GET + SET ----------------------------*/
+  /* --------------- GET + SET ----------------------------*/
+  public String getTrashmailStr() {
+    return trashmailStr;
+  }
 
-	public String getTrashmailStr() {
-		return trashmailStr;
-	}
-	public void setTrashmailStr(String trashmailStr) {
-		this.trashmailStr = trashmailStr;
-	}
-	
-	
+  public void setTrashmailStr(String trashmailStr) {
+    this.trashmailStr = trashmailStr;
+  }
+
 }

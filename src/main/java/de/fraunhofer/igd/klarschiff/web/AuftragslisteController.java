@@ -30,8 +30,8 @@ public class AuftragslisteController {
   @Autowired
   AuftragDao auftragDao;
 
-	@Autowired
-	VerlaufDao verlaufDao;
+  @Autowired
+  VerlaufDao verlaufDao;
 
   @Autowired
   VorgangDao vorgangDao;
@@ -40,8 +40,7 @@ public class AuftragslisteController {
   SecurityService securityService;
 
   /**
-   * Die Methode verarbeitet den GET-Request auf der URL
-   * <code>/auftragsliste</code><br/>
+   * Die Methode verarbeitet den GET-Request auf der URL <code>/auftragsliste</code><br/>
    *
    * @param model Model in dem ggf. Daten für die View abgelegt werden
    * @param request Request
@@ -54,8 +53,7 @@ public class AuftragslisteController {
   }
 
   /**
-   * Die Methode verarbeitet den Request auf der URL
-   * <code>/auftragsliste</code><br/>
+   * Die Methode verarbeitet den Request auf der URL <code>/auftragsliste</code><br/>
    *
    * @param cmd
    * @param team
@@ -65,7 +63,7 @@ public class AuftragslisteController {
    */
   @RequestMapping(value = "/auftragsliste/{team}")
   public String liste(@ModelAttribute(value = "cmdauftragsliste") AuftragslisteCommand cmd,
-          @PathVariable("team") String team, ModelMap model, HttpServletRequest request) {
+    @PathVariable("team") String team, ModelMap model, HttpServletRequest request) {
 
     if (cmd.getDatum() == null) {
       Date d = new Date();
@@ -101,15 +99,15 @@ public class AuftragslisteController {
   @RequestMapping(value = "/auftragsliste/{auftrag_id}/update_status", method = RequestMethod.POST)
   public @ResponseBody
   String update_status(@ModelAttribute(value = "cmdauftragsliste") AuftragslisteCommand cmd,
-          @PathVariable("auftrag_id") Integer auftrag_id, ModelMap model, HttpServletRequest request) {
+    @PathVariable("auftrag_id") Integer auftrag_id, ModelMap model, HttpServletRequest request) {
 
     try {
       Auftrag auftrag = auftragDao.find(auftrag_id);
       verlaufDao.addVerlaufToVorgang(auftrag.getVorgang(), EnumVerlaufTyp.aufgabeStatus, auftrag.getStatus().getText(), cmd.getStatus().getText());
-      
+
       auftrag.setStatus(cmd.getStatus());
       vorgangDao.merge(auftrag);
-      
+
       return "true";
     } catch (Exception e) {
       e.printStackTrace();

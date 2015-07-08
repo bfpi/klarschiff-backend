@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <jsp:root xmlns:c="http://java.sun.com/jsp/jstl/core" 
-	xmlns:spring="http://www.springframework.org/tags" 
-	xmlns:jsp="http://java.sun.com/JSP/Page" 
-	xmlns:fx="http://igd.fraunhofer.de/tags/elfunctions" 
-	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
-	xmlns:form="http://www.springframework.org/tags/form"
-	version="2.0"
-	>
-	<jsp:output omit-xml-declaration="yes" />
+          xmlns:spring="http://www.springframework.org/tags"
+          xmlns:jsp="http://java.sun.com/JSP/Page"
+          xmlns:fx="http://igd.fraunhofer.de/tags/elfunctions"
+          xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+          xmlns:form="http://www.springframework.org/tags/form"
+          version="2.0"
+          >
+  <jsp:output omit-xml-declaration="yes" />
 
   <c:url value="/script/fotoHochladen.js" var="url" />
   <script defer="defer" type="text/javascript" src="${url}">
-    <!-- this tag intentionally left blank -->
+<!-- this tag intentionally left blank -->
   </script>
-	
+
   <button id="uploadButton" type="button" title="Foto ersetzen oder neues Foto hinzufügen">
     <c:url value="/images/foto_upload.png" var="url" />
     <img src="${url}" alt=""/>

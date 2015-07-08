@@ -14,27 +14,28 @@ import de.fraunhofer.igd.klarschiff.util.SqlScriptUtil;
 
 /**
  * Controller für die Benutzerübersicht
+ *
  * @author Sebastian Schwarz (Hansestadt Rostock)
  */
 @RequestMapping("/benutzer")
 @Controller
 public class BenutzerController {
-	
-	@Autowired
-	SecurityService securityService;
 
-	
-	/**
-	 * Die Methode verarbeitet den GET-Request auf der URL <code>/benutzer</code><br/>
-	 * Seitenbeschreibung: Übersicht über die Benutzer
-	 * @param model Model in dem ggf. Daten für die View abgelegt werden
-	 * @param request Request
-	 * @return View, die zum Rendern des Request verwendet wird
-	 */
-	@RequestMapping(value="", method = RequestMethod.GET)
-	public String benutzer(Model model, HttpServletRequest request) {
-		model.addAttribute("benutzer", securityService.getAllUser());
-		return "benutzer";
-	}
+  @Autowired
+  SecurityService securityService;
+
+  /**
+   * Die Methode verarbeitet den GET-Request auf der URL <code>/benutzer</code><br/>
+   * Seitenbeschreibung: Übersicht über die Benutzer
+   *
+   * @param model Model in dem ggf. Daten für die View abgelegt werden
+   * @param request Request
+   * @return View, die zum Rendern des Request verwendet wird
+   */
+  @RequestMapping(value = "", method = RequestMethod.GET)
+  public String benutzer(Model model, HttpServletRequest request) {
+    model.addAttribute("benutzer", securityService.getAllUser());
+    return "benutzer";
+  }
 
 }

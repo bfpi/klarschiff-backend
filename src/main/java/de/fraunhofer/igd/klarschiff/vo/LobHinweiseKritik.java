@@ -19,97 +19,96 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  * VO zum Abbilden von Lob, Hinweisen oder Kritik zu einem Vorgang.
+ *
  * @author Sebastian Schwarz (Hansestadt Rostock)
  */
 @SuppressWarnings("serial")
 @Entity
 public class LobHinweiseKritik implements Serializable {
 
-	/* --------------- Attribute ----------------------------*/
+  /* --------------- Attribute ----------------------------*/
+  /**
+   * Id
+   */
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private Long id;
 
-	/**
-	 * Id
-	 */
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long id;
+  /**
+   * Vorgang, zu dem Lob, Hinweise oder Kritik gehören
+   */
+  @ManyToOne
+  private Vorgang vorgang;
 
-	/**
-	 * Vorgang, zu dem Lob, Hinweise oder Kritik gehören
-	 */
-	@ManyToOne
-    private Vorgang vorgang;
-    
-    /**
-     * E-Mail-Adresse des Senders
-     */
-    @Size(max = 300)
-    private String autorEmail;
-    
-    /**
-     * E-Mail-Adresse des Empfängers
-     */
-    @Size(max = 300)
-    private String empfaengerEmail;
-	
-	/**
-	 * Freitext
-	 */
-    @Lob
-    @Type(type="org.hibernate.type.TextType")
-	private String freitext;
-	
-    /**
-     * Erstellungszeit
-     */
-    @NotNull
-    @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(style = "S-")
-    private Date datum;
+  /**
+   * E-Mail-Adresse des Senders
+   */
+  @Size(max = 300)
+  private String autorEmail;
 
-	/* --------------- GET + SET ----------------------------*/
-    
-	public Vorgang getVorgang() {
-		return vorgang;
-	}
+  /**
+   * E-Mail-Adresse des Empfängers
+   */
+  @Size(max = 300)
+  private String empfaengerEmail;
 
-	public void setVorgang(Vorgang vorgang) {
-		this.vorgang = vorgang;
-	}
+  /**
+   * Freitext
+   */
+  @Lob
+  @Type(type = "org.hibernate.type.TextType")
+  private String freitext;
 
-	public Date getDatum() {
-		return datum;
-	}
+  /**
+   * Erstellungszeit
+   */
+  @NotNull
+  @Temporal(TemporalType.TIMESTAMP)
+  @DateTimeFormat(style = "S-")
+  private Date datum;
 
-	public void setDatum(Date datum) {
-		this.datum = datum;
-	}
+  /* --------------- GET + SET ----------------------------*/
+  public Vorgang getVorgang() {
+    return vorgang;
+  }
 
-	public Long getId() {
-		return id;
-	}
+  public void setVorgang(Vorgang vorgang) {
+    this.vorgang = vorgang;
+  }
 
-	public String getFreitext() {
-		return freitext;
-	}
+  public Date getDatum() {
+    return datum;
+  }
 
-	public void setFreitext(String freitext) {
-		this.freitext = freitext;
-	}
-    
-    public String getAutorEmail() {
-        return this.autorEmail;
-    }
+  public void setDatum(Date datum) {
+    this.datum = datum;
+  }
 
-	public void setAutorEmail(String autorEmail) {
-        this.autorEmail = autorEmail;
-    }
-    
-    public String getEmpfaengerEmail() {
-        return this.empfaengerEmail;
-    }
+  public Long getId() {
+    return id;
+  }
 
-	public void setEmpfaengerEmail(String empfaengerEmail) {
-        this.empfaengerEmail = empfaengerEmail;
-    }
+  public String getFreitext() {
+    return freitext;
+  }
+
+  public void setFreitext(String freitext) {
+    this.freitext = freitext;
+  }
+
+  public String getAutorEmail() {
+    return this.autorEmail;
+  }
+
+  public void setAutorEmail(String autorEmail) {
+    this.autorEmail = autorEmail;
+  }
+
+  public String getEmpfaengerEmail() {
+    return this.empfaengerEmail;
+  }
+
+  public void setEmpfaengerEmail(String empfaengerEmail) {
+    this.empfaengerEmail = empfaengerEmail;
+  }
 }

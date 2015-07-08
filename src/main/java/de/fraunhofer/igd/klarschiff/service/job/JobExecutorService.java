@@ -10,71 +10,69 @@ import javax.annotation.PreDestroy;
 import org.springframework.stereotype.Service;
 
 /**
- * Die Klasse stellt einen Service zum Ausführen von Jobs bereit. Die Jobs werden dabei durch eine Pool verwaltet,
- * so dass nicht beliebig viele Jobs zur gleichen Zeit ausgeführt werden. Dieses wird beispielsweise für das Versenden 
- * von E-Mails verwendet.
+ * Die Klasse stellt einen Service zum Ausführen von Jobs bereit. Die Jobs werden dabei durch eine
+ * Pool verwaltet, so dass nicht beliebig viele Jobs zur gleichen Zeit ausgeführt werden. Dieses
+ * wird beispielsweise für das Versenden von E-Mails verwendet.
+ *
  * @author Stefan Audersch (Fraunhofer IGD)
  */
 @Service
 public class JobExecutorService {
 
-	int corePoolSize = 5;
-	int maxPoolSize = 10;
-	long keepAliveTime = 24;
-	
-	ThreadPoolExecutor threadPool = null;
-	ArrayBlockingQueue<Runnable> workQueue = new ArrayBlockingQueue(1000);
-	
-    
-	/**
-	 * Initialisierung der Queue und des Pools
-	 */
-	@PostConstruct
-	public void init() {
-		threadPool = new ThreadPoolExecutor(corePoolSize, maxPoolSize, keepAliveTime, TimeUnit.HOURS, workQueue);
-	}
-	
-	
-	/**
-	 * Stoppen des Pools.
-	 */
-	@PreDestroy
-	public void stop() {
-		threadPool.shutdown();
-	}
-	
-	
-	/**
-	 * Ausführen eines Jobs im Pool
-	 * @param job Job, der ausgeführt werden soll.
-	 */
-	public void runJob(Runnable job) {
-		threadPool.execute(job);
-	}
+  int corePoolSize = 5;
+  int maxPoolSize = 10;
+  long keepAliveTime = 24;
 
-    /* --------------- GET + SET ----------------------------*/
-	
-	public int getCorePoolSize() {
-		return corePoolSize;
-	}
+  ThreadPoolExecutor threadPool = null;
+  ArrayBlockingQueue<Runnable> workQueue = new ArrayBlockingQueue(1000);
 
-	public void setCorePoolSize(int corePoolSize) {
-		this.corePoolSize = corePoolSize;
-	}
+  /**
+   * Initialisierung der Queue und des Pools
+   */
+  @PostConstruct
+  public void init() {
+    threadPool = new ThreadPoolExecutor(corePoolSize, maxPoolSize, keepAliveTime, TimeUnit.HOURS, workQueue);
+  }
 
-	public int getmaxPoolSize() {
-		return maxPoolSize;
-	}
+  /**
+   * Stoppen des Pools.
+   */
+  @PreDestroy
+  public void stop() {
+    threadPool.shutdown();
+  }
 
-	public void setmaxPoolSize(int maxPoolSize) {
-		this.maxPoolSize = maxPoolSize;
-	}
+  /**
+   * Ausführen eines Jobs im Pool
+   *
+   * @param job Job, der ausgeführt werden soll.
+   */
+  public void runJob(Runnable job) {
+    threadPool.execute(job);
+  }
 
-	public long getKeepAliveTime() {
-		return keepAliveTime;
-	}
+  /* --------------- GET + SET ----------------------------*/
+  public int getCorePoolSize() {
+    return corePoolSize;
+  }
 
-	public void setKeepAliveTime(long keepAliveTime) {
-		this.keepAliveTime = keepAliveTime;
-	}
+  public void setCorePoolSize(int corePoolSize) {
+    this.corePoolSize = corePoolSize;
+  }
+
+  public int getmaxPoolSize() {
+    return maxPoolSize;
+  }
+
+  public void setmaxPoolSize(int maxPoolSize) {
+    this.maxPoolSize = maxPoolSize;
+  }
+
+  public long getKeepAliveTime() {
+    return keepAliveTime;
+  }
+
+  public void setKeepAliveTime(long keepAliveTime) {
+    this.keepAliveTime = keepAliveTime;
+  }
 }

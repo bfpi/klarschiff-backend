@@ -14,19 +14,20 @@ import de.fraunhofer.igd.klarschiff.vo.RedaktionKriterien;
 
 /**
  * DAO zum Lesen und Aktualisieren der Empfänger von redaktionellen E-Mails mit Hilfe der DB
+ *
  * @author Sebastian Schwarz (Hansestadt Rostock)
  */
 @Repository
 public class RedaktionKriterienDao {
 
-	@PersistenceContext
-	EntityManager em;
+  @PersistenceContext
+  EntityManager em;
 
-	/**
-	 * gibt eine Liste mit den in der DB gelisteten Empfängern von redaktionellen E-Mails zurück
-	 */
-	@SuppressWarnings("unchecked")
-	public List<RedaktionKriterien> getKriterienList() {
-		return (List<RedaktionKriterien>)em.createQuery("SELECT v FROM RedaktionKriterien v ORDER BY v.stufe").getResultList();
-	}
+  /**
+   * gibt eine Liste mit den in der DB gelisteten Empfängern von redaktionellen E-Mails zurück
+   */
+  @SuppressWarnings("unchecked")
+  public List<RedaktionKriterien> getKriterienList() {
+    return (List<RedaktionKriterien>) em.createQuery("SELECT v FROM RedaktionKriterien v ORDER BY v.stufe").getResultList();
+  }
 }

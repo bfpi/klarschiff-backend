@@ -7,18 +7,19 @@ import de.fraunhofer.igd.klarschiff.vo.Vorgang;
 /**
  * Command für die Erstsichtung im Backend <br />
  * Beinhaltet lediglich ein Vorgangs-Objekt.
+ *
  * @author Stefan Audersch (Fraunhofer IGD)
  */
 @SuppressWarnings("serial")
 public class VorgangErstsichtungCommand implements Serializable {
 
-	Vorgang vorgang;
+  Vorgang vorgang;
 
-	
-	public Vorgang getVorgang() {
-		return vorgang;
-	}
-	public void setVorgang(Vorgang vorgang) {
-		this.vorgang = vorgang;
-	}
+  public Vorgang getVorgang() {
+    return vorgang;
+  }
+
+  public void setVorgang(Vorgang vorgang) {
+    this.vorgang = vorgang;
+  }
 }

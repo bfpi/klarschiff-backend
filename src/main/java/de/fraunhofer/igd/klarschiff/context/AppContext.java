@@ -6,8 +6,8 @@ import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 
 /**
- * Die Klasse wird verwendet um einen statischen Zugriff auf den
- * ApplicationContext und den EntityManager zu bekommen.
+ * Die Klasse wird verwendet um einen statischen Zugriff auf den ApplicationContext und den
+ * EntityManager zu bekommen.
  *
  * @author Stefan Audersch (Fraunhofer IGD)
  * @see de.fraunhofer.igd.klarschiff.context.ApplicationContextProvider

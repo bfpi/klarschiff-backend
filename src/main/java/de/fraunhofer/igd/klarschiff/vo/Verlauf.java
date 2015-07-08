@@ -21,113 +21,112 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  * VO zum Abbilden des Verlaufes für einen Vorgang
+ *
  * @author Stefan Audersch (Fraunhofer IGD)
  */
 @SuppressWarnings("serial")
 @Entity
 public class Verlauf implements Serializable {
 
-	/* --------------- Attribute ----------------------------*/
+  /* --------------- Attribute ----------------------------*/
+  /**
+   * Id der Verlaufeintrages
+   */
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private Long id;
 
-	/**
-	 * Id der Verlaufeintrages
-	 */
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long id;
+  /**
+   * Vorgang zu dem der Verlaufeintrag gehört
+   */
+  @ManyToOne(cascade = CascadeType.PERSIST)
+  @JoinColumn
+  private Vorgang vorgang;
 
-	/**
-	 * Vorgang zu dem der Verlaufeintrag gehört
-	 */
-    @ManyToOne(cascade=CascadeType.PERSIST)
-    @JoinColumn
-    private Vorgang vorgang;
+  /**
+   * Zeitpunkt des Verlaufeintrages
+   */
+  @Version
+  @Temporal(TemporalType.TIMESTAMP)
+  @DateTimeFormat(style = "S-")
+  private Date datum;
 
-    /**
-     * Zeitpunkt des Verlaufeintrages
-     */
-	@Version
-    @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(style = "S-")
-    private Date datum;
+  /**
+   * Id des Benutzers, der den Verlaufeintrag verantwortet
+   */
+  private String nutzer;
 
-	/**
-	 * Id des Benutzers, der den Verlaufeintrag verantwortet
-	 */
-	private String nutzer; 
-	
-	/**
-	 * Typ des Verlaufeintrages
-	 */
-    @NotNull
-    @Enumerated(EnumType.STRING)
-    private EnumVerlaufTyp typ;
+  /**
+   * Typ des Verlaufeintrages
+   */
+  @NotNull
+  @Enumerated(EnumType.STRING)
+  private EnumVerlaufTyp typ;
 
-    /**
-     * alter Wert (ist abhängig von Typ des Verlaufeintrages)
-     */
-    private String wertAlt;
+  /**
+   * alter Wert (ist abhängig von Typ des Verlaufeintrages)
+   */
+  private String wertAlt;
 
-    /**
-     * alter Wert (ist abhängig von Typ des Verlaufeintrages)
-     */
-    private String wertNeu;
+  /**
+   * alter Wert (ist abhängig von Typ des Verlaufeintrages)
+   */
+  private String wertNeu;
 
-	/* --------------- GET + SET ----------------------------*/
+  /* --------------- GET + SET ----------------------------*/
+  public Long getId() {
+    return id;
+  }
 
-	public Long getId() {
-		return id;
-	}
+  public void setId(Long id) {
+    this.id = id;
+  }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+  public Vorgang getVorgang() {
+    return vorgang;
+  }
 
-	public Vorgang getVorgang() {
-		return vorgang;
-	}
+  public void setVorgang(Vorgang vorgang) {
+    this.vorgang = vorgang;
+  }
 
-	public void setVorgang(Vorgang vorgang) {
-		this.vorgang = vorgang;
-	}
+  public Date getDatum() {
+    return datum;
+  }
 
-	public Date getDatum() {
-		return datum;
-	}
+  public void setDatum(Date datum) {
+    this.datum = datum;
+  }
 
-	public void setDatum(Date datum) {
-		this.datum = datum;
-	}
+  public EnumVerlaufTyp getTyp() {
+    return typ;
+  }
 
-	public EnumVerlaufTyp getTyp() {
-		return typ;
-	}
+  public void setTyp(EnumVerlaufTyp typ) {
+    this.typ = typ;
+  }
 
-	public void setTyp(EnumVerlaufTyp typ) {
-		this.typ = typ;
-	}
+  public String getWertAlt() {
+    return wertAlt;
+  }
 
-	public String getWertAlt() {
-		return wertAlt;
-	}
+  public void setWertAlt(String wertAlt) {
+    this.wertAlt = wertAlt;
+  }
 
-	public void setWertAlt(String wertAlt) {
-		this.wertAlt = wertAlt;
-	}
+  public String getWertNeu() {
+    return wertNeu;
+  }
 
-	public String getWertNeu() {
-		return wertNeu;
-	}
+  public void setWertNeu(String wertNeu) {
+    this.wertNeu = wertNeu;
+  }
 
-	public void setWertNeu(String wertNeu) {
-		this.wertNeu = wertNeu;
-	}
+  public String getNutzer() {
+    return nutzer;
+  }
 
-	public String getNutzer() {
-		return nutzer;
-	}
-
-	public void setNutzer(String nutzer) {
-		this.nutzer = nutzer;
-	}
+  public void setNutzer(String nutzer) {
+    this.nutzer = nutzer;
+  }
 }

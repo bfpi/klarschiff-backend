@@ -33,8 +33,7 @@ public class AdminAussendienstController {
   AussendienstKoordinatorDao aussendienstKoordinatorDao;
 
   /**
-   * Die Methode verarbeitet den GET-Request auf der URL
-   * <code>/admin/aussendienst</code><br/>
+   * Die Methode verarbeitet den GET-Request auf der URL <code>/admin/aussendienst</code><br/>
    * Seitenbeschreibung: Übersichtsseite zum Außendienst
    *
    * @param model Model in dem ggf. Daten für die View abgelegt werden
@@ -49,8 +48,8 @@ public class AdminAussendienstController {
   /**
    * Die Methode verarbeitet den GET-Request auf der URL
    * <code>/aussendienst/{login}/bearbeiten</code><br/>
-   * Seitenbeschreibung: Formular zur Bearbeiten der Berechtigungen zum Zuweisen
-   * von Aussendienst-Teams
+   * Seitenbeschreibung: Formular zur Bearbeiten der Berechtigungen zum Zuweisen von
+   * Aussendienst-Teams
    *
    * @param login User-Login
    * @param model Model in dem ggf. Daten für die View abgelegt werden
@@ -59,8 +58,8 @@ public class AdminAussendienstController {
    */
   @RequestMapping(value = "/aussendienst/{login}/bearbeiten", method = RequestMethod.GET)
   public String bearbeiten(@PathVariable("login") String login,
-          Model model,
-          HttpServletRequest request) {
+    Model model,
+    HttpServletRequest request) {
     User user = securityService.getUser(login);
     if (!user.getUserKoordinator()) {
       return renderListe(model, request);
@@ -83,8 +82,7 @@ public class AdminAussendienstController {
   /**
    * Die Methode verarbeitet den POST-Request auf der URL
    * <code>/aussendienst/{login}/bearbeiten</code><br/>
-   * Seitenbeschreibung: Ändert die Berechtigungen zum Zuweisen von
-   * Aussendienst-Teams
+   * Seitenbeschreibung: Ändert die Berechtigungen zum Zuweisen von Aussendienst-Teams
    *
    * @param login
    * @param model Model in dem ggf. Daten für die View abgelegt werden
@@ -93,8 +91,8 @@ public class AdminAussendienstController {
    */
   @RequestMapping(value = "/aussendienst/{login}/bearbeiten", method = RequestMethod.POST)
   public String bearbeitenSubmit(@PathVariable("login") String login,
-          Model model,
-          HttpServletRequest request) {
+    Model model,
+    HttpServletRequest request) {
     User user = securityService.getUser(login);
     if (!user.getUserKoordinator()) {
       return renderListe(model, request);

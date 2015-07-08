@@ -14,28 +14,31 @@ import de.fraunhofer.igd.klarschiff.vo.RedaktionEmpfaenger;
 
 /**
  * DAO zum Lesen und Aktualisieren der Empfänger von redaktionellen E-Mails mit Hilfe der DB
+ *
  * @author Sebastian Schwarz (Hansestadt Rostock)
  */
 @Repository
 public class RedaktionEmpfaengerDao {
 
-	@PersistenceContext
-	EntityManager em;
+  @PersistenceContext
+  EntityManager em;
 
-	/**
-	 * gibt eine Liste mit den in der Datenbank gelisteten Empfängern von redaktionellen E-Mails zurück
-	 */
-	@SuppressWarnings("unchecked")
-	public List<RedaktionEmpfaenger> getEmpfaengerList() {
-		return (List<RedaktionEmpfaenger>)em.createQuery("SELECT v FROM RedaktionEmpfaenger v ORDER BY v.zustaendigkeit, v.email").getResultList();
-	}
-    
-    /**
-	 * gibt eine Liste mit den in der Datenbank gelisteten Empfängern von E-Mails mit Lob, Kritik und Hinweisen für eine Zuständigkeit zurück
-	 */
-	@SuppressWarnings("unchecked")
-	public List<RedaktionEmpfaenger> getEmpfaengerListLobHinweiseKritikForZustaendigkeit(String zustaendigkeit) {
-		return (List<RedaktionEmpfaenger>)em.createQuery("SELECT v FROM RedaktionEmpfaenger v WHERE v.empfaengerLobHinweiseKritik = true AND v.zustaendigkeit=:zustaendigkeit").setParameter("zustaendigkeit", zustaendigkeit).getResultList();
-	}
+  /**
+   * gibt eine Liste mit den in der Datenbank gelisteten Empfängern von redaktionellen E-Mails
+   * zurück
+   */
+  @SuppressWarnings("unchecked")
+  public List<RedaktionEmpfaenger> getEmpfaengerList() {
+    return (List<RedaktionEmpfaenger>) em.createQuery("SELECT v FROM RedaktionEmpfaenger v ORDER BY v.zustaendigkeit, v.email").getResultList();
+  }
+
+  /**
+   * gibt eine Liste mit den in der Datenbank gelisteten Empfängern von E-Mails mit Lob, Kritik und
+   * Hinweisen für eine Zuständigkeit zurück
+   */
+  @SuppressWarnings("unchecked")
+  public List<RedaktionEmpfaenger> getEmpfaengerListLobHinweiseKritikForZustaendigkeit(String zustaendigkeit) {
+    return (List<RedaktionEmpfaenger>) em.createQuery("SELECT v FROM RedaktionEmpfaenger v WHERE v.empfaengerLobHinweiseKritik = true AND v.zustaendigkeit=:zustaendigkeit").setParameter("zustaendigkeit", zustaendigkeit).getResultList();
+  }
 
 }

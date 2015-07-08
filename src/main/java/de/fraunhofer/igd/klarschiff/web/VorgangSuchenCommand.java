@@ -8,203 +8,229 @@ import de.fraunhofer.igd.klarschiff.vo.EnumVorgangStatus;
 import de.fraunhofer.igd.klarschiff.vo.EnumVorgangTyp;
 import de.fraunhofer.igd.klarschiff.vo.Kategorie;
 
-
 /**
  * Command für die Vorgangsuche. <br />
- * Beinhaltet Suchfelder für einfache und erweiterte Suche sowie Attribute für die 
+ * Beinhaltet Suchfelder für einfache und erweiterte Suche sowie Attribute für die
  * Ergebnisdarstellung: <br/>
  * <code>page</code>: die aktuelle Seitenzahl<br/>
  * <code>size</code>: die konfigurierte Anzahl von Einträgen pro Seite<br/>
  * <code>order</code>: die Spalte nach der sortiert wird<br/>
  * <code>orderDirection</code>: die Sortierreihenfolge (1:absteigend,default:aufsteigend)
+ *
  * @author Stefan Audersch (Fraunhofer IGD)
  */
 @SuppressWarnings("serial")
 public class VorgangSuchenCommand implements Serializable {
 
-	/* --------------- Attribute ----------------------------*/
-	
-	public enum Suchtyp { einfach, erweitert, aussendienst }; 
-	public enum EinfacheSuche { offene, offeneIdeen, abgeschlossene };
-	
-	Integer page;
-	Integer size;
-	Integer order;
-	Integer orderDirection;
-	
-	// einfache vs. erweiterte suche
-	Suchtyp suchtyp;
-	
-	// einfache Suche
-	EinfacheSuche einfacheSuche;
-	
-	// erweiterte Suche
-	String erweitertFulltext;
-	EnumVorgangTyp erweitertVorgangTyp;
-	Kategorie erweitertHauptkategorie;
-	Kategorie erweitertKategorie;
-	Date erweitertDatumVon;
-	Date erweitertDatumBis;
-	Date aktualisiertVon;
-	Date aktualisiertBis;
-	EnumVorgangStatus[] erweitertVorgangStatus;
-	Boolean erweitertArchiviert;
-	String erweitertZustaendigkeit;
-	Long erweitertUnterstuetzerAb;
-	EnumPrioritaet erweitertPrioritaet;
-	String erweitertDelegiertAn;
-	Integer erweitertStadtteilgrenze;
-	String erweitertNummer;
-	boolean alleVorgaengeAuswaehlen;
-	Long[] vorgangAuswaehlen;
-	String auftragTeam;
-	Date auftragDatum;
-	String negation;
-	String suchbereich;
-	Boolean ueberspringeVorgaengeMitMissbrauchsmeldungen;
-	
-	//NUR ADMIN dürfen andere Zuständigkeiten sehen
-	
-	public String getOrderString() {
-		switch(order) {
-			case 0: return "vo.id";
-			case 1: return "vo.typ";
-			case 2: return "vo.datum";
-			case 3: return "kat_haupt.name,kat_unter.name";
-			case 4: return "vo.status_ordinal";
-			case 5: return "vo.adresse";
-			case 6: return "un.count";
-			case 7: return "vo.zustaendigkeit";
-			case 8: return "auftrag.prioritaet, vo.datum";
-			default: return "";
-		}
-	}
-	
-	public String getOrderDirectionString() {
-		switch(orderDirection) {
-			case 1: return "desc";
-			default: return "asc";
-		}
-	}
-	
-	/* --------------- GET + SET ----------------------------*/
-	
-	public Integer getPage() {
-		return page;
-	}
-	public void setPage(Integer page) {
-		this.page = page;
-	}
-	public Integer getSize() {
-		return size;
-	}
-	public void setSize(Integer size) {
-		this.size = size;
-	}
-	public Suchtyp getSuchtyp() {
-		return suchtyp;
-	}
-	public void setSuchtyp(Suchtyp suchtyp) {
-		setPage(1);
-		this.suchtyp = suchtyp;
-	}
-	public EinfacheSuche getEinfacheSuche() {
-		return einfacheSuche;
-	}
-	public void setEinfacheSuche(EinfacheSuche einfacheSuche) {
-		this.einfacheSuche = einfacheSuche;
-	}
-	public Integer getOrder() {
-		return order;
-	}
-	public void setOrder(Integer order) {
-		this.order = order;
-	}
-	public Integer getOrderDirection() {
-		return orderDirection;
-	}
-	public void setOrderDirection(Integer orderDirection) {
-		this.orderDirection = orderDirection;
-	}
+  /* --------------- Attribute ----------------------------*/
+  public enum Suchtyp {
 
-	public String getErweitertFulltext() {
-		return erweitertFulltext;
-	}
-	
-	public void setErweitertFulltext(String erweitertFulltext) {
-		try {
-			if (erweitertFulltext!=null)
-				this.erweitertFulltext = new String(erweitertFulltext.getBytes(), "UTF-8");		
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
+    einfach, erweitert, aussendienst
+  };
 
-	public Long getErweitertNummerAsLong() {
-		if(this.erweitertNummer == null) {
-			return null;
-		}
-		try {
-			return Long.parseLong(erweitertNummer);
-		}
-		catch (Exception e) {
-			return null;
-		}
-	}
+  public enum EinfacheSuche {
 
-	public String getErweitertNummer() {
-		Long erwNummer = this.getErweitertNummerAsLong();
-		if(erwNummer == null)  {
-			return "";
-		}
-		else {
-			return erwNummer.toString();
-		}
-	}
+    offene, offeneIdeen, abgeschlossene
+  };
 
-	public void setErweitertNummer(String erweitertNummer) {
-		this.erweitertNummer = erweitertNummer;
-	}
+  Integer page;
+  Integer size;
+  Integer order;
+  Integer orderDirection;
 
-	public EnumVorgangTyp getErweitertVorgangTyp() {
-		return erweitertVorgangTyp;
-	}
+  // einfache vs. erweiterte suche
+  Suchtyp suchtyp;
 
-	public void setErweitertVorgangTyp(EnumVorgangTyp erweitertVorgangTyp) {
-		this.erweitertVorgangTyp = erweitertVorgangTyp;
-	}
+  // einfache Suche
+  EinfacheSuche einfacheSuche;
 
-	public Kategorie getErweitertHauptkategorie() {
-		return erweitertHauptkategorie;
-	}
+  // erweiterte Suche
+  String erweitertFulltext;
+  EnumVorgangTyp erweitertVorgangTyp;
+  Kategorie erweitertHauptkategorie;
+  Kategorie erweitertKategorie;
+  Date erweitertDatumVon;
+  Date erweitertDatumBis;
+  Date aktualisiertVon;
+  Date aktualisiertBis;
+  EnumVorgangStatus[] erweitertVorgangStatus;
+  Boolean erweitertArchiviert;
+  String erweitertZustaendigkeit;
+  Long erweitertUnterstuetzerAb;
+  EnumPrioritaet erweitertPrioritaet;
+  String erweitertDelegiertAn;
+  Integer erweitertStadtteilgrenze;
+  String erweitertNummer;
+  boolean alleVorgaengeAuswaehlen;
+  Long[] vorgangAuswaehlen;
+  String auftragTeam;
+  Date auftragDatum;
+  String negation;
+  String suchbereich;
+  Boolean ueberspringeVorgaengeMitMissbrauchsmeldungen;
 
-	public void setErweitertHauptkategorie(Kategorie erweitertHauptkategorie) {
-		this.erweitertHauptkategorie = erweitertHauptkategorie;
-	}
+  //NUR ADMIN dürfen andere Zuständigkeiten sehen
+  public String getOrderString() {
+    switch (order) {
+      case 0:
+        return "vo.id";
+      case 1:
+        return "vo.typ";
+      case 2:
+        return "vo.datum";
+      case 3:
+        return "kat_haupt.name,kat_unter.name";
+      case 4:
+        return "vo.status_ordinal";
+      case 5:
+        return "vo.adresse";
+      case 6:
+        return "un.count";
+      case 7:
+        return "vo.zustaendigkeit";
+      case 8:
+        return "auftrag.prioritaet, vo.datum";
+      default:
+        return "";
+    }
+  }
 
-	public Kategorie getErweitertKategorie() {
-		return erweitertKategorie;
-	}
+  public String getOrderDirectionString() {
+    switch (orderDirection) {
+      case 1:
+        return "desc";
+      default:
+        return "asc";
+    }
+  }
 
-	public void setErweitertKategorie(Kategorie erweitertKategorie) {
-		this.erweitertKategorie = erweitertKategorie;
-	}
+  /* --------------- GET + SET ----------------------------*/
+  public Integer getPage() {
+    return page;
+  }
 
-	public Date getErweitertDatumVon() {
-		return erweitertDatumVon;
-	}
+  public void setPage(Integer page) {
+    this.page = page;
+  }
 
-	public void setErweitertDatumVon(Date erweitertDatumVon) {
-		this.erweitertDatumVon = erweitertDatumVon;
-	}
+  public Integer getSize() {
+    return size;
+  }
 
-	public Date getErweitertDatumBis() {
-		return erweitertDatumBis;
-	}
+  public void setSize(Integer size) {
+    this.size = size;
+  }
 
-	public void setErweitertDatumBis(Date erweitertDatumBis) {
-		this.erweitertDatumBis = erweitertDatumBis;
-	}
+  public Suchtyp getSuchtyp() {
+    return suchtyp;
+  }
+
+  public void setSuchtyp(Suchtyp suchtyp) {
+    setPage(1);
+    this.suchtyp = suchtyp;
+  }
+
+  public EinfacheSuche getEinfacheSuche() {
+    return einfacheSuche;
+  }
+
+  public void setEinfacheSuche(EinfacheSuche einfacheSuche) {
+    this.einfacheSuche = einfacheSuche;
+  }
+
+  public Integer getOrder() {
+    return order;
+  }
+
+  public void setOrder(Integer order) {
+    this.order = order;
+  }
+
+  public Integer getOrderDirection() {
+    return orderDirection;
+  }
+
+  public void setOrderDirection(Integer orderDirection) {
+    this.orderDirection = orderDirection;
+  }
+
+  public String getErweitertFulltext() {
+    return erweitertFulltext;
+  }
+
+  public void setErweitertFulltext(String erweitertFulltext) {
+    try {
+      if (erweitertFulltext != null) {
+        this.erweitertFulltext = new String(erweitertFulltext.getBytes(), "UTF-8");
+      }
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  public Long getErweitertNummerAsLong() {
+    if (this.erweitertNummer == null) {
+      return null;
+    }
+    try {
+      return Long.parseLong(erweitertNummer);
+    } catch (Exception e) {
+      return null;
+    }
+  }
+
+  public String getErweitertNummer() {
+    Long erwNummer = this.getErweitertNummerAsLong();
+    if (erwNummer == null) {
+      return "";
+    } else {
+      return erwNummer.toString();
+    }
+  }
+
+  public void setErweitertNummer(String erweitertNummer) {
+    this.erweitertNummer = erweitertNummer;
+  }
+
+  public EnumVorgangTyp getErweitertVorgangTyp() {
+    return erweitertVorgangTyp;
+  }
+
+  public void setErweitertVorgangTyp(EnumVorgangTyp erweitertVorgangTyp) {
+    this.erweitertVorgangTyp = erweitertVorgangTyp;
+  }
+
+  public Kategorie getErweitertHauptkategorie() {
+    return erweitertHauptkategorie;
+  }
+
+  public void setErweitertHauptkategorie(Kategorie erweitertHauptkategorie) {
+    this.erweitertHauptkategorie = erweitertHauptkategorie;
+  }
+
+  public Kategorie getErweitertKategorie() {
+    return erweitertKategorie;
+  }
+
+  public void setErweitertKategorie(Kategorie erweitertKategorie) {
+    this.erweitertKategorie = erweitertKategorie;
+  }
+
+  public Date getErweitertDatumVon() {
+    return erweitertDatumVon;
+  }
+
+  public void setErweitertDatumVon(Date erweitertDatumVon) {
+    this.erweitertDatumVon = erweitertDatumVon;
+  }
+
+  public Date getErweitertDatumBis() {
+    return erweitertDatumBis;
+  }
+
+  public void setErweitertDatumBis(Date erweitertDatumBis) {
+    this.erweitertDatumBis = erweitertDatumBis;
+  }
 
   public Date getAktualisiertVon() {
     return aktualisiertVon;
@@ -221,94 +247,94 @@ public class VorgangSuchenCommand implements Serializable {
   public void setAktualisiertBis(Date aktualisiertBis) {
     this.aktualisiertBis = aktualisiertBis;
   }
-  
-	public EnumVorgangStatus[] getErweitertVorgangStatus() {
-		return erweitertVorgangStatus;
-	}
 
-	public void setErweitertVorgangStatus(EnumVorgangStatus[] erweitertVorgangStatus) {
-		this.erweitertVorgangStatus = erweitertVorgangStatus;
-	}
+  public EnumVorgangStatus[] getErweitertVorgangStatus() {
+    return erweitertVorgangStatus;
+  }
 
-	public Boolean getErweitertArchiviert() {
-		return erweitertArchiviert;
-	}
+  public void setErweitertVorgangStatus(EnumVorgangStatus[] erweitertVorgangStatus) {
+    this.erweitertVorgangStatus = erweitertVorgangStatus;
+  }
 
-	public void setErweitertArchiviert(Boolean erweitertArchiviert) {
-		this.erweitertArchiviert = erweitertArchiviert;
-	}
+  public Boolean getErweitertArchiviert() {
+    return erweitertArchiviert;
+  }
 
-	public String getErweitertZustaendigkeit() {
-		return erweitertZustaendigkeit;
-	}
+  public void setErweitertArchiviert(Boolean erweitertArchiviert) {
+    this.erweitertArchiviert = erweitertArchiviert;
+  }
 
-	public void setErweitertZustaendigkeit(String erweitertZustaendigkeit) {
-		this.erweitertZustaendigkeit = erweitertZustaendigkeit;
-	}
+  public String getErweitertZustaendigkeit() {
+    return erweitertZustaendigkeit;
+  }
 
-	public Long getErweitertUnterstuetzerAb() {
-		return erweitertUnterstuetzerAb;
-	}
+  public void setErweitertZustaendigkeit(String erweitertZustaendigkeit) {
+    this.erweitertZustaendigkeit = erweitertZustaendigkeit;
+  }
 
-	public void setErweitertUnterstuetzerAb(Long erweitertUnterstuetzerAb) {
-		this.erweitertUnterstuetzerAb = erweitertUnterstuetzerAb;
-	}
+  public Long getErweitertUnterstuetzerAb() {
+    return erweitertUnterstuetzerAb;
+  }
 
-	public EnumPrioritaet getErweitertPrioritaet() {
-		return erweitertPrioritaet;
-	}
+  public void setErweitertUnterstuetzerAb(Long erweitertUnterstuetzerAb) {
+    this.erweitertUnterstuetzerAb = erweitertUnterstuetzerAb;
+  }
 
-	public void setErweitertPrioritaet(EnumPrioritaet erweitertPrioritaet) {
-		this.erweitertPrioritaet = erweitertPrioritaet;
-	}
+  public EnumPrioritaet getErweitertPrioritaet() {
+    return erweitertPrioritaet;
+  }
 
-	public String getErweitertDelegiertAn() {
-		return erweitertDelegiertAn;
-	}
+  public void setErweitertPrioritaet(EnumPrioritaet erweitertPrioritaet) {
+    this.erweitertPrioritaet = erweitertPrioritaet;
+  }
 
-	public void setErweitertDelegiertAn(String erweitertDelegiertAn) {
-		this.erweitertDelegiertAn = erweitertDelegiertAn;
-	}
+  public String getErweitertDelegiertAn() {
+    return erweitertDelegiertAn;
+  }
 
-	public Integer getErweitertStadtteilgrenze() {
-		return erweitertStadtteilgrenze;
-	}
+  public void setErweitertDelegiertAn(String erweitertDelegiertAn) {
+    this.erweitertDelegiertAn = erweitertDelegiertAn;
+  }
 
-	public void setErweitertStadtteilgrenze(Integer erweitertStadtteilgrenze) {
-		this.erweitertStadtteilgrenze = erweitertStadtteilgrenze;
-	}
+  public Integer getErweitertStadtteilgrenze() {
+    return erweitertStadtteilgrenze;
+  }
 
-	public boolean isAlleVorgaengeAuswaehlen() {
-		return alleVorgaengeAuswaehlen;
-	}
+  public void setErweitertStadtteilgrenze(Integer erweitertStadtteilgrenze) {
+    this.erweitertStadtteilgrenze = erweitertStadtteilgrenze;
+  }
 
-	public void setAlleVorgaengeAuswaehlen(boolean alleVorgaengeAuswaehlen) {
-		this.alleVorgaengeAuswaehlen = alleVorgaengeAuswaehlen;
-	}
+  public boolean isAlleVorgaengeAuswaehlen() {
+    return alleVorgaengeAuswaehlen;
+  }
 
-	public Long[] getVorgangAuswaehlen() {
-		return vorgangAuswaehlen;
-	}
+  public void setAlleVorgaengeAuswaehlen(boolean alleVorgaengeAuswaehlen) {
+    this.alleVorgaengeAuswaehlen = alleVorgaengeAuswaehlen;
+  }
 
-	public void setVorgangAuswaehlen(Long[] vorgangAuswaehlen) {
-		this.vorgangAuswaehlen = vorgangAuswaehlen;
-	}
+  public Long[] getVorgangAuswaehlen() {
+    return vorgangAuswaehlen;
+  }
 
-	public String getAuftragTeam() {
-		return auftragTeam;
-	}
+  public void setVorgangAuswaehlen(Long[] vorgangAuswaehlen) {
+    this.vorgangAuswaehlen = vorgangAuswaehlen;
+  }
 
-	public void setAuftragTeam(String auftragTeam) {
-		this.auftragTeam = auftragTeam;
-	}
+  public String getAuftragTeam() {
+    return auftragTeam;
+  }
 
-	public Date getAuftragDatum() {
-		return auftragDatum;
-	}
+  public void setAuftragTeam(String auftragTeam) {
+    this.auftragTeam = auftragTeam;
+  }
 
-	public void setAuftragDatum(Date auftragDatum) {
-		this.auftragDatum = auftragDatum;
-	}
+  public Date getAuftragDatum() {
+    return auftragDatum;
+  }
+
+  public void setAuftragDatum(Date auftragDatum) {
+    this.auftragDatum = auftragDatum;
+  }
 
   public String getNegation() {
     return negation;
