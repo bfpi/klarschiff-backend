@@ -19,7 +19,7 @@ objectClass: organizationalUnit
 objectClass: top
 ou: klarschiff
 
-#Beispielnutzer (fullname funzt nicht bei Apache DS, daher sind die Daten zunächst unter cn abgelegt
+#Beispielnutzer (fullname funzt nicht bei Apache DS, daher sind die Daten zunÃ¤chst unter cn abgelegt
 dn: uid=u1,ou=klarschiff,ou=SV,ou=system
 objectClass: organizationalPerson
 objectClass: person
@@ -80,7 +80,7 @@ mail: klarschiffhro@googlemail.com
 uid: u6
 userPassword: u6
 
-#interne Gruppen für KlarschiffHRO
+#interne Gruppen fÃ¼r KlarschiffHRO
 dn: cn=i1,ou=klarschiff,ou=SV,ou=system
 objectClass: groupOfNames
 objectClass: top
@@ -268,7 +268,7 @@ member: uid=u2,ou=klarschiff,ou=SV,ou=system
 o: intern
 ou: Gruppe 2 intern
 
-#externe Gruppen für KlarschiffHRO
+#externe Gruppen fÃ¼r KlarschiffHRO
 dn: cn=e1,ou=klarschiff,ou=SV,ou=system
 objectClass: groupOfNames
 objectClass: top
@@ -285,7 +285,7 @@ member: uid=u4,ou=klarschiff,ou=SV,ou=system
 o: extern
 ou: Gruppe 1 extern
 
-#AdminGruppe für KlarschiffHRO
+#AdminGruppe fÃ¼r KlarschiffHRO
 dn: cn=admin,ou=klarschiff,ou=SV,ou=system
 objectClass: groupOfNames
 objectClass: top
@@ -294,12 +294,12 @@ member: uid=u5,ou=klarschiff,ou=SV,ou=system
 description: Administratoren des Backend von Klarschiff
 o: admin
 
-#NichtZuordbarGruppe für KlarschiffHRO
+#NichtZuordbarGruppe fÃ¼r KlarschiffHRO
 dn: cn=dispatcher,ou=klarschiff,ou=SV,ou=system
 objectClass: groupOfNames
 objectClass: top
 cn: dispatcher
 member: uid=u6,ou=klarschiff,ou=SV,ou=system
-description: Gruppe von Benutzern dennen nicht zuordbare Vorgänge zugewiesen werden können
+description: Gruppe von Benutzern dennen nicht zuordbare VorgÃ¤nge zugewiesen werden kÃ¶nnen
 o: intern
-ou: Dispatcher für nicht zuordbare Vorgaenge
+ou: Dispatcher fÃ¼r nicht zuordbare Vorgaenge

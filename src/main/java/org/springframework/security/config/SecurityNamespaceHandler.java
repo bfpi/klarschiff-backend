@@ -30,7 +30,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 /**
- * Die Klasse überschreibt die eigentliche Klasse <code>org.springframework.security.config.SecurityNamespaceHandler</code>, 
+ * Die Klasse Ã¼berschreibt die eigentliche Klasse <code>org.springframework.security.config.SecurityNamespaceHandler</code>, 
  * so dass anstatt des der Klasse <code>org.springframework.security.config.ldap.LdapUserServiceBeanDefinitionParser</code> zum
  * Parsen des Elements "security" mit dem Namespace <code>http://www.springframework.org/schema/security</code> die eigene 
  * Implementierung <code>de.fraunhofer.igd.klarschiff.service.security.LdapServerBeanDefinitionParser</code> verwendet wird.
@@ -131,7 +131,7 @@ public final class SecurityNamespaceHandler implements NamespaceHandler {
     }
 
     /**
-     * In der Methode wird als Parser für das Element <code>ldap-server</code> die eigene Implementierung 
+     * In der Methode wird als Parser fÃ¼r das Element <code>ldap-server</code> die eigene Implementierung 
      * <code>de.fraunhofer.igd.klarschiff.service.security.LdapServerBeanDefinitionParser</code> statt die Implementierung
      * <code>org.springframework.security.config.ldap.LdapUserServiceBeanDefinitionParser</code> registiert.
      */

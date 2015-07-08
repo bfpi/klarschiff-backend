@@ -270,7 +270,7 @@ public class ClassificationService {
 		try {
 			updateClassifier(vorgang, ctx);
 		} catch (Exception e) {
-			logger.error("FEHLER Der Klassifizierer konnte nicht mit einer akzeptierten Zust‰ndigkeit aktualisiert werden.", e);
+			logger.error("FEHLER Der Klassifizierer konnte nicht mit einer akzeptierten Zust√§ndigkeit aktualisiert werden.", e);
 		}
 	}
 	

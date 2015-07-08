@@ -345,19 +345,19 @@ CREATE OR REPLACE VIEW klarschiff_wfs_georss AS
         END AS unterstuetzungen,
         CASE
             WHEN v.titel IS NOT NULL AND v.titel::text <> ''::text AND v.betreff_freigegeben IS TRUE AND v.betreff_vorhanden IS TRUE THEN v.titel::text
-            WHEN v.status::text = 'offen'::text AND v.betreff_vorhanden IS TRUE AND v.betreff_freigegeben IS FALSE THEN 'redaktionelle Prüfung ausstehend'::text
+            WHEN v.status::text = 'offen'::text AND v.betreff_vorhanden IS TRUE AND v.betreff_freigegeben IS FALSE THEN 'redaktionelle PrÃ¼fung ausstehend'::text
             WHEN v.status::text <> 'offen'::text AND v.betreff_vorhanden IS TRUE AND v.betreff_freigegeben IS FALSE THEN 'redaktionell nicht freigegeben'::text
             ELSE 'nicht vorhanden'::text
         END AS betreff,
         CASE
             WHEN v.details IS NOT NULL AND v.details <> ''::text AND v.details_freigegeben IS TRUE AND v.details_vorhanden IS TRUE THEN v.details
-            WHEN v.status::text = 'offen'::text AND v.details_vorhanden IS TRUE AND v.details_freigegeben IS FALSE THEN 'redaktionelle Prüfung ausstehend'::text
+            WHEN v.status::text = 'offen'::text AND v.details_vorhanden IS TRUE AND v.details_freigegeben IS FALSE THEN 'redaktionelle PrÃ¼fung ausstehend'::text
             WHEN v.status::text <> 'offen'::text AND v.details_vorhanden IS TRUE AND v.details_freigegeben IS FALSE THEN 'redaktionell nicht freigegeben'::text
             ELSE 'nicht vorhanden'::text
         END AS details,
         CASE
-            WHEN v.foto_thumb IS NOT NULL AND v.foto_thumb::text <> ''::text AND v.foto_freigegeben IS TRUE AND v.foto_vorhanden IS TRUE THEN ((((('<br/><a href="http://support.klarschiff-hro.de/fotos/'::text || v.foto_normal::text) || '" target="_blank" title="große Ansicht öffnen…"><img src="http://support.klarschiff-hro.de/fotos/'::text) || v.foto_thumb::text) || '" alt="'::text) || v.foto_thumb::text) || '" /></a>'::text
-            WHEN v.status::text = 'offen'::text AND v.foto_vorhanden IS TRUE AND v.foto_freigegeben IS FALSE THEN 'redaktionelle Prüfung ausstehend'::text
+            WHEN v.foto_thumb IS NOT NULL AND v.foto_thumb::text <> ''::text AND v.foto_freigegeben IS TRUE AND v.foto_vorhanden IS TRUE THEN ((((('<br/><a href="http://support.klarschiff-hro.de/fotos/'::text || v.foto_normal::text) || '" target="_blank" title="groÃŸe Ansicht Ã¶ffnenâ€¦"><img src="http://support.klarschiff-hro.de/fotos/'::text) || v.foto_thumb::text) || '" alt="'::text) || v.foto_thumb::text) || '" /></a>'::text
+            WHEN v.status::text = 'offen'::text AND v.foto_vorhanden IS TRUE AND v.foto_freigegeben IS FALSE THEN 'redaktionelle PrÃ¼fung ausstehend'::text
             WHEN v.status::text <> 'offen'::text AND v.foto_vorhanden IS TRUE AND v.foto_freigegeben IS FALSE THEN 'redaktionell nicht freigegeben'::text
             ELSE 'nicht vorhanden'::text
         END AS foto,
