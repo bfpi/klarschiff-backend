@@ -1,0 +1,57 @@
+<jsp:root 
+	xmlns:c="http://java.sun.com/jsp/jstl/core" 
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions" 
+	xmlns:spring="http://www.springframework.org/tags" 
+	xmlns:jsp="http://java.sun.com/JSP/Page" 
+	xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu"
+	xmlns:tiles="http://tiles.apache.org/tags-tiles" 
+	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+	xmlns:fx="http://igd.fraunhofer.de/tags/elfunctions"
+	version="2.0"
+	>
+	<jsp:directive.page contentType="text/html;charset=UTF-8"/>
+
+	<!-- CONTENTTITLE -->
+	<div id="root_style_content_title">
+		Zertifikate
+	</div>
+	
+	<!-- TABMENU -->
+	<tiles:importAttribute name="tabmenu_item" ignore="true" toName="tabmenu_item"/>
+	<menu:tabmenuadmin currentId="${tabmenu_item}"/>
+	
+	<!-- CONTENT -->
+	<div id="root_style_content">
+	
+		<div style="color: red;margin-bottom:20pX;">Achtung! Hierbei werden die Zertifikate in der aktuellen Java-Runtime-Umgebung installiert.</div>
+
+		<div class="fieldset">
+			<div class="fieldsettitle">Zertifikate</div>
+			<div>
+				<p class="help">
+					Unter Windows 7 muss der Tomcat mit Adminrechten gestartet werden, damit der Befehl korrekt ausgeführt werden kann 
+					und UAC (User Account Control, dt. Benutzerkontensteuerung) nicht dazwischenfuscht. 
+					<br/>
+					Das Standardpasswort für den Java-Keystore lautet: changeit. Weiterführende Informationen zum Java-Keystore sind <a href="http://download.oracle.com/javase/6/docs/technotes/tools/solaris/keytool.html" target="_blank">hier</a> zu finden.
+				</p>
+				<form method="post">
+					<label for="storepass">Passwort</label><input type="text" name="storepass" value="changeit"/><br/>
+					<input type="submit" value="Zertifikate installieren" style="margin-top:25px"/>
+				</form>
+				<c:if test="${not empty result}">
+					<div class="subtitle">Ergebnis:</div>
+					<p>${fx:whitespaceToHtml(fx:toHtml(result))}</p>
+				</c:if>
+				
+			</div>
+		</div>
+	</div>
+	
+	<!-- HELP -->
+	<div id="root_style_help">
+		<p>
+			Hier können sie benötigte Zertifikate zur Kommunikation mit angebundenen Diensten auf dem Server installieren.
+		</p>
+	</div>
+
+</jsp:root>
