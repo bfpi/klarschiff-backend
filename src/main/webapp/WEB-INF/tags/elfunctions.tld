@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
+        version="2.0">
+
+  <tlib-version>1.0</tlib-version>
+  <uri>http://igd.fraunhofer.de/tags/elfunctions</uri>
+	
+  <function>
+    <name>array</name>
+    <function-class>de.fraunhofer.igd.klarschiff.tld.CommonFunctions</function-class>
+    <function-signature>java.lang.String[] array(java.lang.String)</function-signature>
+  </function>
+  <function>
+    <name>array2</name>
+    <function-class>de.fraunhofer.igd.klarschiff.tld.CommonFunctions</function-class>
+    <function-signature>java.lang.String[] array(java.lang.String, java.lang.String)</function-signature>
+  </function>
+  <function>
+    <name>toHtml</name>
+    <function-class>de.fraunhofer.igd.klarschiff.tld.CommonFunctions</function-class>
+    <function-signature>java.lang.String toHtml(java.lang.String)</function-signature>
+  </function>
+  <function>
+    <name>whitespaceToHtml</name>
+    <function-class>de.fraunhofer.igd.klarschiff.tld.CommonFunctions</function-class>
+    <function-signature>java.lang.String whitespaceToHtml(java.lang.String)</function-signature>
+  </function>
+  <function>
+    <name>extractArrayItemFromList</name>
+    <function-class>de.fraunhofer.igd.klarschiff.tld.CommonFunctions</function-class>
+    <function-signature>java.util.Collection extractArrayItemFromList(java.util.Collection, java.lang.Integer)</function-signature>
+  </function>
+  <function>
+    <name>abbreviate</name>
+    <function-class>de.fraunhofer.igd.klarschiff.tld.CommonFunctions</function-class>
+    <function-signature>java.lang.String abbreviate(java.lang.String, java.lang.Integer)</function-signature>
+  </function>
+	 
+  <function>
+    <name>rcontains</name>
+    <function-class>de.fraunhofer.igd.klarschiff.tld.CustomFunctions</function-class>
+    <function-signature>boolean roleContains(java.util.Collection,de.fraunhofer.igd.klarschiff.service.security.Role)</function-signature>
+  </function>
+  <function>
+    <name>rsize</name>
+    <function-class>de.fraunhofer.igd.klarschiff.tld.CustomFunctions</function-class>
+    <function-signature>java.lang.Integer roleSize(java.util.Collection)</function-signature>
+  </function>
+  <function>
+    <name>rminusc</name>
+    <function-class>de.fraunhofer.igd.klarschiff.tld.CustomFunctions</function-class>
+    <function-signature>java.util.Collection roleMinus(java.util.Collection, java.util.Collection)</function-signature>
+  </function>
+  <function>
+    <name>rminuso</name>
+    <function-class>de.fraunhofer.igd.klarschiff.tld.CustomFunctions</function-class>
+    <function-signature>java.util.Collection roleMinus(java.util.Collection, de.fraunhofer.igd.klarschiff.service.security.Role)</function-signature>
+  </function>
+  <function>
+    <name>role</name>
+    <function-class>de.fraunhofer.igd.klarschiff.tld.CustomFunctions</function-class>
+    <function-signature>de.fraunhofer.igd.klarschiff.service.security.Role role(java.lang.String)</function-signature>
+  </function>
+  <function>
+    <name>bean</name>
+    <function-class>de.fraunhofer.igd.klarschiff.tld.CustomFunctions</function-class>
+    <function-signature>java.lang.Object bean(java.lang.String)</function-signature>
+  </function>
+  <function>
+    <name>title</name>
+    <function-class>de.fraunhofer.igd.klarschiff.tld.CustomFunctions</function-class>
+    <function-signature>java.lang.String title()</function-signature>
+  </function>
+  <function>
+    <name>area</name>
+    <function-class>de.fraunhofer.igd.klarschiff.tld.CustomFunctions</function-class>
+    <function-signature>java.lang.String area()</function-signature>
+  </function>
+  <function>
+    <name>demo</name>
+    <function-class>de.fraunhofer.igd.klarschiff.tld.CustomFunctions</function-class>
+    <function-signature>java.lang.Boolean demo()</function-signature>
+  </function>
+  <function>
+    <name>version</name>
+    <function-class>de.fraunhofer.igd.klarschiff.tld.CustomFunctions</function-class>
+    <function-signature>java.lang.String version()</function-signature>
+  </function>
+  <function>
+    <name>showLogins</name>
+    <function-class>de.fraunhofer.igd.klarschiff.tld.CustomFunctions</function-class>
+    <function-signature>java.lang.Boolean showLogins()</function-signature>
+  </function>
+  <function>
+    <name>vorgangStatus</name>
+    <function-class>de.fraunhofer.igd.klarschiff.tld.CustomFunctions</function-class>
+    <function-signature>java.lang.String vorgangStatus(java.lang.String)</function-signature>
+  </function>
+  <function>
+    <name>isOpenMissbrauchsmeldung</name>
+    <function-class>de.fraunhofer.igd.klarschiff.tld.CustomFunctions</function-class>
+    <function-signature>java.lang.Boolean isOpenMissbrauchsmeldung(de.fraunhofer.igd.klarschiff.vo.Vorgang)</function-signature>
+  </function>
+  <function>
+    <name>connector</name>
+    <function-class>de.fraunhofer.igd.klarschiff.tld.CustomFunctions</function-class>
+    <function-signature>java.lang.String connector()</function-signature>
+  </function>
+  <function>
+    <name>showConnector</name>
+    <function-class>de.fraunhofer.igd.klarschiff.tld.CustomFunctions</function-class>
+    <function-signature>java.lang.Boolean showConnector()</function-signature>
+  </function>
+	
+  <function>
+    <name>countMissbrauchsmeldungen</name>
+    <function-class>de.fraunhofer.igd.klarschiff.tld.CustomFunctions</function-class>
+    <function-signature>java.lang.Long countMissbrauchsmeldungen(de.fraunhofer.igd.klarschiff.vo.Vorgang)</function-signature>
+  </function>
+  <function>
+    <name>getCurrentUser</name>
+    <function-class>de.fraunhofer.igd.klarschiff.tld.CustomFunctions</function-class>
+    <function-signature>de.fraunhofer.igd.klarschiff.service.security.User getCurrentUser()</function-signature>
+  </function>
+  <function>
+    <name>getCurrentUserLoginEncrypt</name>
+    <function-class>de.fraunhofer.igd.klarschiff.tld.CustomFunctions</function-class>
+    <function-signature>java.lang.String getCurrentUserLoginEncrypt()</function-signature>
+  </function>
+  <function>
+    <name>isCurrentZustaendigForVorgang</name>
+    <function-class>de.fraunhofer.igd.klarschiff.tld.CustomFunctions</function-class>
+    <function-signature>java.lang.Boolean isCurrentZustaendigForVorgang(de.fraunhofer.igd.klarschiff.vo.Vorgang)</function-signature>
+  </function>
+  <function>
+    <name>mayCurrentUserEditKommentar</name>
+    <function-class>de.fraunhofer.igd.klarschiff.tld.CustomFunctions</function-class>
+    <function-signature>java.lang.Boolean mayCurrentUserEditKommentar(de.fraunhofer.igd.klarschiff.vo.Kommentar)</function-signature>
+  </function>
+  <function>
+    <name>processException</name>
+    <function-class>de.fraunhofer.igd.klarschiff.tld.CustomFunctions</function-class>
+    <function-signature>java.util.Map processException(java.lang.Throwable)</function-signature>
+  </function>
+  <function>
+    <name>plsqlCommentHtmlFormater</name>
+    <function-class>de.fraunhofer.igd.klarschiff.tld.CustomFunctions</function-class>
+    <function-signature>java.lang.String plsqlCommentHtmlFormater(java.lang.String)</function-signature>
+  </function>
+</taglib>
