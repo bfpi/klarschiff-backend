@@ -1,143 +1,54 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:aop="http://www.springframework.org/schema/aop"
-	xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:jee="http://www.springframework.org/schema/jee"
-	xmlns:tx="http://www.springframework.org/schema/tx"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:p="http://www.springframework.org/schema/p"
-	xsi:schemaLocation="
-	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
-	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
-	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
-	http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.5.xsd
-	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
-
-    <!-- <context:property-placeholder location="classpath*:settings.properties"/>-->
+  xmlns:aop="http://www.springframework.org/schema/aop"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:jee="http://www.springframework.org/schema/jee"
+  xmlns:tx="http://www.springframework.org/schema/tx"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:p="http://www.springframework.org/schema/p"
+  xsi:schemaLocation="
+  http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+  http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+  http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+  http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.5.xsd
+  http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
 
 
-	<bean class="de.fraunhofer.igd.klarschiff.service.init.InitializeService" id="initializeService" 
-		p:enable="true" 
-		p:executeSqlScriptFrontendDb="${init.sqlscript.frontenddb}"
-		p:executeSqlScriptDbLink="${init.sqlscript.dblink}"
-	>
-			
-		<property name="initObjectList">
-			<list>
-				<ref bean="statusKommentarVorlage_01"/>
-				<ref bean="statusKommentarVorlage_02"/>
-				<ref bean="statusKommentarVorlage_03"/>
-				<ref bean="statusKommentarVorlage_04"/>
-				<ref bean="statusKommentarVorlage_05"/>
-				<ref bean="statusKommentarVorlage_06"/>
-				<ref bean="stadtGrenze"/>
-				<ref bean="stadtteilGrenze_01"/>
-				<ref bean="stadtteilGrenze_02"/>
-				<ref bean="stadtteilGrenze_03"/>
-				<ref bean="stadtteilGrenze_04"/>
-				<ref bean="stadtteilGrenze_05"/>
-				<ref bean="stadtteilGrenze_06"/>
-				<ref bean="stadtteilGrenze_07"/>
-				<ref bean="stadtteilGrenze_08"/>
-				<ref bean="stadtteilGrenze_09"/>
-				<ref bean="stadtteilGrenze_10"/>
-				<ref bean="stadtteilGrenze_11"/>
-				<ref bean="stadtteilGrenze_12"/>
-				<ref bean="stadtteilGrenze_13"/>
-				<ref bean="stadtteilGrenze_14"/>
-				<ref bean="stadtteilGrenze_15"/>
-				<ref bean="stadtteilGrenze_16"/>
-			</list>
-		</property>
-	</bean>
-	
-	<bean id="statusKommentarVorlage_01" class="de.fraunhofer.igd.klarschiff.vo.StatusKommentarVorlage" lazy-init="true" p:titel="Eigentum">
-		<property name="text"><value><![CDATA[Die Fläche befindet sich nicht im Eigentum der Stadt.]]></value></property>
-	</bean>
-    <bean id="statusKommentarVorlage_02" class="de.fraunhofer.igd.klarschiff.vo.StatusKommentarVorlage" lazy-init="true" p:titel="Gehölzschnitt">
-		<property name="text"><value><![CDATA[Schnitt- und Fällmaßnahmen können gemäß Bundesnaturschutzgesetz (§ 39 Abs. 5) nur vom 01. Oktober bis 28. Februar durchgeführt werden. Der Hinweis ist vorgemerkt.]]></value></property>
-	</bean>
-    <bean id="statusKommentarVorlage_03" class="de.fraunhofer.igd.klarschiff.vo.StatusKommentarVorlage" lazy-init="true" p:titel="Lichtraumprofil">
-		<property name="text"><value><![CDATA[Die Einschränkung der Durchgangsbreite ist noch nicht wesentlich. Derzeit besteht kein Handlungsbedarf.]]></value></property>
-	</bean>
-    <bean id="statusKommentarVorlage_04" class="de.fraunhofer.igd.klarschiff.vo.StatusKommentarVorlage" lazy-init="true" p:titel="Pflegeerfordernis">
-		<property name="text"><value><![CDATA[Ihr Hinweis ist berechtigt. Er wird in die turnusmäßige Pflege/Säuberung eingeordnet.]]></value></property>
-	</bean>
-    <bean id="statusKommentarVorlage_05" class="de.fraunhofer.igd.klarschiff.vo.StatusKommentarVorlage" lazy-init="true" p:titel="Pflegezustand">
-		<property name="text"><value><![CDATA[Ihr Hinweis ist nicht berechtigt. Der Pflegezustand/Reinigungszustand entspricht der Pflegestandard-Einstufung.]]></value></property>
-	</bean>
-    <bean id="statusKommentarVorlage_06" class="de.fraunhofer.igd.klarschiff.vo.StatusKommentarVorlage" lazy-init="true" p:titel="Unmut">
-		<property name="text"><value><![CDATA[Ihr Hinweis zielt auf übergeordnete kommunalpolitische Belange ab. Eine Bearbeitung ist uns mittels dieses Mediums nicht möglich.]]></value></property>
-	</bean>
+  <bean class="de.fraunhofer.igd.klarschiff.service.init.InitializeService" id="initializeService" 
+    p:enable="true" 
+    p:executeSqlScriptFrontendDb="${init.sqlscript.frontenddb}"
+    p:executeSqlScriptDbLink="${init.sqlscript.dblink}"
+    >
 
-	<bean id="grenzeFactory" class="de.fraunhofer.igd.klarschiff.service.geo.GrenzeFactory"/>
-	
-	<bean id="stadtGrenze" factory-bean="grenzeFactory" factory-method="createStadtGrenze" lazy-init="true">
-		<constructor-arg value="META-INF/oviwkt/stadtgrenze.wkt"/>
-	</bean>
-	<bean id="stadtteilGrenze_01" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
-		<constructor-arg value="Eldena"/>
-		<constructor-arg value="META-INF/oviwkt/Eldena.wkt"/>
-	</bean>
-	<bean id="stadtteilGrenze_02" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
-    <constructor-arg value="Fettenvorstadt/Stadtrandsiedlung"/>
-		<constructor-arg value="META-INF/oviwkt/Fettenvorstadt-Stadtrandsiedlung.wkt"/>
-	</bean>
-	<bean id="stadtteilGrenze_03" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
-		<constructor-arg value="Fleischervorstadt"/>
-		<constructor-arg value="META-INF/oviwkt/Fleischervorstadt.wkt"/>
-	</bean>
-	<bean id="stadtteilGrenze_04" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
-		<constructor-arg value="Friedrichshagen"/>
-		<constructor-arg value="META-INF/oviwkt/Friedrichshagen.wkt"/>
-	</bean>
-	<bean id="stadtteilGrenze_05" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
-		<constructor-arg value="Groß Schönwalde"/>
-		<constructor-arg value="META-INF/oviwkt/Gross-Schoenwalde.wkt"/>
-	</bean>
-	<bean id="stadtteilGrenze_06" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
-		<constructor-arg value="Industriegebiet"/>
-		<constructor-arg value="META-INF/oviwkt/Industriegebiet.wkt"/>
-	</bean>
-	<bean id="stadtteilGrenze_07" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
-		<constructor-arg value="Innenstadt"/>
-		<constructor-arg value="META-INF/oviwkt/Innenstadt.wkt"/>
-	</bean>
-	<bean id="stadtteilGrenze_08" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
-		<constructor-arg value="Ladebow"/>
-		<constructor-arg value="META-INF/oviwkt/Ladebow.wkt"/>
-	</bean>
-	<bean id="stadtteilGrenze_09" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
-		<constructor-arg value="Nördliche Mühlenvorstadt"/>
-		<constructor-arg value="META-INF/oviwkt/Noerdliche-Muehlenvorstadt.wkt"/>
-	</bean>
-	<bean id="stadtteilGrenze_10" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
-		<constructor-arg value="Ostseeviertel"/>
-		<constructor-arg value="META-INF/oviwkt/Ostseeviertel.wkt"/>
-	</bean>
-	<bean id="stadtteilGrenze_11" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
-    <constructor-arg value="Riems/Insel Koos"/>
-		<constructor-arg value="META-INF/oviwkt/Riems-Insel-Koos.wkt"/>
-	</bean>
-	<bean id="stadtteilGrenze_12" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
-		<constructor-arg value="Schönwalde II"/>
-		<constructor-arg value="META-INF/oviwkt/Schoenwalde-II.wkt"/>
-	</bean>
-	<bean id="stadtteilGrenze_13" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
-    <constructor-arg value="Schönwalde I/Südstadt"/>
-		<constructor-arg value="META-INF/oviwkt/Schoenwalde-I-Suedstadt.wkt"/>
-	</bean>
-		<bean id="stadtteilGrenze_14" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
-		<constructor-arg value="Steinbeckervorstadt"/>
-		<constructor-arg value="META-INF/oviwkt/Steinbeckervorstadt.wkt"/>
-	</bean>
-		<bean id="stadtteilGrenze_15" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
-    <constructor-arg value="Südliche Mühlenvorstadt/Obstbausiedlung"/>
-		<constructor-arg value="META-INF/oviwkt/Suedliche-Muehlenvorstadt-Obstbausiedlung.wkt"/>
-	</bean>
-		<bean id="stadtteilGrenze_16" factory-bean="grenzeFactory" factory-method="createStadtteilGrenze" lazy-init="true">
-		<constructor-arg value="Wieck"/>
-		<constructor-arg value="META-INF/oviwkt/Wieck.wkt"/>
-	</bean>
-    
+    <property name="initObjectList">
+      <list>
+        <ref bean="statusKommentarVorlage_01"/>
+        <ref bean="statusKommentarVorlage_02"/>
+        <ref bean="statusKommentarVorlage_03"/>
+        <ref bean="statusKommentarVorlage_04"/>
+        <ref bean="statusKommentarVorlage_05"/>
+        <ref bean="statusKommentarVorlage_06"/>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="statusKommentarVorlage_01" class="de.fraunhofer.igd.klarschiff.vo.StatusKommentarVorlage" lazy-init="true" p:titel="Eigentum">
+    <property name="text"><value><![CDATA[Die Fläche befindet sich nicht im Eigentum der Stadt.]]></value></property>
+  </bean>
+  <bean id="statusKommentarVorlage_02" class="de.fraunhofer.igd.klarschiff.vo.StatusKommentarVorlage" lazy-init="true" p:titel="Gehölzschnitt">
+    <property name="text"><value><![CDATA[Schnitt- und Fällmaßnahmen können gemäß Bundesnaturschutzgesetz (§ 39 Abs. 5) nur vom 01. Oktober bis 28. Februar durchgeführt werden. Der Hinweis ist vorgemerkt.]]></value></property>
+  </bean>
+  <bean id="statusKommentarVorlage_03" class="de.fraunhofer.igd.klarschiff.vo.StatusKommentarVorlage" lazy-init="true" p:titel="Lichtraumprofil">
+    <property name="text"><value><![CDATA[Die Einschränkung der Durchgangsbreite ist noch nicht wesentlich. Derzeit besteht kein Handlungsbedarf.]]></value></property>
+  </bean>
+  <bean id="statusKommentarVorlage_04" class="de.fraunhofer.igd.klarschiff.vo.StatusKommentarVorlage" lazy-init="true" p:titel="Pflegeerfordernis">
+    <property name="text"><value><![CDATA[Ihr Hinweis ist berechtigt. Er wird in die turnusmäßige Pflege/Säuberung eingeordnet.]]></value></property>
+  </bean>
+  <bean id="statusKommentarVorlage_05" class="de.fraunhofer.igd.klarschiff.vo.StatusKommentarVorlage" lazy-init="true" p:titel="Pflegezustand">
+    <property name="text"><value><![CDATA[Ihr Hinweis ist nicht berechtigt. Der Pflegezustand/Reinigungszustand entspricht der Pflegestandard-Einstufung.]]></value></property>
+  </bean>
+  <bean id="statusKommentarVorlage_06" class="de.fraunhofer.igd.klarschiff.vo.StatusKommentarVorlage" lazy-init="true" p:titel="Unmut">
+    <property name="text"><value><![CDATA[Ihr Hinweis zielt auf übergeordnete kommunalpolitische Belange ab. Eine Bearbeitung ist uns mittels dieses Mediums nicht möglich.]]></value></property>
+  </bean>
+
 </beans>
