@@ -344,7 +344,7 @@ CREATE OR REPLACE VIEW klarschiff_wfs_georss AS
             ELSE 'nicht vorhanden'::text
         END AS beschreibung,
         CASE
-            WHEN v.foto_thumb IS NOT NULL AND v.foto_thumb::text <> ''::text AND v.foto_freigegeben IS TRUE AND v.foto_vorhanden IS TRUE THEN ((((('<br/><a href="http://support.klarschiff-hro.de/fotos/'::text || v.foto_normal::text) || '" target="_blank" title="große Ansicht öffnen…"><img src="http://support.klarschiff-hro.de/fotos/'::text) || v.foto_thumb::text) || '" alt="'::text) || v.foto_thumb::text) || '" /></a>'::text
+            WHEN v.foto_thumb IS NOT NULL AND v.foto_thumb::text <> ''::text AND v.foto_freigegeben IS TRUE AND v.foto_vorhanden IS TRUE THEN ((((('<br/><a href="${f_image_url}'::text || v.foto_normal::text) || '" target="_blank" title="große Ansicht öffnen…"><img src="${f_image_url}'::text) || v.foto_thumb::text) || '" alt="'::text) || v.foto_thumb::text) || '" /></a>'::text
             WHEN v.status::text = 'offen'::text AND v.foto_vorhanden IS TRUE AND v.foto_freigegeben IS FALSE THEN 'redaktionelle Prüfung ausstehend'::text
             WHEN v.status::text <> 'offen'::text AND v.foto_vorhanden IS TRUE AND v.foto_freigegeben IS FALSE THEN 'redaktionell nicht freigegeben'::text
             ELSE 'nicht vorhanden'::text
@@ -359,7 +359,7 @@ CREATE OR REPLACE VIEW klarschiff_wfs_georss AS
         END AS datum,
         ST_X(ST_Transform(v.the_geom, 4326))::text AS x,
         ST_Y(ST_Transform(v.the_geom, 4326))::text AS y,
-        v.the_geom::geometry(Point,25833) AS geometrie
+        v.the_geom::geometry(Point, 25833) AS geometrie
     FROM
         klarschiff.klarschiff_vorgang v,
         klarschiff.klarschiff_kategorie hk,
