@@ -67,6 +67,7 @@ public class DbSyncService {
   String frontendDbDbName;
   String frontendDbUsername;
   String frontendDbPassword;
+  String frontendDbImageUrl;
   String backendDbHost;
   String backendDbPort;
   String backendDbSchema;
@@ -86,6 +87,7 @@ public class DbSyncService {
     scriptValuesMap.setProperty("f_username", getFrontendDbUsername());
     scriptValuesMap.setProperty("f_password", getFrontendDbPassword());
     scriptValuesMap.setProperty("b_username", getBackendDbUsername());
+    scriptValuesMap.setProperty("f_image_url", getFrontendDbImageUrl());
   }
 
   public Logger getLogger() {
@@ -290,6 +292,10 @@ public class DbSyncService {
     this.frontendDbPassword = frontendDbPassword;
   }
 
+  public void setFrontendDbImageUrl(String frontendDbImageUrl) {
+    this.frontendDbImageUrl = frontendDbImageUrl;
+  }
+
   public void setSqlScriptDbLinkFile(String sqlScriptDbLinkFile) {
     this.sqlScriptDbLinkFile = sqlScriptDbLinkFile;
   }
@@ -316,6 +322,10 @@ public class DbSyncService {
 
   public String getFrontendDbPassword() {
     return frontendDbPassword;
+  }
+
+  public String getFrontendDbImageUrl() {
+    return frontendDbImageUrl;
   }
 
   public String getSqlScriptFrontendDbFile() {
