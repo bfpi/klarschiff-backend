@@ -500,11 +500,7 @@ public class Vorgang implements Serializable {
     if (user == null) {
       return false;
     }
-    List<String> teams = user.getAussendienstTeams();
-    if (teams == null || teams.isEmpty()) {
-      return false;
-    }
-    return true;
+    return !user.getAussendienstTeams().isEmpty();
   }
 
   public Integer getTrustLevel() {
