@@ -252,7 +252,7 @@ public class FeatureService {
         if (inclClassAttribute) {
           int valIndex = ctx.getAttributMap().get("zustaendigkeit").indexOfValue(zustaendigkeit);
           if (valIndex == -1) {
-            logger.info("FEHLER createFeature fuer die Kategorie (" + kategorie.getName() + ") initiale Zustaendigkeit:(" + zustaendigkeit + ") ist nicht definiert (keine interne AD-Gruppe)");
+            logger.error("createFeature fuer die Kategorie (" + kategorie.getName() + ") initiale Zustaendigkeit:(" + zustaendigkeit + ") ist nicht definiert (keine interne AD-Gruppe)");
             //throw new Exception("FEHLER createFeature instance.setValue Attribut:("+attribute.getName()+") Zustaendigkeit:("+vorgang.getZustaendigkeit()+") ist nicht definiert (keine interne AD-Gruppe)");
           } else {
             instance.setValue(ctx.getAttributMap().get("zustaendigkeit"), zustaendigkeit);
@@ -266,7 +266,7 @@ public class FeatureService {
           instances.add(instance);
         }
       } catch (Exception e) {
-        logger.info("FEHLER Initiale Zustaendigkeit (" + zustaendigkeitpairstring + ") fuer die Kategorie (" + kategorie.getName() + ") ist fehlgeschlagen.");
+        logger.error("Initiale Zustaendigkeit (" + zustaendigkeitpairstring + ") fuer die Kategorie (" + kategorie.getName() + ") ist fehlgeschlagen.");
       }
     }
 
