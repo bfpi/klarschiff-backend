@@ -42,7 +42,29 @@
 		</div>
 
 		<div class="fieldset">
-			<div class="fieldsettitle">externe Rollen (delegieren)</div>
+			<div class="fieldsettitle">Außendiensteinheiten-Teams</div>
+			<table class="resulttable">
+				<thead>
+					<tr>
+						<th>Rolle</th>
+						<th>Beschreibung</th>
+						<th>Benutzer (Logins)</th>
+					</tr>
+				</thead>
+				<tbody>
+					<c:forEach items="${rollenAussendienst}" var="role" varStatus="rowCounter">
+						<tr class="${(rowCounter.count%2==0)? 'odd' : 'even'}">
+							<td>${role.id}</td>
+							<td>${role.description}</td>
+                            <td><ul><c:forEach items="${role.usersRole}" var="user"><li><span>${user.getName()} (${user.getId()})</span></li></c:forEach></ul></td>
+						</tr>
+					</c:forEach>
+				</tbody>
+			</table>			
+		</div>
+
+		<div class="fieldset">
+			<div class="fieldsettitle">externe Rollen (Delegieren)</div>
 			<table class="resulttable">
 				<thead>
 					<tr>
@@ -62,6 +84,7 @@
 				</tbody>
 			</table>	
 		</div>
+        
 	</div>
 	
 	<!-- HELP -->

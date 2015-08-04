@@ -25,12 +25,13 @@
 					<tr>
 						<th>Login</th>
 						<th>Benutzer</th>
-						<th>Administrator</th>
-						<th>Koordinator</th>
- 						<th>intern</th>
-						<th>extern</th>
+						<th title="Administrator?">A</th>
+						<th title="Koordinator?">K</th>
+ 						<th title="interner Benutzer?">i</th>
+						<th title="externer Benutzer?">e</th>
 						<th>interne Rollen</th>
-						<th>externe Rollen (delegieren)</th>								
+						<th>Außendiensteinheiten- Teams</th>
+						<th>externe Rollen (Delegieren)</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -42,8 +43,9 @@
  							<td align="center"><c:if test="${user.userKoordinator}">&#x2714;</c:if></td>
  							<td align="center"><c:if test="${!user.userAdmin and user.userIntern}">&#x2714;</c:if></td>
 							<td align="center"><c:if test="${!user.userAdmin and user.userExtern}">&#x2714;</c:if></td>
-							<c:choose><c:when test="${user.userAdmin}"><td align="center">alle</td></c:when><c:otherwise><td><ul><c:forEach items="${user.zustaendigkeiten}"  var="role"><li><span>${role.id}</span></li></c:forEach></ul></td></c:otherwise></c:choose>	
-							<c:choose><c:when test="${user.userAdmin}"><td align="center">alle</td></c:when><c:otherwise><td><ul><c:forEach items="${user.delegiertAn}"  var="role"><li><span>${role.id}</span></li></c:forEach></ul></td></c:otherwise></c:choose>
+							<c:choose><c:when test="${user.userAdmin}"><td align="center">Administrator</td></c:when><c:otherwise><td><ul><c:forEach items="${user.zustaendigkeiten}" var="role"><li><span>${role.id}</span></li></c:forEach></ul></td></c:otherwise></c:choose>
+							<c:choose><c:when test="${user.userAdmin}"><td align="center">Administrator</td></c:when><c:otherwise><td><ul><c:forEach items="${user.aussendienstTeams}" var="role"><li><span>${role.id}</span></li></c:forEach></ul></td></c:otherwise></c:choose>
+							<c:choose><c:when test="${user.userAdmin}"><td align="center">Administrator</td></c:when><c:otherwise><td><ul><c:forEach items="${user.delegiertAn}" var="role"><li><span>${role.id}</span></li></c:forEach></ul></td></c:otherwise></c:choose>
 						</tr>
 					</c:forEach>
 				</tbody>
