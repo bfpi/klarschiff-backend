@@ -44,7 +44,7 @@
  							<td align="center"><c:if test="${!user.userAdmin and user.userIntern}">&#x2714;</c:if></td>
 							<td align="center"><c:if test="${!user.userAdmin and user.userExtern}">&#x2714;</c:if></td>
 							<c:choose><c:when test="${user.userAdmin}"><td align="center">Administrator</td></c:when><c:otherwise><td><ul><c:forEach items="${user.zustaendigkeiten}" var="role"><li><span>${role.id}</span></li></c:forEach></ul></td></c:otherwise></c:choose>
-							<c:choose><c:when test="${user.userAdmin}"><td align="center">Administrator</td></c:when><c:otherwise><td><ul><c:forEach items="${user.aussendienstTeams}" var="role"><li><span>${role.id}</span></li></c:forEach></ul></td></c:otherwise></c:choose>
+							<c:choose><c:when test="${user.userAdmin}"><td align="center">Administrator</td></c:when><c:otherwise><td><ul><c:forEach items="${user.aussendienstTeams}" var="role"><li><span>${role}</span></li></c:forEach></ul></td></c:otherwise></c:choose>
 							<c:choose><c:when test="${user.userAdmin}"><td align="center">Administrator</td></c:when><c:otherwise><td><ul><c:forEach items="${user.delegiertAn}" var="role"><li><span>${role.id}</span></li></c:forEach></ul></td></c:otherwise></c:choose>
 						</tr>
 					</c:forEach>
