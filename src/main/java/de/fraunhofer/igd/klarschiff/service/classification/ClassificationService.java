@@ -54,7 +54,7 @@ public class ClassificationService {
   @Autowired
   SecurityService securityService;
 
-  private int maxCountForClassifiereTrainSet = 1000;
+  private final int maxCountForClassifiereTrainSet = 1000;
   protected int waitTimeToInitClassficationService = 10000;
   private ClassificationContext ctx;
 
@@ -84,7 +84,7 @@ public class ClassificationService {
     List<Vorgang> vorgaenge = vorgangDao.findVorgangForTrainClassificator(maxCountForClassifiereTrainSet);
     //Features für jeden Vorgang ermitteln
     for (Vorgang vorgang : vorgaenge) {
-      logger.info("----Classification featureService.createFeature vorgang (" + vorgang.getBetreff() + ")");
+      logger.info("Classification featureService.createFeature vorgang (" + vorgang.getBetreff() + ")");
       Instance instance = featureService.createFeature(vorgang, true, ctx);
       instance.setDataset(ctx.getDataset());
       instances.add(instance);
@@ -93,7 +93,7 @@ public class ClassificationService {
       //initiale Zuständigkeit bei den Kategorien hinzufügen
       for (Kategorie kategorie : kategorieDao.getKategorien()) {
         for (Instance instance : featureService.createFeature(kategorie, true, ctx)) {
-          logger.debug("----Classification featureService.createFeature kategorie (" + kategorie.getName() + ")");
+          logger.debug("Classification featureService.createFeature kategorie (" + kategorie.getName() + ")");
           instance.setDataset(ctx.getDataset());
           instances.add(instance);
         }
@@ -123,28 +123,48 @@ public class ClassificationService {
     options[0] = "-C";   // attribute index
     options[1] = "2";    // 2
     options[2] = "-L";   //
-    //options[3] = "1"; //vorgang.getKategorie().getId().toString();   //
-    int valIndex = ctx.getAttributMap().get("kategorie").indexOfValue(vorgang.getKategorie().getId().toString());
-    valIndex++;
-    options[3] = valIndex + "";
+    options[3] = String.valueOf(ctx.getAttributMap().get("kategorie").indexOfValue(
+      vorgang.getKategorie().getId().toString()) + 1);
     options[4] = "-V";
     filter.setOptions(options);
-
     filter.setInputFormat(thisdataset);
+
     Instances newData = Filter.useFilter(thisdataset, filter);
 
-    Evaluation eTest = new Evaluation(newData);
-
-    //ctx.getClassifier().buildClassifier(newData);
     Classifier cModel = (Classifier) new NaiveBayesUpdateable();
     cModel.buildClassifier(newData);
 
+    Evaluation eTest = new Evaluation(newData);
     eTest.evaluateModel(cModel, newData);
-    String strSummary = eTest.toSummaryString();
-    logger.debug(strSummary);
+    //Dataset setzen
+    instance.setDataset(newData);
+    //Klassifizieren
+    double[] distribution = cModel.distributionForInstance(instance);
+    //Map erzeugen
+    List<ClassificationResultEntry> classificationResult = new ArrayList<ClassificationResultEntry>();
+    for (int i = 0; i < distribution.length; i++) {
+      classificationResult.add(new ClassificationResultEntry(newData.classAttribute().value(i), distribution[i]));
+    }
+    //Sortieren
+    Collections.sort(classificationResult, new Comparator<ClassificationResultEntry>() {
+      @Override
+      public int compare(ClassificationResultEntry o1, ClassificationResultEntry o2) {
+        return -(o1.getWeight().compareTo(o2.getWeight()));
+      }
+    });
 
-    double[][] m = eTest.confusionMatrix();
+    if (logger.isDebugEnabled()) {
+      logEvaluationInfos(eTest, instance, newData, classificationResult);
+    }
 
+    return classificationResult;
+  }
+
+  private void logEvaluationInfos(Evaluation e, Instance instance, Instances newData,
+    List<ClassificationResultEntry> result) {
+
+    logger.debug(e.toSummaryString());
+    double[][] m = e.confusionMatrix();
     try {
       int rows = m.length;
       int columns = m[0].length;
@@ -158,36 +178,16 @@ public class ClassificationService {
         logger.debug(str + "|");
         str = "|\t";
       }
-
-    } catch (Exception e) {
-      logger.debug("Matrix is empty!!");
+    } catch (Exception ex) {
+      logger.debug("ConfusionMatrix is empty!");
     }
 
-    //Dataset setzen
-    instance.setDataset(newData);
-    //Klassifizieren
-    logger.debug("Dataset :(" + newData.toString() + ")");
-    logger.debug("Instance:(" + instance.toString() + ")");
+    logger.debug("Dataset : (" + newData.toString() + ")");
+    logger.debug("Instance: (" + instance.toString() + ")");
 
-    double[] distribution = cModel.distributionForInstance(instance);
-    //Map erzeugen
-    List<ClassificationResultEntry> classificationResult = new ArrayList<ClassificationResultEntry>();
-    for (int i = 0; i < distribution.length; i++) //classificationResult.add(new ClassificationResultEntry(ctx.getClassAttribute().value(i), distribution[i]));
-    {
-      classificationResult.add(new ClassificationResultEntry(newData.classAttribute().value(i), distribution[i]));
-    }
-    //Sortieren
-    Collections.sort(classificationResult, new Comparator<ClassificationResultEntry>() {
-      public int compare(ClassificationResultEntry o1, ClassificationResultEntry o2) {
-        return -(o1.getWeight().compareTo(o2.getWeight()));
-      }
-    });
-
-    for (ClassificationResultEntry entry : classificationResult) {
+    for (ClassificationResultEntry entry : result) {
       logger.debug("ClassificationResult (" + entry.getClassValue() + ") (" + entry.getWeight() + ")");
     }
-
-    return classificationResult;
   }
 
   /**
@@ -202,7 +202,7 @@ public class ClassificationService {
    */
   public Role calculateZustaendigkeitforVorgang(Vorgang vorgang) {
     try {
-      ClassificationResultEntry resultClass = null;
+      ClassificationResultEntry result = null;
       //History für den vorgang ermittlen
       VorgangHistoryClasses history = vorgangDao.findVorgangHistoryClasses(vorgang);
       //Wenn der Dispatcher bereits in der History ist keine neue Klassifikation
@@ -213,15 +213,16 @@ public class ClassificationService {
       List<ClassificationResultEntry> classificationResult = classifierVorgang(vorgang, ctx);
       //Zuständigkeiten aus der History und aktuelle überspringen
       for (ClassificationResultEntry entry : classificationResult) {
-        if ((history == null || !history.getHistoryClasses().contains(entry.getClassValue())) && !StringUtils.equals(vorgang.getZustaendigkeit(), entry.getClassValue())) {
-          resultClass = entry;
+        if ((history == null || !history.getHistoryClasses().contains(entry.getClassValue()))
+          && !StringUtils.equals(vorgang.getZustaendigkeit(), entry.getClassValue())) {
+          result = entry;
           break;
         }
       }
 
       //ggf. zuständigkeit an Dispatcher übergeben
-      if (resultClass == null) {
-        resultClass = new ClassificationResultEntry(securityService.getDispatcherZustaendigkeitId(), 0d);
+      if (result == null) {
+        result = new ClassificationResultEntry(securityService.getDispatcherZustaendigkeitId(), 0d);
       }
 
       //gewählte Zuständigkeit in der History speichern
@@ -232,7 +233,7 @@ public class ClassificationService {
           history = new VorgangHistoryClasses();
           history.setVorgang(vorgang);
         }
-        history.getHistoryClasses().add(resultClass.getClassValue());
+        history.getHistoryClasses().add(result.getClassValue());
         if (isNew) {
           vorgangDao.persist(history);
         } else {
@@ -242,7 +243,7 @@ public class ClassificationService {
         logger.error("Eine zugewiesene Zuständigkeit konnte nicht in die VorgangHistoryClass aufgenommen werden.", e);
       }
 
-      return securityService.getZustaendigkeit(resultClass.getClassValue());
+      return securityService.getZustaendigkeit(result.getClassValue());
     } catch (Exception e) {
       logger.error("Die Zuständigkeit für den Vorgang konnte nicht ermittelt werden.", e);
       throw new RuntimeException("Die Zuständigkeit für den Vorgang konnte nicht ermittelt werden.", e);
@@ -268,6 +269,7 @@ public class ClassificationService {
   /**
    * Ermittelt, ob bereits der Dispatcher für den Vorgang zuständig war.
    *
+   * @param vorgang
    * @return ja bzw. nein
    */
   public boolean isDispatcherInVorgangHistoryClasses(Vorgang vorgang) {
@@ -284,7 +286,7 @@ public class ClassificationService {
     try {
       updateClassifier(vorgang, ctx);
     } catch (Exception e) {
-      logger.error("FEHLER Der Klassifizierer konnte nicht mit einer akzeptierten Zuständigkeit aktualisiert werden.", e);
+      logger.error("Der Klassifizierer konnte nicht mit einer akzeptierten Zuständigkeit aktualisiert werden.", e);
     }
   }
 

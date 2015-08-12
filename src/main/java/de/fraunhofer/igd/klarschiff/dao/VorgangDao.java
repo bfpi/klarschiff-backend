@@ -926,7 +926,8 @@ public class VorgangDao {
       return null;
     }
     try {
-      return em.createQuery("select o from VorgangFeatures o WHERE o.vorgang=:vorgang", VorgangFeatures.class).setParameter("vorgang", vorgang).getSingleResult();
+      return em.createQuery("select o from VorgangFeatures o WHERE o.vorgang = :vorgang",
+        VorgangFeatures.class).setParameter("vorgang", vorgang).getSingleResult();
     } catch (Exception e) {
       return null;
     }
@@ -959,7 +960,11 @@ public class VorgangDao {
    */
   @SuppressWarnings("unchecked")
   public List<Vorgang> findVorgangForTrainClassificator(int maxResults) {
-    return em.createQuery("SELECT a FROM Vorgang a, Vorgang b WHERE a.kategorie = b.kategorie AND a.version <= b.version AND a.zustaendigkeitStatus = 'akzeptiert' AND b.zustaendigkeitStatus = 'akzeptiert' GROUP BY a.id HAVING count(*) <= 10", Vorgang.class).setMaxResults(maxResults).getResultList();
+    return em.createQuery("SELECT a FROM Vorgang a, Vorgang b "
+      + "WHERE a.kategorie = b.kategorie AND a.version <= b.version "
+      + "AND a.zustaendigkeitStatus = 'akzeptiert' AND b.zustaendigkeitStatus = 'akzeptiert' "
+      + "GROUP BY a.id "
+      + "HAVING count(*) <= 10", Vorgang.class).setMaxResults(maxResults).getResultList();
   }
 
   /**

@@ -1,37 +1,47 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:aop="http://www.springframework.org/schema/aop"
-	xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:jee="http://www.springframework.org/schema/jee"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:p="http://www.springframework.org/schema/p"
-	xsi:schemaLocation="
-	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
-	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
-	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
-	http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.5.xsd
-	">
-
-    <!-- <context:property-placeholder location="classpath*:settings.properties"/>-->
-
-
-	<bean class="de.fraunhofer.igd.klarschiff.service.classification.FeatureService" id="featureService">
-		<property name="bewirtschaftungFeatures">
-			<list>
-				<value>Amt für Kultur, Denkmalpflege und Museen</value>
-				<value>Amt für Stadtgrün, Naturschutz und Landschaftspflege</value>
-				<value>Amt für Umweltschutz</value>
-				<value>Kataster-, Vermessungs- und Liegenschaftsamt</value>
-				<value>Stadtforstamt</value>
-				<value>Tief- und Hafenbauamt</value>
-			</list>
-		</property>
-		<property name="flaechenFeatures">
-			<list>
-				<value>gruenanlagen</value>
-				<value>forst</value>
-				<value>strand</value>
-			</list>
-		</property>
-	</bean>
+<beans
+  xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
+>
+  <bean class="de.fraunhofer.igd.klarschiff.service.classification.FeatureService" id="featureService">
+    <property name="bewirtschaftungFeatures">
+      <list>
+        <value>Schelfwerder</value>
+        <value>Medewege</value>
+        <value>Neu Zippendorf</value>
+        <value>Friedrichsthal</value>
+        <value>Görries</value>
+        <value>Mueß</value>
+        <value>Ostorf</value>
+        <value>Schweriner See</value>
+        <value>Neumühle</value>
+        <value>Gartenstadt</value>
+        <value>Zippendorf</value>
+        <value>Altstadt</value>
+        <value>Wüstmark</value>
+        <value>Mueßer Holz</value>
+        <value>Lewenberg</value>
+        <value>Schelfstadt</value>
+        <value>Großer Dreesch</value>
+        <value>Krebsförden</value>
+        <value>Feldstadt</value>
+        <value>Paulsstadt</value>
+        <value>Sacktannen</value>
+        <value>Wickendorf</value>
+        <value>Warnitz</value>
+        <value>Göhrener Tannen</value>
+        <value>Werdervorstadt</value>
+        <value>Weststadt</value>
+        <value>Lankow</value>
+      </list>
+    </property>
+    <!--		<property name="flaechenFeatures">
+      <list>
+        <value>gruenanlagen</value>
+        <value>forst</value>
+        <value>strand</value>
+      </list>
+    </property>-->
+  </bean>
 </beans>

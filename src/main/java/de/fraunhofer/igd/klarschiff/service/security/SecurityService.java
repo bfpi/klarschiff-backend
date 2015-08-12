@@ -482,9 +482,12 @@ public class SecurityService {
    */
   public List<Role> getAllZustaendigkeiten(boolean inclDispatcher) {
     String dispatcherFilter = inclDispatcher ? "" : "(!(" + groupObjectId + "=" + groupDispatcher + "))";
-    List<Role> allZustaendigkeiten = securityServiceLdap.getObjectListFromLdap(groupSearchBase, "(&(objectclass=" + groupObjectClass + ")(" + groupRoleAttribute + "=" + groupIntern + ")" + dispatcherFilter + ")", roleContextMapper);
+    List<Role> allZustaendigkeiten = securityServiceLdap.getObjectListFromLdap(groupSearchBase, 
+      "(&(objectclass=" + groupObjectClass + ")(" + groupRoleAttribute + "=" + groupIntern + ")" + dispatcherFilter + ")",
+      roleContextMapper);
 
     Collections.sort(allZustaendigkeiten, new Comparator<Role>() {
+      @Override
       public int compare(Role r1, Role r2) {
         return r1.getId().compareTo(r2.getId());
       }
@@ -711,14 +714,17 @@ public class SecurityService {
   }
 
   /**
-   * Ermittelt alle AussendienstTeams
+   * Ermittelt alle Aussendienstteams
    *
-   * @return List der Aussendienst-Teams
+   * @return Liste der Aussendienst-Teams
    */
   public List<Role> getAllAussendienstTeams() {
-    List<Role> allZustaendigkeiten = securityServiceLdap.getObjectListFromLdap(groupSearchBase, "(&(objectclass=" + groupObjectClass + ")(" + groupRoleAttribute + "=" + groupAussendienst + "))", roleContextMapper);
+    List<Role> allZustaendigkeiten = securityServiceLdap.getObjectListFromLdap(groupSearchBase, 
+      "(&(objectclass=" + groupObjectClass + ")(" + groupRoleAttribute + "=" + groupAussendienst + "))",
+      roleContextMapper);
 
     Collections.sort(allZustaendigkeiten, new Comparator<Role>() {
+      @Override
       public int compare(Role r1, Role r2) {
         return r1.getId().compareTo(r2.getId());
       }
@@ -745,15 +751,15 @@ public class SecurityService {
   }
 
   /**
-   * Ermittelt alle AussendienstTeams eines Koordinators
+   * Ermittelt alle Aussendienstteams eines Koordinators
    *
-   * @return List der Aussendienst-Teams
+   * @param login
+   * @return Liste der Aussendienst-Teams
    */
   public List<String> getAussendienstKoordinatorZustaendigkeiten(String login) {
     return aussendienstKoordinatorDao.findAussendienstByLogin(login);
   }
 
-  /* --------------- GET + SET ----------------------------*/
   public String getUserAttributesMapping() {
     return userAttributesMapping;
   }

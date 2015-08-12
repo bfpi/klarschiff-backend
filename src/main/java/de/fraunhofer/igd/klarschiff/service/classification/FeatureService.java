@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -75,35 +74,39 @@ public class FeatureService {
     //Kategorien
     List<String> kategorien = new ArrayList<String>();
     for (Kategorie kategoerie : kategorieDao.getKategorien()) {
-      kategorien.add(kategoerie.getId() + "");
+      kategorien.add(kategoerie.getId().toString());
     }
     attributes.addElement(Attribute.createAttribute("kategorie", kategorien, true));
 
-    //Bewirtschaftung vom WFS
-    for (String b : bewirtschaftungFeatures) {
-      logger.debug("attributes.appendElements(Attribute.createGeoAttributes(geo_bewirtschaftung_" + b + ","
-        + settingsService.getPropertyValue("geo.wfszufi.featureprefix") + ":bewirtschaftung,...,"
-        + settingsService.getPropertyValue("geo.wfszufi.geomname") + "...)");
-      attributes.appendElements(Attribute.createGeoAttributes(
-        "geo_bewirtschaftung_" + b,
-        settingsService.getPropertyValue("geo.wfszufi.featureprefix") + ":bewirtschaftung",
-        "bewirtschafter",
-        b,
-        settingsService.getPropertyValue("geo.wfszufi.geomname"),
-        false));
+    if (bewirtschaftungFeatures != null) {
+      //Bewirtschaftung vom WFS
+      for (String b : bewirtschaftungFeatures) {
+        String prefix = "geo_bewirtschaftung_" + b;
+        String type = settingsService.getPropertyValue("geo.wfszufi.featureprefix") + ":bewirtschaftung";
+        String propertyName = settingsService.getPropertyValue("geo.wfszufi.attribute.name");
+        String geomName = settingsService.getPropertyValue("geo.wfszufi.attribute.geom");
+
+        logger.debug(String.format("attributes.appendElements(Attribute.createGeoAttributes(%s, %s, %s, %s, %s, false))",
+          prefix, type, propertyName, b, geomName));
+
+        attributes.appendElements(Attribute.createGeoAttributes(prefix, type, propertyName, b, geomName, false));
+      }
     }
 
-    //Flächentypen vom WFS
-    for (String f : flaechenFeatures) {
-      logger.debug("attributes.appendElements(Attribute.createGeoAttributes(...,"
-        + settingsService.getPropertyValue("geo.wfszufi.featureprefix") + ":" + f + ","
-        + settingsService.getPropertyValue("geo.wfszufi.geomname") + "...)");
-      attributes.appendElements(Attribute.createGeoAttributes(
-        "geo_" + f,
-        settingsService.getPropertyValue("geo.wfszufi.featureprefix") + ":" + f,
-        settingsService.getPropertyValue("geo.wfszufi.geomname"),
-        false));
+    if (flaechenFeatures != null) {
+      //Flächentypen vom WFS
+      for (String f : flaechenFeatures) {
+        String prefix = "geo_" + f;
+        String type = settingsService.getPropertyValue("geo.wfszufi.featureprefix") + ":" + f;
+        String geomName = settingsService.getPropertyValue("geo.wfszufi.attribute.geom");
+
+        logger.debug(String.format("attributes.appendElements(Attribute.createGeoAttributes(%s, %s, %s, false))",
+          prefix, type, geomName));
+
+        attributes.appendElements(Attribute.createGeoAttributes(prefix, type, geomName, false));
+      }
     }
+
     Map<String, Attribute> attributMap = new HashMap<String, Attribute>();
     for (Enumeration<Attribute> iter = attributes.elements(); iter.hasMoreElements();) {
       Attribute attribute = iter.nextElement();
@@ -134,8 +137,8 @@ public class FeatureService {
   /**
    * Ermittelt für einen Vorgang die Features für den Klassifikator. Featurewerte, die nicht
    * änderbar sind und für den Vorgang bereits gespeichert wurden, werden nicht neu berechnet,
-   * sondern aus der DB gelesen. Nach der Berechnung der Features werden nicht änderbare Features
-   * in der DB gespeichert.
+   * sondern aus der DB gelesen. Nach der Berechnung der Features werden nicht änderbare Features in
+   * der DB gespeichert.
    *
    * @param vorgang Vorgang, für den die Features berechnet werden sollen
    * @param inclClassAttribute Soll der Wert der aktuellen Zuständigkeit ebenfalls mit in die
@@ -155,7 +158,9 @@ public class FeatureService {
       if (vorgangFeatures != null && !attribute.isUpdateble()) {
         //Wert ggf. aus vorgangFeatures nehmen
         if (vorgangFeatures.getFeatures().containsKey(attribute.getName())) {
-          logger.debug("createFeature fuer Vorgang Wert ggf. aus vorgangFeatures nehmen Attribut (" + attribute.getName() + ") set value (" + vorgangFeatures.getFeatures().get(attribute.getName()) + ")");
+          logger.debug(String.format("createFeature fuer Vorgang Wert ggf. aus vorgangFeatures nehmen "
+            + "Attribut (%s) set value (%s)", attribute.getName(),
+            vorgangFeatures.getFeatures().get(attribute.getName())));
           if (attribute.isNominal()) {
             instance.setValue(attribute, vorgangFeatures.getFeatures().get(attribute.getName()));
           } else {
@@ -166,33 +171,35 @@ public class FeatureService {
         //Wert neu berechnen
         logger.debug("createFeature fuer Vorgang Wert neu berechnen Attribut (" + attribute.getName() + ")");
         if (attribute.getName().equals("kategorie")) {
-          instance.setValue(attribute, vorgang.getKategorie().getId() + "");
-          logger.debug("createFeature instance.setValue Attribut:(" + attribute.getName() + ") value:(" + vorgang.getKategorie().getId() + ")");
+          instance.setValue(attribute, vorgang.getKategorie().getId().toString());
+          logger.debug(String.format("createFeature instance.setValue Attribut: (%s) value: (%s)",
+            attribute.getName(), vorgang.getKategorie().getId()));
         } else if (attribute.getName().equals("zustaendigkeit")) {
           if (inclClassAttribute) {
-            logger.info("createFeature instance.setValue Zustaendigkeit Attribut:(" + attribute.getName() + ") Zustaendigkeit:(" + vorgang.getZustaendigkeit() + ")");
+            logger.info(String.format("createFeature instance.setValue Zustaendigkeit Attribut: (%s) "
+              + "Zustaendigkeit: (%s)", attribute.getName(), vorgang.getZustaendigkeit()));
             if (vorgang.getZustaendigkeitStatus() == EnumZustaendigkeitStatus.akzeptiert) {
-              int valIndex = attribute.indexOfValue(vorgang.getZustaendigkeit() + "");
-              if (valIndex == -1) {
-                logger.debug("FEHLER createFeature instance.setValue Attribut:(" + attribute.getName() + ") Zustaendigkeit:(" + vorgang.getZustaendigkeit() + ") ist nicht definiert (keine interne AD-Gruppe)");
-                //throw new Exception("FEHLER createFeature instance.setValue Attribut:("+attribute.getName()+") Zustaendigkeit:("+vorgang.getZustaendigkeit()+") ist nicht definiert (keine interne AD-Gruppe)");
+              if (attribute.indexOfValue(vorgang.getZustaendigkeit()) == -1) {
+                logger.error(String.format("createFeature instance.setValue Attribut: (%s) "
+                  + "Zustaendigkeit: (%s) ist nicht definiert (keine interne AD-Gruppe)",
+                  attribute.getName(), vorgang.getZustaendigkeit()));
               } else {
-                instance.setValue(attribute, vorgang.getZustaendigkeit() + "");
+                instance.setValue(attribute, vorgang.getZustaendigkeit());
               }
             } else {
-              throw new Exception("Zuständigkeit des Vorganges kann nicht als Feature mit aufgenommen werden, da die Zuständigkeit noch nicht akzeptiert ist.");
+              throw new Exception("Zuständigkeit des Vorganges kann nicht als Feature mit aufgenommen "
+                + "werden, da die Zuständigkeit noch nicht akzeptiert ist.");
             }
           }
         } else if (attribute.isGeoAttribute()) {
           Double value = geoService.calculateFeature(vorgang.getOvi(), attribute);
           if (value == null) {
             logger.debug("createFeature fuer Vorgang Wert neu berechnen Ovi null");
-          } else  {
+          } else {
             logger.debug("createFeature fuer Vorgang Wert neu berechnen Ovi " + value.toString());
             if (value > 0) {
               instance.setValue(attribute, value);
-            }
-            else {
+            } else {
               logger.debug("createFeature fuer Vorgang Wert neu berechnen Ovi 0 -> null");
             }
           }
@@ -212,7 +219,8 @@ public class FeatureService {
         Attribute attribute = iter.nextElement();
         if (!attribute.isUpdateble) {
           if (!instance.isMissing(attribute)) {
-            vorgangFeatures.getFeatures().put(attribute.getName(), (attribute.isNominal()) ? instance.stringValue(attribute) : instance.value(attribute) + "");
+            vorgangFeatures.getFeatures().put(attribute.getName(), (attribute.isNominal())
+              ? instance.stringValue(attribute) : String.valueOf(instance.value(attribute)));
           }
         }
       }
@@ -225,9 +233,9 @@ public class FeatureService {
 
   /**
    * Erzeugt eine Liste von Features nur auf Basis der Kategorie. Der Klassifikator wird bis zu
-   * einer bestimmten Trainingsmenge zusätzlich mit initialen Zuständigkeiten, die für die
-   * einzelnen Kategorien definiert werden können, trainiert. Die Erzeugung der Features für
-   * dieses Trainingsset erfolgt auf Basis dieser Funktion.
+   * einer bestimmten Trainingsmenge zusätzlich mit initialen Zuständigkeiten, die für die einzelnen
+   * Kategorien definiert werden können, trainiert. Die Erzeugung der Features für dieses
+   * Trainingsset erfolgt auf Basis dieser Funktion.
    *
    * @param kategorie Kategorie, für die die Features ermittelt werden sollen
    * @param inclClassAttribute Soll die Zuständigkeit mit in die Features aufgenommen werden?
@@ -239,40 +247,48 @@ public class FeatureService {
 
     List<Instance> instances = new ArrayList<Instance>();
 
-    for (String zustaendigkeit : kategorie.getInitialZustaendigkeiten()) {
-      String[] zustaendigkeitpair = zustaendigkeit.split(";");
-      String zustaendigkeitpairstring = zustaendigkeit;
-      zustaendigkeit = zustaendigkeitpair[0];
-      String flaeche = "";
+    for (String initialZustaendigkeit : kategorie.getInitialZustaendigkeiten()) {
+      String[] pair = initialZustaendigkeit.split(";");
+      String zustaendigkeit = pair[0];
       try {
-        logger.debug("createFeature fuer die Kategorie (" + kategorie.getName() + ") initiale Zustaendigkeit:(" + zustaendigkeit + ")  versuch.");
+        logger.debug(String.format("createFeature fuer die Kategorie (%s) initiale Zustaendigkeit: (%s) versuch.",
+          kategorie.getName(), zustaendigkeit));
         Instance instance = new Instance(ctx.getAttributes().size());
-        instance.setValue(ctx.getAttributMap().get("kategorie"), kategorie.getId() + "");
+        instance.setValue(ctx.getAttributMap().get("kategorie"), kategorie.getId().toString());
         if (inclClassAttribute) {
           int valIndex = ctx.getAttributMap().get("zustaendigkeit").indexOfValue(zustaendigkeit);
           if (valIndex == -1) {
-            logger.error("createFeature fuer die Kategorie (" + kategorie.getName() + ") initiale Zustaendigkeit:(" + zustaendigkeit + ") ist nicht definiert (keine interne AD-Gruppe)");
-            //throw new Exception("FEHLER createFeature instance.setValue Attribut:("+attribute.getName()+") Zustaendigkeit:("+vorgang.getZustaendigkeit()+") ist nicht definiert (keine interne AD-Gruppe)");
+            logger.error(String.format("createFeature fuer die Kategorie (%s) initiale Zustaendigkeit: (%s) "
+              + "ist nicht definiert (keine interne AD-Gruppe)", kategorie.getName(), zustaendigkeit));
           } else {
             instance.setValue(ctx.getAttributMap().get("zustaendigkeit"), zustaendigkeit);
           }
-          if (zustaendigkeitpair.length > 1) {
-            flaeche = zustaendigkeitpair[1];
-            flaeche = StringUtils.replace(flaeche, "$komma$", ",");
-            logger.debug("createFeature fuer die Kategorie (" + kategorie.getName() + ") initiale Zustaendigkeit:(" + zustaendigkeit + ") FLAECHE: geo_" + flaeche + "_innerhalb = 1 .");
-            instance.setValue(ctx.getAttributMap().get("geo_" + flaeche + "_innerhalb"), 1);
+          if (pair.length > 1) {
+            String attrName = "geo_" + pair[1].replace("$komma$", ",") + "_innerhalb";
+            logger.debug(String.format("createFeature fuer die Kategorie (%s) initiale Zustaendigkeit: (%s) "
+              + " Fläche: %s = 1.", kategorie.getName(), zustaendigkeit, attrName));
+            Attribute attr = ctx.getAttributMap().get(attrName);
+            if (attr != null) {
+              instance.setValue(attr, 1);
+            } else {
+              logger.error(String.format("Attribut '%s' ist im Instanzkontext nicht definiert "
+                + "=> keine Berücksichtigung der flächenabhängigen Zuständigkeit %s für Kategorie %s!",
+                attrName, zustaendigkeit, kategorie.getName()));
+            }
           }
           instances.add(instance);
         }
       } catch (Exception e) {
-        logger.error("Initiale Zustaendigkeit (" + zustaendigkeitpairstring + ") fuer die Kategorie (" + kategorie.getName() + ") ist fehlgeschlagen.");
+        logger.error("Exception: " + e.getMessage());
+        e.printStackTrace();
+        logger.error(String.format("Initiale Zustaendigkeit (%s) fuer die Kategorie (%s) ist fehlgeschlagen.",
+          initialZustaendigkeit, kategorie.getName()));
       }
     }
 
     return instances;
   }
 
-  /* --------------- GET + SET ----------------------------*/
   public List<String> getBewirtschaftungFeatures() {
     return bewirtschaftungFeatures;
   }
@@ -288,5 +304,4 @@ public class FeatureService {
   public void setFlaechenFeatures(List<String> flaechenFeatures) {
     this.flaechenFeatures = flaechenFeatures;
   }
-
 }

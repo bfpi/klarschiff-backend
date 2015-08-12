@@ -119,7 +119,8 @@ public class GeoService {
 
       //ggf. Proxy setzen
       if (!StringUtils.isBlank(settingsService.getProxyHost()) && !StringUtils.isBlank(settingsService.getProxyPort())) {
-        logger.info("Proxy wird fuer die Verbindung mit dem WFS wird gesetzt. (ProxyHost:" + settingsService.getProxyHost() + " ProxyPort:" + settingsService.getProxyPort() + ")");
+        logger.info("Proxy wird fuer die Verbindung mit dem WFS wird gesetzt. (ProxyHost:" +
+          settingsService.getProxyHost() + " ProxyPort:" + settingsService.getProxyPort() + ")");
         System.setProperty("http.proxyHost", settingsService.getProxyHost());
         System.setProperty("http.proxyPort", settingsService.getProxyPort());
       }
@@ -206,7 +207,9 @@ public class GeoService {
     String xmax = String.valueOf((int) (point.getX() + 200));
     String ymax = String.valueOf((int) (point.getY() + 200));
     String id = String.valueOf(vorgang.getId());
-    return mapExternUrl.replaceAll("%xmin%", xmin).replaceAll("%ymin%", ymin).replaceAll("%xmax%", xmax).replaceAll("%ymax%", ymax).replaceAll("%x%", x).replaceAll("%y%", y).replaceAll("%id%", id);
+    return mapExternUrl.replaceAll("%xmin%", xmin).replaceAll("%ymin%", ymin)
+      .replaceAll("%xmax%", xmax).replaceAll("%ymax%", ymax).replaceAll("%x%", x)
+      .replaceAll("%y%", y).replaceAll("%id%", id);
   }
 
   /**
@@ -220,7 +223,8 @@ public class GeoService {
    */
   public String getMapExternExternUrl(Vorgang vorgang) {
     Point point = transformMapProjectionToMapExternProjection(vorgang.getOvi());
-    return mapExternExternUrl.replaceAll("%x%", point.getX() + "").replaceAll("%y%", point.getY() + "").replaceAll("%id%", vorgang.getId() + "");
+    return mapExternExternUrl.replaceAll("%x%", point.getX() + "")
+      .replaceAll("%y%", point.getY() + "").replaceAll("%id%", vorgang.getId() + "");
   }
 
   /**
@@ -236,23 +240,10 @@ public class GeoService {
       return null;
     }
 
-    Double[] features = geoServiceWfs.getGeoFeatures(ovi, wfsZufiOviBuffer, attribute.getTypeName(), attribute.getGeomPropertyName(), attribute.getPropertyName(), attribute.getPropertyValue());
+    Double abstandInnerhalb = geoServiceWfs.getGeoFeatures(ovi, wfsZufiOviBuffer, attribute.getTypeName(),
+      attribute.getGeomPropertyName(), attribute.getPropertyName(), attribute.getPropertyValue())[1];
 
-    /*switch(attribute.getGeoMeasure()) {
-     case abstandAusserhalb: return features[0];
-     case abstandInnerhalb: return features[1];
-     case flaechenGroesse: return features[2];*/
-    if (features[1] == null) {
-      return 0.0;
-    } else {
-      if (features[1] > 0) {
-        return 1.0;
-      } else {
-        return 0.0;
-      }
-    }
-    //default: throw new RuntimeException();
-    //}
+    return (abstandInnerhalb != null && abstandInnerhalb > 0) ? 1.0 : 0.0;
   }
 
   /**
@@ -272,8 +263,11 @@ public class GeoService {
    * flaechenGroesse
    * @see GeoServiceWfs#getGeoFeatures(Point, double, String, String, String, String)
    */
-  protected Double[] getGeoFeatures(Point ovi, double wfsZufiOviBuffer, String typeName, String geomPropertyName, String propertyName, String propertyValue) {
-    logger.debug("getGeoFeatures L2: ovi=" + ovi.getX() + "," + ovi.getY() + " typeName=" + typeName + " geomPropertyName=" + geomPropertyName + " propertyName=" + propertyName + " propertyValue=" + propertyValue);
+  protected Double[] getGeoFeatures(Point ovi, double wfsZufiOviBuffer, String typeName, 
+    String geomPropertyName, String propertyName, String propertyValue) {
+
+    logger.debug("getGeoFeatures L2: ovi=" + ovi.getX() + "," + ovi.getY() + " typeName=" + typeName +
+      " geomPropertyName=" + geomPropertyName + " propertyName=" + propertyName + " propertyValue=" + propertyValue);
     //Features für ein typeName über den WFS ermitteln
     List<GeoFeature> features = geoServiceWfs.getGeoFeatures(ovi, wfsZufiOviBuffer, typeName, geomPropertyName, propertyName);
 
@@ -353,8 +347,11 @@ public class GeoService {
    * String, String, String)
    * @see de.fraunhofer.igd.klarschiff.service.geo.GeoFeature
    */
-  protected List<GeoFeature> getGeoFeatures(Point ovi, double wfsZufiOviBuffer, String typeName, String geomPropertyName, String propertyName) {
-    logger.debug("getGeoFeatures L1: ovi=" + ovi.getX() + "," + ovi.getY() + " typeName=" + typeName + " geomPropertyName=" + geomPropertyName + " propertyName=" + propertyName);
+  protected List<GeoFeature> getGeoFeatures(Point ovi, double wfsZufiOviBuffer, String typeName, 
+    String geomPropertyName, String propertyName) {
+
+    logger.debug("getGeoFeatures L1: ovi=" + ovi.getX() + "," + ovi.getY() + " typeName=" + typeName +
+      " geomPropertyName=" + geomPropertyName + " propertyName=" + propertyName);
     try {
       //Fläche um das ovi bestimmen
       Polygon oviWithBuffer = (Polygon) ovi.buffer(wfsZufiOviBuffer);
@@ -382,7 +379,9 @@ public class GeoService {
             geoFeature = new GeoFeature(geom, null);
           }
           result.add(geoFeature);
-          logger.debug("getGeoFeatures L1 found simpleFeature for typeName=" + typeName + " (propertyValue=" + geoFeature.getPropertyValue() + " geometry=" + (geoFeature.getGeometry() != null) + ")");
+          logger.debug("getGeoFeatures L1 found simpleFeature for typeName=" + typeName
+            + " (propertyValue=" + geoFeature.getPropertyValue() + " geometry="
+            + (geoFeature.getGeometry() != null) + ")");
         } catch (Exception e) {
           logger.error("GeoFeature kann nicht vom WFS ermittelt werden.", e);
         }
@@ -396,7 +395,6 @@ public class GeoService {
     }
   }
 
-  /* --------------- GET + SET ----------------------------*/
   public String getMapProjection() {
     return mapProjection;
   }
