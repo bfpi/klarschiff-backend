@@ -1,7 +1,7 @@
 package de.fraunhofer.igd.klarschiff.vo;
 
 /**
- * Freigabestatus für Betreff, Details und Foto
+ * Freigabestatus für Beschreibung und Foto
  *
  * @author Stefan Audersch (Fraunhofer IGD)
  */

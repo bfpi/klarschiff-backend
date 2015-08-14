@@ -228,8 +228,5 @@ public class InitializeServiceThread extends Thread {
     for (EnumText _enum : de.fraunhofer.igd.klarschiff.vo.EnumZustaendigkeitStatus.values()) {
       session.saveOrUpdate(new EnumZustaendigkeitStatus().fill(_enum));
     }
-    for (EnumText _enum : de.fraunhofer.igd.klarschiff.vo.EnumNaehereBeschreibungNotwendig.values()) {
-      session.saveOrUpdate(new EnumNaehereBeschreibungNotwendig().fill(_enum));
-    }
   }
 }

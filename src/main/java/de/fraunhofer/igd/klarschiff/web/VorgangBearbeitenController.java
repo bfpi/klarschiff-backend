@@ -43,7 +43,6 @@ import de.fraunhofer.igd.klarschiff.vo.EnumVorgangStatus;
 import de.fraunhofer.igd.klarschiff.vo.EnumVorgangTyp;
 import de.fraunhofer.igd.klarschiff.vo.EnumZustaendigkeitStatus;
 import de.fraunhofer.igd.klarschiff.vo.Kommentar;
-import de.fraunhofer.igd.klarschiff.vo.LobHinweiseKritik;
 import de.fraunhofer.igd.klarschiff.vo.StatusKommentarVorlage;
 import de.fraunhofer.igd.klarschiff.vo.Verlauf;
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
@@ -130,7 +129,8 @@ public class VorgangBearbeitenController {
   @ModelAttribute("allVorgangStatus")
   public EnumVorgangStatus[] allVorgangStatus() {
     EnumVorgangStatus[] allVorgangStatus = EnumVorgangStatus.values();
-    allVorgangStatus = (EnumVorgangStatus[]) ArrayUtils.removeElement(ArrayUtils.removeElement(allVorgangStatus, EnumVorgangStatus.gemeldet), EnumVorgangStatus.offen);
+    allVorgangStatus = (EnumVorgangStatus[]) ArrayUtils.removeElement(ArrayUtils.removeElement(
+      allVorgangStatus, EnumVorgangStatus.gemeldet), EnumVorgangStatus.offen);
     return allVorgangStatus;
   }
 
@@ -140,7 +140,8 @@ public class VorgangBearbeitenController {
   @ModelAttribute("allVorgangStatusMitOffenen")
   public EnumVorgangStatus[] allVorgangStatusMitOffenen() {
     EnumVorgangStatus[] allVorgangStatusMitOffenen = EnumVorgangStatus.values();
-    allVorgangStatusMitOffenen = (EnumVorgangStatus[]) ArrayUtils.removeElement(allVorgangStatusMitOffenen, EnumVorgangStatus.gemeldet);
+    allVorgangStatusMitOffenen = (EnumVorgangStatus[]) ArrayUtils.removeElement(
+      allVorgangStatusMitOffenen, EnumVorgangStatus.gemeldet);
     return allVorgangStatusMitOffenen;
   }
 
@@ -216,8 +217,10 @@ public class VorgangBearbeitenController {
    */
   private void updateLobHinweiseKritikInModel(ModelMap model, VorgangBearbeitenCommand cmd) {
     try {
-      model.addAttribute("allelobhinweisekritik", lobHinweiseKritikDao.findLobHinweiseKritikForVorgang(cmd.getVorgang(), cmd.getPage(), cmd.getSize()));
-      model.put("maxPagesLobHinweiseKritik", calculateMaxPages(cmd.getSize(), lobHinweiseKritikDao.countLobHinweiseKritik(cmd.getVorgang())));
+      model.addAttribute("allelobhinweisekritik", lobHinweiseKritikDao.findLobHinweiseKritikForVorgang(
+        cmd.getVorgang(), cmd.getPage(), cmd.getSize()));
+      model.put("maxPagesLobHinweiseKritik", calculateMaxPages(cmd.getSize(),
+        lobHinweiseKritikDao.countLobHinweiseKritik(cmd.getVorgang())));
 
     } catch (Exception e) {
     }
@@ -232,7 +235,8 @@ public class VorgangBearbeitenController {
    */
   private void updateZustaendigkeitStatusInModel(ModelMap model, VorgangBearbeitenCommand cmd) {
     try {
-      model.addAttribute("isDispatcherInVorgangHistoryClasses", classificationService.isDispatcherInVorgangHistoryClasses(cmd.getVorgang()));
+      model.addAttribute("isDispatcherInVorgangHistoryClasses",
+        classificationService.isDispatcherInVorgangHistoryClasses(cmd.getVorgang()));
     } catch (Exception e) {
     }
   }
@@ -284,10 +288,8 @@ public class VorgangBearbeitenController {
    * <li><code>automatisch neu zuweisen</code></li>
    * <li><code>zuweisen</code></li>
    * <li><code>&Auml;nderungen &uuml;bernehmen</code></li>
-   * <li><code>freigabeStatus_Betreff_extern</code></li>
-   * <li><code>freigabeStatus_Betreff_intern</code></li>
-   * <li><code>freigabeStatus_Details_extern</code></li>
-   * <li><code>freigabeStatus_Details_intern</code></li>
+   * <li><code>freigabeStatus_Beschreibung_extern</code></li>
+   * <li><code>freigabeStatus_Beschreibung_intern</code></li>
    * <li><code>&Auml;nderungen &uuml;bernehmen </code></li>
    * <li><code>Kommentar speichern</code></li>
    * <li><code>delegieren</code></li>
@@ -322,10 +324,14 @@ public class VorgangBearbeitenController {
     assertNotEmpty(cmd, result, Assert.EvaluateOn.ever, "vorgang.status", null);
 
     if (StringUtils.equals("wird nicht bearbeitet", cmd.getVorgang().getStatus().getText())) {
-      assertNotEmpty(cmd, result, Assert.EvaluateOn.ever, "vorgang.statusKommentar", "Für den Status wird nicht bearbeitet müssen Sie eine öffentliche Statusinformation angeben!");
+      assertNotEmpty(cmd, result, Assert.EvaluateOn.ever, "vorgang.statusKommentar",
+        "Für den Status wird nicht bearbeitet müssen Sie eine öffentliche Statusinformation angeben!");
     }
 
-    assertMaxLength(cmd, result, Assert.EvaluateOn.ever, "vorgang.statusKommentar", vorgangStatusKommentarTextlaengeMaximal(), "Die öffentliche Statusinformation ist zu lang! Erlaubt sind hier maximal " + vorgangStatusKommentarTextlaengeMaximal().toString() + " Zeichen.");
+    assertMaxLength(cmd, result, Assert.EvaluateOn.ever, "vorgang.statusKommentar",
+      vorgangStatusKommentarTextlaengeMaximal(),
+      "Die öffentliche Statusinformation ist zu lang! Erlaubt sind hier maximal "
+      + vorgangStatusKommentarTextlaengeMaximal().toString() + " Zeichen.");
 
     if (result.hasErrors()) {
       cmd.setVorgang(getVorgang(id));
@@ -363,17 +369,11 @@ public class VorgangBearbeitenController {
         return "vorgang/bearbeiten";
       }
       vorgangDao.merge(cmd.getVorgang());
-    } else if (action.equals("freigabeStatus_Betreff_extern")) {
-      cmd.getVorgang().setBetreffFreigabeStatus(EnumFreigabeStatus.extern);
+    } else if (action.equals("freigabeStatus_Beschreibung_extern")) {
+      cmd.getVorgang().setBeschreibungFreigabeStatus(EnumFreigabeStatus.extern);
       vorgangDao.merge(cmd.getVorgang());
-    } else if (action.equals("freigabeStatus_Betreff_intern")) {
-      cmd.getVorgang().setBetreffFreigabeStatus(EnumFreigabeStatus.intern);
-      vorgangDao.merge(cmd.getVorgang());
-    } else if (action.equals("freigabeStatus_Details_extern")) {
-      cmd.getVorgang().setDetailsFreigabeStatus(EnumFreigabeStatus.extern);
-      vorgangDao.merge(cmd.getVorgang());
-    } else if (action.equals("freigabeStatus_Details_intern")) {
-      cmd.getVorgang().setDetailsFreigabeStatus(EnumFreigabeStatus.intern);
+    } else if (action.equals("freigabeStatus_Beschreibung_intern")) {
+      cmd.getVorgang().setBeschreibungFreigabeStatus(EnumFreigabeStatus.intern);
       vorgangDao.merge(cmd.getVorgang());
     } else if (action.equals("&Auml;nderungen &uuml;bernehmen ")) {
       assertNotEmpty(cmd, result, Assert.EvaluateOn.ever, "vorgang.typ", null);
@@ -462,5 +462,4 @@ public class VorgangBearbeitenController {
     float nrOfPages = (float) count / size;
     return (int) ((nrOfPages > (int) nrOfPages || nrOfPages == 0.0) ? nrOfPages + 1 : nrOfPages);
   }
-
 }

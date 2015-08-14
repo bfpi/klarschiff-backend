@@ -38,7 +38,6 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 @Entity
 public class Kategorie implements Serializable {
 
-  /* --------------- Attribute ----------------------------*/
   /**
    * Id der Kategorie
    */
@@ -65,12 +64,6 @@ public class Kategorie implements Serializable {
   private String name;
 
   /**
-   * Ist eine nähere Beschreibung durch das Feld Betreff und/oder Details notwendig?
-   */
-  @Enumerated(EnumType.STRING)
-  private EnumNaehereBeschreibungNotwendig naehereBeschreibungNotwendig = EnumNaehereBeschreibungNotwendig.keine;
-
-  /**
    * übergeordnete Kategorie
    */
   @ManyToOne
@@ -82,7 +75,8 @@ public class Kategorie implements Serializable {
   @JsonIgnore
   @ManyToMany(cascade = CascadeType.ALL, mappedBy = "parent")
   @OrderBy(value = "name")
-  private List<de.fraunhofer.igd.klarschiff.vo.Kategorie> children = new ArrayList<de.fraunhofer.igd.klarschiff.vo.Kategorie>();
+  private List<de.fraunhofer.igd.klarschiff.vo.Kategorie> children
+    = new ArrayList<de.fraunhofer.igd.klarschiff.vo.Kategorie>();
 
   /**
    * Liste von intialen Zuständigkeiten für die Vorgänge mit der Kategorie
@@ -91,9 +85,10 @@ public class Kategorie implements Serializable {
   @ElementCollection(fetch = FetchType.EAGER)
   private List<String> initialZustaendigkeiten;
 
-  /* --------------- transient ----------------------------*/
   /**
    * Gibt den Namen der Kategorie als "escaped HTML" zurück.
+   *
+   * @return
    */
   @Transient
   public String getNameEscapeHtml() {
@@ -115,12 +110,11 @@ public class Kategorie implements Serializable {
     }
   }
 
-
-  /* --------------- Persitenzfunktionen ----------------------------*/
   /**
    * Ermittelt die Kategorie anhand der Id. (Die Methode wird für das Binding bei WebMVC benötigt.)
    *
    * @param id Id der Kategorie
+   * @return die Kategorie zu der Id oder null falls Id null
    */
   public static Kategorie findKategorie(Long id) {
     if (id == null) {
@@ -129,7 +123,6 @@ public class Kategorie implements Serializable {
     return AppContext.getEntityManager().find(Kategorie.class, id);
   }
 
-  /* --------------- GET + SET ----------------------------*/
   public String getName() {
     return this.name;
   }
@@ -168,15 +161,6 @@ public class Kategorie implements Serializable {
 
   public void setTyp(EnumVorgangTyp typ) {
     this.typ = typ;
-  }
-
-  public EnumNaehereBeschreibungNotwendig getNaehereBeschreibungNotwendig() {
-    return naehereBeschreibungNotwendig;
-  }
-
-  public void setNaehereBeschreibungNotwendig(
-    EnumNaehereBeschreibungNotwendig naehereBeschreibungNotwendig) {
-    this.naehereBeschreibungNotwendig = naehereBeschreibungNotwendig;
   }
 
   public List<String> getInitialZustaendigkeiten() {

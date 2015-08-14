@@ -23,7 +23,6 @@ import de.fraunhofer.igd.klarschiff.dao.RedaktionEmpfaengerDao;
 import de.fraunhofer.igd.klarschiff.dao.VerlaufDao;
 import de.fraunhofer.igd.klarschiff.dao.VorgangDao;
 import de.fraunhofer.igd.klarschiff.service.classification.ClassificationService;
-import de.fraunhofer.igd.klarschiff.service.geo.GrenzeFactory;
 import de.fraunhofer.igd.klarschiff.service.image.ImageService;
 import de.fraunhofer.igd.klarschiff.service.mail.MailService;
 import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
@@ -43,7 +42,6 @@ import de.fraunhofer.igd.klarschiff.vo.Kommentar;
 import de.fraunhofer.igd.klarschiff.vo.LobHinweiseKritik;
 import de.fraunhofer.igd.klarschiff.vo.Missbrauchsmeldung;
 import de.fraunhofer.igd.klarschiff.vo.RedaktionEmpfaenger;
-import de.fraunhofer.igd.klarschiff.vo.StadtGrenze;
 import de.fraunhofer.igd.klarschiff.vo.Unterstuetzer;
 import de.fraunhofer.igd.klarschiff.vo.Verlauf;
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
@@ -51,6 +49,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.logging.Level;
 import org.codehaus.jackson.map.ObjectMapper;
 
@@ -109,9 +108,8 @@ public class BackendController {
    *
    * @param authCode Code zur Identifizierung des Clients
    * @param autorEmail E-Mail-Adresse des Erstellers
-   * @param betreff Betreff
    * @param bild Foto base64 kodiert
-   * @param details Details
+   * @param beschreibung Beschreibung
    * @param fotowunsch Fotowunsch
    * @param kategorie Kategorie
    * @param oviWkt Position als WKT
@@ -126,9 +124,8 @@ public class BackendController {
   public void vorgang(
     @RequestParam(value = "authCode", required = false) String authCode,
     @RequestParam(value = "autorEmail", required = false) String autorEmail,
-    @RequestParam(value = "betreff", required = false) String betreff,
     @RequestParam(value = "bild", required = false) String bild,
-    @RequestParam(value = "details", required = false) String details,
+    @RequestParam(value = "beschreibung", required = false) String beschreibung,
     @RequestParam(value = "fotowunsch", required = false) Boolean fotowunsch,
     @RequestParam(value = "kategorie", required = false) Long kategorie,
     @RequestParam(value = "oviWkt", required = false) String oviWkt,
@@ -176,11 +173,10 @@ public class BackendController {
 
       vorgang.setStatus(EnumVorgangStatus.gemeldet);
       vorgangParameterUebernehmen(autorEmail, vorgang, typ, kategorie, positionWGS84, oviWkt,
-        betreff, details, fotowunsch, bild, false);
+        beschreibung, fotowunsch, bild, false);
 
       if (vorgang.autorAussendienst()) {
-        vorgang.setBetreffFreigabeStatus(EnumFreigabeStatus.extern);
-        vorgang.setDetailsFreigabeStatus(EnumFreigabeStatus.extern);
+        vorgang.setBeschreibungFreigabeStatus(EnumFreigabeStatus.extern);
       }
       
       if (authCode != null && authCode.equals(settingsService.getPropertyValue("auth.kod_code")) && vorgang.autorIntern()) {
@@ -219,9 +215,8 @@ public class BackendController {
    * @param id Vorgang-ID
    * @param authCode Code zur Identifizierung des Clients
    * @param autorEmail E-Mail-Adresse des Erstellers
-   * @param betreff Betreff
    * @param bild Foto base64 kodiert
-   * @param details Details
+   * @param beschreibung Beschreibung
    * @param fotowunsch Fotowunsch
    * @param kategorie Kategorie
    * @param oviWkt Position als WKT
@@ -242,9 +237,8 @@ public class BackendController {
     @RequestParam(value = "id", required = false) Long id,
     @RequestParam(value = "authCode", required = false) String authCode,
     @RequestParam(value = "autorEmail", required = false) String autorEmail,
-    @RequestParam(value = "betreff", required = false) String betreff,
     @RequestParam(value = "bild", required = false) String bild,
-    @RequestParam(value = "details", required = false) String details,
+    @RequestParam(value = "beschreibung", required = false) String beschreibung,
     @RequestParam(value = "fotowunsch", required = false) Boolean fotowunsch,
     @RequestParam(value = "kategorie", required = false) Long kategorie,
     @RequestParam(value = "oviWkt", required = false) String oviWkt,
@@ -279,7 +273,7 @@ public class BackendController {
         throw new BackendControllerException(200, "[id] unbekannt", "Es konnte kein Vorgang mit der übergebenen ID gefunden werden.");
       }
       vorgangParameterUebernehmen(autorEmail, vorgang, typ, kategorie, positionWGS84, oviWkt,
-        betreff, details, fotowunsch, bild, true);
+        beschreibung, fotowunsch, bild, true);
 
       if (prioritaet != null) {
         if ((prioritaet - 1) > EnumPrioritaet.values().length) {
@@ -355,8 +349,7 @@ public class BackendController {
     Long kategorie,
     String positionWGS84,
     String oviWkt,
-    String betreff,
-    String details,
+    String beschreibung,
     Boolean fotowunsch,
     String bild,
     Boolean verlaufErgaenzen
@@ -369,7 +362,8 @@ public class BackendController {
     if (typ != null) {
       EnumVorgangTyp evt = EnumVorgangTyp.valueOf(typ);
       if (verlaufErgaenzen && !vorgang.getTyp().equals(evt)) {
-        verlaufDao.persist(verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.typ, vorgang.getTyp().getText(), evt.getText(), autorEmail));
+        verlaufDao.persist(verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.typ,
+          vorgang.getTyp().getText(), evt.getText(), autorEmail));
       }
       vorgang.setTyp(evt);
       if (vorgang.getTyp() == null) {
@@ -381,7 +375,9 @@ public class BackendController {
       Kategorie newKat = kategorieDao.findKategorie(kategorie);
 
       if (verlaufErgaenzen && !vorgang.getKategorie().getId().equals(newKat.getId())) {
-        verlaufDao.persist(verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.kategorie, vorgang.getKategorie().getParent().getName() + " / " + vorgang.getKategorie().getName(), newKat.getParent().getName() + " / " + newKat.getName(), autorEmail));
+        verlaufDao.persist(verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.kategorie,
+          vorgang.getKategorie().getParent().getName() + " / " + vorgang.getKategorie().getName(),
+          newKat.getParent().getName() + " / " + newKat.getName(), autorEmail));
       }
       vorgang.setKategorie(newKat);
       if (vorgang.getKategorie() == null
@@ -415,26 +411,18 @@ public class BackendController {
       throw new BackendControllerException(13, "[position] außerhalb", "Die neue Meldung befindet sich außerhalb des gültigen Bereichs.");
     }
 
-    if (betreff != null) {
-      if (!isShortEnough(betreff, 300)) {
-        throw new BackendControllerException(10, "[betreff] zu lang", "Der Betreff ist zu lang. Es sind maximal 300 Zeichen erlaubt.");
+    if (beschreibung != null) {
+      if (verlaufErgaenzen && (vorgang.getBeschreibung() == null || !vorgang.getBeschreibung().equals(beschreibung))) {
+        verlaufDao.persist(verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.beschreibung,
+          StringUtils.abbreviate(vorgang.getBeschreibung(), 100), StringUtils.abbreviate(beschreibung, 100), autorEmail));
       }
-      if (verlaufErgaenzen && (vorgang.getBetreff() == null || !vorgang.getBetreff().equals(betreff))) {
-        verlaufDao.persist(verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.betreff, StringUtils.abbreviate(vorgang.getBetreff(), 100), StringUtils.abbreviate(betreff, 100), autorEmail));
-      }
-      vorgang.setBetreff(betreff);
-    }
-
-    if (details != null) {
-      if (verlaufErgaenzen && (vorgang.getDetails() == null || !vorgang.getDetails().equals(details))) {
-        verlaufDao.persist(verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.detail, StringUtils.abbreviate(vorgang.getDetails(), 100), StringUtils.abbreviate(details, 100), autorEmail));
-      }
-      vorgang.setDetails(details);
+      vorgang.setBeschreibung(beschreibung);
     }
 
     if (fotowunsch != null) {
-      if (verlaufErgaenzen && vorgang.getFotowunsch() != fotowunsch) {
-        verlaufDao.persist(verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.fotowunsch, vorgang.getFotowunsch() ? "aktiv" : "inaktiv", vorgang.getFotowunsch() ? "inaktiv" : "aktiv", autorEmail));
+      if (verlaufErgaenzen && !Objects.equals(vorgang.getFotowunsch(), fotowunsch)) {
+        verlaufDao.persist(verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.fotowunsch,
+          vorgang.getFotowunsch() ? "aktiv" : "inaktiv", vorgang.getFotowunsch() ? "inaktiv" : "aktiv", autorEmail));
       }
       vorgang.setFotowunsch(fotowunsch);
     }
@@ -458,11 +446,7 @@ public class BackendController {
    * @return <code>true</code>, falls E-Mail-Adresse gültig, <code>false</code>, falls nicht
    */
   private static boolean isEmail(String email) {
-    if (!Assert.matches(email, "^\\S+@\\S+\\.[A-Za-z]{2,6}$")) {
-      return false;
-    } else {
-      return true;
-    }
+    return Assert.matches(email, "^\\S+@\\S+\\.[A-Za-z]{2,6}$");
   }
 
   /**

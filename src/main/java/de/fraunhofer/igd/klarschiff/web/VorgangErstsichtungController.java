@@ -44,8 +44,6 @@ public class VorgangErstsichtungController {
   @Autowired
   VorgangDao vorgangDao;
 
-  //@Autowired
-  //VerlaufDao verlaufDao;
   @Autowired
   ClassificationService classificationService;
 
@@ -124,8 +122,8 @@ public class VorgangErstsichtungController {
    * <li>Erstprüfung abschließen (<code>Pr&uuml;fung abschlie&szlig;en</code>)</li>
    * <li>Rotiertes Foto speichern (<code>fotoRotate</code>)</li>
    * <li>Bearbeitetes (zensiertes) Foto speichern (<code>fotoSave</code>)</li>
-   * <li>Freigabestatus von Betreff, Details oder Foto ändern
-   * (<code>freigabeStatus_Betreff; freigabeStatus_Details; freigabeStatus_Foto;</code>)</li>
+   * <li>Freigabestatus von Beschreibung oder Foto ändern
+   * (<code>freigabeStatus_Beschreibung; freigabeStatus_Foto;</code>)</li>
    * </ul>
    *
    * @param cmd Command
@@ -165,7 +163,6 @@ public class VorgangErstsichtungController {
       }
       cmd.getVorgang().setZustaendigkeitFrontend(securityService.getZustaendigkeit(cmd.getVorgang().getZustaendigkeit()).getL());
 
-      //verlaufDao.addVerlaufToVorgang(cmd.getVorgang(), EnumVerlaufTyp.zustaendigkeit, vorgangDao.findVorgang(id).getZustaendigkeit(), cmd.getVorgang().getZustaendigkeit());
       vorgangDao.merge(cmd.getVorgang());
 
       return "vorgang/erstsichtung/zustaendigkeitZugewiesen";
@@ -175,7 +172,6 @@ public class VorgangErstsichtungController {
       cmd.getVorgang().setZustaendigkeit(classificationService.calculateZustaendigkeitforVorgang(cmd.getVorgang()).getId());
       cmd.getVorgang().setZustaendigkeitFrontend(securityService.getZustaendigkeit(cmd.getVorgang().getZustaendigkeit()).getL());
 
-      //verlaufDao.addVerlaufToVorgang(cmd.getVorgang(), EnumVerlaufTyp.zustaendigkeit, vorgangDao.findVorgang(id).getZustaendigkeit(), cmd.getVorgang().getZustaendigkeit());
       vorgangDao.merge(cmd.getVorgang());
 
       return "vorgang/erstsichtung/zustaendigkeitZugewiesen";
@@ -184,7 +180,6 @@ public class VorgangErstsichtungController {
 
       cmd.getVorgang().setZustaendigkeitStatus(EnumZustaendigkeitStatus.akzeptiert);
 
-      //verlaufDao.addVerlaufToVorgang(cmd.getVorgang(), EnumVerlaufTyp.zustaendigkeitAkzeptiert, null, null);
       return "vorgang/erstsichtung/pruefen";
 
     } else if (action.equals("&uuml;bernehmen und akzeptieren")) {
@@ -200,21 +195,14 @@ public class VorgangErstsichtungController {
       cmd.getVorgang().setZustaendigkeitFrontend(securityService.getZustaendigkeit(cmd.getVorgang().getZustaendigkeit()).getL());
       cmd.getVorgang().setZustaendigkeitStatus(EnumZustaendigkeitStatus.akzeptiert);
 
-      //verlaufDao.addVerlaufToVorgang(cmd.getVorgang(), EnumVerlaufTyp.zustaendigkeit, vorgangDao.findVorgang(id).getZustaendigkeit(), cmd.getVorgang().getZustaendigkeit());
-      //verlaufDao.addVerlaufToVorgang(cmd.getVorgang(), EnumVerlaufTyp.zustaendigkeitAkzeptiert, null, null);
       return "vorgang/erstsichtung/pruefen";
 
     } else if (action.equals("Pr&uuml;fung abschlie&szlig;en")) {
 
-      //Verlauf? betreff u/o freigabestatus geändert
-      //Verlauf? details u/o freigabestatus geändert
-      //Verlauf? foto u/o freigabestatus geändert
-      //Verlauf verlauf = verlaufDao.addVerlaufToVorgang(cmd.getVorgang(), EnumVerlaufTyp.status, cmd.getVorgang().getStatus().name(), null);
       cmd.getVorgang().setErstsichtungErfolgt(true);
       if (cmd.getVorgang().getTyp() != EnumVorgangTyp.idee) {
         cmd.getVorgang().setStatus(EnumVorgangStatus.inBearbeitung);
       }
-      //verlauf.setWertNeu(cmd.getVorgang().getStatus().name());
 
       vorgangDao.merge(cmd.getVorgang());
 
@@ -234,20 +222,20 @@ public class VorgangErstsichtungController {
       cmd.setVorgang(vorgangDao.findVorgang(id));
       for (@SuppressWarnings("unused") Verlauf verlauf : cmd.getVorgang().getVerlauf());
       return "vorgang/erstsichtung/pruefen";
-    } else if (action != null && action.startsWith("freigabeStatus")) {
+    } else if (action.startsWith("freigabeStatus")) {
       String str[] = action.split("_");
       EnumFreigabeStatus freigabeStatus = EnumFreigabeStatus.valueOf(str[2]);
-      if (str[1].equals("Betreff")) {
-        cmd.getVorgang().setBetreffFreigabeStatus(freigabeStatus);
-      } else if (str[1].equals("Details")) {
-        cmd.getVorgang().setDetailsFreigabeStatus(freigabeStatus);
-      } else if (str[1].equals("Foto")) {
-        cmd.getVorgang().setFotoFreigabeStatus(freigabeStatus);
+      switch (str[1]) {
+        case "Beschreibung":
+          cmd.getVorgang().setBeschreibungFreigabeStatus(freigabeStatus);
+          break;
+        case "Foto":
+          cmd.getVorgang().setFotoFreigabeStatus(freigabeStatus);
+          break;
       }
       return "vorgang/erstsichtung/pruefen";
     }
 
     throw new RuntimeException("unbekannte Action: " + action);
   }
-
 }

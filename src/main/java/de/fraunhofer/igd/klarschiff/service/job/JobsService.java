@@ -1,9 +1,9 @@
 package de.fraunhofer.igd.klarschiff.service.job;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 import org.apache.commons.lang.time.DateUtils;
@@ -178,13 +178,14 @@ public class JobsService {
         }
 
         //prüfe Zeitstempel des letzten E-Mail-Versands an aktuellen Empfänger: soll überhaupt eine E-Mail geschickt werden?
-        if ((empfaenger.getLetzteMail() == null) || (Days.daysBetween(new DateTime(empfaenger.getLetzteMail()), new DateTime(jetzt)).getDays() >= empfaenger.getTageZwischenMails())) {
+        if ((empfaenger.getLetzteMail() == null) || (Days.daysBetween(new DateTime(empfaenger.getLetzteMail()),
+          new DateTime(jetzt)).getDays() >= empfaenger.getTageZwischenMails())) {
 
           //Liste aller Redaktionskriterien durchgehen
           for (RedaktionKriterien kriterium : kriterienAlle) {
 
             //alle Redaktionskriterien der Stufe des Empfängers entsprechend zuweisen
-            if (kriterium.getStufe() == empfaenger.getStufe()) {
+            if (Objects.equals(kriterium.getStufe(), empfaenger.getStufe())) {
               tageOffenNichtAkzeptiert = kriterium.getTageOffenNichtAkzeptiert();
               tageInbearbeitungOhneStatusKommentar = kriterium.getTageInbearbeitungOhneStatusKommentar();
               tageIdeeOffenOhneUnterstuetzung = kriterium.getTageIdeeOffenOhneUnterstuetzung();
@@ -228,7 +229,7 @@ public class JobsService {
 
           //falls dies gemacht werden soll...
           if (sollVorgaengeOhneRedaktionelleFreigaben == true) {
-            //finde alle Vorgänge, die ihre Erstsichtung bereits hinter sich haben, deren Betreff, Details oder Foto bisher aber noch nicht freigegeben wurden
+            //finde alle Vorgänge, die ihre Erstsichtung bereits hinter sich haben, deren Beschreibung oder Foto bisher aber noch nicht freigegeben wurden
             vorgaengeOhneRedaktionelleFreigaben = vorgangDao.findVorgaengeOhneRedaktionelleFreigaben(administrator, empfaenger.getZustaendigkeit());
           }
 
@@ -335,7 +336,6 @@ public class JobsService {
     clusterDao.notifyAliveServer();
   }
 
-  /* --------------- GET + SET ----------------------------*/
   public int getMonthsToArchivVorgaenge() {
     return monthsToArchivVorgaenge;
   }
