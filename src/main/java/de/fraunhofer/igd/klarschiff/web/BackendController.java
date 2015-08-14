@@ -146,6 +146,7 @@ public class BackendController {
     }
     try {
       Vorgang vorgang = new Vorgang();
+      vorgang.setSecurityService(securityService);
 
       if (StringUtils.isBlank(typ)) {
         throw new BackendControllerException(1, "[typ] fehlt", "Der Typ ist nicht angegeben.");
@@ -177,18 +178,23 @@ public class BackendController {
       vorgangParameterUebernehmen(autorEmail, vorgang, typ, kategorie, positionWGS84, oviWkt,
         betreff, details, fotowunsch, bild, false);
 
-      Boolean intern = false;
+      if (vorgang.autorAussendienst()) {
+        vorgang.setBetreffFreigabeStatus(EnumFreigabeStatus.extern);
+        vorgang.setDetailsFreigabeStatus(EnumFreigabeStatus.extern);
+      }
+      
       if (authCode != null && authCode.equals(settingsService.getPropertyValue("auth.kod_code")) && vorgang.autorIntern()) {
-        intern = true;
         vorgang.setStatus(EnumVorgangStatus.offen);
         vorgangDao.persist(vorgang);
 
         vorgang.setZustaendigkeit(classificationService.calculateZustaendigkeitforVorgang(vorgang).getId());
+        vorgang.setZustaendigkeitFrontend(securityService.getZustaendigkeit(vorgang.getZustaendigkeit()).getL());
         vorgang.setZustaendigkeitStatus(EnumZustaendigkeitStatus.zugewiesen);
 
         vorgangDao.merge(vorgang);
       } else {
         vorgangDao.persist(vorgang);
+        mailService.sendVorgangBestaetigungMail(vorgang);
       }
 
       if (resultHashOnSubmit) {
@@ -199,9 +205,6 @@ public class BackendController {
         sendOk(response);
       }
 
-      if (!intern) {
-        mailService.sendVorgangBestaetigungMail(vorgang);
-      }
     } catch (Exception e) {
       logger.warn("Fehler bei BackendController.vorgang:", e);
       sendError(response, e);
