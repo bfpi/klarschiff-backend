@@ -1336,18 +1336,10 @@ span.show-tooltip-text {
   text-align: right;
   background-color: #CBE3ED;
   /* abgerundete Ecken */
-  -moz-border-radius-bottomright: 5px; /* Mozilla */
-  -moz-border-radius-bottomleft: 5px; /* Mozilla */
-  -webkit-border-bottom-right-radius: 5px; /* Webkit */
-  -webkit-border-bottom-left-radius: 5px; /* Webkit */
-  -khtml-border-radius-bottomright: 5px; /* KHTML */
-  -khtml-border-radius-bottomleft: 5px; /* KHTML */
-  border-top-right-radius: 5px; /* Opera */
-  border-top-left-radius: 5px; /* Opera */
-  /* Schatten */
-  /*-moz-box-shadow:2px 2px 2px #ccc;*/ /* Mozilla */
-  /*-webkit-box-shadow:2px 2px 2px #ccc;*/ /* Webkit */
-  /*-o-box-shadow:2px 2px 2px #ccc;*/ /* Opera */
+  -moz-border-radius: 5px; /* Mozilla */
+  -webkit-border-radius: 5px; /* Webkit */
+  -khtml-border-radius: 5px; /* KHTML */
+  border-radius: 5px; /* Opera */
 }
 
 #root_style_footer table {

@@ -36,6 +36,7 @@ public class RollenController {
   public String rollen(Model model, HttpServletRequest request) {
     model.addAttribute("rollenIntern", securityService.getAllZustaendigkeiten(true));
     model.addAttribute("rollenExtern", securityService.getAllDelegiertAn());
+    model.addAttribute("rollenAussendienst", securityService.getAllAussendienstTeams());
     return "rollen";
   }
 

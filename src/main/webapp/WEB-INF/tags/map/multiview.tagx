@@ -50,8 +50,7 @@
   <c:url value="/script/openLayers/theme/dark/" var="url"/>
 
   <script type="text/javascript">
-var map, vlayer;
-varformater;
+var map, vlayer, formater;
 
 var bounds = new OpenLayers.Bounds(${maxExtent});
 function openVorgang(feature) {
