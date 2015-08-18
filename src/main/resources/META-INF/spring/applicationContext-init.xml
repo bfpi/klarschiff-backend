@@ -416,7 +416,7 @@
 			</list>
 		</property>
 	</bean>	
-    <bean id="kat_01_01" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_01" p:initialZustaendigkeit="a73_strassenreinigung;gruenanlagen,a67_ausstattung;bewirtschaftung_Vermessungs- und Liegenschaftsamt,a82_ordnungswidrigkeiten;bewirtschaftung_Amt für Stadtgrün$komma$ Naturschutz und Landschaftspflege" p:name="Abfallbehälter/Papierkorb schadhaft"/>
+    <bean id="kat_01_01" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_01" p:initialZustaendigkeit="a73_strassenreinigung,a67_ausstattung,a82_ordnungswidrigkeiten" p:name="Abfallbehälter/Papierkorb schadhaft"/>
     <bean id="kat_01_02" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_01" p:initialZustaendigkeit="a73_strassenreinigung,a67_ausstattung,a82_ordnungswidrigkeiten" p:name="Abfallbehälter/Papierkorb überfüllt"/>
     <bean id="kat_01_03" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_01" p:initialZustaendigkeit="a66_ampeln" p:name="Ampel schadhaft" p:naehereBeschreibungNotwendig="details"/>
     <bean id="kat_01_04" class="de.fraunhofer.igd.klarschiff.vo.Kategorie" p:parent-ref="kat_01" p:initialZustaendigkeit="a66_strassenaufsicht,a67_gruenflaechen,a82_ordnungswidrigkeiten" p:name="bauliche Gefahrenstelle" p:naehereBeschreibungNotwendig="details"/>
