@@ -52,8 +52,8 @@ public class FeatureService {
   @Autowired
   SettingsService settingsService;
 
-  List<String> bewirtschaftungFeatures;
-  List<String> flaechenFeatures;
+  List<String> bewirtschaftungskatasterClasses;
+  List<String> flaechendatenFeaturetypes;
 
   /**
    * Initialisiert den Klassifikatorkontext mit den für die Klassifikation verwendeten Features.
@@ -79,29 +79,29 @@ public class FeatureService {
     }
     attributes.addElement(Attribute.createAttribute("kategorie", kategorien, true));
 
-    //Bewirtschaftung vom WFS
-    for (String b : bewirtschaftungFeatures) {
+    //Bewirtschaftungskataster aus dem WFS für Zuständigkeitsfinder
+    for (String b : bewirtschaftungskatasterClasses) {
       logger.debug("attributes.appendElements(Attribute.createGeoAttributes(geo_bewirtschaftung_" + b + ","
-        + settingsService.getPropertyValue("geo.wfszufi.featureprefix") + ":bewirtschaftung,...,"
-        + settingsService.getPropertyValue("geo.wfszufi.geomname") + "...)");
+        + settingsService.getPropertyValue("geo.wfszufi.featureprefix") + ":" + settingsService.getPropertyValue("geo.wfszufi.bewirtschaftungskataster.featuretype") + ",...,"
+        + settingsService.getPropertyValue("geo.wfszufi.bewirtschaftungskataster.geomname") + "...)");
       attributes.appendElements(Attribute.createGeoAttributes(
         "geo_bewirtschaftung_" + b,
-        settingsService.getPropertyValue("geo.wfszufi.featureprefix") + ":bewirtschaftung",
-        "bewirtschafter",
+        settingsService.getPropertyValue("geo.wfszufi.featureprefix") + ":" + settingsService.getPropertyValue("geo.wfszufi.bewirtschaftungskataster.featuretype"),
+        settingsService.getPropertyValue("geo.wfszufi.bewirtschaftungskataster.propertyname"),
         b,
-        settingsService.getPropertyValue("geo.wfszufi.geomname"),
+        settingsService.getPropertyValue("geo.wfszufi.bewirtschaftungskataster.geomname"),
         false));
     }
 
-    //Flächentypen vom WFS
-    for (String f : flaechenFeatures) {
+    //Flächendaten-Featuretypes aus dem WFS für Zuständigkeitsfinder
+    for (String f : flaechendatenFeaturetypes) {
       logger.debug("attributes.appendElements(Attribute.createGeoAttributes(...,"
         + settingsService.getPropertyValue("geo.wfszufi.featureprefix") + ":" + f + ","
-        + settingsService.getPropertyValue("geo.wfszufi.geomname") + "...)");
+        + settingsService.getPropertyValue("geo.wfszufi.flaechendaten.geomname") + "...)");
       attributes.appendElements(Attribute.createGeoAttributes(
         "geo_" + f,
         settingsService.getPropertyValue("geo.wfszufi.featureprefix") + ":" + f,
-        settingsService.getPropertyValue("geo.wfszufi.geomname"),
+        settingsService.getPropertyValue("geo.wfszufi.flaechendaten.geomname"),
         false));
     }
     Map<String, Attribute> attributMap = new HashMap<String, Attribute>();
@@ -274,20 +274,20 @@ public class FeatureService {
   }
 
   /* --------------- GET + SET ----------------------------*/
-  public List<String> getBewirtschaftungFeatures() {
-    return bewirtschaftungFeatures;
+  public List<String> getBewirtschaftungskatasterClasses() {
+    return bewirtschaftungskatasterClasses;
   }
 
-  public void setBewirtschaftungFeatures(List<String> bewirtschaftungFeatures) {
-    this.bewirtschaftungFeatures = bewirtschaftungFeatures;
+  public void setBewirtschaftungskatasterClasses(List<String> bewirtschaftungskatasterClasses) {
+    this.bewirtschaftungskatasterClasses = bewirtschaftungskatasterClasses;
   }
 
-  public List<String> getFlaechenFeatures() {
-    return flaechenFeatures;
+  public List<String> getFlaechendatenFeaturetypes() {
+    return flaechendatenFeaturetypes;
   }
 
-  public void setFlaechenFeatures(List<String> flaechenFeatures) {
-    this.flaechenFeatures = flaechenFeatures;
+  public void setFlaechendatenFeaturetypes(List<String> flaechendatenFeaturetypes) {
+    this.flaechendatenFeaturetypes = flaechendatenFeaturetypes;
   }
 
 }

@@ -16,21 +16,31 @@
 
 
 	<bean class="de.fraunhofer.igd.klarschiff.service.classification.FeatureService" id="featureService">
-		<property name="bewirtschaftungFeatures">
+		<property name="bewirtschaftungskatasterClasses">
 			<list>
+				<value>Amt für Jugend und Soziales</value>
 				<value>Amt für Kultur, Denkmalpflege und Museen</value>
 				<value>Amt für Stadtgrün, Naturschutz und Landschaftspflege</value>
 				<value>Amt für Umweltschutz</value>
+				<value>Eigenbetrieb Klinikum Südstadt</value>
+				<value>Eigenbetrieb KOE</value>
+				<value>Eigenbetrieb Tourismuszentrale Rostock und Warnemünde</value>
+				<value>Hafen- und Seemannsamt</value>
 				<value>Kataster-, Vermessungs- und Liegenschaftsamt</value>
+				<value>Rostocker Gesellschaft für Stadterneuerung, Stadtentwicklung und Wohnungsbau mbH</value>
+				<value>Rostocker Straßenbahn AG</value>
 				<value>Stadtforstamt</value>
 				<value>Tief- und Hafenbauamt</value>
+				<value>Tief- und Hafenbauamt (Hafenbau)</value>
+				<value>Volkstheater</value>
+				<value>Wasser- und Abwasserverbände</value>
 			</list>
 		</property>
-		<property name="flaechenFeatures">
+		<property name="flaechendatenFeaturetypes">
 			<list>
-				<value>gruenanlagen</value>
-				<value>forst</value>
-				<value>strand</value>
+				<value>hro.klarschiff-zustaendigkeitsfinder.forstflaechen</value>
+				<value>hro.klarschiff-zustaendigkeitsfinder.gruenflaechen</value>
+				<value>hro.klarschiff-zustaendigkeitsfinder.strandflaechen</value>
 			</list>
 		</property>
 	</bean>
