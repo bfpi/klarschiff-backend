@@ -364,8 +364,7 @@ public class VorgangDao {
         //FullText
         if (!StringUtils.isBlank(cmd.getErweitertFulltext())) {
           String text = StringEscapeUtils.escapeSql("%" + cmd.getErweitertFulltext() + "%");
-          conds.add("vo.betreff ILIKE '" + text + "'"
-            + " OR vo.details ILIKE '" + text + "'"
+          conds.add("vo.beschreibung ILIKE '" + text + "'"
             + " OR vo.status_kommentar ILIKE '" + text + "'"
             + " OR vo.id IN (SELECT vorgang FROM klarschiff_missbrauchsmeldung "
             + "   WHERE datum_bestaetigung IS NOT NULL AND text ILIKE '" + text + "')"
@@ -540,8 +539,7 @@ public class VorgangDao {
         //FullText
         if (!StringUtils.isBlank(cmd.getErweitertFulltext())) {
           String text = StringEscapeUtils.escapeSql("%" + cmd.getErweitertFulltext() + "%");
-          conds.add("vo.betreff ILIKE '" + text + "'"
-            + " OR vo.details ILIKE '" + text + "'"
+          conds.add("vo.beschreibung ILIKE '" + text + "'"
             + " OR vo.status_kommentar ILIKE '" + text + "'"
             + " OR vo.id IN (SELECT vorgang FROM klarschiff_kommentar "
             + "   WHERE NOT geloescht AND text ILIKE '" + text + "')"
@@ -631,10 +629,8 @@ public class VorgangDao {
       .addGroupByAttribute("vo.version")
       .addGroupByAttribute("vo.datum")
       .addGroupByAttribute("vo.typ")
-      .addGroupByAttribute("vo.betreff")
-      .addGroupByAttribute("vo.betreffFreigabeStatus")
-      .addGroupByAttribute("vo.details")
-      .addGroupByAttribute("vo.detailsFreigabeStatus")
+      .addGroupByAttribute("vo.beschreibung")
+      .addGroupByAttribute("vo.beschreibungFreigabeStatus")
       .addGroupByAttribute("vo.ovi")
       .addGroupByAttribute("vo.autorEmail")
       .addGroupByAttribute("vo.adresse")
@@ -1212,8 +1208,8 @@ public class VorgangDao {
   }
 
   /**
-   * Ermittelt alle Vorgänge, die ihre Erstsichtung bereits hinter sich haben, deren Betreff,
-   * Details oder Foto bisher aber noch nicht freigegeben wurden.
+   * Ermittelt alle Vorgänge, die ihre Erstsichtung bereits hinter sich haben, deren Beschreibung 
+   * oder Foto bisher aber noch nicht freigegeben wurden.
    *
    * @param administrator Zuständigkeit ignorieren?
    * @param zustaendigkeit Zuständigkeit, der die Vorgänge zugewiesen sind
@@ -1226,7 +1222,7 @@ public class VorgangDao {
       .addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert = FALSE)")
       .addWhereConditions("vo.status IN ('offen', 'inBearbeitung', 'wirdNichtBearbeitet', 'abgeschlossen')")
       .addWhereConditions("vo.erstsichtungErfolgt = TRUE")
-      .addWhereConditions("((vo.betreff IS NOT NULL AND vo.betreff != '' AND (betreffFreigabeStatus IS NULL OR betreffFreigabeStatus = 'intern')) OR (vo.details IS NOT NULL AND vo.details != '' AND (detailsFreigabeStatus IS NULL OR detailsFreigabeStatus = 'intern')) OR (vo.fotoThumb IS NOT NULL AND (fotoFreigabeStatus IS NULL OR fotoFreigabeStatus = 'intern')))");
+      .addWhereConditions("((vo.beschreibung IS NOT NULL AND vo.beschreibung != '' AND (beschreibungFreigabeStatus IS NULL OR beschreibungFreigabeStatus = 'intern')) OR (vo.fotoThumb IS NOT NULL AND (fotoFreigabeStatus IS NULL OR fotoFreigabeStatus = 'intern')))");
     if (administrator == false) {
       query.addWhereConditions("vo.zustaendigkeit = :zustaendigkeit").addParameter("zustaendigkeit", zustaendigkeit);
     }

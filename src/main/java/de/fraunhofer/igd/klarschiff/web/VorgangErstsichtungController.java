@@ -225,13 +225,10 @@ public class VorgangErstsichtungController {
     } else if (action.startsWith("freigabeStatus")) {
       String str[] = action.split("_");
       EnumFreigabeStatus freigabeStatus = EnumFreigabeStatus.valueOf(str[2]);
-      switch (str[1]) {
-        case "Beschreibung":
-          cmd.getVorgang().setBeschreibungFreigabeStatus(freigabeStatus);
-          break;
-        case "Foto":
-          cmd.getVorgang().setFotoFreigabeStatus(freigabeStatus);
-          break;
+      if(str[1].equals("Beschreibung")) {
+        cmd.getVorgang().setBeschreibungFreigabeStatus(freigabeStatus);
+      } else if(str[1].equals("Foto")) {
+        cmd.getVorgang().setFotoFreigabeStatus(freigabeStatus);
       }
       return "vorgang/erstsichtung/pruefen";
     }

@@ -242,18 +242,6 @@ BEGIN
      ELSE
         query := query || 'vorgangstyp = NULL, ';
     END IF;
-    --naehere_beschreibung_notwendig
-    IF new.naehere_beschreibung_notwendig IS NOT NULL THEN
-        query := query || 'naehere_beschreibung_notwendig = ' || quote_literal(new.naehere_beschreibung_notwendig) || ', ';
-     ELSE
-        query := query || 'naehere_beschreibung_notwendig = NULL, ';
-    END IF;
-    --aufforderung  --########### @deprecated ############
-    IF new.naehere_beschreibung_notwendig IS NULL OR new.naehere_beschreibung_notwendig = 'keine' THEN
-        query := query || 'aufforderung = FALSE ';
-     ELSE
-        query := query || 'aufforderung = TRUE ';
-    END IF;
     query := query || 'WHERE id = ' || new.id;
     RAISE DEBUG 'Query : %', query;
     EXECUTE 'SELECT dblink_exec(' || quote_literal(query) || ');';
@@ -262,7 +250,7 @@ BEGIN
 
   ELSIF TG_OP = 'INSERT' THEN
     query := 'INSERT INTO ${f_schema}.klarschiff_kategorie (id, "name", parent, ' ||
-      'vorgangstyp, naehere_beschreibung_notwendig, aufforderung) ' ||
+      'vorgangstyp) ' ||
       'VALUES (' || new.id || ', ' || quote_literal(new."name") || ', '; 
     --parent
     IF new.parent IS NOT NULL THEN
@@ -275,18 +263,6 @@ BEGIN
         query := query || quote_literal(new.typ) || ', ';
      ELSE
         query := query || 'NULL, ';
-    END IF;
-    --naehere_beschreibung_notwendig
-    IF new.naehere_beschreibung_notwendig IS NOT NULL THEN
-        query := query || quote_literal(new.naehere_beschreibung_notwendig) || ', ';
-     ELSE
-        query := query || 'NULL, ';
-    END IF;
-    --aufforderung  --########### @deprecated ############
-    IF new.naehere_beschreibung_notwendig IS NULL OR new.naehere_beschreibung_notwendig = 'keine' THEN
-        query := query || 'FALSE)';
-     ELSE
-        query := query || 'TRUE)';
     END IF;
     RAISE DEBUG 'Query : %', query;
     EXECUTE 'SELECT dblink_exec(' || quote_literal(query) || ');';
@@ -317,8 +293,8 @@ CREATE TRIGGER klarschiff_trigger_kategorie
 
 -- Test
 --INSERT INTO klarschiff_enum_vorgang_typ (id, "text", ordinal) values ('test', 'test', 100);
---INSERT INTO klarschiff_kategorie (id, "name", typ, parent, naehere_beschreibung_notwendig) values (1000, 'test0', 'test', NULL, 'keine');
---INSERT INTO klarschiff_kategorie (id, "name", typ, parent, naehere_beschreibung_notwendig) values (1001, 'test1', NULL, 1000, 'keine');
+--INSERT INTO klarschiff_kategorie (id, "name", typ, parent) values (1000, 'test0', 'test', NULL);
+--INSERT INTO klarschiff_kategorie (id, "name", typ, parent) values (1001, 'test1', NULL, 1000);
 --UPDATE klarschiff_kategorie SET "name" = 'test01' WHERE id = 1000;
 --DELETE FROM klarschiff_kategorie WHERE id = 1001;
 --DELETE FROM klarschiff_kategorie WHERE id = 1000;
@@ -783,17 +759,10 @@ BEGIN
       'the_geom = ' || quote_literal(new.ovi::text) || ', ' ||
       'status = ' || quote_literal(new.status) || ', ' ||
       'kategorieid = ' || new.kategorie || ', ' ||
-      --betreff
-      'titel = ' || CASE 
-        WHEN new.betreff_freigabe_status = 'extern' AND new.betreff IS NOT NULL AND new.betreff <> '' THEN
-          quote_literal(new.betreff)
-        ELSE
-          'NULL' 
-        END || ', ' ||
-      --details
-      'details = ' || CASE
-        WHEN new.details_freigabe_status = 'extern' AND new.details IS NOT NULL AND new.details <> '' THEN
-          quote_literal(new.details)
+      --beschreibung
+      'beschreibung = ' || CASE
+        WHEN new.beschreibung_freigabe_status = 'extern' AND new.beschreibung IS NOT NULL AND new.beschreibung <> '' THEN
+          quote_literal(new.beschreibung)
         ELSE
           'NULL'
         END || ', ' ||
@@ -832,30 +801,16 @@ BEGIN
         ELSE
           'FALSE'
         END || ', ' ||
-      --betreffVorhanden
-      'betreff_vorhanden = ' || CASE
-        WHEN new.betreff IS NOT NULL AND new.betreff <> '' THEN
+      --beschreibungVorhanden
+      'beschreibung_vorhanden = ' || CASE
+        WHEN new.beschreibung IS NOT NULL AND new.beschreibung <> '' THEN
           'TRUE'
         ELSE
           'FALSE'
         END || ', ' ||
-      --betreffFreigegeben
-      'betreff_freigegeben = ' || CASE
-        WHEN new.betreff_freigabe_status = 'extern' THEN
-          'TRUE'
-        ELSE
-          'FALSE'
-        END || ', ' ||
-      --detailsVorhanden
-      'details_vorhanden = ' || CASE
-        WHEN new.details IS NOT NULL AND new.details <> '' THEN
-          'TRUE'
-        ELSE
-          'FALSE'
-        END || ', ' ||
-      --detailsFreigegeben
-      'details_freigegeben = ' || CASE
-        WHEN new.details_freigabe_status = 'extern' THEN
+      --beschreibungFreigegeben
+      'beschreibung_freigegeben = ' || CASE
+        WHEN new.beschreibung_freigabe_status = 'extern' THEN
           'TRUE'
         ELSE
           'FALSE'
@@ -877,23 +832,16 @@ BEGIN
       'WHERE id = ' || new.id
     WHEN 'INSERT' THEN
       'INSERT INTO ${f_schema}.klarschiff_vorgang (id, datum, vorgangstyp, ' ||
-        'the_geom, status, kategorieid, titel, details, bemerkung, foto_normal, ' ||
-        'foto_thumb, foto_vorhanden, foto_freigegeben, betreff_vorhanden, ' ||
-        'betreff_freigegeben, details_vorhanden, details_freigegeben, archiviert, zustaendigkeit) ' ||
+        'the_geom, status, kategorieid, beschreibung, bemerkung, foto_normal, ' ||
+        'foto_thumb, foto_vorhanden, foto_freigegeben, beschreibung_vorhanden,  ' ||
+        'beschreibung_freigegeben, archiviert, zustaendigkeit) ' ||
       'VALUES (' || new.id ||', ' || quote_literal(new.datum::varchar(50)) || ', ' ||
         quote_literal(new.typ) || ', ' || quote_literal(new.ovi::text) || ', ' ||
         quote_literal(new.status) || ', ' || new.kategorie || ', ' ||
-        --betreff
+        --beschreibung
         CASE 
-          WHEN new.betreff_freigabe_status = 'extern' AND new.betreff IS NOT NULL AND new.betreff <> '' THEN
-            quote_literal(new.betreff)
-          ELSE
-            'NULL'
-        END || ', ' ||
-        --details
-        CASE 
-          WHEN new.details_freigabe_status = 'extern' AND new.details IS NOT NULL AND new.details <> '' THEN
-            quote_literal(new.details)
+          WHEN new.beschreibung_freigabe_status = 'extern' AND new.beschreibung IS NOT NULL AND new.beschreibung <> '' THEN
+            quote_literal(new.beschreibung)
            ELSE
             'NULL'
         END || ', ' ||
@@ -932,29 +880,15 @@ BEGIN
           ELSE
             'FALSE'
         END || ', ' ||
-        --betreffVorhanden
-        CASE
-          WHEN new.betreff IS NOT NULL AND new.betreff <> '' THEN
-            'TRUE'
-          ELSE
-            'FALSE'
-        END || ', ' ||
-        --betreffFreigegeben
-        CASE new.betreff_freigabe_status
-          WHEN 'extern' THEN
-            'TRUE'
-          ELSE
-            'FALSE'
-        END || ', ' ||
-        --detailsVorhanden
+        --beschreibungVorhanden
         CASE 
-          WHEN new.details IS NOT NULL AND new.details <> '' THEN
+          WHEN new.beschreibung IS NOT NULL AND new.beschreibung <> '' THEN
             'TRUE'
           ELSE
             'FALSE'
         END || ', ' ||
-        --detailsFreigegeben
-        CASE new.details_freigabe_status
+        --beschreibungFreigegeben
+        CASE new.beschreibung_freigabe_status
           WHEN 'extern' THEN
             'TRUE'
           ELSE

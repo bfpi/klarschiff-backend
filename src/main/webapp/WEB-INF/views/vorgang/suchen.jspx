@@ -133,8 +133,8 @@
 						<tr>
 							<td colspan="2">
 								<div>
-									<form:label path="erweitertFulltext" title="Die folgenden Felder werden durchsucht: Hauptkategorie, Unterkategorie, Betreff, Details, interne Kommentare, öffentliche Statusinformationen und Missbrauchsmeldungen.">Freitext</form:label>
-									<form:input path="erweitertFulltext" cssClass="inputtext" cssStyle="width:526px;" title="Die folgenden Felder werden durchsucht: Hauptkategorie, Unterkategorie, Betreff, Details, interne Kommentare, öffentliche Statusinformationen und Missbrauchsmeldungen."/>
+									<form:label path="erweitertFulltext" title="Die folgenden Felder werden durchsucht: Hauptkategorie, Unterkategorie, Beschreibung, interne Kommentare, öffentliche Statusinformationen und Missbrauchsmeldungen.">Freitext</form:label>
+									<form:input path="erweitertFulltext" cssClass="inputtext" cssStyle="width:526px;" title="Die folgenden Felder werden durchsucht: Hauptkategorie, Unterkategorie, Beschreibung, interne Kommentare, öffentliche Statusinformationen und Missbrauchsmeldungen."/>
 								</div>
 							</td>
 						</tr>

@@ -79,9 +79,7 @@ CREATE TABLE klarschiff_kategorie (
     id bigint NOT NULL,
     name character varying(200) NOT NULL,
     parent bigint,
-    vorgangstyp character varying(255),
-	aufforderung boolean,                                  --########### @deprecated ############
-    naehere_beschreibung_notwendig character varying(255)
+    vorgangstyp character varying(255)
 );
 ALTER TABLE klarschiff_kategorie OWNER TO ${f_username};
 
@@ -162,10 +160,8 @@ CREATE TABLE klarschiff_vorgang (
     foto_thumb character varying(255),
     foto_vorhanden boolean,
     foto_freigegeben boolean,
-    betreff_vorhanden boolean,
-    betreff_freigegeben boolean,
-    details_vorhanden boolean,
-    details_freigegeben boolean,
+    beschreibung_vorhanden boolean,
+    beschreibung_freigegeben boolean,
     archiviert boolean,
     zustaendigkeit character varying(255),
     CONSTRAINT enforce_dims_the_geom CHECK ((ndims(the_geom) = 2)),
@@ -298,11 +294,9 @@ CREATE OR REPLACE VIEW klarschiff_wfs AS
 		v.foto_freigegeben,
 		v.foto_normal,
 		v.foto_thumb,
-        v.betreff_vorhanden,
-        v.betreff_freigegeben,
-        v.details_vorhanden,
-        v.details_freigegeben,
-        v.zustaendigkeit
+		v.beschreibung_vorhanden,
+		v.beschreibung_freigegeben,
+		v.zustaendigkeit
 	FROM 
 		klarschiff_vorgang v, 
 		klarschiff_kategorie k
@@ -344,17 +338,11 @@ CREATE OR REPLACE VIEW klarschiff_wfs_georss AS
             ELSE 'bisher keine'::text
         END AS unterstuetzungen,
         CASE
-            WHEN v.titel IS NOT NULL AND v.titel::text <> ''::text AND v.betreff_freigegeben IS TRUE AND v.betreff_vorhanden IS TRUE THEN v.titel::text
-            WHEN v.status::text = 'offen'::text AND v.betreff_vorhanden IS TRUE AND v.betreff_freigegeben IS FALSE THEN 'redaktionelle Prüfung ausstehend'::text
-            WHEN v.status::text <> 'offen'::text AND v.betreff_vorhanden IS TRUE AND v.betreff_freigegeben IS FALSE THEN 'redaktionell nicht freigegeben'::text
+            WHEN v.beschreibung IS NOT NULL AND v.beschreibung <> ''::text AND v.beschreibung_freigegeben IS TRUE AND v.beschreibung_vorhanden IS TRUE THEN v.beschreibung
+            WHEN v.status::text = 'offen'::text AND v.beschreibung_vorhanden IS TRUE AND v.beschreibung_freigegeben IS FALSE THEN 'redaktionelle Prüfung ausstehend'::text
+            WHEN v.status::text <> 'offen'::text AND v.beschreibung_vorhanden IS TRUE AND v.beschreibung_freigegeben IS FALSE THEN 'redaktionell nicht freigegeben'::text
             ELSE 'nicht vorhanden'::text
-        END AS betreff,
-        CASE
-            WHEN v.details IS NOT NULL AND v.details <> ''::text AND v.details_freigegeben IS TRUE AND v.details_vorhanden IS TRUE THEN v.details
-            WHEN v.status::text = 'offen'::text AND v.details_vorhanden IS TRUE AND v.details_freigegeben IS FALSE THEN 'redaktionelle Prüfung ausstehend'::text
-            WHEN v.status::text <> 'offen'::text AND v.details_vorhanden IS TRUE AND v.details_freigegeben IS FALSE THEN 'redaktionell nicht freigegeben'::text
-            ELSE 'nicht vorhanden'::text
-        END AS details,
+        END AS beschreibung,
         CASE
             WHEN v.foto_thumb IS NOT NULL AND v.foto_thumb::text <> ''::text AND v.foto_freigegeben IS TRUE AND v.foto_vorhanden IS TRUE THEN ((((('<br/><a href="http://support.klarschiff-hro.de/fotos/'::text || v.foto_normal::text) || '" target="_blank" title="große Ansicht öffnen…"><img src="http://support.klarschiff-hro.de/fotos/'::text) || v.foto_thumb::text) || '" alt="'::text) || v.foto_thumb::text) || '" /></a>'::text
             WHEN v.status::text = 'offen'::text AND v.foto_vorhanden IS TRUE AND v.foto_freigegeben IS FALSE THEN 'redaktionelle Prüfung ausstehend'::text

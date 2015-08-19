@@ -268,7 +268,7 @@
   <!-- HELP -->
   <div id="root_style_help">
     <p>
-      Auf dieser Seite können sie einen neuen <util:help anchor="Vorgangerstellen">Vorgang erstellen</util:help>. Geben Sie hierzu zunächst die stets notwendigen Standardangaben (Typ, Hauptkategorie und Unterkategorie) an und legen Sie dann die Position des Vorgangs mit Hilfe des entsprechenden Steuerungssymbols in der Karte fest. Die Angaben zu Betreff und Details sind abhängig von der gewählten Haupt- und Unterkategorie entweder Pflichtangaben (es erscheint ein entsprechender Hinweis in den Eingabefeldern für diese Angaben) oder nicht (es erscheint kein Hinweis).
+      Auf dieser Seite können sie einen neuen <util:help anchor="Vorgangerstellen">Vorgang erstellen</util:help>. Geben Sie hierzu zunächst die stets notwendigen Standardangaben (Typ, Hauptkategorie und Unterkategorie) an und legen Sie dann die Position des Vorgangs mit Hilfe des entsprechenden Steuerungssymbols in der Karte fest. Die Angaben zur Beschreibung sind abhängig von der gewählten Haupt- und Unterkategorie entweder Pflichtangaben (es erscheint ein entsprechender Hinweis in den Eingabefeldern für diese Angaben) oder nicht (es erscheint kein Hinweis).
   </p>
   <p>
     Nach der Erstellung des neuen Vorgangs sucht das System automatisch nach der passenden <util:help anchor="Zustndigkeit">Zuständigkeit</util:help> für den neuen Vorgang.
