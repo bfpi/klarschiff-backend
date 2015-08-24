@@ -103,10 +103,10 @@
 	<!-- HELP -->
 	<div id="root_style_help">
 		<p>
-            Bitte prüfen Sie zum Abschluss der Erstsichtung auf dieser Seite – sofern vorhanden – die Details und das Foto des Vorgangs. Nach der Prüfung wird der Vorgang im Frontend und damit für die Bürgerinnen und Bürger zur Anzeige freigegeben. Daher ist es wichtig, dass durch Details oder Foto keine Persönlichkeitsrechte verletzt werden.
+            Bitte prüfen Sie zum Abschluss der Erstsichtung auf dieser Seite – sofern vorhanden – die Beschreibung und das Foto des Vorgangs. Nach der Prüfung wird der Vorgang im Frontend und damit für die Bürgerinnen und Bürger zur Anzeige freigegeben. Daher ist es wichtig, dass durch Beschreibung oder Foto keine Persönlichkeitsrechte verletzt werden.
 		</p>
 		<p>
-            Sie haben die Möglichkeit die Details inhaltlich anzupassen. Über die Buttons neben den Eingabefeldern können Sie den <util:help anchor="Freigabestatus">Freigabestatus</util:help> festlegen und damit bestimmen, für wen die Informationen sichtbar sind: „Intern“ bedeutet, dass die Informationen nur im Backend für die Sachbearbeiterinnen und Sachbearbeiter sichtbar sind. Um die Informationen auch für Bürgerinnen und Bürger sichtbar zu machen, muss der Freigabestatus auf „extern“ gesetzt sein.
+            Sie haben die Möglichkeit die Beschreibung inhaltlich anzupassen. Über die Buttons neben den Eingabefeldern können Sie den <util:help anchor="Freigabestatus">Freigabestatus</util:help> festlegen und damit bestimmen, für wen die Informationen sichtbar sind: „Intern“ bedeutet, dass die Informationen nur im Backend für die Sachbearbeiterinnen und Sachbearbeiter sichtbar sind. Um die Informationen auch für Bürgerinnen und Bürger sichtbar zu machen, muss der Freigabestatus auf „extern“ gesetzt sein.
 		</p>
         <p>
             Auch das Foto können Sie <util:help anchor="Fotobearbeiten">bearbeiten</util:help>: Ein Klick auf den entsprechenden Button über dem Foto führt Sie in den Bearbeitungsmodus. Nun können Sie im Foto mit der Maus schwarze Rechtecke aufziehen, um mit diesen Bereiche im Foto zu überdecken, die nicht mehr erkennbar sein dürfen. Sobald Sie mit Ihren Änderungen einverstanden sind, können Sie diese durch Klick auf den entsprechenden Button speichern.
