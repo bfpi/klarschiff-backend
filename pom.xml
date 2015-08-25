@@ -5,7 +5,7 @@
   <groupId>de.fraunhofer.igd.klarschiff</groupId>
   <artifactId>backend</artifactId>
   <packaging>war</packaging>
-  <version>1.5</version>
+  <version>1.6</version>
   <name>Klarschiff-Backend</name>
 
   <properties>
