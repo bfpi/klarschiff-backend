@@ -56,19 +56,11 @@
 				<td class="value"><div class="result">${vorgang.kategorie.name}</div></td>
 			</tr>			
  
-			<c:if test="${not empty vorgang.betreff}">
+			<c:if test="${not empty vorgang.beschreibung}">
 				<tr>
-					<td class="label">Betreff</td>									
-					<td class="value"><div class="result">${vorgang.betreff}</div></td>						
-					<td class="label" colspan="2">Freigabestatus: ${vorgang.betreffFreigabeStatus}</td>	
-				</tr>
-			</c:if>
-			
-			<c:if test="${not empty vorgang.details}">
-				<tr>
-					<td class="label">Details</td>									
-					<td class="value"><div class="result">${fx:toHtml(vorgang.details)}</div></td>		
-					<td class="label" colspan="2">Freigabestatus: ${vorgang.detailsFreigabeStatus}</td>	
+					<td class="label">Beschreibung</td>									
+					<td class="value"><div class="result">${fx:toHtml(vorgang.beschreibung)}</div></td>		
+					<td class="label" colspan="2">Freigabestatus: ${vorgang.beschreibungFreigabeStatus}</td>	
 				</tr>
 			</c:if>
             

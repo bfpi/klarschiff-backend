@@ -65,20 +65,11 @@
 					<td width="100%"></td>					
 				</tr>
 
-				<c:if test="${not empty vorgang.betreff}"><tr>
-					<td class="label">Betreff</td>
+				<c:if test="${not empty vorgang.beschreibung}"><tr>
+					<td class="label">Beschreibung</td>
 					<td colspan="10">
 						<div class="result" style="width:663px;">
-						${vorgang.betreff}
-						</div>
-					</td>
-				</tr></c:if>
-			
-				<c:if test="${not empty vorgang.details}"><tr>
-					<td class="label">Details</td>
-					<td colspan="10">
-						<div class="result" style="width:663px;">
-						${vorgang.details}
+						${vorgang.beschreibung}
 						</div>
 					</td>
 				</tr></c:if>

@@ -450,30 +450,15 @@
 							</script>
 			
 					        <div>
-					        	<form:label path="vorgang.betreff" cssErrorClass="error">Betreff</form:label>
+					        	<form:label path="vorgang.beschreibung" cssErrorClass="error">Beschreibung</form:label>
 					        	<table cellpadding="0" cellspacing="0">
 					        		<tr>
 					        			<td valign="top">
-					        				<util:freigabestatus status="${cmd.vorgang.betreffFreigabeStatus}"/>
-								            <form:input path="vorgang.betreff" cssClass="inputtext" cssStyle="width:331px;"/>
+					        				<util:freigabestatus status="${cmd.vorgang.beschreibungFreigabeStatus}"/>
+								            <form:textarea path="vorgang.beschreibung" cols="6" cssStyle="width:331px;height:100px"/>
 					        			</td>
 					        			<td valign="top" style="padding-left:5px;">
-											<util:freigabestatusbutton name="Betreff" status="${cmd.vorgang.betreffFreigabeStatus}"/>
-					        			</td>
-					        		</tr>
-					        	</table>
-					        </div>
-						
-					        <div>
-					        	<form:label path="vorgang.details" cssErrorClass="error">Details</form:label>
-					        	<table cellpadding="0" cellspacing="0">
-					        		<tr>
-					        			<td valign="top">
-					        				<util:freigabestatus status="${cmd.vorgang.detailsFreigabeStatus}"/>
-								            <form:textarea path="vorgang.details" cols="6" cssStyle="width:331px;height:100px"/>
-					        			</td>
-					        			<td valign="top" style="padding-left:5px;">
-											<util:freigabestatusbutton name="Details" status="${cmd.vorgang.detailsFreigabeStatus}"/>
+											<util:freigabestatusbutton name="Beschreibung" status="${cmd.vorgang.beschreibungFreigabeStatus}"/>
 					        			</td>
 					        			
 					        		</tr>
