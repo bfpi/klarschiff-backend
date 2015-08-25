@@ -48,7 +48,7 @@
 
         <div>
           <form:label path="vorgang.kategorie">Unterkategorie</form:label>
-          <form:select path="vorgang.kategorie" id="unterkategorie" disabled="true" onchange="updateInfo()" cssStyle="width:358px;">
+          <form:select path="vorgang.kategorie" id="unterkategorie" disabled="true" cssStyle="width:358px;">
             <form:option value="" label="Unterkategorie wählen" cssClass="info"/>
             <form:options items="${unterkategorien}" itemValue="id" itemLabel="name"/>
           </form:select>
@@ -246,7 +246,7 @@
           var hk = $('select#hauptkategorie');
           var uk = $('select#unterkategorie');
 
-          if (isBlank(typ[0].value; )) {
+          if (isBlank(typ[0].value)) {
             updateHauptkategorie();
           } else {
             hk.removeAttr("disabled");
