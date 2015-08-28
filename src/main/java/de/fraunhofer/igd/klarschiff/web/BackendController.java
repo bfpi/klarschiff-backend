@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.codec.Base64;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -1249,6 +1251,32 @@ public class BackendController {
       java.util.logging.Logger.getLogger(BackendController.class.getName()).log(Level.SEVERE, null, ex);
       sendError(response, ex);
     }
+  }
+
+  /**
+   * Die Methode verarbeitet den GET-Request auf der URL <code>/position</code><br/>
+   *
+   * @param positionWGS84
+   * @return Wenn die Postion innerhalb des gültigen Bereichs liegt <code>HttpStatus.OK</code> sonst
+   * <code>HttpStatus.FORBIDDEN</code>
+   */
+  @RequestMapping(value = "/position", method = RequestMethod.GET)
+  public ResponseEntity position(
+    @RequestParam(value = "positionWGS84", required = false) String positionWGS84
+  ) {
+
+    HttpStatus result = HttpStatus.OK;
+    Vorgang v = new Vorgang();
+    try {
+      v.setPositionWGS84(positionWGS84);
+      if (!v.getOvi().within(grenzenDao.getStadtgrenze().getGrenze())) {
+        result = HttpStatus.FORBIDDEN;
+      }
+    } catch (Exception ex) {
+      result = HttpStatus.FORBIDDEN;
+    }
+
+    return new ResponseEntity(result);
   }
 
   /**
