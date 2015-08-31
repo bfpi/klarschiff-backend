@@ -94,15 +94,10 @@
 									<c:otherwise>Vorgang von externem Autor erzeugt</c:otherwise>
 								</c:choose>
 							</c:when>
-							<c:when test="${verlaufItem.typ=='betreffFreigabeStatus'}">
+							<c:when test="${verlaufItem.typ=='beschreibungFreigabeStatus'}">
                                 <c:set value="freigabeStatus_${verlaufItem.wertAlt}.png" var="altAlt"/>
                                 <c:set value="freigabeStatus_${verlaufItem.wertNeu}.png" var="altNeu"/>
-								Freigabestatus des Betreffs geändert: <img style="vertical-align:middle" alt="${altAlt}" src="${url}${altAlt}" height="15" width="15"  title="${verlaufItem.wertAlt}"/> ➔ <img style="vertical-align:middle" alt="${altNeu}" src="${url}${altNeu}" height="15" width="15"  title="${verlaufItem.wertNeu}"/>
-							</c:when>
-							<c:when test="${verlaufItem.typ=='detailsFreigabeStatus'}">
-                                <c:set value="freigabeStatus_${verlaufItem.wertAlt}.png" var="altAlt"/>
-                                <c:set value="freigabeStatus_${verlaufItem.wertNeu}.png" var="altNeu"/>
-								Freigabestatus der Details geändert: <img style="vertical-align:middle" alt="${altAlt}" src="${url}${altAlt}" height="15" width="15"  title="${verlaufItem.wertAlt}"/> ➔ <img style="vertical-align:middle" alt="${altNeu}" src="${url}${altNeu}" height="15" width="15"  title="${verlaufItem.wertNeu}"/>
+								Freigabestatus der Beschreibung geändert: <img style="vertical-align:middle" alt="${altAlt}" src="${url}${altAlt}" height="15" width="15"  title="${verlaufItem.wertAlt}"/> ➔ <img style="vertical-align:middle" alt="${altNeu}" src="${url}${altNeu}" height="15" width="15"  title="${verlaufItem.wertNeu}"/>
 							</c:when>
 							<c:when test="${verlaufItem.typ=='fotoFreigabeStatus'}">
                                 <c:set value="freigabeStatus_${verlaufItem.wertAlt}.png" var="altAlt"/>
@@ -128,12 +123,6 @@
 							<c:when test="${verlaufItem.typ=='archiv' and verlaufItem.wertNeu=='false'}">
 								Vorgang aus dem Archiv wiederhergestellt
 							</c:when>
-							<c:when test="${verlaufItem.typ=='betreff'}">
-								<c:choose>
-									<c:when test="${not empty verlaufItem.wertNeu}">Betreff geändert in: ${verlaufItem.wertNeu}</c:when>
-									<c:otherwise>Betreff gelöscht</c:otherwise>
-								</c:choose>
-							</c:when>
 							<c:when test="${verlaufItem.typ=='adresse'}">
 								<c:choose>
 									<c:when test="${not empty verlaufItem.wertNeu}">Adresse geändert in: ${verlaufItem.wertNeu}</c:when>
@@ -146,10 +135,10 @@
 									<c:otherwise>Flurstückseigentum gelöscht</c:otherwise>
 								</c:choose>
 							</c:when>
-							<c:when test="${verlaufItem.typ=='detail'}">
+							<c:when test="${verlaufItem.typ=='beschreibung'}">
 								<c:choose>
-									<c:when test="${not empty verlaufItem.wertNeu}">Details geändert in: ${fx:toHtml(verlaufItem.wertNeu)}</c:when>
-									<c:otherwise>Details gelöscht</c:otherwise>
+									<c:when test="${not empty verlaufItem.wertNeu}">Beschreibung geändert in: ${fx:toHtml(verlaufItem.wertNeu)}</c:when>
+									<c:otherwise>Beschreibung gelöscht</c:otherwise>
 								</c:choose>
 							</c:when>
 							<c:when test="${verlaufItem.typ=='delegiertAn'}">

@@ -22,7 +22,6 @@ import de.fraunhofer.igd.klarschiff.service.cluster.ClusterUtil;
 import de.fraunhofer.igd.klarschiff.util.LogUtil;
 import de.fraunhofer.igd.klarschiff.vo.EnumText;
 import de.fraunhofer.igd.klarschiff.vo.extra.EnumFreigabeStatus;
-import de.fraunhofer.igd.klarschiff.vo.extra.EnumNaehereBeschreibungNotwendig;
 import de.fraunhofer.igd.klarschiff.vo.extra.EnumPrioritaet;
 import de.fraunhofer.igd.klarschiff.vo.extra.EnumVerlaufTyp;
 import de.fraunhofer.igd.klarschiff.vo.extra.EnumVorgangStatus;
@@ -227,9 +226,6 @@ public class InitializeServiceThread extends Thread {
     }
     for (EnumText _enum : de.fraunhofer.igd.klarschiff.vo.EnumZustaendigkeitStatus.values()) {
       session.saveOrUpdate(new EnumZustaendigkeitStatus().fill(_enum));
-    }
-    for (EnumText _enum : de.fraunhofer.igd.klarschiff.vo.EnumNaehereBeschreibungNotwendig.values()) {
-      session.saveOrUpdate(new EnumNaehereBeschreibungNotwendig().fill(_enum));
     }
   }
 }

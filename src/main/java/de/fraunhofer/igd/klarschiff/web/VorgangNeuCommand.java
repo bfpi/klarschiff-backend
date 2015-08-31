@@ -9,7 +9,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
 
 import de.fraunhofer.igd.klarschiff.dao.KategorieDao;
-import de.fraunhofer.igd.klarschiff.vo.EnumNaehereBeschreibungNotwendig;
 import de.fraunhofer.igd.klarschiff.vo.Kategorie;
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
 
@@ -32,20 +31,16 @@ public class VorgangNeuCommand implements Serializable {
   /**
    * Methode zur Prüfung eines neuen Vorganges auf Vollständigkeit benötigter Attribute sowie
    * Validität der E-Mail-Adresse<br/>
-   * Prüft auf Vorhandensein von:<b> Typ, Hauptkategorie, Unterkategorie, Position,
-   * E-Mail-Adresse</b> und in Abhängigkeit der Unterkategorie:
-   * <b>Betreff</b> und/oder <b>Details</b> sowie auf Gültigkeit der übergebenen
+   * Prüft auf Vorhandensein von: <b>Typ, Hauptkategorie, Unterkategorie, Position,
+   * E-Mail-Adresse und Beschreibung</b> sowie auf Gültigkeit der übergebenen
    * <b>E-Mail-Adresse</b>.<br/>
    *
    * @param result Bindingresult mit den Fehlermeldungen
    * @param kategorieDao
    */
   public void validate(BindingResult result, KategorieDao kategorieDao) {
-    if (StringUtils.equals("Bitte geben Sie einen Betreff an.", vorgang.getBetreff())) {
-      vorgang.setBetreff("");
-    }
-    if (StringUtils.equals("Bitte beschreiben Sie Ihre Meldung genauer.", vorgang.getDetails())) {
-      vorgang.setDetails("");
+    if (StringUtils.equals("Bitte beschreiben Sie Ihre Meldung genauer.", vorgang.getBeschreibung())) {
+      vorgang.setBeschreibung("");
     }
     assertNotEmpty(this, result, Assert.EvaluateOn.ever, "vorgang.typ", "Bitte geben Sie den Typ Ihres neuen Vorgangs an.");
     assertNotEmpty(this, result, Assert.EvaluateOn.ever, "kategorie", "Bitte geben Sie eine Hauptkategorie für Ihren neuen Vorgang an.");
@@ -56,19 +51,8 @@ public class VorgangNeuCommand implements Serializable {
     if (!StringUtils.isBlank(vorgang.getAutorEmail())) {
       assertEmail(this, result, Assert.EvaluateOn.ever, "vorgang.autorEmail", "Die angegebene E-Mail-Adresse ist nicht gültig.");
     }
-    EnumNaehereBeschreibungNotwendig naehereBeschreibungNotwendig = kategorieDao.viewNaehereBeschreibung(kategorie, vorgang.getKategorie());
-    switch (naehereBeschreibungNotwendig) {
-      case betreff:
-        assertNotEmpty(this, result, Assert.EvaluateOn.ever, "vorgang.betreff", "Bitte geben Sie einen Betreff an.");
-        break;
-      case details:
-        assertNotEmpty(this, result, Assert.EvaluateOn.ever, "vorgang.details", "Bitte beschreiben Sie Ihre Meldung genauer.");
-        break;
-      case betreffUndDetails:
-        assertNotEmpty(this, result, Assert.EvaluateOn.ever, "vorgang.betreff", "Bitte geben Sie einen Betreff an.");
-        assertNotEmpty(this, result, Assert.EvaluateOn.ever, "vorgang.details", "Bitte beschreiben Sie Ihre Meldung genauer.");
-        break;
-    }
+    
+    assertNotEmpty(this, result, Assert.EvaluateOn.ever, "vorgang.beschreibung", "Bitte beschreiben Sie Ihre Meldung genauer.");
   }
 
   public Vorgang getVorgang() {

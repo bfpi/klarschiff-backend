@@ -1,7 +1,6 @@
 package de.fraunhofer.igd.klarschiff.service.statistic;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 
 import org.apache.commons.lang.time.DateUtils;
@@ -58,7 +57,7 @@ public class StatisticService {
     // Vorgänge, die zwar nicht mehr den Status 'offen' aufweisen, bisher aber dennoch nicht akzeptiert wurden
     statistic.setVorgaengeNichtMehrOffenNichtAkzeptiert(statisticDao.findVorgaengeNichtMehrOffenNichtAkzeptiert());
 
-    // Vorgänge, die ihre Erstsichtung bereits hinter sich haben, deren Betreff, Details oder Foto bisher aber noch nicht freigegeben wurden
+    // Vorgänge, die ihre Erstsichtung bereits hinter sich haben, deren Beschreibung oder Foto bisher aber noch nicht freigegeben wurden
     statistic.setVorgaengeOhneRedaktionelleFreigaben(statisticDao.findVorgaengeOhneRedaktionelleFreigaben());
 
     // aktive Vorgänge und deren Statusverteilung

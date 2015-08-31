@@ -64,23 +64,13 @@
 					</td>					
 				</tr>			
 	
-				<c:if test="${not empty vorgang.betreff}">
+				<c:if test="${not empty vorgang.beschreibung}">
 				<tr>
-					<td class="label">Betreff</td>									
+					<td class="label">Beschreibung</td>					
 					<td colspan="3">
-						<util:freigabestatus status="${vorgang.betreffFreigabeStatus}" cssStyle="float:left;"/>					
+						<util:freigabestatus status="${vorgang.beschreibungFreigabeStatus}" cssStyle="float:left;"/>					
 						<div class="result" style="width:654px;margin-left:20px;">						
-						${vorgang.betreff}
-						</div>						
-					</td>								
-				</tr></c:if>
-				<c:if test="${not empty vorgang.details}">
-				<tr>
-					<td class="label">Details</td>					
-					<td colspan="3">
-						<util:freigabestatus status="${vorgang.detailsFreigabeStatus}" cssStyle="float:left;"/>					
-						<div class="result" style="width:654px;margin-left:20px;">						
-						${fx:toHtml(vorgang.details)}
+						${fx:toHtml(vorgang.beschreibung)}
 						</div>						
 					</td> 						
 				</tr></c:if>

@@ -8,10 +8,8 @@ package de.fraunhofer.igd.klarschiff.vo;
 public enum EnumVerlaufTyp implements EnumText {
 
   erzeugt,
-  betreff,
-  betreffFreigabeStatus,
-  detailsFreigabeStatus,
-  detail,
+  beschreibung,
+  beschreibungFreigabeStatus,
   adresse,
   fotoFreigabeStatus,
   foto,

@@ -35,6 +35,7 @@ import de.fraunhofer.igd.klarschiff.web.VorgangFeedCommand;
 import de.fraunhofer.igd.klarschiff.web.VorgangFeedDelegiertAnCommand;
 import de.fraunhofer.igd.klarschiff.web.VorgangSuchenCommand;
 import java.math.BigInteger;
+import java.util.Objects;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
@@ -113,75 +114,93 @@ public class VorgangDao {
       Vorgang vorgangOld = findVorgang(vorgang.getId());
       //Status
       if (vorgangOld.getStatus() != vorgang.getStatus()) {
-        verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.status, vorgangOld.getStatus().getText(), vorgang.getStatus().getText());
+        verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.status, vorgangOld.getStatus().getText(),
+          vorgang.getStatus().getText());
       }
       //Statuskommentar
-      if (!StringUtils.equals(vorgangOld.getStatusKommentar(), vorgang.getStatusKommentar()) && (!StringUtils.isBlank(vorgangOld.getStatusKommentar()) || !StringUtils.isBlank(vorgang.getStatusKommentar()))) {
-        verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.statusKommentar, StringUtils.abbreviate(vorgangOld.getStatusKommentar(), 100), StringUtils.abbreviate(vorgang.getStatusKommentar(), 100));
+      if (!StringUtils.equals(vorgangOld.getStatusKommentar(), vorgang.getStatusKommentar())
+        && (!StringUtils.isBlank(vorgangOld.getStatusKommentar())
+        || !StringUtils.isBlank(vorgang.getStatusKommentar()))) {
+
+        verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.statusKommentar,
+          StringUtils.abbreviate(vorgangOld.getStatusKommentar(), 100),
+          StringUtils.abbreviate(vorgang.getStatusKommentar(), 100));
       }
       //Zuständigkeit
       if (!StringUtils.equals(vorgangOld.getZustaendigkeit(), vorgang.getZustaendigkeit())) {
-        verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.zustaendigkeit, vorgangOld.getZustaendigkeit(), vorgang.getZustaendigkeit());
+        verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.zustaendigkeit,
+          vorgangOld.getZustaendigkeit(), vorgang.getZustaendigkeit());
         if (vorgang.getZustaendigkeitStatus() == EnumZustaendigkeitStatus.akzeptiert) {
-          verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.zustaendigkeitAkzeptiert, vorgangOld.getZustaendigkeitStatus().getText(), vorgang.getZustaendigkeitStatus().getText());
+          verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.zustaendigkeitAkzeptiert,
+            vorgangOld.getZustaendigkeitStatus().getText(), vorgang.getZustaendigkeitStatus().getText());
         }
       }
       if (vorgangOld.getZustaendigkeitStatus() != vorgang.getZustaendigkeitStatus()) {
-        verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.zustaendigkeitAkzeptiert, vorgangOld.getZustaendigkeitStatus().getText(), vorgang.getZustaendigkeitStatus().getText());
+        verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.zustaendigkeitAkzeptiert,
+          vorgangOld.getZustaendigkeitStatus().getText(), vorgang.getZustaendigkeitStatus().getText());
       }
       //Zuständigkeit beim ClassificationService registrieren
       if (vorgang.getZustaendigkeitStatus() == EnumZustaendigkeitStatus.akzeptiert
-        && (vorgangOld.getZustaendigkeitStatus() != EnumZustaendigkeitStatus.akzeptiert || !StringUtils.equals(vorgangOld.getZustaendigkeit(), vorgang.getZustaendigkeit()))) {
+        && (vorgangOld.getZustaendigkeitStatus() != EnumZustaendigkeitStatus.akzeptiert
+        || !StringUtils.equals(vorgangOld.getZustaendigkeit(), vorgang.getZustaendigkeit()))) {
+
         AppContext.getApplicationContext().getBean(ClassificationService.class).registerZustaendigkeitAkzeptiert(vorgang);
       }
       //Freigabestatus
-      if (vorgangOld.getBetreffFreigabeStatus() != vorgang.getBetreffFreigabeStatus()) {
-        verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.betreffFreigabeStatus, vorgangOld.getBetreffFreigabeStatus().getText(), vorgang.getBetreffFreigabeStatus().getText());
-      }
-      if (vorgangOld.getDetailsFreigabeStatus() != vorgang.getDetailsFreigabeStatus()) {
-        verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.detailsFreigabeStatus, vorgangOld.getDetailsFreigabeStatus().getText(), vorgang.getDetailsFreigabeStatus().getText());
+      if (vorgangOld.getBeschreibungFreigabeStatus() != vorgang.getBeschreibungFreigabeStatus()) {
+        verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.beschreibungFreigabeStatus,
+          vorgangOld.getBeschreibungFreigabeStatus().getText(), vorgang.getBeschreibungFreigabeStatus().getText());
       }
       if (vorgangOld.getFotoFreigabeStatus() != vorgang.getFotoFreigabeStatus()) {
-        verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.fotoFreigabeStatus, vorgangOld.getFotoFreigabeStatus().getText(), vorgang.getFotoFreigabeStatus().getText());
+        verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.fotoFreigabeStatus,
+          vorgangOld.getFotoFreigabeStatus().getText(), vorgang.getFotoFreigabeStatus().getText());
       }
-      if (vorgangOld.getFotowunsch() != vorgang.getFotowunsch()) {
-        verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.fotowunsch, vorgangOld.getFotowunsch() ? "aktiv" : "inaktiv", vorgang.getFotowunsch() ? "aktiv" : "inaktiv");
+      if (!Objects.equals(vorgangOld.getFotowunsch(), vorgang.getFotowunsch())) {
+        verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.fotowunsch,
+          vorgangOld.getFotowunsch() ? "aktiv" : "inaktiv", vorgang.getFotowunsch() ? "aktiv" : "inaktiv");
       }
       //Typ
       if (vorgangOld.getTyp() != vorgang.getTyp()) {
         verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.typ, vorgangOld.getTyp().getText(), vorgang.getTyp().getText());
       }
       //Kategorie
-      if (vorgangOld.getKategorie().getId() != vorgang.getKategorie().getId()) {
-        verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.kategorie, vorgangOld.getKategorie().getParent().getName() + " / " + vorgangOld.getKategorie().getName(), vorgang.getKategorie().getParent().getName() + " / " + vorgang.getKategorie().getName());
+      if (!Objects.equals(vorgangOld.getKategorie().getId(), vorgang.getKategorie().getId())) {
+        verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.kategorie,
+          vorgangOld.getKategorie().getParent().getName() + " / " + vorgangOld.getKategorie().getName(),
+          vorgang.getKategorie().getParent().getName() + " / " + vorgang.getKategorie().getName());
       }
-      //Betreff
-      if (!StringUtils.equals(vorgangOld.getBetreff(), vorgang.getBetreff())) {
-        verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.betreff, StringUtils.abbreviate(vorgangOld.getBetreff(), 100), StringUtils.abbreviate(vorgang.getBetreff(), 100));
-      }
-      //Details
-      if (!StringUtils.equals(vorgangOld.getDetails(), vorgang.getDetails())) {
-        verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.detail, StringUtils.abbreviate(vorgangOld.getDetails(), 100), StringUtils.abbreviate(vorgang.getDetails(), 100));
+      //Beschreibung
+      if (!StringUtils.equals(vorgangOld.getBeschreibung(), vorgang.getBeschreibung())) {
+        verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.beschreibung,
+          StringUtils.abbreviate(vorgangOld.getBeschreibung(), 100),
+          StringUtils.abbreviate(vorgang.getBeschreibung(), 100));
       }
       //Adresse
       if (!StringUtils.equals(vorgangOld.getAdresse(), vorgang.getAdresse())) {
-        verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.adresse, StringUtils.abbreviate(vorgangOld.getAdresse(), 100), StringUtils.abbreviate(vorgang.getAdresse(), 100));
+        verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.adresse,
+          StringUtils.abbreviate(vorgangOld.getAdresse(), 100),
+          StringUtils.abbreviate(vorgang.getAdresse(), 100));
       }
       //Flurstückseigentum
       if (!StringUtils.equals(vorgangOld.getFlurstueckseigentum(), vorgang.getFlurstueckseigentum())) {
-        verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.flurstueckseigentum, StringUtils.abbreviate(vorgangOld.getFlurstueckseigentum(), 100), StringUtils.abbreviate(vorgang.getFlurstueckseigentum(), 100));
+        verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.flurstueckseigentum,
+          StringUtils.abbreviate(vorgangOld.getFlurstueckseigentum(), 100),
+          StringUtils.abbreviate(vorgang.getFlurstueckseigentum(), 100));
       }
       //Delegieren
       if (!StringUtils.equals(vorgangOld.getDelegiertAn(), vorgang.getDelegiertAn())) {
-        verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.delegiertAn, vorgangOld.getDelegiertAn(), vorgang.getDelegiertAn());
+        verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.delegiertAn,
+          vorgangOld.getDelegiertAn(), vorgang.getDelegiertAn());
       }
       //Priorität
       if (vorgangOld.getPrioritaet() != vorgang.getPrioritaet()) {
-        verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.prioritaet, vorgangOld.getPrioritaet().getText(), vorgang.getPrioritaet().getText());
+        verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.prioritaet,
+          vorgangOld.getPrioritaet().getText(), vorgang.getPrioritaet().getText());
       }
       //Archiv
-      if (vorgangOld.getArchiviert() != vorgang.getArchiviert()) {
-        verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.archiv, vorgangOld.getArchiviert() + "", vorgang.getArchiviert() + "");
+      if (!Objects.equals(vorgangOld.getArchiviert(), vorgang.getArchiviert())) {
+        verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.archiv,
+          vorgangOld.getArchiviert() + "", vorgang.getArchiviert() + "");
       }
     }
   }
@@ -199,7 +218,8 @@ public class VorgangDao {
     if (ids == null) {
       return null;
     }
-    return em.createQuery("select o from Vorgang o where o.id in (:ids)", Vorgang.class).setParameter("ids", Arrays.asList(ids)).getResultList();
+    return em.createQuery("select o from Vorgang o where o.id in (:ids)", Vorgang.class)
+      .setParameter("ids", Arrays.asList(ids)).getResultList();
   }
 
   @Transactional
@@ -207,7 +227,8 @@ public class VorgangDao {
     if (hash == null) {
       return null;
     }
-    return em.createQuery("select o from Vorgang o where o.hash=:hash", Vorgang.class).setParameter("hash", hash).getSingleResult();
+    return em.createQuery("select o from Vorgang o where o.hash=:hash", Vorgang.class)
+      .setParameter("hash", hash).getSingleResult();
   }
 
   @Transactional
@@ -215,7 +236,8 @@ public class VorgangDao {
     if (hash == null) {
       return null;
     }
-    List<Unterstuetzer> list = em.createQuery("select o from Unterstuetzer o where o.hash=:hash", Unterstuetzer.class).setParameter("hash", hash).setMaxResults(1).getResultList();
+    List<Unterstuetzer> list = em.createQuery("select o from Unterstuetzer o where o.hash = :hash",
+      Unterstuetzer.class).setParameter("hash", hash).setMaxResults(1).getResultList();
     if (list.isEmpty()) {
       return null;
     } else {
@@ -225,7 +247,9 @@ public class VorgangDao {
 
   @Transactional
   public Long countUnterstuetzerByVorgang(Vorgang vorgang) {
-    return em.createQuery("select count(o) from Unterstuetzer o where o.vorgang=:vorgang AND o.datumBestaetigung IS NOT NULL", Long.class).setParameter("vorgang", vorgang).getSingleResult();
+    return em.createQuery("select count(o) from Unterstuetzer o "
+      + "where o.vorgang = :vorgang AND o.datumBestaetigung IS NOT NULL", Long.class)
+      .setParameter("vorgang", vorgang).getSingleResult();
   }
 
   @Transactional
@@ -241,7 +265,9 @@ public class VorgangDao {
     if (hash == null) {
       return null;
     }
-    List<Missbrauchsmeldung> list = em.createQuery("select o from Missbrauchsmeldung o where o.hash=:hash", Missbrauchsmeldung.class).setParameter("hash", hash).setMaxResults(1).getResultList();
+    List<Missbrauchsmeldung> list = em.createQuery("select o from Missbrauchsmeldung o "
+      + "where o.hash = :hash", Missbrauchsmeldung.class).setParameter("hash", hash)
+      .setMaxResults(1).getResultList();
     if (list.isEmpty()) {
       return null;
     } else {
@@ -251,7 +277,9 @@ public class VorgangDao {
 
   @Transactional
   public Long countOpenMissbrauchsmeldungByVorgang(Vorgang vorgang) {
-    return em.createQuery("select count(o) from Missbrauchsmeldung o where o.vorgang=:vorgang AND o.datumBestaetigung IS NOT NULL AND o.datumAbarbeitung IS NULL", Long.class).setParameter("vorgang", vorgang).getSingleResult();
+    return em.createQuery("select count(o) from Missbrauchsmeldung o "
+      + "where o.vorgang = :vorgang AND o.datumBestaetigung IS NOT NULL AND o.datumAbarbeitung IS NULL",
+      Long.class).setParameter("vorgang", vorgang).getSingleResult();
   }
 
   @Transactional
@@ -261,12 +289,16 @@ public class VorgangDao {
 
   @Transactional
   public List<Vorgang> listVorgang(int firstResult, int maxResults) {
-    return em.createQuery("select o from Vorgang o", Vorgang.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
+    return em.createQuery("select o from Vorgang o", Vorgang.class).setFirstResult(firstResult)
+      .setMaxResults(maxResults).getResultList();
   }
 
   @Transactional
   public List<Missbrauchsmeldung> listMissbrauchsmeldung(Vorgang vorgang) {
-    List<Missbrauchsmeldung> missbrauchsmeldungen = em.createQuery("select o from Missbrauchsmeldung o WHERE o.vorgang=:vorgang AND o.datumBestaetigung IS NOT NULL ORDER BY o.datum DESC", Missbrauchsmeldung.class).setParameter("vorgang", vorgang).getResultList();
+    List<Missbrauchsmeldung> missbrauchsmeldungen =
+      em.createQuery("select o from Missbrauchsmeldung o "
+        + "WHERE o.vorgang = :vorgang AND o.datumBestaetigung IS NOT NULL "
+        + "ORDER BY o.datum DESC", Missbrauchsmeldung.class).setParameter("vorgang", vorgang).getResultList();
     for (Missbrauchsmeldung missbrauchsmeldung : missbrauchsmeldungen) {
       missbrauchsmeldung.getText();
     }
@@ -315,7 +347,8 @@ public class VorgangDao {
           case offeneIdeen:
             conds.add("vo.status IN ('" + EnumVorgangStatus.offen + "')");
             conds.add("vo.typ = '" + EnumVorgangTyp.idee + "'"
-              + " AND (un.count < " + settingsService.getVorgangIdeeUnterstuetzer() + " OR vo.id NOT IN (SELECT DISTINCT vorgang FROM klarschiff_unterstuetzer))"
+              + " AND (un.count < " + settingsService.getVorgangIdeeUnterstuetzer()
+              + " OR vo.id NOT IN (SELECT DISTINCT vorgang FROM klarschiff_unterstuetzer))"
               + " AND vo.erstsichtung_erfolgt ");
             break;
           case abgeschlossene:
@@ -331,8 +364,7 @@ public class VorgangDao {
         //FullText
         if (!StringUtils.isBlank(cmd.getErweitertFulltext())) {
           String text = StringEscapeUtils.escapeSql("%" + cmd.getErweitertFulltext() + "%");
-          conds.add("vo.betreff ILIKE '" + text + "'"
-            + " OR vo.details ILIKE '" + text + "'"
+          conds.add("vo.beschreibung ILIKE '" + text + "'"
             + " OR vo.status_kommentar ILIKE '" + text + "'"
             + " OR vo.id IN (SELECT vorgang FROM klarschiff_missbrauchsmeldung "
             + "   WHERE datum_bestaetigung IS NOT NULL AND text ILIKE '" + text + "')"
@@ -507,8 +539,7 @@ public class VorgangDao {
         //FullText
         if (!StringUtils.isBlank(cmd.getErweitertFulltext())) {
           String text = StringEscapeUtils.escapeSql("%" + cmd.getErweitertFulltext() + "%");
-          conds.add("vo.betreff ILIKE '" + text + "'"
-            + " OR vo.details ILIKE '" + text + "'"
+          conds.add("vo.beschreibung ILIKE '" + text + "'"
             + " OR vo.status_kommentar ILIKE '" + text + "'"
             + " OR vo.id IN (SELECT vorgang FROM klarschiff_kommentar "
             + "   WHERE NOT geloescht AND text ILIKE '" + text + "')"
@@ -598,10 +629,8 @@ public class VorgangDao {
       .addGroupByAttribute("vo.version")
       .addGroupByAttribute("vo.datum")
       .addGroupByAttribute("vo.typ")
-      .addGroupByAttribute("vo.betreff")
-      .addGroupByAttribute("vo.betreffFreigabeStatus")
-      .addGroupByAttribute("vo.details")
-      .addGroupByAttribute("vo.detailsFreigabeStatus")
+      .addGroupByAttribute("vo.beschreibung")
+      .addGroupByAttribute("vo.beschreibungFreigabeStatus")
       .addGroupByAttribute("vo.ovi")
       .addGroupByAttribute("vo.autorEmail")
       .addGroupByAttribute("vo.adresse")
@@ -1184,8 +1213,8 @@ public class VorgangDao {
   }
 
   /**
-   * Ermittelt alle Vorgänge, die ihre Erstsichtung bereits hinter sich haben, deren Betreff,
-   * Details oder Foto bisher aber noch nicht freigegeben wurden.
+   * Ermittelt alle Vorgänge, die ihre Erstsichtung bereits hinter sich haben, deren Beschreibung 
+   * oder Foto bisher aber noch nicht freigegeben wurden.
    *
    * @param administrator Zuständigkeit ignorieren?
    * @param zustaendigkeit Zuständigkeit, der die Vorgänge zugewiesen sind
@@ -1198,7 +1227,7 @@ public class VorgangDao {
       .addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert = FALSE)")
       .addWhereConditions("vo.status IN ('offen', 'inBearbeitung', 'wirdNichtBearbeitet', 'abgeschlossen')")
       .addWhereConditions("vo.erstsichtungErfolgt = TRUE")
-      .addWhereConditions("((vo.betreff IS NOT NULL AND vo.betreff != '' AND (betreffFreigabeStatus IS NULL OR betreffFreigabeStatus = 'intern')) OR (vo.details IS NOT NULL AND vo.details != '' AND (detailsFreigabeStatus IS NULL OR detailsFreigabeStatus = 'intern')) OR (vo.fotoThumb IS NOT NULL AND (fotoFreigabeStatus IS NULL OR fotoFreigabeStatus = 'intern')))");
+      .addWhereConditions("((vo.beschreibung IS NOT NULL AND vo.beschreibung != '' AND (beschreibungFreigabeStatus IS NULL OR beschreibungFreigabeStatus = 'intern')) OR (vo.fotoThumb IS NOT NULL AND (fotoFreigabeStatus IS NULL OR fotoFreigabeStatus = 'intern')))");
     if (administrator == false) {
       query.addWhereConditions("vo.zustaendigkeit = :zustaendigkeit").addParameter("zustaendigkeit", zustaendigkeit);
     }
