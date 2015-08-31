@@ -204,7 +204,7 @@ Nummer   aktuelle Zuständigkeit     Unterstützungen   Erstsichtungszeitpunkt
 	</bean>
 	
 	<bean class="org.springframework.mail.SimpleMailMessage" id="kriteriumWirdnichtbearbeitetOhneStatuskommentarTemplate">
-		<property name="text"><value><![CDATA[Folgende Vorgänge mit dem Status „wird nicht bearbeitet“ weisen bisher keine Info der Verwaltung auf. Bitte geben Sie den Bürgerinnen und Bürgern jeweils eine kurze Info zum Bearbeitungsstand mittels der öffentlichen Statusinformation:
+		<property name="text"><value><![CDATA[Folgende Vorgänge mit dem Status „wird nicht bearbeitet“ weisen bisher keine öffentliche Statusinformation auf. Bitte geben Sie den Bürgerinnen und Bürgern jeweils eine kurze Info zum Bearbeitungsstand mittels der öffentlichen Statusinformation:
 
 Nummer   aktuelle Zuständigkeit     Typ       Status „wird nicht bearbeitet“ seit
 ******   **********************     ***       ***********************************

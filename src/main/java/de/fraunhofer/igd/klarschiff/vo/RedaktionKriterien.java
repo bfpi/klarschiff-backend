@@ -38,7 +38,7 @@ public class RedaktionKriterien implements Serializable {
   private Short tageOffenNichtAkzeptiert;
 
   /**
-   * Tage, die Vorgänge mit dem Status 'in Bearbeitung', die bisher keine Info der Verwaltung
+   * Tage, die Vorgänge mit dem Status 'in Bearbeitung', die bisher keine öffentliche Statusinformation
    * aufweisen, unverändert geblieben sein sollen
    */
   @NotNull
@@ -52,7 +52,7 @@ public class RedaktionKriterien implements Serializable {
   private Short tageIdeeOffenOhneUnterstuetzung;
 
   /**
-   * Vorgänge ausweisen mit dem Status 'wird nicht bearbeitet', die bisher keine Info der Verwaltung
+   * Vorgänge ausweisen mit dem Status 'wird nicht bearbeitet', die bisher keine öffentliche Statusinformation
    * aufweisen?
    */
   @NotNull

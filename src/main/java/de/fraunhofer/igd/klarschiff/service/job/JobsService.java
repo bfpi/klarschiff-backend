@@ -217,7 +217,7 @@ public class JobsService {
 
           //falls dies gemacht werden soll...
           if (sollVorgaengeWirdnichtbearbeitetOhneStatuskommentar == true) {
-            //finde alle Vorgänge mit dem Status 'wird nicht bearbeitet', die bisher keine Info der Verwaltung aufweisen
+            //finde alle Vorgänge mit dem Status 'wird nicht bearbeitet', die bisher keine öffentliche Statusinformation aufweisen
             vorgaengeWirdnichtbearbeitetOhneStatuskommentar = vorgangDao.findVorgaengeWirdnichtbearbeitetOhneStatuskommentar(administrator, empfaenger.getZustaendigkeit());
           }
 

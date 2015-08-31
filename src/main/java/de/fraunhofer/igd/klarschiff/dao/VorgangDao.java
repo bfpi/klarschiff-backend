@@ -1113,7 +1113,7 @@ public class VorgangDao {
   /**
    * Ermittelt alle Vorgänge mit dem Status 'in Bearbeitung', die einer bestimmten Zuständigkeit
    * zugewiesen sind und seit einem bestimmten Datum nicht mehr verändert wurden, bisher aber keine
-   * Info der Verwaltung aufweisen.
+   * öffentliche Statusinformation aufweisen.
    *
    * @param administrator Zuständigkeit ignorieren?
    * @param zustaendigkeit Zuständigkeit, der die Vorgänge zugewiesen sind
@@ -1164,8 +1164,7 @@ public class VorgangDao {
   }
 
   /**
-   * Ermittelt alle Vorgänge mit dem Status 'wird nicht bearbeitet', die bisher keine Info der
-   * Verwaltung aufweisen.
+   * Ermittelt alle Vorgänge mit dem Status 'wird nicht bearbeitet', die bisher keine öffentliche Statusinformation aufweisen.
    *
    * @param administrator Zuständigkeit ignorieren?
    * @param zustaendigkeit Zuständigkeit, der die Vorgänge zugewiesen sind
