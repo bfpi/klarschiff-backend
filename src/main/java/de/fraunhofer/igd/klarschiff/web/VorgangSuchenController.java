@@ -220,7 +220,7 @@ public class VorgangSuchenController {
     if (cmd.suchtyp == Suchtyp.einfach && cmd.einfacheSuche == EinfacheSuche.offene) {
       modelMap.put("missbrauchsmeldungenAbgeschlossenenVorgaenge", vorgangDao.missbrauchsmeldungenAbgeschlossenenVorgaenge());
     }
-    modelMap.put("maxPages", calculateMaxPages(cmd.getSize(), ((List) modelMap.get("vorgaenge")).size()));
+    modelMap.put("maxPages", calculateMaxPages(cmd.getSize(), vorgangDao.countVorgaenge(cmd)));
 
     User user = securityService.getCurrentUser();
     if (user.getUserKoordinator()) {
