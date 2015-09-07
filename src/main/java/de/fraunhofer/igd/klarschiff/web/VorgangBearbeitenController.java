@@ -325,7 +325,7 @@ public class VorgangBearbeitenController {
 
     if (StringUtils.equals("wird nicht bearbeitet", cmd.getVorgang().getStatus().getText())) {
       assertNotEmpty(cmd, result, Assert.EvaluateOn.ever, "vorgang.statusKommentar",
-        "Für den Status wird nicht bearbeitet müssen Sie eine öffentliche Statusinformation angeben!");
+        "Für den Status „wird nicht bearbeitet“ müssen Sie eine öffentliche Statusinformation angeben!");
     }
 
     assertMaxLength(cmd, result, Assert.EvaluateOn.ever, "vorgang.statusKommentar",
