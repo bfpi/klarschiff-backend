@@ -450,30 +450,15 @@
 							</script>
 			
 					        <div>
-					        	<form:label path="vorgang.betreff" cssErrorClass="error">Betreff</form:label>
+					        	<form:label path="vorgang.beschreibung" cssErrorClass="error">Beschreibung</form:label>
 					        	<table cellpadding="0" cellspacing="0">
 					        		<tr>
 					        			<td valign="top">
-					        				<util:freigabestatus status="${cmd.vorgang.betreffFreigabeStatus}"/>
-								            <form:input path="vorgang.betreff" cssClass="inputtext" cssStyle="width:331px;"/>
+					        				<util:freigabestatus status="${cmd.vorgang.beschreibungFreigabeStatus}"/>
+								            <form:textarea path="vorgang.beschreibung" cols="6" cssStyle="width:331px;height:100px"/>
 					        			</td>
 					        			<td valign="top" style="padding-left:5px;">
-											<util:freigabestatusbutton name="Betreff" status="${cmd.vorgang.betreffFreigabeStatus}"/>
-					        			</td>
-					        		</tr>
-					        	</table>
-					        </div>
-						
-					        <div>
-					        	<form:label path="vorgang.details" cssErrorClass="error">Details</form:label>
-					        	<table cellpadding="0" cellspacing="0">
-					        		<tr>
-					        			<td valign="top">
-					        				<util:freigabestatus status="${cmd.vorgang.detailsFreigabeStatus}"/>
-								            <form:textarea path="vorgang.details" cols="6" cssStyle="width:331px;height:100px"/>
-					        			</td>
-					        			<td valign="top" style="padding-left:5px;">
-											<util:freigabestatusbutton name="Details" status="${cmd.vorgang.detailsFreigabeStatus}"/>
+											<util:freigabestatusbutton name="Beschreibung" status="${cmd.vorgang.beschreibungFreigabeStatus}"/>
 					        			</td>
 					        			
 					        		</tr>
@@ -583,21 +568,26 @@
                   <form:form method="POST" modelAttribute="cmd.vorgang.auftrag" >
                     <div>
                       <form:label path="team" cssErrorClass="error">Team</form:label>
-                      <form:select path="team" id="team">
-                        <form:option value="" label="Außendienst wählen" cssClass="info" />
+                      <form:select path="team" id="team" cssErrorClass="error">
+                        <form:option value="" label="Team wählen" cssClass="info" />
                         <form:options items="${koordinatorAussendienstTeams}" />
                       </form:select>
+                      <form:errors path="team">
+                        <form:errors cssClass="error" cssStyle="font-size: 0.8em; padding-left: 100px" element="div" path="team"/>
+                      </form:errors>
                     </div>
                     <div>
-                      <form:label path="datum">Datum</form:label>
-                      <form:input path="datum" id="aussendienst_datum" cssClass="inputtext" />
+                      <form:label path="datum" cssErrorClass="error">Datum</form:label>
+                      <form:input path="datum" id="aussendienst_datum" cssErrorClass="error" cssClass="inputtext" />
                     </div>
                       <script type="text/javascript">
                         $(function() {
                             $('#aussendienst_datum').datepicker();
                         });
                     </script>
-
+                    <form:errors path="datum">
+                      <form:errors cssClass="error" cssStyle="font-size: 0.8em; padding-left: 100px" element="div" path="datum"/>
+                    </form:errors>
                     <input type="submit" value="Auftrag zuweisen" name="action" />
                   </form:form>
                 </c:when>

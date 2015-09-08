@@ -84,7 +84,8 @@ public class ClassificationService {
     List<Vorgang> vorgaenge = vorgangDao.findVorgangForTrainClassificator(maxCountForClassifiereTrainSet);
     //Features für jeden Vorgang ermitteln
     for (Vorgang vorgang : vorgaenge) {
-      logger.info("----Classification featureService.createFeature vorgang (" + vorgang.getBetreff() + ")");
+      logger.info(String.format("Classification featureService.createFeature vorgang (%s)",
+        StringUtils.abbreviate(vorgang.getBeschreibung(), 15)));
       Instance instance = featureService.createFeature(vorgang, true, ctx);
       instance.setDataset(ctx.getDataset());
       instances.add(instance);

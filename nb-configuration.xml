@@ -24,8 +24,18 @@ Any value defined here will override the pom.xml file value but is only applicab
         <org-netbeans-modules-editor-indent.text.x-json.CodeStyle.project.continuationIndentSize>2</org-netbeans-modules-editor-indent.text.x-json.CodeStyle.project.continuationIndentSize>
         <org-netbeans-modules-javascript2-requirejs.enabled>true</org-netbeans-modules-javascript2-requirejs.enabled>
         <org-netbeans-modules-editor-indent.text.x-java.CodeStyle.project.importGroupsOrder>*</org-netbeans-modules-editor-indent.text.x-java.CodeStyle.project.importGroupsOrder>
-        <org-netbeans-modules-editor-indent.text.x-php5.CodeStyle.project.itemsInArrayDeclarationIndentSize>2</org-netbeans-modules-editor-indent.text.x-php5.CodeStyle.project.itemsInArrayDeclarationIndentSize>
-        <org-netbeans-modules-editor-indent.text.x-php5.CodeStyle.project.continuationIndentSize>2</org-netbeans-modules-editor-indent.text.x-php5.CodeStyle.project.continuationIndentSize>
         <org-netbeans-modules-editor-indent.text.javascript.CodeStyle.project.continuationIndentSize>2</org-netbeans-modules-editor-indent.text.javascript.CodeStyle.project.continuationIndentSize>
+        <org-netbeans-modules-css-prep.sass_2e_compiler_2e_options/>
+        <org-netbeans-modules-css-prep.less_2e_mappings>/less:/css</org-netbeans-modules-css-prep.less_2e_mappings>
+        <org-netbeans-modules-css-prep.less_2e_enabled>false</org-netbeans-modules-css-prep.less_2e_enabled>
+        <org-netbeans-modules-css-prep.sass_2e_mappings>/scss:/css</org-netbeans-modules-css-prep.sass_2e_mappings>
+        <org-netbeans-modules-css-prep.sass_2e_enabled>false</org-netbeans-modules-css-prep.sass_2e_enabled>
+        <org-netbeans-modules-css-prep.less_2e_compiler_2e_options/>
+        <org-netbeans-modules-web-clientproject-api.js_2e_libs_2e_folder>script/jquery-ui</org-netbeans-modules-web-clientproject-api.js_2e_libs_2e_folder>
+        <com-junichi11-netbeans-changelf.use-project>true</com-junichi11-netbeans-changelf.use-project>
+        <com-junichi11-netbeans-changelf.show-dialog>true</com-junichi11-netbeans-changelf.show-dialog>
+        <com-junichi11-netbeans-changelf.enable>true</com-junichi11-netbeans-changelf.enable>
+        <com-junichi11-netbeans-changelf.use-global>false</com-junichi11-netbeans-changelf.use-global>
+        <org-netbeans-modules-maven-j2ee.netbeans_2e_hint_2e_j2eeVersion>1.7-web</org-netbeans-modules-maven-j2ee.netbeans_2e_hint_2e_j2eeVersion>
     </properties>
 </project-shared-configuration>

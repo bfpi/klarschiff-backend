@@ -95,7 +95,7 @@
                                                 </c:if>
                                                 <c:if test="${not empty statistic.vorgaengeOhneRedaktionelleFreigaben}">
                                                     <c:url value="/vorgang/${statistic.vorgaengeOhneRedaktionelleFreigaben[0].id}/uebersicht" var="url"/>
-                                                    Betreff, Details und/oder Foto nicht freigegeben für <img alt="extern" src="${urlStaticIcon}freigabeStatus_extern.png" height="15" width="15" title="extern" class="statistic_icon"/>:<br/><a href="${url}" title="Übersicht zu Vorgang #${statistic.vorgaengeOhneRedaktionelleFreigaben[0].id} aufrufen">#${statistic.vorgaengeOhneRedaktionelleFreigaben[0].id}</a>
+                                                    Beschreibung und/oder Foto nicht freigegeben für <img alt="extern" src="${urlStaticIcon}freigabeStatus_extern.png" height="15" width="15" title="extern" class="statistic_icon"/>:<br/><a href="${url}" title="Übersicht zu Vorgang #${statistic.vorgaengeOhneRedaktionelleFreigaben[0].id} aufrufen">#${statistic.vorgaengeOhneRedaktionelleFreigaben[0].id}</a>
                                                 </c:if>
                                             </c:when>
                                             <!-- ansonsten alle redaktionellen Hinweise mit entsprechendem Text ausgeben und verlinken -->
@@ -187,7 +187,7 @@
                                                     </c:forEach>
                                                 </c:if>
                                                 <c:if test="${not empty statistic.vorgaengeOhneRedaktionelleFreigaben}">
-                                                    Betreff, Details und/oder Foto nicht freigegeben für <img alt="extern" src="${urlStaticIcon}freigabeStatus_extern.png" height="15" width="15" title="extern" class="statistic_icon"/>:<br/>
+                                                    Beschreibung und/oder Foto nicht freigegeben für <img alt="extern" src="${urlStaticIcon}freigabeStatus_extern.png" height="15" width="15" title="extern" class="statistic_icon"/>:<br/>
                                                     <c:forEach items="${statistic.vorgaengeOhneRedaktionelleFreigaben}" var="ohneRedaktionelleFreigaben" varStatus="loop">
                                                         <c:url value="/vorgang/${ohneRedaktionelleFreigaben.id}/uebersicht" var="url"/>
                                                         <c:choose>

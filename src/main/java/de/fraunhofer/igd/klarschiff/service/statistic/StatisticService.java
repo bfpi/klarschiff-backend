@@ -1,7 +1,6 @@
 package de.fraunhofer.igd.klarschiff.service.statistic;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 
 import org.apache.commons.lang.time.DateUtils;
@@ -44,7 +43,7 @@ public class StatisticService {
     Date datum = DateUtils.addDays(jetzt, -3);
     statistic.setVorgaengeOffenNichtAkzeptiert(statisticDao.findVorgaengeOffenNichtAkzeptiert(datum));
 
-    // Vorgänge mit dem Status 'in Bearbeitung', die seit einem bestimmten Datum nicht mehr verändert wurden, bisher aber keine Info der Verwaltung aufweisen
+    // Vorgänge mit dem Status 'in Bearbeitung', die seit einem bestimmten Datum nicht mehr verändert wurden, bisher aber keine öffentliche Statusinformation aufweisen
     datum = DateUtils.addDays(jetzt, -30);
     statistic.setVorgaengeInbearbeitungOhneStatusKommentar(statisticDao.findVorgaengeInbearbeitungOhneStatusKommentar(datum));
 
@@ -52,13 +51,13 @@ public class StatisticService {
     datum = DateUtils.addDays(jetzt, -60);
     statistic.setVorgaengeIdeeOffenOhneUnterstuetzung(statisticDao.findVorgaengeIdeeOffenOhneUnterstuetzung(datum));
 
-    // Vorgänge mit dem Status 'wird nicht bearbeitet', die bisher keine Info der Verwaltung aufweisen
+    // Vorgänge mit dem Status 'wird nicht bearbeitet', die bisher keine öffentliche Statusinformation aufweisen
     statistic.setVorgaengeWirdnichtbearbeitetOhneStatuskommentar(statisticDao.findVorgaengeWirdnichtbearbeitetOhneStatuskommentar());
 
     // Vorgänge, die zwar nicht mehr den Status 'offen' aufweisen, bisher aber dennoch nicht akzeptiert wurden
     statistic.setVorgaengeNichtMehrOffenNichtAkzeptiert(statisticDao.findVorgaengeNichtMehrOffenNichtAkzeptiert());
 
-    // Vorgänge, die ihre Erstsichtung bereits hinter sich haben, deren Betreff, Details oder Foto bisher aber noch nicht freigegeben wurden
+    // Vorgänge, die ihre Erstsichtung bereits hinter sich haben, deren Beschreibung oder Foto bisher aber noch nicht freigegeben wurden
     statistic.setVorgaengeOhneRedaktionelleFreigaben(statisticDao.findVorgaengeOhneRedaktionelleFreigaben());
 
     // aktive Vorgänge und deren Statusverteilung

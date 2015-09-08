@@ -73,20 +73,11 @@
           </c:if>
         </c:if>
 
-        <c:if test="${not empty vorgang.betreff}">
-          <td valign="middle" >
-            <span>Betreff
-              <c:url value="/images/freigabeStatus_${vorgang.betreffFreigabeStatus}.png" var="url"/>
-              <img alt="${vorgang.betreffFreigabeStatus}" style="vertical-align:top" src="${url}" height="13" width="13" title="Freigabestatus: ${vorgang.betreffFreigabeStatus}"/>
-            </span>
-          </td>
-        </c:if>
-
-        <c:if test="${not empty vorgang.details}">
+        <c:if test="${not empty vorgang.beschreibung}">
           <td valign="middle">
-            <span>Details
-              <c:url value="/images/freigabeStatus_${vorgang.detailsFreigabeStatus}.png" var="url"/>
-              <img alt="${vorgang.detailsFreigabeStatus}" style="vertical-align:top" src="${url}" height="13" width="13"  title="Freigabestatus: ${vorgang.detailsFreigabeStatus}"/>
+            <span>Beschreibung
+              <c:url value="/images/freigabeStatus_${vorgang.beschreibungFreigabeStatus}.png" var="url"/>
+              <img alt="${vorgang.beschreibungFreigabeStatus}" style="vertical-align:top" src="${url}" height="13" width="13"  title="Freigabestatus: ${vorgang.beschreibungFreigabeStatus}"/>
             </span>
           </td>
         </c:if>

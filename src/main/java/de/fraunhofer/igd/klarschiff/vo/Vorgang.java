@@ -57,7 +57,6 @@ import org.opengis.referencing.operation.TransformException;
 @Entity
 public class Vorgang implements Serializable {
 
-  /* --------------- Attribute ----------------------------*/
   /**
    * Id des Vorganges
    */
@@ -94,12 +93,6 @@ public class Vorgang implements Serializable {
   private EnumVorgangTyp typ;
 
   /**
-   * Betreff
-   */
-  @Size(max = 300)
-  private String betreff;
-
-  /**
    * Adresse
    */
   @Size(max = 300)
@@ -112,25 +105,18 @@ public class Vorgang implements Serializable {
   private String flurstueckseigentum;
 
   /**
-   * Freigabestatus des Betreffs
-   */
-  @NotNull
-  @Enumerated(EnumType.STRING)
-  private EnumFreigabeStatus betreffFreigabeStatus = EnumFreigabeStatus.intern;
-
-  /**
-   * Details
+   * Beschreibung
    */
   @Lob
   @Type(type = "org.hibernate.type.TextType")
-  private String details;
+  private String beschreibung;
 
   /**
-   * Freigabestatus der Details
+   * Freigabestatus der Beschreibung
    */
   @NotNull
   @Enumerated(EnumType.STRING)
-  private EnumFreigabeStatus detailsFreigabeStatus = EnumFreigabeStatus.intern;
+  private EnumFreigabeStatus beschreibungFreigabeStatus = EnumFreigabeStatus.intern;
 
   /**
    * geographische Position/Ort
@@ -196,12 +182,11 @@ public class Vorgang implements Serializable {
    */
   @Enumerated(EnumType.STRING)
   private EnumFreigabeStatus fotoFreigabeStatus = EnumFreigabeStatus.intern;
-  ;
-    
-    /**
-     * Zuständigkeit (Id der Rolle) für den Vorgang
-     */
-    String zustaendigkeit;
+
+  /**
+   * Zuständigkeit (Id der Rolle) für den Vorgang
+   */
+  String zustaendigkeit;
 
   /**
    * Status der Zuständigkeit
@@ -288,7 +273,6 @@ public class Vorgang implements Serializable {
   @Column(nullable = false, columnDefinition = "boolean default false")
   Boolean fotowunsch;
 
-  /* --------------- transient ----------------------------*/
   @Transient
   private static GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(), 25833);
 
@@ -384,7 +368,6 @@ public class Vorgang implements Serializable {
     return (fotoNormal != null);
   }
 
-  /* --------------- GET + SET ----------------------------*/
   public Long getId() {
     return this.id;
   }
@@ -399,14 +382,6 @@ public class Vorgang implements Serializable {
 
   public void setVersion(Date version) {
     this.version = version;
-  }
-
-  public String getBetreff() {
-    return this.betreff;
-  }
-
-  public void setBetreff(String betreff) {
-    this.betreff = betreff;
   }
 
   public String getAdresse() {
@@ -425,28 +400,20 @@ public class Vorgang implements Serializable {
     this.flurstueckseigentum = flurstueckseigentum;
   }
 
-  public String getDetails() {
-    return this.details;
+  public String getBeschreibung() {
+    return this.beschreibung;
   }
 
-  public void setDetails(String details) {
-    this.details = details;
+  public void setBeschreibung(String beschreibung) {
+    this.beschreibung = beschreibung;
   }
 
-  public EnumFreigabeStatus getBetreffFreigabeStatus() {
-    return this.betreffFreigabeStatus;
+  public EnumFreigabeStatus getBeschreibungFreigabeStatus() {
+    return this.beschreibungFreigabeStatus;
   }
 
-  public void setBetreffFreigabeStatus(EnumFreigabeStatus betreffFreigabeStatus) {
-    this.betreffFreigabeStatus = betreffFreigabeStatus;
-  }
-
-  public EnumFreigabeStatus getDetailsFreigabeStatus() {
-    return this.detailsFreigabeStatus;
-  }
-
-  public void setDetailsFreigabeStatus(EnumFreigabeStatus detailsFreigabeStatus) {
-    this.detailsFreigabeStatus = detailsFreigabeStatus;
+  public void setBeschreibungFreigabeStatus(EnumFreigabeStatus beschreibungFreigabeStatus) {
+    this.beschreibungFreigabeStatus = beschreibungFreigabeStatus;
   }
 
   public Point getOvi() {
@@ -626,7 +593,7 @@ public class Vorgang implements Serializable {
 
   /**
    * Die Methode setzt sowohl das Attribut <code>prioritaet</code> als auch das Attribut
-   * <code>sprioritaetOrdinal</code>
+   * <code>prioritaetOrdinal</code>
    *
    * @param prioritaet
    */
@@ -762,5 +729,4 @@ public class Vorgang implements Serializable {
     }
     return getAuftrag().getPrioritaet();
   }
-
 }

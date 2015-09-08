@@ -50,9 +50,12 @@ public class VerlaufDao {
    * @param typ Typ des Verlaufs
    * @param wertAlt Alter Wert
    * @param wertNeu Neuer Wert
+   * @param nutzer_email
    * @return Verlaufswerte
    */
-  public Verlauf addVerlaufToVorgang(Vorgang vorgang, EnumVerlaufTyp typ, String wertAlt, String wertNeu, String nutzer_email) {
+  public Verlauf addVerlaufToVorgang(Vorgang vorgang, EnumVerlaufTyp typ, String wertAlt,
+    String wertNeu, String nutzer_email) {
+
     Verlauf verlauf = new Verlauf();
     verlauf.setVorgang(vorgang);
     if (nutzer_email != null) {
@@ -77,7 +80,9 @@ public class VerlaufDao {
 
   @Transactional
   public List<Verlauf> findVerlaufForVorgang(Vorgang vorgang, Integer page, Integer size) {
-    TypedQuery<Verlauf> query = em.createQuery("SELECT o FROM Verlauf o WHERE o.vorgang=:vorgang ORDER BY o.datum DESC", Verlauf.class).setParameter("vorgang", vorgang);
+    TypedQuery<Verlauf> query = em.createQuery("SELECT o FROM Verlauf o "
+      + "WHERE o.vorgang = :vorgang ORDER BY o.datum DESC",
+      Verlauf.class).setParameter("vorgang", vorgang);
 
     if (page != null && size != null) {
       query.setFirstResult((page - 1) * size);
@@ -99,17 +104,23 @@ public class VerlaufDao {
    */
   public String findLastUserForVorgangAndZustaendigkeit(Vorgang vorgang, List<String> userNames) {
     try {
-      return em.createQuery("SELECT o.nutzer FROM Verlauf o WHERE o.nutzer IS NOT NULL AND o.vorgang=:vorgang AND o.nutzer IN(:userNames) ORDER BY o.datum DESC", String.class).setParameter("vorgang", vorgang).setParameter("userNames", userNames).setMaxResults(1).getSingleResult();
+      return em.createQuery("SELECT o.nutzer FROM Verlauf o "
+        + "WHERE o.nutzer IS NOT NULL AND o.vorgang = :vorgang AND o.nutzer IN (:userNames) "
+        + "ORDER BY o.datum DESC", String.class).setParameter("vorgang", vorgang)
+        .setParameter("userNames", userNames).setMaxResults(1).getSingleResult();
     } catch (Exception e) {
       return null;
     }
   }
 
   public long countVerlauf(Vorgang vorgang) {
-    return em.createQuery("SELECT count(o) FROM Verlauf o WHERE o.vorgang=:vorgang", Long.class).setParameter("vorgang", vorgang).getSingleResult();
+    return em.createQuery("SELECT count(o) FROM Verlauf o WHERE o.vorgang = :vorgang", Long.class)
+      .setParameter("vorgang", vorgang).getSingleResult();
   }
 
   public Date getAktuellstesErstsichtungsdatumZuVorgang(Vorgang vorgang) {
-    return em.createQuery("SELECT MAX(o.datum) FROM Verlauf o WHERE typ='zustaendigkeitAkzeptiert' AND o.vorgang=:vorgang", Date.class).setParameter("vorgang", vorgang).getSingleResult();
+    return em.createQuery("SELECT MAX(o.datum) FROM Verlauf o "
+      + "WHERE typ = 'zustaendigkeitAkzeptiert' AND o.vorgang = :vorgang", Date.class)
+      .setParameter("vorgang", vorgang).getSingleResult();
   }
 }

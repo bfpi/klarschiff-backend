@@ -53,7 +53,7 @@ um Ihre Meldungen zu bestätigen rufen Sie bitte folgende URL auf: %baseUrlFront
 
 Diese URL funktioniert für 24 Stunden und kann einmalig aufgerufen werden. Nach Ablauf dieser Frist wird Ihre Meldung automatisch gelöscht.
 
-Mit Ihrer Bestätigung erklären Sie sich damit einverstanden, dass wir die von Ihnen im Rahmen der Meldung selbständig gemachten Angaben (Betreff, Details) sowie insbesondere das Foto redaktionell bearbeiten dürfen.
+Mit Ihrer Bestätigung erklären Sie sich damit einverstanden, dass wir die von Ihnen im Rahmen der Meldung selbständig gemachten Angaben (Beschreibung) sowie insbesondere das Foto redaktionell bearbeiten dürfen.
 
 Meldung ansehen: %meldungLink%
 
@@ -204,7 +204,7 @@ Nummer   aktuelle Zuständigkeit     Unterstützungen   Erstsichtungszeitpunkt
 	</bean>
 	
 	<bean class="org.springframework.mail.SimpleMailMessage" id="kriteriumWirdnichtbearbeitetOhneStatuskommentarTemplate">
-		<property name="text"><value><![CDATA[Folgende Vorgänge mit dem Status „wird nicht bearbeitet“ weisen bisher keine Info der Verwaltung auf. Bitte geben Sie den Bürgerinnen und Bürgern jeweils eine kurze Info zum Bearbeitungsstand mittels der öffentlichen Statusinformation:
+		<property name="text"><value><![CDATA[Folgende Vorgänge mit dem Status „wird nicht bearbeitet“ weisen bisher keine öffentliche Statusinformation auf. Bitte geben Sie den Bürgerinnen und Bürgern jeweils eine kurze Info zum Bearbeitungsstand mittels der öffentlichen Statusinformation:
 
 Nummer   aktuelle Zuständigkeit     Typ       Status „wird nicht bearbeitet“ seit
 ******   **********************     ***       ***********************************
@@ -220,10 +220,10 @@ Nummer   aktuelle Zuständigkeit     Typ       Status                  nicht akz
 	</bean>
 	
 	<bean class="org.springframework.mail.SimpleMailMessage" id="kriteriumOhneRedaktionelleFreigabenTemplate">
-		<property name="text"><value><![CDATA[Folgende Vorgänge haben zwar ihre Erstsichtung bereits hinter sich, allerdings wurden Betreff, Details und/oder Foto bisher noch nicht redaktionell freigegeben. Bitte prüfen Sie jeweils Betreff, Details und/oder Foto redaktionell und setzen Sie diese (gegebenenfalls nach redaktioneller Korrektur und/oder Anpassung) möglichst auf den Freigabestatus „extern“:
+		<property name="text"><value><![CDATA[Folgende Vorgänge haben zwar ihre Erstsichtung bereits hinter sich, allerdings wurden Beschreibung und/oder Foto bisher noch nicht redaktionell freigegeben. Bitte prüfen Sie jeweils Beschreibung und/oder Foto redaktionell und setzen Sie diese (gegebenenfalls nach redaktioneller Korrektur und/oder Anpassung) möglichst auf den Freigabestatus „extern“:
 
-Nummer   aktuelle Zuständigkeit     Typ       Status                  Freigabestatus Betreff   Freigabestatus Details   Freigabestatus Foto
-******   **********************     ***       ******                  **********************   **********************   *******************
+Nummer   aktuelle Zuständigkeit     Typ       Status                  Freigabestatus Beschreibung   Freigabestatus Foto
+******   **********************     ***       ******                  ***************************   *******************
 %vorgaenge%]]></value></property>
 	</bean>
 	

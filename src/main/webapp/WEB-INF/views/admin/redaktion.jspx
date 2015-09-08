@@ -31,9 +31,9 @@
 					<tr>
 						<th>Stufe</th>
 						<th>n Tage offen, aber nicht akzeptiert</th>
-						<th>n Tage in Bearbeitung, aber ohne Info der Verwaltung</th>
+						<th>n Tage in Bearbeitung, aber ohne öffentliche Statusinformation</th>
 						<th>Idee n Tage offen, aber ohne notwendige Zahl an Unterstützungen</th>
-						<th>wird nicht bearbeitet, aber ohne Info der Verwaltung</th>
+						<th>wird nicht bearbeitet, aber ohne öffentliche Statusinformation</th>
 						<th>nicht mehr offen, aber nicht akzeptiert</th>
 						<th>nicht mehr offen, aber ohne redaktionelle Freigaben</th>
 						<th>ohne Zuständigkeit</th>

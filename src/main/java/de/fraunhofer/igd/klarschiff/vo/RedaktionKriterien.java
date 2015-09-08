@@ -1,7 +1,6 @@
 package de.fraunhofer.igd.klarschiff.vo;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -18,7 +17,6 @@ import javax.validation.constraints.NotNull;
 @Entity
 public class RedaktionKriterien implements Serializable {
 
-  /* --------------- Attribute ----------------------------*/
   /**
    * ID des Redaktionskriteriums
    */
@@ -40,7 +38,7 @@ public class RedaktionKriterien implements Serializable {
   private Short tageOffenNichtAkzeptiert;
 
   /**
-   * Tage, die Vorgänge mit dem Status 'in Bearbeitung', die bisher keine Info der Verwaltung
+   * Tage, die Vorgänge mit dem Status 'in Bearbeitung', die bisher keine öffentliche Statusinformation
    * aufweisen, unverändert geblieben sein sollen
    */
   @NotNull
@@ -54,7 +52,7 @@ public class RedaktionKriterien implements Serializable {
   private Short tageIdeeOffenOhneUnterstuetzung;
 
   /**
-   * Vorgänge ausweisen mit dem Status 'wird nicht bearbeitet', die bisher keine Info der Verwaltung
+   * Vorgänge ausweisen mit dem Status 'wird nicht bearbeitet', die bisher keine öffentliche Statusinformation
    * aufweisen?
    */
   @NotNull
@@ -67,7 +65,7 @@ public class RedaktionKriterien implements Serializable {
   private Boolean nichtMehrOffenNichtAkzeptiert;
 
   /**
-   * Vorgänge ausweisen, die ihre Erstsichtung bereits hinter sich haben, deren Betreff, Details
+   * Vorgänge ausweisen, die ihre Erstsichtung bereits hinter sich haben, deren Beschreibunng
    * und/oder Foto aber noch nicht freigegeben wurde?
    */
   @NotNull
@@ -80,7 +78,6 @@ public class RedaktionKriterien implements Serializable {
   @NotNull
   private Boolean ohneZustaendigkeit;
 
-  /* --------------- GET + SET ----------------------------*/
   public Integer getId() {
     return id;
   }

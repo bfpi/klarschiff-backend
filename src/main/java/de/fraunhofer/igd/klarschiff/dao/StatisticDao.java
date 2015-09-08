@@ -1,6 +1,5 @@
 package de.fraunhofer.igd.klarschiff.dao;
 
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -14,9 +13,6 @@ import org.springframework.stereotype.Repository;
 import de.fraunhofer.igd.klarschiff.service.security.Role;
 import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
 import de.fraunhofer.igd.klarschiff.service.settings.SettingsService;
-import de.fraunhofer.igd.klarschiff.vo.EnumVerlaufTyp;
-import de.fraunhofer.igd.klarschiff.vo.EnumVorgangStatus;
-import de.fraunhofer.igd.klarschiff.vo.EnumVorgangTyp;
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
 
 /**
@@ -136,7 +132,7 @@ public class StatisticDao {
       .addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert = FALSE)")
       .addWhereConditions("vo.status IN ('offen', 'inBearbeitung', 'wirdNichtBearbeitet', 'abgeschlossen')")
       .addWhereConditions("vo.erstsichtungErfolgt = TRUE")
-      .addWhereConditions("((vo.betreff IS NOT NULL AND vo.betreff != '' AND (betreffFreigabeStatus IS NULL OR betreffFreigabeStatus = 'intern')) OR (vo.details IS NOT NULL AND vo.details != '' AND (detailsFreigabeStatus IS NULL OR detailsFreigabeStatus = 'intern')) OR (vo.fotoThumb IS NOT NULL AND (fotoFreigabeStatus IS NULL OR fotoFreigabeStatus = 'intern')))")
+      .addWhereConditions("((vo.beschreibung IS NOT NULL AND vo.beschreibung != '' AND (beschreibungFreigabeStatus IS NULL OR beschreibungFreigabeStatus = 'intern')) OR (vo.fotoThumb IS NOT NULL AND (fotoFreigabeStatus IS NULL OR fotoFreigabeStatus = 'intern')))")
       .orderBy("vo.id");
     processZustaendigkeitDelegiertAn(query);
     return query.getResultList(entityManager);

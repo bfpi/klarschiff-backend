@@ -1,323 +1,278 @@
 <jsp:root 
-	xmlns:c="http://java.sun.com/jsp/jstl/core"
-	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:fx="http://igd.fraunhofer.de/tags/elfunctions"
-	xmlns:spring="http://www.springframework.org/tags"
-	xmlns:jsp="http://java.sun.com/JSP/Page"
-	xmlns:form="http://www.springframework.org/tags/form"
-	xmlns:tiles="http://tiles.apache.org/tags-tiles"
-	xmlns:map="urn:jsptagdir:/WEB-INF/tags/map"
-	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
-	xmlns:role="urn:jsptagdir:/WEB-INF/tags/role"
-	version="2.0"
-	>
-	<jsp:directive.page contentType="text/html;charset=UTF-8"/>
+  xmlns:c="http://java.sun.com/jsp/jstl/core"
+  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+  xmlns:fx="http://igd.fraunhofer.de/tags/elfunctions"
+  xmlns:spring="http://www.springframework.org/tags"
+  xmlns:jsp="http://java.sun.com/JSP/Page"
+  xmlns:form="http://www.springframework.org/tags/form"
+  xmlns:tiles="http://tiles.apache.org/tags-tiles"
+  xmlns:map="urn:jsptagdir:/WEB-INF/tags/map"
+  xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+  xmlns:role="urn:jsptagdir:/WEB-INF/tags/role"
+  version="2.0"
+  >
+  <jsp:directive.page contentType="text/html;charset=UTF-8"/>
 
-	<!-- CONTENTTITLE -->
-	<div id="root_style_content_title">
-		Neuer Vorgang
-	</div>
-	
-	<!-- CONTENT -->
-	<div id="root_style_content">
-		<form:form method="POST" modelAttribute="cmd" enctype="multipart/form-data">
-		
-			<form:errors path="*" class="error" style="padding-top:2px" element="div"/>								
-	
-            <div class="fieldset">
-				<div class="fieldsettitle">Standardangaben</div>
+  <!-- CONTENTTITLE -->
+  <div id="root_style_content_title">
+    Neuer Vorgang
+  </div>
 
-		        <div>
-		        	<form:label path="vorgang.typ">Typ</form:label>
-		            <form:select path="vorgang.typ" id="typ" onchange="updateHauptkategorie()" style="width:358px;">
-		            	<form:option value="" label="Typ wählen" cssClass="info"/>
-		            	<c:forEach items="${vorgangtypen}" var="vorgangtyp">
-		            		<c:url value="/images/${vorgangtyp}_15.png" var="url"/>
-		            		<form:option value="${vorgangtyp}" label="${vorgangtyp.text}" cssStyle="background-image:url(${url});" cssClass="suffixiconsmall"/>
-		            	</c:forEach>
-		            </form:select>
-		        </div>
-	
-		        <div>
-		        	<form:label path="kategorie">Hauptkategorie</form:label>
-		            <form:select path="kategorie" id="hauptkategorie" disabled="true" onchange="updateUnterkategorie()" style="width:358px;">
-		            	<form:option value="" label="Hauptkategorie wählen" cssClass="info"/>
-						<form:options items="${hauptkategorien}" itemValue="id" itemLabel="name"/>
-		            </form:select>
-		        </div>
-		        
-		        <div>
-		        	<form:label path="vorgang.kategorie">Unterkategorie</form:label>
-		            <form:select path="vorgang.kategorie" id="unterkategorie" disabled="true" onchange="updateInfo()" cssStyle="width:358px;">
-		            	<form:option value="" label="Unterkategorie wählen" cssClass="info"/>
-						<form:options items="${unterkategorien}" itemValue="id" itemLabel="name"/>
-		            </form:select>
-		        </div>
-		
-		        <div>
-		        	<form:label path="vorgang.oviWkt" cssStyle="float:none;">Position</form:label>
-		            <form:hidden path="vorgang.oviWkt" cssClass="inputtext"/>
+  <!-- CONTENT -->
+  <div id="root_style_content">
+    <form:form method="POST" modelAttribute="cmd" enctype="multipart/form-data">
 
- 		        	<map:form 
- 		        		projection="${geoService.mapProjection}"
-		        		tmsUrl="${geoService.mapTmsServer}" 
-		        		tmsLayers="${geoService.mapTmsServerLayers}" 
-		        		maxExtent="${geoService.mapMaxExtent}"
-		        		restrictedExtent="${geoService.mapRestrictedExtent}"
-		        		resolutions="${geoService.mapResolutions}"
-		        		serverResolutions="${geoService.mapServerResolutions}"
-		        		ovi="${cmd.vorgang.oviWkt}"
-		        		oviFormElementId="vorgang.oviWkt"
-		        		cssStyle="height: 500px; width: 100%; margin-left:100px;"
-                        wmsUrl="${geoService.wmsUrl}"
-                        wmsTitle="${geoService.wmsTitle}"
-                        wmsLayers="${geoService.wmsLayers}"
-                        wmsFormat="${geoService.wmsFormat}"
-                        wmsTransparent="${geoService.wmsTransparent}"
-                        wmsMinScale="${geoService.wmsMinScale}"
-                        wmsSingleTile="${geoService.wmsSingleTile}"
-                        wfsVorgaengeUrl="${geoService.wfsVorgaengeUrl}"
-                        wfsVorgaengeFeatureNs="${geoService.wfsVorgaengeFeatureNs}"
-                        wfsVorgaengeFeaturePrefix="${geoService.wfsVorgaengeFeaturePrefix}"
-                        wfsVorgaengeFeatureType="${geoService.wfsVorgaengeFeatureType}"
-		        		/>			
-		        </div>
-                
-                <script type="text/javascript">
-                    var results;
-                    var searchField;
+      <form:errors path="*" class="error" style="padding-top:2px" element="div"/>
 
-                    $(document).ready(function() {
-                        results = $("div.results");
-                        searchField = $("input#searchtext");
-                        
-                        searchField.keyup(function() {
-                            if($(this).val().length >= 3) {
-                                var searchText = searchField.val();
-                                
-                                $.ajax({
-                                    url: '${geoService.adressensucheUrl}',
-                                    dataType: 'json',
-                                    data: {
-                                        searchtext : searchText
-                                    },
-                                    success: showResults
-                                });
-                            } else {
-                                results.children().remove();
-                                results.fadeOut();
-                            }
-                        })
-                        
-                        $(".resultElement").live("click",function() {
-                            results.fadeOut();
-                        });
-                        
-                    });
+      <div class="fieldset">
+        <div class="fieldsettitle">Standardangaben</div>
 
-                    function showResults(json) {
-                        results.children().remove();
-                        results.append(json.result);
-                        results.fadeIn();
-                    }
-                </script>
-                
-                <div>
-                    <br/>
-                    <label>Adresssuche</label>
-                    <input type="text" name="searchtext" class="inputtext" id="searchtext" style="width:350px;" onclick="this.value = '';document.getElementById('results_container').style.display = 'none';"/>
-                    <div class="results" id="results_container"><span><![CDATA[&nbsp;]]></span></div>
-                </div>
-				
-			</div>
-			
-			<div class="fieldset">
-				<div class="fieldsettitle">weitere Angaben</div>
+        <div>
+          <form:label path="vorgang.typ">Typ</form:label>
+          <form:select path="vorgang.typ" id="typ" onchange="updateHauptkategorie()" style="width:358px;">
+            <form:option value="" label="Typ wählen" cssClass="info"/>
+            <c:forEach items="${vorgangtypen}" var="vorgangtyp">
+              <c:url value="/images/${vorgangtyp}_15.png" var="url"/>
+              <form:option value="${vorgangtyp}" label="${vorgangtyp.text}" cssStyle="background-image:url(${url});" cssClass="suffixiconsmall"/>
+            </c:forEach>
+          </form:select>
+        </div>
 
-		        <div>
-		        	<form:label path="vorgang.betreff">Betreff<span class="naeherBeschreibungLabel"><![CDATA[&nbsp;]]></span></form:label>
-		            <form:input path="vorgang.betreff" cssClass="inputtext naeherBeschreibung betreff" cssStyle="width:350px;" onblur="naeherBeschreibungBlur(this);" onfocus="clearNaeherBeschreibung(this);"/>
-		        </div>
-	
-		        <div>
-		        	<form:label path="vorgang.details">Details<span class="naeherBeschreibungLabel"><![CDATA[&nbsp;]]></span></form:label>
-		            <form:textarea path="vorgang.details" cols="6" cssStyle="width:350px;" cssClass="naeherBeschreibung details" onblur="naeherBeschreibungBlur(this);" onfocus="clearNaeherBeschreibung(this);"/>
-		        </div>
-		      	
-		      	<div>
-		        	<form:label path="vorgang.autorEmail">E-Mail-Adresse</form:label>
-                    <c:set value="${fx:getCurrentUser()}" var="currentUser"/>
-                    <c:choose>
-                        <c:when test="${not empty currentUser and empty param.speichern}">
-                            <c:set value="${currentUser.email}" var="currentUserEmail"/>
-                            <form:input value="${currentUserEmail}" path="vorgang.autorEmail" cssClass="inputtext" cssStyle="width:350px;"/>
-                        </c:when>
-                        <c:otherwise>
-                            <form:input path="vorgang.autorEmail" cssClass="inputtext" cssStyle="width:350px;"/>
-                        </c:otherwise>
-                    </c:choose>
-		        </div>
-	
-		        <div>
-		            <c:if test="${not empty cmd.fotoName}">
-		            	<span style="margin-left:100px;color:#666666;font-size:0.8em;">hinzugefügtes Foto: ${cmd.fotoName}</span>
-		            	<br/>
-		            </c:if>
-		        	<form:label path="foto" cssErrorClass="error">Foto</form:label>
-		            <input id="foto" name="foto" type="file" size="35" class="inputfile"/>
-		        </div>
-			</div>
-			
-			<div class="fieldset">
-				<div class="fieldsettitle">Zuständigkeit</div>
-				<div>
-					<form:label path="zustaendigkeit" cssErrorClass="error">Zuständigkeit</form:label>
-					<form:select path="zustaendigkeit" cssErrorClass="error">
-					    <form:option value="" label="automatisch bestimmen" cssClass="info"/>
-						<role:options roles="${allZustaendigkeiten}" role="${cmd.zustaendigkeit}"/>
-					</form:select> 
-				</div>
-			</div>
-			
-				<c:url value="/kategorien" var="url"/>
-				<script type="text/javascript">
-				var naeherBeschreibungBetreffText='Bitte geben Sie einen Betreff an.';
-				var naeherBeschreibungDetailsText='Bitte beschreiben Sie Ihre Meldung genauer.';
-				
-				function isBlank(obj){
-					return(!obj || $.trim(obj) === "");
-				}
-				
-				function updateHauptkategorie()
-				{
-					var items = [];	  
-					items.push('<option value="" class="info">Hauptkategorie wählen</option>');
-				
-					var value = $('select#typ')[0].value;
-					var node = $('select#hauptkategorie');
-					node.empty();
-					node.append(items.join(''));
-					node.attr("disabled", "disabled");
-					
-					//Json-Anfrage
-					$.ajaxSetup({ scriptCharset: "utf-8" , contentType: "application/json; charset=utf-8"});
-					$.getJSON('${url}/kategorieTyp?typ='+value, function(data) {
-						$.each(data, function(index, val) {
-							items.push($('<option></option>').val(val.id).html(val.nameEscapeHtml)[0].outerHTML);
-						});
-						node.empty();
-						node.append(items.join(''));
-						if (items.length>1) node.removeAttr("disabled"); 
-						updateUnterkategorie('');
-					});
-				}
-				
-				function updateUnterkategorie()
-				{
-					var value = $('select#hauptkategorie')[0].value;
-					var items = [];	  
-					items.push('<option value="" class="info">Unterkategorie wählen</option>');
-				
-					var node = $('select#unterkategorie');
-					node.empty();
-					node.append(items.join(''));
-					node.attr("disabled", "disabled");
-					
-					//Json-Anfrage
-					$.ajaxSetup({ scriptCharset: "utf-8" , contentType: "application/json; charset=utf-8"});
-					$.getJSON('${url}/kategorie?kategorie='+value, function(data) {
-						$.each(data, function(index, val) {
-							items.push($('<option></option>').val(val.id).html(val.nameEscapeHtml)[0].outerHTML);
-						});
-						node.empty();
-						node.append(items.join(''));
-						if (items.length>1) node.removeAttr("disabled"); 
-						updateInfo();
-					});
-				}
-				
-				function updateInfo()
-				{
-					hauptkategorie = $('select#hauptkategorie')[0].value;
-					unterkategorie = $('select#unterkategorie')[0].value;
-					var node = $('.naeherBeschreibungEmpfohlen');
-					$.ajaxSetup({ scriptCharset: "utf-8" , contentType: "application/json; charset=utf-8"});
-					$.getJSON('${url}/viewNaehereBeschreibung?hauptkategorie='+hauptkategorie+'<![CDATA[&]]>unterkategorie='+unterkategorie, function(data) {
-						if (data=='betreff') {
-							$('.naeherBeschreibung.betreff').attr('naeherBeschreibung', 'on');
-							$('.naeherBeschreibung.details').attr('naeherBeschreibung', 'off');
-						} else if (data=='details') {
-							$('.naeherBeschreibung.betreff').attr('naeherBeschreibung', 'off');
-							$('.naeherBeschreibung.details').attr('naeherBeschreibung', 'on');
-						} else if (data=='betreffUndDetails') {
-							$('.naeherBeschreibung.betreff').attr('naeherBeschreibung', 'on');
-							$('.naeherBeschreibung.details').attr('naeherBeschreibung', 'on');
-						} else if (data=='keine') {
-							$('.naeherBeschreibung.betreff').attr('naeherBeschreibung', 'off');
-							$('.naeherBeschreibung.details').attr('naeherBeschreibung', 'off');
-						}
-						$.each($('.naeherBeschreibung'), function(index, val) {
-							naeherBeschreibung(val);
-						});
-					});
-				}
+        <div>
+          <form:label path="kategorie">Hauptkategorie</form:label>
+          <form:select path="kategorie" id="hauptkategorie" disabled="true" onchange="updateUnterkategorie()" style="width:358px;">
+            <form:option value="" label="Hauptkategorie wählen" cssClass="info"/>
+            <form:options items="${hauptkategorien}" itemValue="id" itemLabel="name"/>
+          </form:select>
+        </div>
 
-				function init()
-				{
-                    typ = $('select#typ')[0].value;
-					hauptkategorie = $('select#hauptkategorie')[0].value;
+        <div>
+          <form:label path="vorgang.kategorie">Unterkategorie</form:label>
+          <form:select path="vorgang.kategorie" id="unterkategorie" disabled="true" cssStyle="width:358px;">
+            <form:option value="" label="Unterkategorie wählen" cssClass="info"/>
+            <form:options items="${unterkategorien}" itemValue="id" itemLabel="name"/>
+          </form:select>
+        </div>
 
-					if (isBlank(typ)) {
-						updateHauptkategorie();
-					} else {
-						$('select#hauptkategorie').removeAttr("disabled");
-						if (isBlank(hauptkategorie)) {
-							updateUnterkategorie();
-						} else {
-							$('select#unterkategorie').removeAttr("disabled");
-							updateInfo();
-						}
-					}
-				}
-				
-				function clearNaeherBeschreibung(val) {
-					elem = $(val);
-					naeherBeschreibungText = elem.hasClass('betreff') ? naeherBeschreibungBetreffText : naeherBeschreibungDetailsText;
-					if (elem.attr('naeherBeschreibung')=='off') elem.parent().find('label <![CDATA[>]]> span.naeherBeschreibungLabel').css('display', 'none');
-					if (val.value==naeherBeschreibungText) val.value='';
-					elem.removeClass('watermark');
-				}
-				
-				function naeherBeschreibungBlur(val) {
-					naeherBeschreibung(val);
-				}
-				
-				function naeherBeschreibung(val) {
-					elem = $(val);
-					if (elem.attr('naeherBeschreibung')=='on') {
-						elem.parent().find('label <![CDATA[>]]> span.naeherBeschreibungLabel').css('display', 'inline');
-						naeherBeschreibungText = elem.hasClass('betreff') ? naeherBeschreibungBetreffText : naeherBeschreibungDetailsText;
-						if (isBlank(val.value)) val.value=naeherBeschreibungText;
-						if (val.value==naeherBeschreibungText) elem.addClass('watermark');
-						else elem.removeClass('watermark');
-					} else clearNaeherBeschreibung(val);
-				}
-				
-				init();
-				</script>
+        <div>
+          <form:label path="vorgang.oviWkt" cssStyle="float:none;">Position</form:label>
+          <form:hidden path="vorgang.oviWkt" cssClass="inputtext"/>
 
-			<input type="submit" value="Speichern" name="speichern"/>			
-		</form:form>
-	</div>
-	
-	<!-- HELP -->
-	<div id="root_style_help">
- 		<p>
-            Auf dieser Seite können sie einen neuen <util:help anchor="Vorgangerstellen">Vorgang erstellen</util:help>. Geben Sie hierzu zunächst die stets notwendigen Standardangaben (Typ, Hauptkategorie und Unterkategorie) an und legen Sie dann die Position des Vorgangs mit Hilfe des entsprechenden Steuerungssymbols in der Karte fest. Die Angaben zu Betreff und Details sind abhängig von der gewählten Haupt- und Unterkategorie entweder Pflichtangaben (es erscheint ein entsprechender Hinweis in den Eingabefeldern für diese Angaben) oder nicht (es erscheint kein Hinweis).
-		</p>
-		<p>
-            Nach der Erstellung des neuen Vorgangs sucht das System automatisch nach der passenden <util:help anchor="Zustndigkeit">Zuständigkeit</util:help> für den neuen Vorgang.
-		</p>
-	</div>
+          <map:form
+            projection="${geoService.mapProjection}"
+            tmsUrl="${geoService.mapTmsServer}"
+            tmsLayers="${geoService.mapTmsServerLayers}"
+            maxExtent="${geoService.mapMaxExtent}"
+            restrictedExtent="${geoService.mapRestrictedExtent}"
+            resolutions="${geoService.mapResolutions}"
+            serverResolutions="${geoService.mapServerResolutions}"
+            ovi="${cmd.vorgang.oviWkt}"
+            oviFormElementId="vorgang.oviWkt"
+            cssStyle="height: 500px; width: 100%; margin-left:100px;"
+            wmsUrl="${geoService.wmsUrl}"
+            wmsTitle="${geoService.wmsTitle}"
+            wmsLayers="${geoService.wmsLayers}"
+            wmsFormat="${geoService.wmsFormat}"
+            wmsTransparent="${geoService.wmsTransparent}"
+            wmsMinScale="${geoService.wmsMinScale}"
+            wmsSingleTile="${geoService.wmsSingleTile}"
+            wfsVorgaengeUrl="${geoService.wfsVorgaengeUrl}"
+            wfsVorgaengeFeatureNs="${geoService.wfsVorgaengeFeatureNs}"
+            wfsVorgaengeFeaturePrefix="${geoService.wfsVorgaengeFeaturePrefix}"
+            wfsVorgaengeFeatureType="${geoService.wfsVorgaengeFeatureType}"
+            />
+        </div>
+
+        <script type="text/javascript">
+          function isBlank(obj) {
+            return (!obj || $.trim(obj) === "");
+          }
+
+          var results;
+          var searchField;
+
+          $(document).ready(function() {
+            results = $("div.results");
+            searchField = $("input#searchtext");
+
+            searchField.keyup(function() {
+              if ($(this).val().length >= 3) {
+                var searchText = searchField.val();
+
+                $.ajax({
+                  url: '${geoService.adressensucheUrl}',
+                  dataType: 'json',
+                  data: {
+                    searchtext: searchText
+                  },
+                  success: showResults
+                });
+              } else {
+                results.children().remove();
+                results.fadeOut();
+              }
+            });
+
+            $(".resultElement").on("click", function() {
+              results.fadeOut();
+            });
+
+            $("#searchtext").on("click", function() {
+              $(this).val('');
+              $('#results_container').hide();
+            });
+
+            var hinweisBeschreibung = 'Bitte beschreiben Sie Ihre Meldung genauer.';
+            $("#beschreibung").on("focus", function() {
+              if ($(this).val() === hinweisBeschreibung) {
+                $(this).val('');
+              } 
+              $(this).removeClass('watermark');
+            }).on("blur", function() {
+              if (isBlank($(this))) {
+                $(this).val(hinweisBeschreibung).addClass('watermark');
+              }
+            }).val(hinweisBeschreibung);
+          });
+
+          function showResults(json) {
+            results.children().remove();
+            results.append(json.result);
+            results.fadeIn();
+          }
+        </script>
+
+        <div>
+          <br/>
+          <label>Adresssuche</label>
+          <input type="text" name="searchtext" class="inputtext" id="searchtext" style="width:350px;" />
+          <div class="results" id="results_container"><span><![CDATA[&nbsp;]]></span></div>
+        </div>
+      </div>
+
+      <div class="fieldset">
+        <div class="fieldsettitle">weitere Angaben</div>
+        <div>
+          <form:label path="vorgang.beschreibung">Beschreibung</form:label>
+          <form:textarea path="vorgang.beschreibung" cols="6" id="beschreibung" cssStyle="width:350px;"/>
+        </div>
+
+        <div>
+          <form:label path="vorgang.autorEmail">E-Mail-Adresse</form:label>
+            <c:set value="${fx:getCurrentUser()}" var="currentUser"/>
+            <c:choose>
+              <c:when test="${not empty currentUser and empty param.speichern}">
+                <c:set value="${currentUser.email}" var="currentUserEmail"/>
+              <form:input value="${currentUserEmail}" path="vorgang.autorEmail" cssClass="inputtext" cssStyle="width:350px;"/>
+            </c:when>
+            <c:otherwise>
+              <form:input path="vorgang.autorEmail" cssClass="inputtext" cssStyle="width:350px;"/>
+            </c:otherwise>
+          </c:choose>
+        </div>
+
+        <div>
+          <c:if test="${not empty cmd.fotoName}">
+            <span style="margin-left:100px;color:#666666;font-size:0.8em;">hinzugefügtes Foto: ${cmd.fotoName}</span>
+            <br/>
+          </c:if>
+          <form:label path="foto" cssErrorClass="error">Foto</form:label>
+          <input id="foto" name="foto" type="file" size="35" class="inputfile"/>
+        </div>
+      </div>
+
+      <div class="fieldset">
+        <div class="fieldsettitle">Zuständigkeit</div>
+        <div>
+          <form:label path="zustaendigkeit" cssErrorClass="error">Zuständigkeit</form:label>
+          <form:select path="zustaendigkeit" cssErrorClass="error">
+            <form:option value="" label="automatisch bestimmen" cssClass="info"/>
+            <role:options roles="${allZustaendigkeiten}" role="${cmd.zustaendigkeit}"/>
+          </form:select>
+        </div>
+      </div>
+
+      <c:url value="/kategorien" var="url"/>
+      <script type="text/javascript">
+        function updateHauptkategorie() {
+          var items = [];
+          items.push('<option value="" class="info">Hauptkategorie wählen</option>');
+
+          var value = $('select#typ')[0].value;
+          var node = $('select#hauptkategorie');
+          node.empty();
+          node.append(items.join(''));
+          node.attr("disabled", "disabled");
+
+          //Json-Anfrage
+          $.ajaxSetup({scriptCharset: "utf-8", contentType: "application/json; charset=utf-8"});
+          $.getJSON('${url}/kategorieTyp?typ=' + value, function (data) {
+            $.each(data, function (index, val) {
+              items.push($('<option></option>').val(val.id).html(val.nameEscapeHtml)[0].outerHTML);
+            });
+            node.empty();
+            node.append(items.join(''));
+            if (items.length > 1)
+              node.removeAttr("disabled");
+            updateUnterkategorie('');
+          });
+        }
+
+        function updateUnterkategorie() {
+          var value = $('select#hauptkategorie')[0].value;
+          var items = [];
+          items.push('<option value="" class="info">Unterkategorie wählen</option>');
+
+          var node = $('select#unterkategorie');
+          node.empty();
+          node.append(items.join(''));
+          node.attr("disabled", "disabled");
+
+          //Json-Anfrage
+          $.ajaxSetup({scriptCharset: "utf-8", contentType: "application/json; charset=utf-8"});
+          $.getJSON('${url}/kategorie?kategorie=' + value, function (data) {
+            $.each(data, function (index, val) {
+              items.push($('<option></option>').val(val.id).html(val.nameEscapeHtml)[0].outerHTML);
+            });
+            node.empty();
+            node.append(items.join(''));
+            if (items.length > 1)
+              node.removeAttr("disabled");
+          });
+        }
+
+        function init() {
+          var typ = $('select#typ');
+          var hk = $('select#hauptkategorie');
+          var uk = $('select#unterkategorie');
+
+          if (isBlank(typ[0].value)) {
+            updateHauptkategorie();
+          } else {
+            hk.removeAttr("disabled");
+            if (isBlank(hk[0].value)) {
+              updateUnterkategorie();
+            } else {
+              uk.removeAttr("disabled");
+            }
+          }
+        }
+
+        init();
+      </script>
+
+      <input type="submit" value="Speichern" name="speichern"/>
+    </form:form>
+  </div>
+
+  <!-- HELP -->
+  <div id="root_style_help">
+    <p>
+      Auf dieser Seite können sie einen neuen <util:help anchor="Vorgangerstellen">Vorgang erstellen</util:help>. Geben Sie hierzu zunächst die stets notwendigen Standardangaben (Typ, Hauptkategorie und Unterkategorie) an und legen Sie dann die Position des Vorgangs mit Hilfe des entsprechenden Steuerungssymbols in der Karte fest. Die Angaben zur Beschreibung sind abhängig von der gewählten Haupt- und Unterkategorie entweder Pflichtangaben (es erscheint ein entsprechender Hinweis in den Eingabefeldern für diese Angaben) oder nicht (es erscheint kein Hinweis).
+  </p>
+  <p>
+    Nach der Erstellung des neuen Vorgangs sucht das System automatisch nach der passenden <util:help anchor="Zustndigkeit">Zuständigkeit</util:help> für den neuen Vorgang.
+</p>
+</div>
 
 </jsp:root>
