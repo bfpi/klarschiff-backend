@@ -1075,7 +1075,7 @@ ALTER FUNCTION klarschiff_triggerfunction_flurstueckseigentum() OWNER TO ${b_use
 DROP TRIGGER IF EXISTS klarschiff_trigger_flurstueckseigentum ON klarschiff_vorgang CASCADE;
 
 -- Trigger erzeugen
-CREATE TRIGGER klarschiff_trigger_flurstueckseigentum
-  BEFORE INSERT OR UPDATE
-  ON klarschiff_vorgang
-  FOR EACH ROW EXECUTE PROCEDURE klarschiff_triggerfunction_flurstueckseigentum();
+-- CREATE TRIGGER klarschiff_trigger_flurstueckseigentum
+--   BEFORE INSERT OR UPDATE
+--   ON klarschiff_vorgang
+--   FOR EACH ROW EXECUTE PROCEDURE klarschiff_triggerfunction_flurstueckseigentum();
