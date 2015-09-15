@@ -2,6 +2,7 @@ package de.fraunhofer.igd.klarschiff.web;
 
 import static de.fraunhofer.igd.klarschiff.web.Assert.assertMaxLength;
 import static de.fraunhofer.igd.klarschiff.web.Assert.assertNotEmpty;
+import static de.fraunhofer.igd.klarschiff.web.Assert.isEmpty;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -330,8 +331,13 @@ public class VorgangBearbeitenController {
       "Die öffentliche Statusinformation ist zu lang! Erlaubt sind hier maximal "
       + vorgangStatusKommentarTextlaengeMaximal().toString() + " Zeichen.");
 
-    assertNotEmpty(cmd, result, Assert.EvaluateOn.ever, "vorgang.auftrag.team", "Es muss in jedem Fall ein Team ausgewählt werden!");
-    assertNotEmpty(cmd, result, Assert.EvaluateOn.ever, "vorgang.auftrag.datum", "Es muss in jedem Fall ein Datum ausgewählt werden!");
+    if (!isEmpty(cmd, "vorgang.auftrag.team")) {
+        assertNotEmpty(cmd, result, Assert.EvaluateOn.ever, "vorgang.auftrag.datum", "Es muss in jedem Fall ein Datum ausgewählt werden!");
+    }
+
+    if (!isEmpty(cmd, "vorgang.auftrag.datum")) {
+        assertNotEmpty(cmd, result, Assert.EvaluateOn.ever, "vorgang.auftrag.team", "Es muss in jedem Fall ein Team ausgewählt werden!");
+    }
 
     if (result.hasErrors()) {
       cmd.setVorgang(getVorgang(id));
