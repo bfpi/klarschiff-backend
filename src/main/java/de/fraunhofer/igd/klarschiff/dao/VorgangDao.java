@@ -668,7 +668,8 @@ public class VorgangDao {
     sql.append("SELECT vo.*,")
       .append(" verlauf1.datum AS aenderungsdatum,")
       .append(" COALESCE(un.count, 0) AS unterstuetzer,")
-      .append(" COALESCE(mi.count, 0) AS missbrauchsmeldung");
+      .append(" COALESCE(mi.count, 0) AS missbrauchsmeldung,")
+      .append(" statusdatum.datum AS statusdatum");
     sql.append(" FROM klarschiff_vorgang vo");
     // Für Sortierung
     sql.append(" LEFT JOIN klarschiff_kategorie kat_unter ON vo.kategorie = kat_unter.id");
@@ -678,6 +679,10 @@ public class VorgangDao {
     // Änderungsdatum
     sql.append(" INNER JOIN (SELECT vorgang, MAX(datum) AS datum FROM klarschiff_verlauf")
       .append(" GROUP BY vorgang) verlauf1 ON vo.id = verlauf1.vorgang");
+    // Status-Datum
+    sql.append(" LEFT JOIN (SELECT vorgang, MAX(datum) AS datum FROM klarschiff_verlauf")
+      .append(" WHERE typ IN ('status', 'erzeugt') GROUP BY vorgang) statusdatum ")
+      .append(" ON vo.id = statusdatum.vorgang");
 
     sql = addFilter(cmd, sql);
     // ORDER
@@ -699,8 +704,9 @@ public class VorgangDao {
       .createSQLQuery(sql.toString())
       .addEntity("vo", Vorgang.class)
       .addScalar("aenderungsdatum", StandardBasicTypes.DATE)
-      .addScalar("unterstuetzer", StandardBasicTypes.LONG)
+      .addScalar("unterstuetzer", StandardBasicTypes.INTEGER)
       .addScalar("missbrauchsmeldung", StandardBasicTypes.LONG)
+      .addScalar("statusdatum", StandardBasicTypes.DATE)
       .list();
   }
 

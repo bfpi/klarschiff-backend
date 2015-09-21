@@ -303,6 +303,12 @@ public class Vorgang implements Serializable {
   @OneToOne(mappedBy = "vorgang", cascade = CascadeType.ALL)
   private Auftrag auftrag;
 
+  @Transient
+  private long statusDatum;
+
+  @Transient
+  private Integer unterstuetzerCount;
+
   /**
    * Setzen der Position als WKT
    *
@@ -473,7 +479,8 @@ public class Vorgang implements Serializable {
   public Integer getTrustLevel() {
     int trust_level = 0;
 
-    if (getStatus() != EnumVorgangStatus.gemeldet) {
+    if (this.autorEmail.matches(settingsService.getPropertyValue("auth.internal_author_match"))
+      && getStatus() != EnumVorgangStatus.gemeldet) {
       trust_level = 1;
       if (autorAussendienst()) {
         trust_level = 3;
@@ -521,16 +528,11 @@ public class Vorgang implements Serializable {
   }
 
   public Integer getUnterstuetzerCount() {
-    if (this.unterstuetzer == null) {
-      return 0;
-    }
-    int unt = 0;
-    for (Unterstuetzer u : this.unterstuetzer) {
-      if (u.getDatumBestaetigung() != null) {
-        unt++;
-      }
-    }
-    return unt;
+    return this.unterstuetzerCount;
+  }
+
+  public void setUnterstuetzerCount(Integer unterstuetzerCount) {
+    this.unterstuetzerCount = unterstuetzerCount;
   }
 
   public void setUnterstuetzer(List<Unterstuetzer> unterstuetzer) {
@@ -572,15 +574,12 @@ public class Vorgang implements Serializable {
     this.statusOrdinal = status;
   }
 
-  public Date getStatusDatum() {
-    for (int i = verlauf.size() - 1; i >= 0; i--) {
-      Verlauf v = verlauf.get(i);
-      if (v.getTyp() == EnumVerlaufTyp.erzeugt || v.getTyp() == EnumVerlaufTyp.status) {
-        return v.getDatum();
-      }
-    }
+  public long getStatusDatum() {
+    return this.statusDatum;
+  }
 
-    return null;
+  public void setStatusDatum(long statusDatum) {
+    this.statusDatum = statusDatum;
   }
 
   public EnumZustaendigkeitStatus getZustaendigkeitStatus() {
