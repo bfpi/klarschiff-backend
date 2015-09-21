@@ -1322,6 +1322,7 @@ public class BackendController {
         VorgangSuchenCommand cmd = new VorgangSuchenCommand();
         // Suchtyp aussendienst würde nur Vorgänge mit zustaendigkeit_status = 'akzeptiert' ausgeben
         cmd.setSuchtyp(VorgangSuchenCommand.Suchtyp.erweitert);
+        cmd.setErweitertArchiviert(false);
         // Sortieren nach ID
         cmd.setOrder(0);
         cmd.setOrderDirection(0);
@@ -1381,10 +1382,11 @@ public class BackendController {
           cmd.setAuftragDatum(new Date());
           cmd.setOrder(8);
         }
-
         List<Object[]> vg = vorgangDao.getVorgaenge(cmd);
         for (Object[] entry : vg) {
           Vorgang vorgang = (Vorgang) entry[0];
+          vorgang.setStatusDatum(((Date) entry[4]).getTime());
+          vorgang.setUnterstuetzerCount((Integer) entry[2]);
           vorgang.setSecurityService(securityService);
           vorgaenge.add(vorgang);
         }
