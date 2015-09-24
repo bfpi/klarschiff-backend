@@ -168,6 +168,7 @@ public class BackendController {
       vorgang.setHash(securityService.createHash(autorEmail + System.currentTimeMillis()));
 
       vorgang.setDatum(new Date());
+      vorgang.setStatusDatum(new Date());
       vorgang.setPrioritaet(EnumPrioritaet.mittel);
       if (fotowunsch == null) {
         fotowunsch = false;
@@ -1385,7 +1386,6 @@ public class BackendController {
         List<Object[]> vg = vorgangDao.getVorgaenge(cmd);
         for (Object[] entry : vg) {
           Vorgang vorgang = (Vorgang) entry[0];
-          vorgang.setStatusDatum(((Date) entry[4]).getTime());
           vorgang.setUnterstuetzerCount((Integer) entry[2]);
           vorgang.setSecurityService(securityService);
           vorgaenge.add(vorgang);

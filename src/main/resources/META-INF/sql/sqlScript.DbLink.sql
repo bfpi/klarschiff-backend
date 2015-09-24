@@ -526,6 +526,41 @@ CREATE TRIGGER klarschiff_trigger_stadtteil_grenze
 
 
 -- #######################################################################################
+-- # Statusdatum                                                                         #
+-- #######################################################################################
+-- Triggerfunktion erzeugen
+CREATE OR REPLACE FUNCTION klarschiff_triggerfunction_status_datum()
+RETURNS trigger AS $BODY$
+
+BEGIN
+  IF TG_OP IN ('UPDATE') THEN
+    IF row(NEW.status_ordinal) IS DISTINCT FROM row(OLD.status_ordinal) THEN
+      NEW.status_datum = now()::timestamp without time zone;
+      RETURN NEW;
+    ELSE
+      RETURN OLD;
+    END IF;
+  ELSIF TG_OP IN ('INSERT') THEN
+    NEW.status_datum = NEW.datum;
+    RETURN NEW;
+  END IF;
+END;
+$BODY$ LANGUAGE plpgsql VOLATILE COST 100;
+
+-- Owner fuer die Triggerfunktion setzen
+ALTER FUNCTION klarschiff_triggerfunction_status_datum() OWNER TO ${b_username};
+
+-- ggf. alten Trigger loeschen
+DROP TRIGGER IF EXISTS klarschiff_trigger_status_datum ON klarschiff_vorgang CASCADE;
+
+-- Trigger erzeugen
+CREATE TRIGGER klarschiff_trigger_status_datum
+  BEFORE INSERT OR UPDATE OR DELETE 
+  ON klarschiff_vorgang
+  FOR EACH ROW EXECUTE PROCEDURE klarschiff_triggerfunction_status_datum();
+
+
+-- #######################################################################################
 -- # Trashmail                                                                           #
 -- #######################################################################################
 -- Triggerfunktion erzeugen
@@ -666,78 +701,6 @@ CREATE TRIGGER klarschiff_trigger_unterstuetzer
 
 
 -- #######################################################################################
--- # Verlauf                                                                             #
--- #######################################################################################
--- Triggerfunktion erzeugen
-CREATE OR REPLACE FUNCTION klarschiff_triggerfunction_verlauf()
-RETURNS trigger AS $BODY$
-DECLARE
-  query text;
-BEGIN
-  PERFORM dblink_connect('hostaddr=${f_host} port=${f_port} dbname=${f_dbname} ' ||
-    'user=${f_username} password=${f_password}');
-
-  query := 'UPDATE ${f_schema}.klarschiff_vorgang SET datum_statusaenderung = ' || CASE
-    WHEN TG_OP = 'DELETE' THEN
-      CASE WHEN old.typ = 'status' OR old.typ = 'erzeugt'
-      THEN
-        'NULL'
-      ELSE
-        'datum_statusaenderung'
-      END ||
-      ' WHERE id = ' || old.vorgang
-    WHEN TG_OP IN ('INSERT', 'UPDATE') THEN
-      CASE WHEN new.typ = 'status' OR new.typ = 'erzeugt' THEN
-        quote_literal(new.datum)
-      ELSE
-        'datum_statusaenderung'
-      END || ' WHERE id = ' || new.vorgang
-    ELSE
-      'datum_statusaenderung WHERE id IS NULL'
-    END;
-
-  RAISE DEBUG 'Query : %', query;
-  EXECUTE 'SELECT dblink_exec(' || quote_literal(query) || ');';
-  PERFORM dblink_disconnect();
-
-  IF TG_OP = 'DELETE' THEN
-    RETURN old;
-  ELSIF TG_OP IN ('INSERT', 'UPDATE') THEN
-    RETURN new;
-  ELSE
-    RETURN NULL;
-  END IF;
-
-  PERFORM dblink_disconnect();
-  RETURN NULL;
-EXCEPTION WHEN others THEN
-  PERFORM dblink_disconnect();
-  RAISE;
-END;
-$BODY$ LANGUAGE plpgsql VOLATILE COST 100;
-
--- Owner fuer die Triggerfunktion setzen
-ALTER FUNCTION klarschiff_triggerfunction_verlauf() OWNER TO ${b_username};
-
--- ggf. alten Trigger loeschen
-DROP TRIGGER IF EXISTS klarschiff_trigger_verlauf ON klarschiff_verlauf CASCADE;
-
--- Trigger erzeugen
-CREATE TRIGGER klarschiff_trigger_verlauf
-  BEFORE INSERT OR UPDATE OR DELETE
-  ON klarschiff_verlauf
-  FOR EACH ROW EXECUTE PROCEDURE klarschiff_triggerfunction_verlauf();
-
--- Test
--- Get ID for valid "verlauf" from frontend: SELECT id, datum, datum_abgeschlossen FROM klarschiff.klarschiff_vorgang WHERE datum_abgeschlossen IS NULL ORDER BY id DESC;
--- INSERT INTO klarschiff_verlauf (id, typ, wert_neu, vorgang) VALUES (1000, 'status', NULL, 30);
--- INSERT INTO klarschiff_verlauf (id, typ, wert_neu, datum, vorgang) VALUES (1001, 'status', 'abgeschlossen', '20130527', 31);
--- INSERT INTO klarschiff_verlauf (id, typ, wert_neu, datum, vorgang) VALUES (1002, 'status', 'abgeschlo', '20130527', 32);
--- UPDATE klarschiff_verlauf SET typ = 'status', wert_neu = 'abgeschlossen', datum = now() WHERE id = 1000;
--- DELETE FROM klarschiff_verlauf WHERE id IN (1000, 1001, 1002);
-
-
--- #######################################################################################
 -- # Vorgang                                                                             #
 -- #######################################################################################
 -- Triggerfunktion erzeugen
@@ -756,6 +719,7 @@ BEGIN
       'UPDATE ${f_schema}.klarschiff_vorgang ' ||
       'SET datum = ' || quote_literal(new.datum::varchar(50)) || ', ' ||
       'vorgangstyp = ' || quote_literal(new.typ) || ', ' ||
+      'datum_statusaenderung = ' || quote_literal(new.status_datum::varchar(50)) || ', ' ||
       'the_geom = ' || quote_literal(new.ovi::text) || ', ' ||
       'status = ' || quote_literal(new.status) || ', ' ||
       'kategorieid = ' || new.kategorie || ', ' ||
@@ -831,12 +795,12 @@ BEGIN
         END || ' ' ||
       'WHERE id = ' || new.id
     WHEN 'INSERT' THEN
-      'INSERT INTO ${f_schema}.klarschiff_vorgang (id, datum, vorgangstyp, ' ||
+      'INSERT INTO ${f_schema}.klarschiff_vorgang (id, datum, vorgangstyp, datum_statusaenderung, ' ||
         'the_geom, status, kategorieid, beschreibung, bemerkung, foto_normal, ' ||
         'foto_thumb, foto_vorhanden, foto_freigegeben, beschreibung_vorhanden,  ' ||
         'beschreibung_freigegeben, archiviert, zustaendigkeit) ' ||
       'VALUES (' || new.id ||', ' || quote_literal(new.datum::varchar(50)) || ', ' ||
-        quote_literal(new.typ) || ', ' || quote_literal(new.ovi::text) || ', ' ||
+        quote_literal(new.typ) || ', ' || quote_literal(new.status_datum::varchar(50)) || ', ' || quote_literal(new.ovi::text) || ', ' ||
         quote_literal(new.status) || ', ' || new.kategorie || ', ' ||
         --beschreibung
         CASE 
