@@ -536,14 +536,11 @@ BEGIN
   IF TG_OP IN ('UPDATE') THEN
     IF row(NEW.status_ordinal) IS DISTINCT FROM row(OLD.status_ordinal) THEN
       NEW.status_datum = now()::timestamp without time zone;
-      RETURN NEW;
-    ELSE
-      RETURN OLD;
     END IF;
   ELSIF TG_OP IN ('INSERT') THEN
     NEW.status_datum = NEW.datum;
-    RETURN NEW;
   END IF;
+  RETURN NEW;
 END;
 $BODY$ LANGUAGE plpgsql VOLATILE COST 100;
 
