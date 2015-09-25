@@ -168,13 +168,13 @@ public class BackendController {
       vorgang.setHash(securityService.createHash(autorEmail + System.currentTimeMillis()));
 
       vorgang.setDatum(new Date());
-      vorgang.setStatusDatum(new Date());
       vorgang.setPrioritaet(EnumPrioritaet.mittel);
       if (fotowunsch == null) {
         fotowunsch = false;
       }
 
       vorgang.setStatus(EnumVorgangStatus.gemeldet);
+      vorgang.setStatusDatum(new Date());
       vorgangParameterUebernehmen(autorEmail, vorgang, typ, kategorie, positionWGS84, oviWkt,
         beschreibung, fotowunsch, bild, false);
 
@@ -184,6 +184,7 @@ public class BackendController {
       
       if (authCode != null && authCode.equals(settingsService.getPropertyValue("auth.kod_code")) && vorgang.autorIntern()) {
         vorgang.setStatus(EnumVorgangStatus.offen);
+        vorgang.setStatusDatum(new Date());
         vorgangDao.persist(vorgang);
 
         vorgang.setZustaendigkeit(classificationService.calculateZustaendigkeitforVorgang(vorgang).getId());
@@ -296,6 +297,7 @@ public class BackendController {
           verlaufDao.persist(verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.status, vorgang.getStatus().getText(), evs.getText(), autorEmail));
         }
         vorgang.setStatus(evs);
+        vorgang.setStatusDatum(new Date());
       }
 
       if (statusKommentar != null) {
@@ -492,6 +494,7 @@ public class BackendController {
       }
 
       vorgang.setStatus(EnumVorgangStatus.offen);
+      vorgang.setStatusDatum(new Date());
 
       verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.vorgangBestaetigung, null, null);
       vorgangDao.merge(vorgang);
@@ -1006,6 +1009,7 @@ public class BackendController {
       if ((vorgang.getStatus() == EnumVorgangStatus.gemeldet || vorgang.getStatus() == EnumVorgangStatus.offen)
         && vorgang.getUnterstuetzer().size() == 0 && vorgang.getMissbrauchsmeldungen().size() == 0) {
         vorgang.setStatus(EnumVorgangStatus.geloescht);
+        vorgang.setStatusDatum(new Date());
         vorgangDao.merge(vorgang);
 
       } else {
