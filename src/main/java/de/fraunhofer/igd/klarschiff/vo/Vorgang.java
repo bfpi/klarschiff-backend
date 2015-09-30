@@ -110,6 +110,7 @@ public class Vorgang implements Serializable {
    * Information über das Eigentum des Flürstücks, in dem der Vorgang liegt
    */
   @Size(max = 300)
+  @JsonIgnore
   private String flurstueckseigentum;
 
   /**
@@ -137,12 +138,14 @@ public class Vorgang implements Serializable {
    * E-Mail-Adresse des Erstellers
    */
   @Size(max = 300)
+  @JsonIgnore
   private String autorEmail;
 
   /**
    * Hash zum Bestätigen des Vorganges
    */
   @Size(max = 32)
+  @JsonIgnore
   private String hash;
 
   /**
@@ -168,6 +171,7 @@ public class Vorgang implements Serializable {
   /**
    * Erstsichtung erfolgt
    */
+  @JsonIgnore
   private boolean erstsichtungErfolgt = false;
 
   /**
@@ -194,12 +198,14 @@ public class Vorgang implements Serializable {
   /**
    * Zuständigkeit (Id der Rolle) für den Vorgang
    */
+  @JsonIgnore
   String zustaendigkeit;
 
   /**
    * Status der Zuständigkeit
    */
   @Enumerated(EnumType.STRING)
+  @JsonIgnore
   EnumZustaendigkeitStatus zustaendigkeitStatus;
 
   /**
@@ -261,6 +267,7 @@ public class Vorgang implements Serializable {
    */
   @NotNull
   @Enumerated(EnumType.STRING)
+  @JsonIgnore
   EnumPrioritaet prioritaet;
 
   /**
@@ -273,6 +280,7 @@ public class Vorgang implements Serializable {
   /**
    * Flag zum Markieren archivierte Vorgänge
    */
+  @JsonIgnore
   Boolean archiviert;
 
   /**
@@ -331,6 +339,7 @@ public class Vorgang implements Serializable {
    * @return Position als WKT
    */
   @Transient
+  @JsonIgnore
   public String getOviWkt() {
     return (ovi == null) ? null : wktWriter.write(ovi);
   }
@@ -375,6 +384,7 @@ public class Vorgang implements Serializable {
    * @return <code>true</code> - es exisitiert eine Foto
    */
   @Transient
+  @JsonIgnore
   public boolean getFotoExists() {
     return (fotoNormal != null);
   }
@@ -706,6 +716,7 @@ public class Vorgang implements Serializable {
     this.auftrag = auftrag;
   }
 
+  @JsonIgnore
   public String getAuftragTeam() {
     if (getAuftrag() == null) {
       return null;

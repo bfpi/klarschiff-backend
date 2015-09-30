@@ -669,7 +669,8 @@ public class VorgangDao {
     sql.append("SELECT vo.*,")
       .append(" verlauf1.datum AS aenderungsdatum,")
       .append(" COALESCE(un.count, 0) AS unterstuetzer,")
-      .append(" COALESCE(mi.count, 0) AS missbrauchsmeldung");
+      .append(" COALESCE(mi.count, 0) AS missbrauchsmeldung,")
+      .append(" statusdatum.datum AS statusdatum");
     sql.append(" FROM klarschiff_vorgang vo");
     // Für Sortierung
     sql.append(" LEFT JOIN klarschiff_kategorie kat_unter ON vo.kategorie = kat_unter.id");
@@ -701,6 +702,7 @@ public class VorgangDao {
       .addScalar("aenderungsdatum", StandardBasicTypes.DATE)
       .addScalar("unterstuetzer", StandardBasicTypes.INTEGER)
       .addScalar("missbrauchsmeldung", StandardBasicTypes.LONG)
+      .addScalar("statusdatum", StandardBasicTypes.DATE)
       .list();
   }
 

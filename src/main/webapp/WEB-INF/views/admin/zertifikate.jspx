@@ -30,7 +30,7 @@
 			<div>
 				<p class="help">
 					Unter Windows 7 muss der Tomcat mit Adminrechten gestartet werden, damit der Befehl korrekt ausgeführt werden kann 
-					und UAC (User Account Control, dt. Benutzerkontensteuerung) nicht dazwischenfuscht. 
+					und es nicht zu Problemen mit UAC (User Account Control, dt. Benutzerkontensteuerung) kommt. 
 					<br/>
 					Das Standardpasswort für den Java-Keystore lautet: changeit. Weiterführende Informationen zum Java-Keystore sind <a href="http://download.oracle.com/javase/6/docs/technotes/tools/solaris/keytool.html" target="_blank">hier</a> zu finden.
 				</p>
