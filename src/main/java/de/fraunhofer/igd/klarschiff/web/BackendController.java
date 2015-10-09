@@ -528,18 +528,20 @@ public class BackendController {
   public void unterstuetzer(
     @RequestParam(value = "vorgang", required = false) Long vorgang,
     @RequestParam(value = "email", required = false) String email,
-    @RequestParam(value = "resultObjectOnSubmit", required = false) Boolean resultObjectOnSubmit,
     @RequestParam(value = "resultHashOnSubmit", required = false) Boolean resultHashOnSubmit,
+    @RequestParam(value = "resultObjectOnSubmit", required = false) Boolean resultObjectOnSubmit,
     HttpServletResponse response) {
     if (resultHashOnSubmit == null) {
       resultHashOnSubmit = false;
+    }
+    if (resultObjectOnSubmit == null) {
+      resultObjectOnSubmit = false;
     }
     try {
       Unterstuetzer unterstuetzer = new Unterstuetzer();
       if (vorgang == null) {
         throw new BackendControllerException(201, "[vorgang] fehlt", "Die Unterstützung ist keiner Meldung zugeordnet.");
       }
-
       Vorgang vorg = vorgangDao.findVorgang(vorgang);
       if (vorg == null) {
         throw new BackendControllerException(200, "[vorgang] ungültig", "Es konnte kein Vorgang mit der übergebenen ID gefunden werden.");
@@ -570,6 +572,8 @@ public class BackendController {
 
       vorgangDao.persist(unterstuetzer);
 
+      mailService.sendUnterstuetzerBestaetigungMail(unterstuetzer, email, vorgang);
+
       if (resultHashOnSubmit) {
         sendOk(response, unterstuetzer.getHash());
       } else if (resultObjectOnSubmit) {
@@ -577,9 +581,6 @@ public class BackendController {
       } else {
         sendOk(response);
       }
-
-      mailService.sendUnterstuetzerBestaetigungMail(unterstuetzer, email, vorgang);
-
     } catch (Exception e) {
       logger.warn(e);
       sendError(response, e);
