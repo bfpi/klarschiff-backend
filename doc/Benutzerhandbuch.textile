@@ -12,10 +12,12 @@ table(tableclass).
 (tableHeader). | Version | Datum | Bearbeiter | Beschreibung |
 | 1.0 | 10.2011 | Stefan Audersch | |
 | 1.1 | 10.2011 | Marcus Kröller | Verlinkungen und kleinere Korrekturen |
+###.| 1.2 | 08.2015 | Frank Hösel | Überarbeitung |
+
 
 *Inhaltsverzeichnis*
 
-{toc}
+{toc:style=circle}
 
 h1(#Einfhrung). Einführung
 
@@ -23,9 +25,9 @@ h2(#FrontendundBackend). Frontend und Backend
 
 Klarschiff unterteilt sich in zwei Bereiche, das Frontend und das Backend.
  
-Das Frontend dient dem Bürger dazu, seine Anliegen an die Verwaltung zu richten. Hierbei kann der Bürger seine "Meldungen":#Meldungbzw.Vorgang sowohl mit einem PC als auch über eine mobile Version mit einem Handy, Smartphone oder Tablet erstellen. Neben der Erstellung von Meldungen hat der Benutzer die Möglichkeit, sich über andere Meldungen zu informieren, andere Meldungen zu "unterstützen":#Untersttzerbzw.Untersttzung, bei Meldungen einen "Missbrauch":#Missbrauchsmeldung zu melden oder GeoRSS-Feed zu abonnieren. 
+Mithilfe des *Frontends* kann der Bürger seine Anliegen im Bezug auf den öffentlichen Raum an die Verwaltung richten. Die "Meldungen":#Meldungbzw.Vorgang der Bürger können mit einem PC oder auch über eine mobile Version mit einem Handy, Smartphone oder Tablet erstellt werden. Neben der Erstellung von Meldungen hat der Nutzer die Möglichkeit, sich über andere Meldungen zu informieren, andere Meldungen zu "unterstützen":#Untersttzerbzw.Untersttzung, bei Meldungen einen "Missbrauch":#Missbrauchsmeldung zu melden oder GeoRSS-Feed zu abonnieren.
 
-Das Backend stellt ein System für die Verwaltung dar, in dem Meldungen zentral registriert, verwaltet und bearbeitet werden können. Die "Zuweisung":#Zustndigkeit von Meldungen an die richtigen Ansprechpartner in der Verwaltung erfolgt dabei im System automatisch. "Externe Dienstleister":#Delegieren, zum Beispiel Entsorgungsdienstleister, können über das Backend ebenfalls eingebunden werden.
+Das *Backend* ist das System für die Verwaltung, in dem die Meldungen registriert, verwaltet und bearbeitet werden. Die "Zuweisung":#Zustndigkeit von Meldungen an die richtigen Ansprechpartner in der Verwaltung erfolgt dabei im System automatisch. "Externe Dienstleister":#Delegieren, zum Beispiel Entsorgungsdienstleister, können über das Backend ebenfalls eingebunden werden.
 
 h1(GrundlagenundBegriffe). Grundlagen und Begriffe
 
@@ -33,25 +35,25 @@ h1(GrundlagenundBegriffe). Grundlagen und Begriffe
 
 h2(Meldungbzw.Vorgang). Meldung bzw. Vorgang
 
-Die Begriffe Meldung und Vorgang werden in der Regel synonym zueinander verwendet. Im "Frontend":#FrontendundBackend spricht man in der Regel von einer *Meldung* ("Der Bürger erstellt eine Meldung an die Verwaltung."). Im "Backend":#FrontendundBackend dagegen wird in der Regel von einem *Vorgang* gesprochen ("Der Vorgang kann im Backend bearbeitet werden"). Die Unterscheidung wird gemacht, da die Begriffe jeweils aus der Sicht der Betrachtung (Bürger, Verwaltung) intuitiver zu verwenden sind.  
+Die Begriffe Meldung und Vorgang werden im Zusammehang mit "Klarschiff" synonym verwendet. Im "Frontend":#FrontendundBackend spricht man von einer *Meldung* ("Der Bürger erstellt eine Meldung an die Verwaltung."). Im "Backend":#FrontendundBackend dagegen wird von einem *Vorgang* gesprochen ("Der Vorgang kann im Backend bearbeitet werden"). Die Unterscheidung wird gemacht, da die Begriffe jeweils aus der Sicht der Betrachtung (Bürger, Verwaltung) intuitiver zu verwenden sind.
 
 
 
 h2(#ProblemundIdee). Problem und Idee
 
-Bei einem "Vorgang":#Meldungbzw.Vorgang kann es sich sowohl um ein Problem, als auch um eine Idee handeln. Problem und Idee sind die sogenannten Vorgangstypen. Ein Problem wird  in Klarschiff immer durch ein !../images/problem_15.png! (_Ausrufezeichen_) und eine Idee immer durch ein !../images/idee_15.png! (_Glühbirne_) gekennzeichnet. 
+Bei einer "Meldung":#Meldungbzw.Vorgang kann es sich sowohl um ein *Problem*, als auch um eine *Idee* handeln. Problem und Idee sind sogenannte Vorgangstypen. Ein Problem wird in Klarschiff immer durch ein !../images/problem_15.png! (_Ausrufezeichen_) und eine Idee immer durch ein !../images/idee_15.png! (_Glühbirne_) gekennzeichnet. 
 
-Jedem Vorgang ist eine "Haupt- und Unterkategorie":#Kategorien zugeordnet. Die möglichen Kategorien für einen Vorgang sind vom Vorgangstyp abhängig.
+###.. Jeder Meldung ist eine "Haupt- und Unterkategorie":#Kategorien zugeordnet. Die möglichen Kategorien für eine Meldung sind von diesem Vorgangstyp abhängig.
 
-Im "Backend":#FrontendundBackend werden Ideen erst ab einer bestimmten Anzahl von abgegebenen "Unterstützungen":#Untersttzerbzw.Untersttzung (aktuell 10) in der "Suche":#EinfacheVorgangssuche angezeigt. Die Anzeige aller Ideen, auch die mit noch nicht genügenden Unterstützungen, ist in der "erweiterten Suche":#ErweiterteVorgangssuche mit entsprechenden Rechten möglich. 
+Im "Backend":#FrontendundBackend werden Ideen erst ab einer bestimmten Anzahl von abgegebenen "Unterstützungen":#Untersttzerbzw.Untersttzung (aktuell 10) in der "Suche":#EinfacheVorgangssuche angezeigt. Die Anzeige aller Ideen, auch der mit noch nicht genügenden Unterstützungen, ist in der "erweiterten Suche":#ErweiterteVorgangssuche mit entsprechenden Rechten möglich.
 
 
 
 h2(#Kategorien). Kategorien
 
-Zur näheren Beschreibung sind jedem "Vorgang":#Meldungbzw.Vorgang eine Haupt- und eine Unterkategorie zugeordnet. Die Angaben der Kategorien sind für jeden Vorgang Pflicht. Die möglichen Kategorien für einen Vorgang sind vom gewählten "Vorgangstyp":#ProblemundIdee abhängig.
+Zur näheren Beschreibung werden jeder "Meldung":#Meldungbzw.Vorgang eine Haupt- und eine Unterkategorie zugeordnet. Die Angaben der Kategorien sind für jede Meldung Pflicht. Die möglichen Kategorien für einen Vorgang sind vom gewählten "Vorgangstyp":#ProblemundIdee abhängig.
 
-Bei der Auswahl bestimmter Kategorien während der "Erstellung eines neuen Vorganges":#Vorgangerstellen wird der Ersteller gegebenenfalls zur genaueren Beschreibung durch _Betreff_ und _Details_ aufgefordert. Die Felder werden mit einem * und einem Hinweistext gekennzeichnet, wenn diese angegeben werden müssen.
+Bei der Auswahl bestimmter Kategorien während der "Erstellung einer neuen Meldung":#Vorgangerstellen wird der Ersteller gegebenenfalls zur genaueren Beschreibung durch _Betreff_ und _Details_ aufgefordert. Die Felder werden mit einem Asterisk (*) und einem Hinweistext gekennzeichnet, wenn diese angegeben werden müssen.
 
 
 
