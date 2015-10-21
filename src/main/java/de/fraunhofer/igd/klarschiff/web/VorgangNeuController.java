@@ -136,6 +136,7 @@ public class VorgangNeuController {
     }
     vorgang.setDatum(new Date());
     vorgang.setStatus(EnumVorgangStatus.offen);
+    vorgang.setStatusDatum(new Date());
     vorgang.setPrioritaet(EnumPrioritaet.mittel);
 
     if (StringUtils.isNotBlank(cmd.zustaendigkeit)) {

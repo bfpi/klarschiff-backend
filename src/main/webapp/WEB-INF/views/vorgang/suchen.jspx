@@ -524,7 +524,7 @@
                     <div style="margin:20px 0px 0px 10px;">Die Suche ergab kein Resultat.</div>
                     <c:if test="${cmdvorgangsuchen.suchtyp=='einfach' and cmdvorgangsuchen.einfacheSuche=='offene'}">
                         <div style="margin-top:10px;">
-                            <c:url value="/images/rssfeed.png" var="img"/>
+                            <c:url value="/images/rss.png" var="img"/>
                             <c:url value="/xmlfeeds/feed/${fx:getCurrentUserLoginEncrypt()}" var="url"/>
                             <util:button cssStyle="margin-right:10px;" url="${url}" img="${img}" openInNewWindow="true">als RSS-Feed abonnieren</util:button>
                         </div>
@@ -541,7 +541,7 @@
             <c:url value="/vorgang/suchen/karte" var="url"/>
             <util:button cssStyle="margin-right:10px;" url="${url}" img="${img}">auf Karte anzeigen</util:button>
             <c:if test="${cmdvorgangsuchen.suchtyp == 'einfach' and cmdvorgangsuchen.einfacheSuche=='offene'}">
-                <c:url value="/images/rssfeed.png" var="img"/>
+                <c:url value="/images/rss.png" var="img"/>
                 <c:url value="/xmlfeeds/feed/${fx:getCurrentUserLoginEncrypt()}" var="url"/>
                 <util:button cssStyle="margin-right:10px;" url="${url}" img="${img}" openInNewWindow="true">als RSS-Feed abonnieren</util:button>
             </c:if>

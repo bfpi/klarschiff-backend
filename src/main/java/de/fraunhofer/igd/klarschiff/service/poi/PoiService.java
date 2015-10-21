@@ -73,7 +73,7 @@ public class PoiService {
         for (Object[] vorgangData : (List<Object[]>) data) {
           Vorgang vorgang = (Vorgang) vorgangData[0];
           Date aenderungsdatum = (Date) vorgangData[1];
-          Long unterstuetzer = (Long) vorgangData[2];
+          int unterstuetzer = (Integer) vorgangData[2];
           Row row = sheet.createRow(r);
           row.createCell(0).setCellValue(vorgang.getId());
           row.createCell(1).setCellValue(vorgang.getTyp().getText());

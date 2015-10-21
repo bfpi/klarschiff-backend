@@ -2,6 +2,7 @@ package de.fraunhofer.igd.klarschiff.web;
 
 import static de.fraunhofer.igd.klarschiff.web.Assert.assertNotEmpty;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -202,6 +203,7 @@ public class VorgangErstsichtungController {
       cmd.getVorgang().setErstsichtungErfolgt(true);
       if (cmd.getVorgang().getTyp() != EnumVorgangTyp.idee) {
         cmd.getVorgang().setStatus(EnumVorgangStatus.inBearbeitung);
+        cmd.getVorgang().setStatusDatum(new Date());
       }
 
       vorgangDao.merge(cmd.getVorgang());
