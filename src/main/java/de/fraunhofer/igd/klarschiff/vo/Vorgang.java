@@ -86,6 +86,14 @@ public class Vorgang implements Serializable {
   private Date datum;
 
   /**
+   * Zeitpunkt der letzten Statusänderung
+   */
+  @NotNull
+  @Temporal(TemporalType.TIMESTAMP)
+  @DateTimeFormat(style = "S-")
+  private Date statusDatum;
+
+  /**
    * Vorgangstyp
    */
   @NotNull
@@ -312,9 +320,6 @@ public class Vorgang implements Serializable {
   private Auftrag auftrag;
 
   @Transient
-  private long statusDatum;
-
-  @Transient
   private Integer unterstuetzerCount;
 
   /**
@@ -398,6 +403,14 @@ public class Vorgang implements Serializable {
 
   public void setVersion(Date version) {
     this.version = version;
+  }
+  
+  public Date getStatusDatum() {
+    return this.statusDatum;
+  }
+
+  public void setStatusDatum(Date statusDatum) {
+    this.statusDatum = statusDatum;
   }
 
   public String getAdresse() {
@@ -582,14 +595,6 @@ public class Vorgang implements Serializable {
   public void setStatus(EnumVorgangStatus status) {
     this.status = status;
     this.statusOrdinal = status;
-  }
-
-  public long getStatusDatum() {
-    return this.statusDatum;
-  }
-
-  public void setStatusDatum(long statusDatum) {
-    this.statusDatum = statusDatum;
   }
 
   public EnumZustaendigkeitStatus getZustaendigkeitStatus() {

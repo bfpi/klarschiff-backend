@@ -628,6 +628,7 @@ public class VorgangDao {
       .addGroupByAttribute("vo.id")
       .addGroupByAttribute("vo.version")
       .addGroupByAttribute("vo.datum")
+      .addGroupByAttribute("vo.statusDatum")
       .addGroupByAttribute("vo.typ")
       .addGroupByAttribute("vo.beschreibung")
       .addGroupByAttribute("vo.beschreibungFreigabeStatus")
@@ -679,11 +680,6 @@ public class VorgangDao {
     // Änderungsdatum
     sql.append(" INNER JOIN (SELECT vorgang, MAX(datum) AS datum FROM klarschiff_verlauf")
       .append(" GROUP BY vorgang) verlauf1 ON vo.id = verlauf1.vorgang");
-    // Status-Datum
-    sql.append(" LEFT JOIN (SELECT vorgang, MAX(datum) AS datum FROM klarschiff_verlauf")
-      .append(" WHERE typ IN ('status', 'erzeugt') GROUP BY vorgang) statusdatum ")
-      .append(" ON vo.id = statusdatum.vorgang");
-
     sql = addFilter(cmd, sql);
     // ORDER
     ArrayList orderBys = new ArrayList();

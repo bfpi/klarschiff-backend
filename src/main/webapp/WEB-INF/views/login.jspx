@@ -82,7 +82,7 @@
         <c:choose>
             <c:when test="${fx:demo()}">
                 <p>
-                    Klarschiff ist ein Bürgerbeteiligungsportal, genauer gesagt eine Onlineplattform zum Melden und Bearbeiten von Problemen und Ideen, die sich auf den öffentlichen Raum einer Kommune beziehen.
+                    ${fx:title()} ist ein Bürgerbeteiligungsportal, genauer gesagt eine Onlineplattform zum Melden und Bearbeiten von Problemen und Ideen, die sich auf den öffentlichen Raum einer Kommune beziehen.
                 </p>
             </c:when>
             <c:otherwise>

@@ -174,6 +174,7 @@ public class BackendController {
       }
 
       vorgang.setStatus(EnumVorgangStatus.gemeldet);
+      vorgang.setStatusDatum(new Date());
       vorgangParameterUebernehmen(autorEmail, vorgang, typ, kategorie, positionWGS84, oviWkt,
         beschreibung, fotowunsch, bild, false);
 
@@ -183,6 +184,7 @@ public class BackendController {
       
       if (authCode != null && authCode.equals(settingsService.getPropertyValue("auth.kod_code")) && vorgang.autorIntern()) {
         vorgang.setStatus(EnumVorgangStatus.offen);
+        vorgang.setStatusDatum(new Date());
         vorgangDao.persist(vorgang);
 
         vorgang.setZustaendigkeit(classificationService.calculateZustaendigkeitforVorgang(vorgang).getId());
@@ -295,6 +297,7 @@ public class BackendController {
           verlaufDao.persist(verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.status, vorgang.getStatus().getText(), evs.getText(), autorEmail));
         }
         vorgang.setStatus(evs);
+        vorgang.setStatusDatum(new Date());
       }
 
       if (statusKommentar != null) {
@@ -491,6 +494,7 @@ public class BackendController {
       }
 
       vorgang.setStatus(EnumVorgangStatus.offen);
+      vorgang.setStatusDatum(new Date());
 
       verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.vorgangBestaetigung, null, null);
       vorgangDao.merge(vorgang);
@@ -524,18 +528,20 @@ public class BackendController {
   public void unterstuetzer(
     @RequestParam(value = "vorgang", required = false) Long vorgang,
     @RequestParam(value = "email", required = false) String email,
-    @RequestParam(value = "resultObjectOnSubmit", required = false) Boolean resultObjectOnSubmit,
     @RequestParam(value = "resultHashOnSubmit", required = false) Boolean resultHashOnSubmit,
+    @RequestParam(value = "resultObjectOnSubmit", required = false) Boolean resultObjectOnSubmit,
     HttpServletResponse response) {
     if (resultHashOnSubmit == null) {
       resultHashOnSubmit = false;
+    }
+    if (resultObjectOnSubmit == null) {
+      resultObjectOnSubmit = false;
     }
     try {
       Unterstuetzer unterstuetzer = new Unterstuetzer();
       if (vorgang == null) {
         throw new BackendControllerException(201, "[vorgang] fehlt", "Die Unterstützung ist keiner Meldung zugeordnet.");
       }
-
       Vorgang vorg = vorgangDao.findVorgang(vorgang);
       if (vorg == null) {
         throw new BackendControllerException(200, "[vorgang] ungültig", "Es konnte kein Vorgang mit der übergebenen ID gefunden werden.");
@@ -566,6 +572,8 @@ public class BackendController {
 
       vorgangDao.persist(unterstuetzer);
 
+      mailService.sendUnterstuetzerBestaetigungMail(unterstuetzer, email, vorgang);
+
       if (resultHashOnSubmit) {
         sendOk(response, unterstuetzer.getHash());
       } else if (resultObjectOnSubmit) {
@@ -573,9 +581,6 @@ public class BackendController {
       } else {
         sendOk(response);
       }
-
-      mailService.sendUnterstuetzerBestaetigungMail(unterstuetzer, email, vorgang);
-
     } catch (Exception e) {
       logger.warn(e);
       sendError(response, e);
@@ -1005,6 +1010,7 @@ public class BackendController {
       if ((vorgang.getStatus() == EnumVorgangStatus.gemeldet || vorgang.getStatus() == EnumVorgangStatus.offen)
         && vorgang.getUnterstuetzer().size() == 0 && vorgang.getMissbrauchsmeldungen().size() == 0) {
         vorgang.setStatus(EnumVorgangStatus.geloescht);
+        vorgang.setStatusDatum(new Date());
         vorgangDao.merge(vorgang);
 
       } else {
@@ -1385,7 +1391,6 @@ public class BackendController {
         List<Object[]> vg = vorgangDao.getVorgaenge(cmd);
         for (Object[] entry : vg) {
           Vorgang vorgang = (Vorgang) entry[0];
-          vorgang.setStatusDatum(((Date) entry[4]).getTime());
           vorgang.setUnterstuetzerCount((Integer) entry[2]);
           vorgang.setSecurityService(securityService);
           vorgaenge.add(vorgang);

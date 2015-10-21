@@ -356,7 +356,7 @@
 			        <util:button cssStyle="margin-right:10px;" url="${url}" img="${img}">auf Karte anzeigen</util:button>
 
 					<c:if test="${cmdvorgangdelegiertsuchen.einfacheSuche=='offene'}">
-				        <c:url value="/images/rssfeed.png" var="img"/>
+				        <c:url value="/images/rss.png" var="img"/>
 				        <c:url value="/xmlfeeds/feedDelegiert/${fx:getCurrentUserLoginEncrypt()}" var="url"/>
 				        <util:button cssStyle="margin-right:10px;" url="${url}" img="${img}" openInNewWindow="true">als RSS-Feed abonnieren</util:button>
 					</c:if>
@@ -368,7 +368,7 @@
 
 				<c:if test="${cmdvorgangdelegiertsuchen.einfacheSuche=='offene'}">
 			        <div style="margin-top:10px;">
-				        <c:url value="/images/rssfeed.png" var="img"/>
+				        <c:url value="/images/rss.png" var="img"/>
 				        <c:url value="/xmlfeeds/feedDelegiert/${fx:getCurrentUserLoginEncrypt()}" var="url"/>
 				        <util:button cssStyle="margin-right:10px;" url="${url}" img="${img}" openInNewWindow="true">als RSS-Feed abonnieren</util:button>
 			        </div>
