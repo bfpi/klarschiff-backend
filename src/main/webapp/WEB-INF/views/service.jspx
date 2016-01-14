@@ -27,7 +27,8 @@
                 KSM Kommunalservice Mecklenburg AöR<br/>
                 Eckdrift 93<br/>
                 19061 Schwerin<br/>
-                Telefon: +49-385-633-5100<br/>
+                Telefon: +49-385-633-1234<br/>
+                Mail: <a href="mailto:ksm-sis-benutzerservice@sis-schwerin.de">KSM-Benutzerservice</a><br/>
             </div>
         </c:otherwise>
     </c:choose>
