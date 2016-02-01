@@ -10,15 +10,25 @@
   >
   <jsp:output omit-xml-declaration="yes" />
 
-  <jsp:directive.attribute name="projection" type="java.lang.String" required="false" rtexprvalue="true"/>
-  <jsp:directive.attribute name="tmsUrl" type="java.lang.String" required="true" rtexprvalue="true"/>
-  <jsp:directive.attribute name="tmsLayers" type="java.lang.String" required="true" rtexprvalue="true"/>
+  <jsp:directive.attribute name="projection" type="java.lang.String" required="true" rtexprvalue="true"/>
   <jsp:directive.attribute name="maxExtent" type="java.lang.String" required="true" rtexprvalue="true"/>
   <jsp:directive.attribute name="restrictedExtent" type="java.lang.String" required="true" rtexprvalue="true"/>
   <jsp:directive.attribute name="resolutions" type="java.lang.String" required="true" rtexprvalue="true"/>
-  <jsp:directive.attribute name="serverResolutions" type="java.lang.String" required="true" rtexprvalue="true"/>
-  <jsp:directive.attribute name="ovi" type="java.lang.String" required="true" rtexprvalue="true"/>
+  <jsp:directive.attribute name="units" type="java.lang.String" required="true" rtexprvalue="true"/>
   <jsp:directive.attribute name="oviMargin" type="java.lang.String" required="false" rtexprvalue="true"/>
+  <jsp:directive.attribute name="wmsOneUrl" type="java.lang.String" required="true" rtexprvalue="true"/>
+  <jsp:directive.attribute name="wmsOneTitle" type="java.lang.String" required="true" rtexprvalue="true"/>
+  <jsp:directive.attribute name="wmsOneLayers" type="java.lang.String" required="true" rtexprvalue="true"/>
+  <jsp:directive.attribute name="wmsOneFormat" type="java.lang.String" required="true" rtexprvalue="true"/>
+  <jsp:directive.attribute name="wmsOneTransparent" type="java.lang.String" required="true" rtexprvalue="true"/>
+  <jsp:directive.attribute name="wmsOneSingleTile" type="java.lang.String" required="true" rtexprvalue="true"/>
+  <jsp:directive.attribute name="wmsTwoUrl" type="java.lang.String" required="true" rtexprvalue="true"/>
+  <jsp:directive.attribute name="wmsTwoTitle" type="java.lang.String" required="true" rtexprvalue="true"/>
+  <jsp:directive.attribute name="wmsTwoLayers" type="java.lang.String" required="true" rtexprvalue="true"/>
+  <jsp:directive.attribute name="wmsTwoFormat" type="java.lang.String" required="true" rtexprvalue="true"/>
+  <jsp:directive.attribute name="wmsTwoTransparent" type="java.lang.String" required="true" rtexprvalue="true"/>
+  <jsp:directive.attribute name="wmsTwoSingleTile" type="java.lang.String" required="true" rtexprvalue="true"/>
+  <jsp:directive.attribute name="ovi" type="java.lang.String" required="true" rtexprvalue="true"/>
   <jsp:directive.attribute name="onClick" type="java.lang.String" required="false" rtexprvalue="true"/>
   <jsp:directive.attribute name="title" type="java.lang.String" required="false" rtexprvalue="true"/>
   <jsp:directive.attribute name="initOpenLayers" type="java.lang.Boolean" required="false"/>
@@ -95,35 +105,36 @@
           controls: [],
           projection: '${projection}',
           resolutions: [${resolutions}],
-          units: 'm',
+          units: '${units}',
           restrictedExtent: new OpenLayers.Bounds(${restrictedExtent}),
           maxExtent: bounds
         });
 
-    <c:forEach items="${fx:array(tmsLayers)}" var="layer">
-      <c:set value="${fx:array2(layer,':')}" var="layerOption"/>
-        layer = new OpenLayers.Layer.TMS(
-                "${layerOption[0]}",
-                "${tmsUrl}", {
-                  layername: '${layerOption[1]}',
-                  type: 'png',
-                  transitionEffect: 'resize',
-                  serverResolutions: [${serverResolutions}],
-                  tileSize: new OpenLayers.Size(256, 256)
-                });
-        map.addLayer(layer);
-    </c:forEach>
-
-        var luftbild = new OpenLayers.Layer.TMS(
-                "Luftbild",
-                "http://geo.sv.rostock.de/geodienste/luftbild/tms/", {
-                  layername: 'luftbild_EPSG25833',
-                  type: 'png',
-                  transitionEffect: 'resize',
-                  serverResolutions: [529.166666667, 352.777777778, 264.583333333, 176.388888889, 88.1944444444, 52.9166666667, 35.2777777778, 28.2222222222, 22.9305555556, 17.6388888889, 12.3472222222, 8.8194444444, 7.0555555556, 5.2916666667, 3.5277777778, 2.6458333333, 1.7638888889, 0.8819444444, 0.3527777778, 0.1763888889],
-                  tileSize: new OpenLayers.Size(256, 256)
-                });
-        map.addLayer(luftbild);
+          var oneLayer = new OpenLayers.Layer.WMS(
+                  "${wmsOneTitle}",
+                  "${wmsOneUrl}", {
+                    layers: "${wmsOneLayers}",
+                    format: "${wmsOneFormat}",
+                    transparent: "${wmsOneTransparent}"
+                  }, {
+            displayInLayerSwitcher: true,
+            isBaseLayer: true,
+            singleTile: Boolean("${wmsOneSingleTile}")
+          });
+          map.addLayer(oneLayer);
+          
+          var twoLayer = new OpenLayers.Layer.WMS(
+                  "${wmsTwoTitle}",
+                  "${wmsTwoUrl}", {
+                    layers: "${wmsTwoLayers}",
+                    format: "${wmsTwoFormat}",
+                    transparent: "${wmsTwoTransparent}"
+                  }, {
+            displayInLayerSwitcher: true,
+            isBaseLayer: true,
+            singleTile: Boolean("${wmsTwoSingleTile}")
+          });
+          map.addLayer(twoLayer);
 
         var poiLayer = new OpenLayers.Layer.WMS(
                 "${wmsTitle}",

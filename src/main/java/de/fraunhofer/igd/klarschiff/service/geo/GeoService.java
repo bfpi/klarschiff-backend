@@ -71,10 +71,23 @@ public class GeoService {
   String mapMaxExtent;
   String mapRestrictedExtent;
   String mapResolutions;
-  String mapServerResolutions;
+  String mapUnits;
   Integer mapOviMargin;
-  String mapTmsServer;
-  String mapTmsServerLayers;
+  
+  String mapWmsOneUrl;
+  String mapWmsOneTitle;
+  String mapWmsOneLayers;
+  String mapWmsOneFormat;
+  Boolean mapWmsOneTransparent;
+  Boolean mapWmsOneSingleTile;
+  
+  String mapWmsTwoUrl;
+  String mapWmsTwoTitle;
+  String mapWmsTwoLayers;
+  String mapWmsTwoFormat;
+  Boolean mapWmsTwoTransparent;
+  Boolean mapWmsTwoSingleTile;
+  
   String mapExternProjection;
   String mapExternName;
   String mapExternUrl;
@@ -413,6 +426,30 @@ public class GeoService {
     this.mapMaxExtent = mapMaxExtent;
   }
 
+  public String getMapRestrictedExtent() {
+    return mapRestrictedExtent;
+  }
+
+  public void setMapRestrictedExtent(String mapRestrictedExtent) {
+    this.mapRestrictedExtent = mapRestrictedExtent;
+  }
+
+  public String getMapResolutions() {
+    return mapResolutions;
+  }
+
+  public void setMapResolutions(String mapResolutions) {
+    this.mapResolutions = mapResolutions;
+  }
+
+  public String getMapUnits() {
+    return mapUnits;
+  }
+
+  public void setMapUnits(String mapUnits) {
+    this.mapUnits = mapUnits;
+  }
+
   public Integer getMapOviMargin() {
     return mapOviMargin;
   }
@@ -420,23 +457,103 @@ public class GeoService {
   public void setMapOviMargin(Integer mapOviMargin) {
     this.mapOviMargin = mapOviMargin;
   }
-
-  public String getMapTmsServer() {
-    return mapTmsServer;
+  
+  public String getMapWmsOneUrl() {
+    return mapWmsOneUrl;
   }
 
-  public void setMapTmsServer(String mapTmsServer) {
-    this.mapTmsServer = mapTmsServer;
+  public void setMapWmsOneUrl(String mapWmsOneUrl) {
+    this.mapWmsOneUrl = mapWmsOneUrl;
   }
 
-  public String getMapTmsServerLayers() {
-    return mapTmsServerLayers;
+  public String getMapWmsOneTitle() {
+    return mapWmsOneTitle;
   }
 
-  public void setMapTmsServerLayers(String mapTmsServerLayers) {
-    this.mapTmsServerLayers = mapTmsServerLayers;
+  public void setMapWmsOneTitle(String mapWmsOneTitle) {
+    this.mapWmsOneTitle = mapWmsOneTitle;
   }
 
+  public String getMapWmsOneLayers() {
+    return mapWmsOneLayers;
+  }
+
+  public void setMapWmsOneLayers(String mapWmsOneLayers) {
+    this.mapWmsOneLayers = mapWmsOneLayers;
+  }
+
+  public String getMapWmsOneFormat() {
+    return mapWmsOneFormat;
+  }
+
+  public void setMapWmsOneFormat(String mapWmsOneFormat) {
+    this.mapWmsOneFormat = mapWmsOneFormat;
+  }
+
+  public Boolean getMapWmsOneTransparent() {
+    return mapWmsOneTransparent;
+  }
+
+  public void setMapWmsOneTransparent(Boolean mapWmsOneTransparent) {
+    this.mapWmsOneTransparent = mapWmsOneTransparent;
+  }
+
+  public Boolean getMapWmsOneSingleTile() {
+    return mapWmsOneSingleTile;
+  }
+
+  public void setMapWmsOneSingleTile(Boolean mapWmsOneSingleTile) {
+    this.mapWmsOneSingleTile = mapWmsOneSingleTile;
+  }
+  
+  public String getMapWmsTwoUrl() {
+    return mapWmsTwoUrl;
+  }
+
+  public void setMapWmsTwoUrl(String mapWmsTwoUrl) {
+    this.mapWmsTwoUrl = mapWmsTwoUrl;
+  }
+
+  public String getMapWmsTwoTitle() {
+    return mapWmsTwoTitle;
+  }
+
+  public void setMapWmsTwoTitle(String mapWmsTwoTitle) {
+    this.mapWmsTwoTitle = mapWmsTwoTitle;
+  }
+
+  public String getMapWmsTwoLayers() {
+    return mapWmsTwoLayers;
+  }
+
+  public void setMapWmsTwoLayers(String mapWmsTwoLayers) {
+    this.mapWmsTwoLayers = mapWmsTwoLayers;
+  }
+
+  public String getMapWmsTwoFormat() {
+    return mapWmsTwoFormat;
+  }
+
+  public void setMapWmsTwoFormat(String mapWmsTwoFormat) {
+    this.mapWmsTwoFormat = mapWmsTwoFormat;
+  }
+
+  public Boolean getMapWmsTwoTransparent() {
+    return mapWmsTwoTransparent;
+  }
+
+  public void setMapWmsTwoTransparent(Boolean mapWmsTwoTransparent) {
+    this.mapWmsTwoTransparent = mapWmsTwoTransparent;
+  }
+
+  public Boolean getMapWmsTwoSingleTile() {
+    return mapWmsTwoSingleTile;
+  }
+
+  public void setMapWmsTwoSingleTile(Boolean mapWmsTwoSingleTile) {
+    this.mapWmsTwoSingleTile = mapWmsTwoSingleTile;
+  }
+  
   public String getMapExternProjection() {
     return mapExternProjection;
   }
@@ -589,31 +706,7 @@ public class GeoService {
     this.adressensucheUrl = adressensucheUrl;
   }
 
-  public String getMapRestrictedExtent() {
-    return mapRestrictedExtent;
-  }
-
-  public void setMapRestrictedExtent(String mapRestrictedExtent) {
-    this.mapRestrictedExtent = mapRestrictedExtent;
-  }
-
-  public String getMapResolutions() {
-    return mapResolutions;
-  }
-
-  public void setMapResolutions(String mapResolutions) {
-    this.mapResolutions = mapResolutions;
-  }
-
   public DataStore getDataStore() {
     return dataStore;
-  }
-
-  public String getMapServerResolutions() {
-    return mapServerResolutions;
-  }
-
-  public void setMapServerResolutions(String mapServerResolutions) {
-    this.mapServerResolutions = mapServerResolutions;
   }
 }
