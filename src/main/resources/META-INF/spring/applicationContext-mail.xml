@@ -93,9 +93,10 @@ Vielen Dank und mit freundlichen Grüßen
 Ihr %title%-Team]]></value></property>
 	</bean>
 
-	<bean class="org.springframework.mail.SimpleMailMessage" id="vorgangWeiterleitenMailTemplate"
-	p:from="${mail.from}" p:subject="weitergeleiteter Vorgang">
-		<property name="text"><value><![CDATA[Sehr geehrte Damen und Herren,
+  <bean class="org.springframework.mail.SimpleMailMessage" id="vorgangWeiterleitenMailTemplate"
+        p:from="${mail.from}" p:subject="${mail.request.redirect.subject}">
+    <property name="text">
+      <value><![CDATA[Sehr geehrte Damen und Herren,
 
 der folgende Vorgang wurde durch die/den %title%-Nutzer/-in %absender% an Sie weitergeleitet:
 
