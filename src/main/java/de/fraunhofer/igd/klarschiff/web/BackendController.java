@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.codec.Base64;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -172,6 +174,7 @@ public class BackendController {
       }
 
       vorgang.setStatus(EnumVorgangStatus.gemeldet);
+      vorgang.setStatusDatum(new Date());
       vorgangParameterUebernehmen(autorEmail, vorgang, typ, kategorie, positionWGS84, oviWkt,
         beschreibung, fotowunsch, bild, false);
 
@@ -181,6 +184,7 @@ public class BackendController {
       
       if (authCode != null && authCode.equals(settingsService.getPropertyValue("auth.kod_code")) && vorgang.autorIntern()) {
         vorgang.setStatus(EnumVorgangStatus.offen);
+        vorgang.setStatusDatum(new Date());
         vorgangDao.persist(vorgang);
 
         vorgang.setZustaendigkeit(classificationService.calculateZustaendigkeitforVorgang(vorgang).getId());
@@ -293,6 +297,7 @@ public class BackendController {
           verlaufDao.persist(verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.status, vorgang.getStatus().getText(), evs.getText(), autorEmail));
         }
         vorgang.setStatus(evs);
+        vorgang.setStatusDatum(new Date());
       }
 
       if (statusKommentar != null) {
@@ -489,6 +494,7 @@ public class BackendController {
       }
 
       vorgang.setStatus(EnumVorgangStatus.offen);
+      vorgang.setStatusDatum(new Date());
 
       verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.vorgangBestaetigung, null, null);
       vorgangDao.merge(vorgang);
@@ -522,18 +528,20 @@ public class BackendController {
   public void unterstuetzer(
     @RequestParam(value = "vorgang", required = false) Long vorgang,
     @RequestParam(value = "email", required = false) String email,
-    @RequestParam(value = "resultObjectOnSubmit", required = false) Boolean resultObjectOnSubmit,
     @RequestParam(value = "resultHashOnSubmit", required = false) Boolean resultHashOnSubmit,
+    @RequestParam(value = "resultObjectOnSubmit", required = false) Boolean resultObjectOnSubmit,
     HttpServletResponse response) {
     if (resultHashOnSubmit == null) {
       resultHashOnSubmit = false;
+    }
+    if (resultObjectOnSubmit == null) {
+      resultObjectOnSubmit = false;
     }
     try {
       Unterstuetzer unterstuetzer = new Unterstuetzer();
       if (vorgang == null) {
         throw new BackendControllerException(201, "[vorgang] fehlt", "Die Unterstützung ist keiner Meldung zugeordnet.");
       }
-
       Vorgang vorg = vorgangDao.findVorgang(vorgang);
       if (vorg == null) {
         throw new BackendControllerException(200, "[vorgang] ungültig", "Es konnte kein Vorgang mit der übergebenen ID gefunden werden.");
@@ -564,6 +572,8 @@ public class BackendController {
 
       vorgangDao.persist(unterstuetzer);
 
+      mailService.sendUnterstuetzerBestaetigungMail(unterstuetzer, email, vorgang);
+
       if (resultHashOnSubmit) {
         sendOk(response, unterstuetzer.getHash());
       } else if (resultObjectOnSubmit) {
@@ -571,9 +581,6 @@ public class BackendController {
       } else {
         sendOk(response);
       }
-
-      mailService.sendUnterstuetzerBestaetigungMail(unterstuetzer, email, vorgang);
-
     } catch (Exception e) {
       logger.warn(e);
       sendError(response, e);
@@ -1003,6 +1010,7 @@ public class BackendController {
       if ((vorgang.getStatus() == EnumVorgangStatus.gemeldet || vorgang.getStatus() == EnumVorgangStatus.offen)
         && vorgang.getUnterstuetzer().size() == 0 && vorgang.getMissbrauchsmeldungen().size() == 0) {
         vorgang.setStatus(EnumVorgangStatus.geloescht);
+        vorgang.setStatusDatum(new Date());
         vorgangDao.merge(vorgang);
 
       } else {
@@ -1252,6 +1260,32 @@ public class BackendController {
   }
 
   /**
+   * Die Methode verarbeitet den GET-Request auf der URL <code>/position</code><br/>
+   *
+   * @param positionWGS84
+   * @return Wenn die Postion innerhalb des gültigen Bereichs liegt <code>HttpStatus.OK</code> sonst
+   * <code>HttpStatus.FORBIDDEN</code>
+   */
+  @RequestMapping(value = "/position", method = RequestMethod.GET)
+  public ResponseEntity position(
+    @RequestParam(value = "positionWGS84", required = false) String positionWGS84
+  ) {
+
+    HttpStatus result = HttpStatus.OK;
+    Vorgang v = new Vorgang();
+    try {
+      v.setPositionWGS84(positionWGS84);
+      if (!v.getOvi().within(grenzenDao.getStadtgrenze().getGrenze())) {
+        result = HttpStatus.FORBIDDEN;
+      }
+    } catch (Exception ex) {
+      result = HttpStatus.FORBIDDEN;
+    }
+
+    return new ResponseEntity(result);
+  }
+
+  /**
    * Die Methode verarbeitet den GET-Request auf der URL <code>/vorgaenge</code><br/>
    *
    * @param id
@@ -1294,6 +1328,7 @@ public class BackendController {
         VorgangSuchenCommand cmd = new VorgangSuchenCommand();
         // Suchtyp aussendienst würde nur Vorgänge mit zustaendigkeit_status = 'akzeptiert' ausgeben
         cmd.setSuchtyp(VorgangSuchenCommand.Suchtyp.erweitert);
+        cmd.setErweitertArchiviert(false);
         // Sortieren nach ID
         cmd.setOrder(0);
         cmd.setOrderDirection(0);
@@ -1353,10 +1388,10 @@ public class BackendController {
           cmd.setAuftragDatum(new Date());
           cmd.setOrder(8);
         }
-
         List<Object[]> vg = vorgangDao.getVorgaenge(cmd);
         for (Object[] entry : vg) {
           Vorgang vorgang = (Vorgang) entry[0];
+          vorgang.setUnterstuetzerCount((Integer) entry[2]);
           vorgang.setSecurityService(securityService);
           vorgaenge.add(vorgang);
         }

@@ -61,6 +61,7 @@ ALTER SCHEMA ${f_schema} OWNER TO ${f_username};
 CREATE TABLE klarschiff_geo_rss (
     id integer NOT NULL,
     klarschiff_geo_rss_fid integer NOT NULL,               --########### @deprecated ############
+    the_geom geometry(MultiPolygon,25833),
     ideen boolean NOT NULL,
     ideen_kategorien character varying(255),
     probleme boolean NOT NULL,
@@ -94,7 +95,8 @@ ALTER TABLE klarschiff_missbrauchsmeldung OWNER TO ${f_username};
 
 -- Name: klarschiff_stadtgrenze_hro; Type: TABLE; Schema: ${f_schema}; Owner: ${f_username}; Tablespace: 
 CREATE TABLE klarschiff_stadtgrenze_hro (
-    ogc_fid integer NOT NULL
+    ogc_fid integer NOT NULL,
+    the_geom geometry(Polygon,25833)
 );
 ALTER TABLE klarschiff_stadtgrenze_hro OWNER TO ${f_username};
 SELECT AddGeometryColumn('klarschiff_stadtgrenze_hro', 'the_geom', 25833, 'MULTIPOLYGON', 2);
@@ -102,7 +104,8 @@ SELECT AddGeometryColumn('klarschiff_stadtgrenze_hro', 'the_geom', 25833, 'MULTI
 -- Name: klarschiff_stadtteile_hro; Type: TABLE; Schema: ${f_schema}; Owner: ${f_username}; Tablespace: 
 CREATE TABLE klarschiff_stadtteile_hro (
     ogc_fid integer NOT NULL,
-    bezeichnung character varying
+    bezeichnung character varying,
+    the_geom geometry(Polygon,25833)
 );
 ALTER TABLE klarschiff_stadtteile_hro OWNER TO ${f_username};
 SELECT AddGeometryColumn('klarschiff_stadtteile_hro', 'the_geom', 25833, 'MULTIPOLYGON', 2);
@@ -140,6 +143,7 @@ CREATE TABLE klarschiff_vorgang (
     datum_statusaenderung timestamp without time zone,
     beschreibung text,
     kategorieid bigint,
+    the_geom geometry(Point,25833),
     titel character varying(300),
     vorgangstyp character varying(255),
     status character varying(255),
@@ -332,7 +336,7 @@ CREATE OR REPLACE VIEW klarschiff_wfs_georss AS
             ELSE 'nicht vorhanden'::text
         END AS beschreibung,
         CASE
-            WHEN v.foto_thumb IS NOT NULL AND v.foto_thumb::text <> ''::text AND v.foto_freigegeben IS TRUE AND v.foto_vorhanden IS TRUE THEN ((((('<br/><a href="http://support.klarschiff-hro.de/fotos/'::text || v.foto_normal::text) || '" target="_blank" title="große Ansicht öffnen…"><img src="http://support.klarschiff-hro.de/fotos/'::text) || v.foto_thumb::text) || '" alt="'::text) || v.foto_thumb::text) || '" /></a>'::text
+            WHEN v.foto_thumb IS NOT NULL AND v.foto_thumb::text <> ''::text AND v.foto_freigegeben IS TRUE AND v.foto_vorhanden IS TRUE THEN ((((('<br/><a href="${f_image_url}'::text || v.foto_normal::text) || '" target="_blank" title="große Ansicht öffnen…"><img src="${f_image_url}'::text) || v.foto_thumb::text) || '" alt="'::text) || v.foto_thumb::text) || '" /></a>'::text
             WHEN v.status::text = 'offen'::text AND v.foto_vorhanden IS TRUE AND v.foto_freigegeben IS FALSE THEN 'redaktionelle Prüfung ausstehend'::text
             WHEN v.status::text <> 'offen'::text AND v.foto_vorhanden IS TRUE AND v.foto_freigegeben IS FALSE THEN 'redaktionell nicht freigegeben'::text
             ELSE 'nicht vorhanden'::text
@@ -347,7 +351,7 @@ CREATE OR REPLACE VIEW klarschiff_wfs_georss AS
         END AS datum,
         ST_X(ST_Transform(v.the_geom, 4326))::text AS x,
         ST_Y(ST_Transform(v.the_geom, 4326))::text AS y,
-        v.the_geom::geometry(Point,25833) AS geometrie
+        v.the_geom::geometry(Point, 25833) AS geometrie
     FROM
         klarschiff.klarschiff_vorgang v,
         klarschiff.klarschiff_kategorie hk,

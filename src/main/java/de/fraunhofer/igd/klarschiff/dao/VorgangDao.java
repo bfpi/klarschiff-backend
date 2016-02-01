@@ -628,6 +628,7 @@ public class VorgangDao {
       .addGroupByAttribute("vo.id")
       .addGroupByAttribute("vo.version")
       .addGroupByAttribute("vo.datum")
+      .addGroupByAttribute("vo.statusDatum")
       .addGroupByAttribute("vo.typ")
       .addGroupByAttribute("vo.beschreibung")
       .addGroupByAttribute("vo.beschreibungFreigabeStatus")
@@ -678,7 +679,6 @@ public class VorgangDao {
     // Änderungsdatum
     sql.append(" INNER JOIN (SELECT vorgang, MAX(datum) AS datum FROM klarschiff_verlauf")
       .append(" GROUP BY vorgang) verlauf1 ON vo.id = verlauf1.vorgang");
-
     sql = addFilter(cmd, sql);
     // ORDER
     ArrayList orderBys = new ArrayList();
@@ -699,7 +699,7 @@ public class VorgangDao {
       .createSQLQuery(sql.toString())
       .addEntity("vo", Vorgang.class)
       .addScalar("aenderungsdatum", StandardBasicTypes.DATE)
-      .addScalar("unterstuetzer", StandardBasicTypes.LONG)
+      .addScalar("unterstuetzer", StandardBasicTypes.INTEGER)
       .addScalar("missbrauchsmeldung", StandardBasicTypes.LONG)
       .list();
   }
@@ -1118,7 +1118,7 @@ public class VorgangDao {
   /**
    * Ermittelt alle Vorgänge mit dem Status 'in Bearbeitung', die einer bestimmten Zuständigkeit
    * zugewiesen sind und seit einem bestimmten Datum nicht mehr verändert wurden, bisher aber keine
-   * Info der Verwaltung aufweisen.
+   * öffentliche Statusinformation aufweisen.
    *
    * @param administrator Zuständigkeit ignorieren?
    * @param zustaendigkeit Zuständigkeit, der die Vorgänge zugewiesen sind
@@ -1169,8 +1169,7 @@ public class VorgangDao {
   }
 
   /**
-   * Ermittelt alle Vorgänge mit dem Status 'wird nicht bearbeitet', die bisher keine Info der
-   * Verwaltung aufweisen.
+   * Ermittelt alle Vorgänge mit dem Status 'wird nicht bearbeitet', die bisher keine öffentliche Statusinformation aufweisen.
    *
    * @param administrator Zuständigkeit ignorieren?
    * @param zustaendigkeit Zuständigkeit, der die Vorgänge zugewiesen sind

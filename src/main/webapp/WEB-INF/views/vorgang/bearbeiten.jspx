@@ -580,21 +580,26 @@
                   <form:form method="POST" modelAttribute="cmd.vorgang.auftrag" >
                     <div>
                       <form:label path="team" cssErrorClass="error">Team</form:label>
-                      <form:select path="team" id="team">
-                        <form:option value="" label="Außendienst wählen" cssClass="info" />
+                      <form:select path="team" id="team" cssErrorClass="error">
+                        <form:option value="" label="Team wählen" cssClass="info" />
                         <form:options items="${koordinatorAussendienstTeams}" />
                       </form:select>
+                      <form:errors path="team">
+                        <form:errors cssClass="error" cssStyle="font-size: 0.8em; padding-left: 100px" element="div" path="team"/>
+                      </form:errors>
                     </div>
                     <div>
-                      <form:label path="datum">Datum</form:label>
-                      <form:input path="datum" id="aussendienst_datum" cssClass="inputtext" />
+                      <form:label path="datum" cssErrorClass="error">Datum</form:label>
+                      <form:input path="datum" id="aussendienst_datum" cssErrorClass="error" cssClass="inputtext" />
                     </div>
                       <script type="text/javascript">
                         $(function() {
                             $('#aussendienst_datum').datepicker();
                         });
                     </script>
-
+                    <form:errors path="datum">
+                      <form:errors cssClass="error" cssStyle="font-size: 0.8em; padding-left: 100px" element="div" path="datum"/>
+                    </form:errors>
                     <input type="submit" value="Auftrag zuweisen" name="action" />
                   </form:form>
                 </c:when>

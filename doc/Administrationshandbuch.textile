@@ -1,3 +1,6 @@
+
+<link rel="stylesheet" type="text/css" href="http://klarschiff-test-sn/backend_sn/styles/styles.css">
+
 p(doctitle). Administrationshandbuch
 
 p(docsubtitle). Klarschiff Backend
@@ -7,227 +10,942 @@ erstellt von
 
 *Änderungsübersicht*
 
-table(tableclass).
+table. 
 (tableHeader). | Version | Datum | Bearbeiter | Beschreibung |
 | 1.0 | 10.2011 | Stefan Audersch | |
+| 2.0 | 10.2015 | BFPI | Komplette Überarbeitung |
+
+
+
+*Klarschiff* ist eine Webanwendung. Sie wurde mithilfe der plattformunabhängigen objektorientierten Programmiersprache _Java_ entwickelt. Grundlage für die Datenhaltung bildet eine PostgresSQL-Datenbank, die in ein Geoinformationssystem eingebunden werden kann. Zusätzliche Anwendungen wurden in der Programmiersprache _Ruby_ erstellt. *Klarschiff* wird unter der "GNU General Public License":https://de.wikipedia.org/wiki/GNU_General_Public_License veröffentlicht. Die Quellen findet man unter "https://github.com/bfpi":https://github.com/bfpi.
 
 *Inhaltsverzeichnis*
 
 {toc}
 
-h2(#klarschiffBackendAufsetzen). Klarschiff Backend aufsetzen
+h2(#voraussetzungen). Voraussetzungen
 
-Voraussetzung für das Backend ist eine PostgreSQL-Datenbank mit PostGIS, eine Java-Laufzeitumgebung und ein Servlet-Container. Das Aufsetzen sollte in den folgenden Schritten erfolgen:
+Die folgende Software muss in Abhängigkeit des verwendeten Betriebssystems installiert sein.
 
-*1. PostgreSQL herunterladen und installieren*
-Für die Datenhaltung wird eine PostgreSQL-Datenbank benötigt. Für das Backend sollte ein PostgreSQL ab der Version 8.x verwendet werden. Diese kann hier
-* "http://www.postgresql.org/download/":http://www.postgresql.org/download/ bzw. hier
-* "http://www.enterprisedb.com/products-services-training/pgdownload":http://www.enterprisedb.com/products-services-training/pgdownload
-heruntergeladen werden.
+* *PostgreSQL*-Datenbank mit der Erweiterung *PostGIS* für geographische Objekte und Funktionen
+* *Webserver* z.B. Apache
+* Webserver mit der Spezifikation für Java Servlets und Java Server Pages *Apache Tomcat*
+* *Solr* Java Web-Applikation, welche für eine Adressen- und Standortsuche genutzt wird
+* Laufzeitumgebung *Java*
+* Programmiersprache *Ruby* für einen Datenimport und zusätzliche Anwendungen
+* *Git* Software zur verteilten Versionsverwaltung von Dateien (unter Microsoft Windows *GitHub Desktop*)
+* *OpenLDAP* Bei Verwendung eines LDAP-Servers. Es kann auch eine LDIF(LDAP Data Interchange Format)-Datei genutzt werden. Eine Einbindung in eine Active Directory (AD) Umgebung ist theoretisch möglich. Dieses wurde aber noch nicht getestet.
+* *Nodejs* Serverseitige Plattform zum Betrieb von Netzwerkanwendungen. Basiert auf der Javascript-Laufzeitumgebung.
+* *PHP* Skriptsprache zur Erstellung von dynamischen Webseiten oder Webanwendungen
+* *Mailserver* Das *Backend* muss einen Mailserver erreichen können, da es selbstständig E-Mails generiert.
+* Mapserver *Geoserver* zur Bereitstellung des WFS(Web Feature Service). Stellt keine eigenen Geodaten zur Verfügung.
 
-Bei der Installation können alle Standardeinstellungen beibehalten bleiben. Beim Kodierung sollte _UTF-8_ als Standard eingestellt werden.
+Alle im weiteren Kontext verwendeten Versionsangaben zur verwendeten Software beziehen sich auf deren Stand zum Redaktionszeitpunkt dieser Beschreibung. Der Anwender sollte Kenntnisse über die Verfahren der Softwareinstallation für das von ihm verwendete Betriebssystem verfügen.
 
-*2. PostGIS installieren*
-Die Installation von PostGIS kann bei der PostgreSQL-Installation mit dem installierten Application Stack Builder erfolgen. Hierzu ist dieser mit Adminrechten zu starten. Unter dem Punkt _Spatial Extension_ ist PostGIS zu finden, welches ab der Version 1.5 installiert werden sollte.
+h2(#software). Software
 
-*3. Benutzer und Datenbank anlegen*
-Mit Hilfe des pgAdmin III kann nun bei der Datenbank ggf. ein spezieller Benutzer und eine Datenbank angelegt werden. Im Standardfall sollte der Benutzer für das Backend den Rollennamen _klarschiff_backend_ und das Passwort _klarschiff_backend_ haben. Die neu erstellte Rolle sollte mit entsprechenden Rechten zum Erzeugen von Tabellen, Triggerfunktionen und Triggern sowie mit Rechten zum Schreiben, Lesen und Löschen von Daten in Tabellen ausgestattet sein. 
+*Hinweis*: Bei der Installation unter dem Betriebssystem *MS Windows* sollte darauf geachtet werden, dass die Software *nicht* im Standardverzeichnis für Programme installiert wird. Im Standardverzeichnis wird das Schreiben von Dateien teilweise durch das UAC(User Account Control) (Benutzerkontensteuerung) verhindert bzw. erschwert. Ein Schreiben von Dateien ist aber notwendig.
 
-Für das Backend kann nun mit pgAdmin III eine neue Datenbank angelegt werden. Die Datenbak sollte im Standardfall den Namen _klarschiff_backend_ haben und als Template sollte _template_postgis_ gewählt werden. 
+h3(#java). 1. Java - Laufzeitumgebung
 
-*4. Datenbank für das Frontend und dblink einrichten (optional)*
-Soll vom Backend die FrontendDb initialisiert werden und während des Betriebes die Daten von der BackendDB an die FrontendDB publiziert werden, so sind die hier in diesem Abschnitt beschreibenen Schritte notwendig.
+Es muss mindestens die Version 7 des *JDK Servers* (Java SE Development Kit) installiert sein. Die aktuellste Version des JDK - Servers findet man unter "http://www.oracle.com/technetwork/java/javase/downloads/index.html":http://www.oracle.com/technetwork/java/javase/downloads/index.html.
 
-In der Datenbank für das Frontend sind eine neue Rolle (default: _klarschiff_frontend_) und eine DB (default: _klarschiff_frontend_) mit dem Template _template_postgis_ in einem Schema (default: _klarschiff_) zu erstellen. Die Kommunikation der BackendDB mit der FrontendDB erfolgt über _dblink_. Damit dieses funktioniert ist in der BackendDB die entsprechende Extension einzurichten:
-* PostgreSQL v8.x: Mit Hilfe von pgAdmin III muss das SQL-Script aus der Datei @dblink.sql@ ausgeführt werden. Die Datei befindet sich an folgender Stelle @PostgreSQL\8.4\share\contrib\dblink.sql@.
-* PostgreSQL v9.x: Mit Hilfe von pgAdmin III muss der SQL-Befehl @CREATE EXTENSION dblink;@ ausgeführt werden.
-Damit das Backend die entsprechenden Scripte ausführt sind in der @settings.properties@ (siehe Punkt 7) die entsprechenden Einstellungen vorzunehmen.
+Zum Betreiben von *Klarschiff* und des "*Geoservers*":#geoserver wird nur *Java Runtime Environment* (JRE) benötigt. Will man das Build-Management-Tool "*Maven*":#maven nutzen, benötigt man das komplette *Java SE Development Kit* (JDK), welches auch die JRE-Umgebung enthält.
 
-
-*5. Java herunterladen und installieren*
-Als Runtime ist Java in der Version ab 1.6 notwendig. Ein JDK oder JRE kann unter "http://www.oracle.com/technetwork/java/javase/downloads/jdk-6u27-download-440405.html":http://www.oracle.com/technetwork/java/javase/downloads/jdk-6u27-download-440405.html heruntergeladen werden. Dieses ist auf dem Rechner zu installieren.
-
-*6. Servlet-Container (Tomcat) herunterladen und installieren*
-Das in der Entwicklungsumgebung erzeugte Backend ist eine WAR-Datei, welche in einem Servlet-Container ausgeführt wird. Hierfür kann beispielsweise ein Tomcat verwendet werden. Ein Tomcat ab der Version 7.0 ist notwendig und kann unter "http://tomcat.apache.org/download-70.cgi":http://tomcat.apache.org/download-70.cgi heruntergeladen werden.
-
-Hinweis: Wenn ein Rechner mit Windows Vista oder Windows 7 verwendet wird, sollte die Installation des Tomcats nicht im normalen Programmordner erfolgen, da in diesem das Schreiben von Dateien notwendig ist, was teilweise durch das UAC verhindert bzw. erschwert wird.
-
-Der Tomcat sollte bei der Installation als Dienst eingerichtet werden. Um ein _OutOfMemory_ zu verhindern, sollte der Speicher für die VM beim Tomcat entsprechend hoch gesetzt werden.
-
-Die Webanwendung kann ebenfalls in einem Cluster laufen. Hierzu sind dann spezielle Einstellungen notwendig ( siehe "Webanwendung in einem Cluster laufen lassen":#cluster ).
-
-*7. settings.properties ggf. anpassen*
-In der WAR-Datei der Webanwendung befindet sich im Verzeichnis @WEB-INF\classes\@ die Datei @settings.properties@ mit den Einstellungen für das Backend. Hier sollten ggf. Anpassungen vorgenommen werden (siehe "Einstellungen":#einstellungen ).
-
-*8. Webanwendung deployen*
-Die WAR-Datei ist beim Tomcat in das Verzeichnis @webapps@ zu kopieren und damit zu deployen.
-
-*9. Tomcat starten*
-Der Tomcat kann nun gestartet werden. Beim Start werden dabei die notwendigen Tabellen in der Datenbank angelegt.
-
-Unter der URL "http://localhost:8080/klarschiff.webapp/":http://localhost:8080/klarschiff.webapp/ sollte nun das Backend erreichbar sein.
+Wird auf der Willkommenseite des "*Geoservers*":#geoserver den Hinweis "Keine starke Kryptographie verfügbar" angezeigt findet man unter "http://docs.geoserver.org/latest/en/user/production/java.html#java-policyfiles":http://docs.geoserver.org/latest/en/user/production/java.html#java-policyfiles eine Anleitung zur Nachinstallation der entsprechen JAR-Dateien.
 
 
-h2(#einstellungen). Einstellungen
+h3(#datenbank). 2. Datenbank
 
-Die Konfigurationen und Einstellungen der Anwendung werden an verschiedenen Stellen vorgenommen. Zentraler Punkt für die Einstellungen ist die @settings.properties@. Hier können alle Parameter für den Lauf der Anwendung angepasst werden.
+Das Aufsetzen der Datenbank beginnt mit der Installation der *PostgreSQL*-Datenbank ab der Version 9.4 mit *PostGIS* ab der Version 2.1. Für die Administration der Datenbank kann die grafische Oberfläche *pgAdmin III* installiert werden.
 
-Systemspezifischere Anpassungen, die z.B. bei der Weiterentwicklung vorgenommen werden müssen, können im ApplicationContext (@src_main\META-INF\spring\..xml@), dem WebApplicationContext (@WebContent\WEB-INF\spring\webmvc-config.xml@) oder an anderen Stellen vorgenommen werden.
+Die aktuelle *PostgreSQL*-Datenbank kann unter "http://www.postgresql.org/download/":http://www.postgresql.org/download/ heruntergeladen werden.
 
-Bei den Einstellungen in der @settings.properties@ können Profile verwendet werden. Diese ermöglichen es, verschiedene Einstellungen zu definieren, die gleiche Webanwendung auf verschiedenen Rechner zu deployen und die jeweils unterschiedlichen Konfigurationen zu verwenden. Welches Profil verwendet wird, kann über die Variable @KLARSCHIFF_HRO_PROFILE@ an den folgenden Stellen festgelegt werden:
-* Umgebungsvariable des Rechners
-* Java-Laufzeit-Umgebungsvariable
-* in der Datei @settings.properties@
+*Hinweis*: Für das Betriebssystem *Windows* ist eine grafische Installationsroutine vorhanden. Hier wird *pgAdmin III* automatisch mit installiert. Weiterhin ist nach der Installation von *PostgreSQL* ein grafisches Tool zum Installieren von zusätzlicher Software für die Datenbank vorhanden. Unter _Start -> Alle Programme -> PostgreSQL 9.4_ ist dies der *Application Stack Builder*. Dieser muss mit Administratorrechten gestartet werden. Nach dem Start und der Auswahl der lokalen Datenbank findet man unter dem Punkt _Spatial Extensions_ die *PostGIS*-Erweiterung in der Version 2.1. Mit der Aktivierung der Checkbox wird die entsprechende Erweiterung installiert.
 
-Die Spezialisierung eines Parameters für ein bestimmtes Profil erfolgt durch ein Voranstellen des Profilnamens in der @settings.properties@. Werden die Einstellungen beispielsweise folgendermaßen definiert:
+Nach der Installation von *PostgreSQL* mit *PostGIS* müssen spezielle Datenbanknutzer und Datenbanken angelegt werden.
 
-bc.. 
-mail.from=klarschiffhro@googlemail.com
-igd_dev.mail.from=klarschiffhro@igd-r.fraunhofer.de
+h4(#backend). 2.1 Backend
 
-p. so wird im Normalfall als Absenderadresse die E-Mail-Adresse von Google verwendet. Ist das Profil @igd_dev@ eingestellt, so wird die E-Mail-Adresse von Fraunhofer verwendet.
+# *Datenbanknutzer:* _klarschiff_backend_ mit dem *Passwort:* _klarschiff_backend_
+# *Datenbank:* _klarschiff_backend_ mit dem *Eigentümer:* _klarschiff_backend_
 
-Die folgenden Einstellungen können in der @settings.properties@ vorgenommen werden:
+h4(#zufi). 2.2 Zuständigkeitsfinder
 
-h3. Mailversand
+# *Datenbanknutzer:* _zufi_ mit dem *Passwort:* _zufi_
+# *Datenbank:* _zufi_ mit dem *Eigentümer:* _zufi_
 
-| @mail.server.baseurl.backend@ und @mail.server.baseurl.frontend@ | Die URLs werden bei der Erzeugung von E-Mails verwendet und sollten auf die entsprechenden URLs des Frontend und Backend verweisen. |
-| @mail.host@ | SMTP-Host, der für den Versand der E-Mails verwendet wird |
+h4(#frontend). 2.3 Frontend
+
+# *Datenbanknutzer:* _klarschiff_frontend_ mit dem *Passwort:* _klarschiff_frontend_
+# *Datenbank:* _klarschiff_frontend_ mit dem *Eigentümer:* _klarschiff_frontend_
+
+Die Datenbank _klarschiff_frontend_ wird von der Datenbank _klarschiff_backend_ initialisiert. Weiterhin werden die Daten der Datenbank _klarschiff_backend_ während des Betriebs von der Datenbank _klarschiff_frontend_ publiziert. Um dieses zu gewährleisten, muss die Erweiterung _dblink_ eingerichtet werden. Dieses erfolgt innerhalb der Datenbank _klarschiff_backend_ mit
+
+bc. CREATE EXTENSION dblink;
+
+Um eine Verbindung zum *PostGIS* herzustellen, muss innerhalb der Datenbanken _klarschiff_backend_ *+und+* _klarschiff_frontend_ die Erweiterung bekanntgegeben werden. Dieses erfolgt jeweils mit:
+
+bc. CREATE EXTENSION postgis;
+
+h4(#standortsuche). 2.4 Standortsuche
+
+# *Datenbanknutzer:* _standortsuche_ mit dem *Passwort:* _standortsuche_
+# *Datenbank:* _standortsuche_ mit dem *Eigentümer:* _standortsuche_
+
+Nach dem Anlegen der Grundlagen für die Standortsuche muss das SQL-Skript _standortsuche.sql_ ausgeführt werden. Es werden die notwendigen Tabellen angelegt. 
+
+h3(#webserver). 3. Webserver
+
+*Hinweis:* Bei der Installation unter dem Betriebssystem *MS Windows* kann die aktuellste Version des Softwarepakets *XAMPP* genutzt werden. Es besteht die Möglichkeit, die Installation der Datenbank *MySQL*, des FTP-Servers *FileZilla* und des Mailservers *Mercury* abzuwählen. Es werden dann die Webserver "*Apache*":#apache und "*Apache Tomcat*":#tomcat sowie die Skriptsprache "*PHP*":#php installiert.
+
+
+h4(#apache). 3.1 Webserver Apache
+
+Im Zusammenhang mit *Klarschiff* wird der frei verfügbare Webserver *Apache* ab der Version 2.4 genutzt.
+
+Der Webserver *Apache* sollte an folgenden Ports laufen.
+
+table. 
+(tableHeader). | Port | Nummer |
+| Main | 80 |
+|SSL | 443 |
+
+Aktuelle Informationen zur Installation des Webservers *Apache* findet man unter "http://httpd.apache.org/download.cgi":http://httpd.apache.org/download.cgi.
+
+h5(#konfigurationapache). 3.1.1 Konfiguration:
+
+Aktivierung der Module:
+* proxy
+* rewrite
+* headers
+* proxy_ajp
+* proxy_http
+* deflate
+
+h4(#tomcat). 3.2 Webserver Apache Tomcat
+
+Für den Betrieb des *Backends* von *Klarschiff* ist eine Installation des Webservers *Apache Tomcat* ab der Version 7 notwendig.
+Der Webserver sollte an folgenden Ports laufen:
+
+table. 
+(tableHeader). | Port | Nummer |
+| Main | 8005 |
+| AJP | 8009 |
+| HTTP | 8080 |
+
+Aktuelle Informationen zu Versionen und eine Dokumentation findet man unter "https://tomcat.apache.org/index.html":https://tomcat.apache.org/index.html.
+
+h5(#konfigurationtomcat). 3.2.1 Konfiguration
+
+*Arbeitsspeichervergrößerung:*
+
+Bei der Vergrößerung des Arbeitsspeichers ist der vorhandene physikalische Speicher des Servers zu beachten. Es kann nicht mehr Speicher frei gegeben werden als vorhanden ist.
+
+*Windows:* Aufruf des Programms "Configure Tomcat" unter _Start -> Alle Programme -> Apache Tomcat x.0_. Auf der Registerkarte "Java" im Feld "Initial memory pool" den Wert 1024 und im Feld "Maximum memory pool" den Wert 2048 eintragen. Im Feld "Java Options" sind die folgenden Parameter einzutragen:
+
+bc. -Djava.awt.headless=true
+-XX:PermSize=256m
+-XX:MaxPermSize=512m
+-XX:+CMSClassUnloadingEnabled
+-XX:+UseConcMarkSweepGC
+-Dfile.encoding=UTF8
+
+*Linux:* In der Datei /etc/default/tomcatx den Eintrag auf
+
+bc. JAVA_OPTS="-Djava.awt.headless=true -Xms1024m -Xmx2048m -XX:PermSize=256m -XX:MaxPermSize=512m 
+-XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -Dfile.encoding=UTF8"
+
+p. ändern.
+
+Für *alle* Betriebssysteme muss der AJP-Connector in der Datei Server.xml aktiviert werden.
+
+bc. < Connector address="127.0.0.1" port="8009" protocol="AJP/1.3" packetSize="65536" redirectPort="8443" />
+
+
+
+h4(#konfigurationapachefuerklarschiff). 3.3 Konfiguration Apache für Klarschifff
+
+Für die Herstellung der Verbindung zwischen den Webservern "*Apache*":#apache und "*Apache Tomcat*":apachetomcat wird eine Datei _klarschiff.conf_ genutzt. In ihr befinden sich alle Konfigurationsparameter, die für die Zusammenarbeit von *Klarschiff* mit den Webservern und dem "*Geoserver*":#geoserver benötigt werden. Diese Konfigurationsdatei muss beim Start des Webservers "*Apache*":#apache mit geladen werden. Der Inhalt und die Verfahren zur Aktivierung dieser Datei sind abhängig vom verwendeten Betriebssystem.
+
+Weiterleitungen für Zugriffe auf Geodienste (*GeoServer*) jeweils via AJP auf das entsprechende GeoServer-Skript)
+Die folgenden Angaben korrespondieren auch mit dem Inhalt der Datei _urls.php_. Das ".../klarschiff/..." in den URIs bezieht sich auf die URI des Namensraumes für den Arbeitsbereich im "*Geoserver*":#geoserver 
+
+bc.. <Location /ows/klarschiff/ows>
+  ProxyPass           ajp://localhost:8009/geoserver/klarschiff/ows
+  ProxyPassReverse    ajp://localhost:8009/geoserver/klarschiff/ows
+  
+  # serverseitige Komprimierung der ausgelieferten Inhalte
+  SetOutputFilter DEFLATE
+  BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
+  SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip dont-vary
+  Header append Vary User-Agent env=!dont-vary
+</Location>
+
+<Location /ows/klarschiff/wfs>
+  ProxyPass           ajp://localhost:8009/geoserver/klarschiff/wfs
+  ProxyPassReverse    ajp://localhost:8009/geoserver/klarschiff/wfs
+
+  # serverseitige Komprimierung der ausgelieferten Inhalte
+  SetOutputFilter DEFLATE
+  BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
+  SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip dont-vary
+  Header append Vary User-Agent env=!dont-vary
+</Location>
+
+<Location /ows/klarschiff/wms>
+  ProxyPass           ajp://localhost:8009/geoserver/klarschiff/wms
+  ProxyPassReverse    ajp://localhost:8009/geoserver/klarschiff/wms
+  
+  # serverseitige Komprimierung der ausgelieferten Inhalte
+  SetOutputFilter DEFLATE
+  BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
+  SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip dont-vary
+  Header append Vary User-Agent env=!dont-vary
+</Location>
+
+p. "Rewrite-Regeln" für Klarschiff
+(P: Proxy-Regeln anwenden; QSA: vorhandenen Query-String beibehalten; L: bei Matching keine weiteren Rewrite-Rules mehr prozessieren)
+
+Nach der Erstellung einer Meldung erhält der Anwender eine E-Mail. Mithilfe der folgenden Regeln erfolgt die Generierung einer URL. Diese URLs werden in einer E-Mail dem Nutzer zur Bestätigung seiner Meldung zur Verfügung gestellt.
+
+bc.  RewriteRule ^.*(missbrauchsmeldungBestaetigung/.*)$ http://localhost:8080/backend/service/$1 [P,QSA,L]
+RewriteRule ^.*(unterstuetzerBestaetigung/.*)$      http://localhost:8080/backend/service/$1 [P,QSA,L]
+RewriteRule ^.*(vorgangBestaetigung/.*)$            http://localhost:8080/backend/service/$1 [P,QSA,L]
+RewriteRule ^.*(vorgangLoeschen/.*)$                http://localhost:8080/backend/service/$1 [P,QSA,L]
+
+p. Hier erfolgt die Übersetzung zum Controller _Backend_ und stellt damit die Verarbeitung der Anfragen vom Frontend sicher.
+
+###. p{color:red}. Stimmt das? Wo kommt die Aussage her.
+
+p. Die folgenden Angaben gewährleisten eine Weiterleitung für geschützte Zugriffe auf das Klarschiff-Backend.
+
+bc..  <Location /backend>
+    ProxyPass           ajp://localhost:8009/backend
+    ProxyPassReverse    ajp://localhost:8009/backend
+
+  # serverseitige Komprimierung der ausgelieferten Inhalte
+    SetOutputFilter DEFLATE
+    BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
+    SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip dont-vary
+    Header append Vary User-Agent env=!dont-vary
+</Location>
+
+h3(#php). 4. PHP
+
+Unter "http://php.net/downloads.php":http://php.net/downloads.php findet man die neuesten Informationen zu den aktuellen Versionen von *PHP*. Bei der *PHP*-Installation ist darauf zu achten, dass die folgenden Erweiterungen installiert und initialisiert sind:
+# *curl* - Dateiübertragung über verschieden Protokolle
+# *gd* - Bilder generieren und manipulieren
+# *pgsql* - Zugriff auf die Datenbank "*PostgreSQL*":#datenbank
+
+Einen Überblick über die Konfiguration von *PHP* verschafft der Aufruf der Datei phpinfo.php im Browser. Sind die genannten Erweiterungen nicht aufgeführt müssen sie in der Datei php.ini aktiviert werden. Wurden Änderungen an der php.ini durchgeführt, muss in jedem Fall der Webserver "*Apache*":#apache neu gestartet werden.
+
+h3(#geoserver). 5. GeoServer
+
+Der *GeoServer* benötigt mindestens *Java 7*. Welche Version zur Zeit unterstützt werden findet man unter "http://docs.geoserver.org/latest/en/user/installation/win_binary.html":http://docs.geoserver.org/latest/en/user/installation/win_binary.html. Die notwendigen Dateien für die Installation können von "http://geoserver.org/release/stable/":http://geoserver.org/release/stable/ heruntergeladen werden. Unter "Web Archive" erfolgt das Herunterladen einer ZIP-Datei. Diese enthält eine Datei _geoserver.war_. Dieser Servlet Container muss in den vom Betriebssystem abhängigen Verzeichnis (...webapps) für die Anwendungen des Webservers "*Apache Tomcat*":#tomcat kopiert werden. Der Webserver installiert dann automatisch den *GeoServer*.
+
+h4(#geoservereinstellungen). 5.1 Einstellungen
+
+Die Aktualisierung des Kartenservers erfolgt auf dem gleichen Weg. Dabei ist zu beachten, dass der komplette Inhalt des Verzeichnisses _..webapps\geoserver_ überschrieben wird. Alle selbst erstellten Daten gehen dabei verloren. Aus diesem Grund sollte das komplette Verzeichnis _data_ unter dem Verzeichnis _..webapps\geoserver_ verschoben werden. Dazu muss der Webserver "*Apache Tomcat*":#tomcat gestoppt werden.
+
+Bei der Verwendung des Kartenservers *Geoserver* muss der Arbeitsspeicher erweitert werden. Wurde das Verzeichnis _data_ verschoben muss dessen Pfad bekannt gegeben werden.Dieses erfolgt mit der Änderung der Umgebungsvariablen _GEOSERVER_DATA_DIR_. Dem Webserver "*Apache Tomcat*":#tomcat sind dann die folgenden Parameter zu übergeben:
+
+* *Windows*: Auf der Registerkarte "Java" im Feld "Initial memory pool" und im Feld "Maximum memory pool" den Wert 8192 eintragen. Die Eingabe der Parameter erfolgt analog der Beschreibung der Einstellungen für den Webserver "*Apache Tomcat*":#tomcat auf der Registerkarte "Java".
+bc. -DGEOSERVER_DATA_DIR=\irgendwo\data
+-Djava.awt.headless=true
+-XX:PermSize=1024m
+-XX:MaxPermSize=1024m 
+-XX:+CMSClassUnloadingEnabled
+-XX:+UseConcMarkSweepGC
+-Dfile.encoding=UTF8
+
+* *Linux*: In der Datei /etc/default/tomcatx den Eintrag auf 
+bc. JAVA_OPTS="-Djava.awt.headless=true -Xms8192m -Xmx8192m -XX:PermSize=1024m -XX:MaxPermSize=1024m
+-XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -DGEOSERVER_DATA_DIR=/irgendwo/data -Dfile.encoding=UTF8"
+
+ändern.
+
+h4(#geoserverkonfiguration). 5.2 Konfiguration
+
+Im *Geoserver* werden Layer konfiguriert, die mittels verschiedener Protokolle abgerufen werden können. Die Layer erhalten ihre Daten aus Datenspeichern. Layer und Datenspeicher werden Arbeitsbereichen zugewiesen. Nach der Installation von *Geoserver* sind mehrere Beispiellayer, -datenspeicher und -arbeitsbereiche vorhanden. Diese können gelöscht werden.
+
+
+h5(#geoserverarbeitsbereich). 5.2.1 Arbeitsbereich
+
+Es müssen zwei Arbeitsbereiche angelegt werden.
+
+table. 
+(tableHeader). | Name | Namensraum-URI | Standardarbeitsbereich | Beispiel | Bemerkungen |
+| klarschiff | http://domain/ows/klarschiff | ja | http://musterstadt.de/ows/klarschiff | Arbeitsbereich für den Standort |
+| zufi | http://domain/ows/zufi | nein | http://musterstadt.de/ows/zufi | Arbeitsbereich Zuständigkeitsfinder |
+
+h5(#geoserverdatenspeicher). 5.2.2 Datenspeicher
+
+Zu jedem angelegten Arbeitsbereich muss ein [Datenspeicher] angelegt werden.
+* Datenquelle hinzufügen für Vektordaten -> _+PostGIS+_
+** Informationen zum Datenspeicher:
+*** *Arbeitsbereich:* *klarschiff*
+*** aktiv: ja
+** Verbindungsparameter
+*** Name der Datenquelle: localhost_klarschiff_frontend
+*** host: localhost
+*** port: 5432
+*** database: "klarschiff_frontend":#datenbank
+*** schema: klarschiff
+*** user: "klarschiff_frontend":#frontend
+*** passwd: "klarschiff_frontend":#frontend
+*** Expose primary keys:ja
+*** max connections: 30
+*** min connections: 10
+*** fetch size: 5000
+*** Connection timeout: 60
+*** validate connections: nein
+*** Test while idle: ja
+*** Evictor run periodicity: 300
+*** Max connection idle time: 300
+*** Evictor tests per run: 3
+*** Max open prepared statements: 5
+
+###. *** Primary key metadata table: public.gt_pk_metadata_table ???????????????
+
+* Datenquelle hinzufügen für Vektordaten -> _+PostGIS+_
+** Informationen zum Datenspeicher:
+*** *Arbeitsbereich:* *zufi*
+*** aktiv: ja
+** Verbindungsparameter
+*** Name der Datenquelle: localhost_zufi
+*** host: localhost
+*** port: 5432
+*** database: "zufi":#zufi
+*** schema: zufi
+*** user: "zufi":#zufi
+*** passwd: "zufi":#zufi
+*** Expose primary keys:ja
+*** max connections: 30
+*** min connections: 10
+*** fetch size: 5000
+*** Connection timeout: 60
+*** validate connections: nein
+*** Test while idle: ja
+*** Evictor run periodicity: 300
+*** Max connection idle time: 300
+*** Evictor tests per run: 3
+*** Max open prepared statements: 5
+
+###. *** Primary key metadata table: public.gt_pk_metadata_table ???????????????????
+
+h5(#geoserverlayer). 5.2.3 Layer
+
+Zur Erstellung eines neuen Layers wird aus dem Datenspeicher eine Tabelle publiziert. Dabei gelten folgende Zuordnungen:
+
+table. 
+(tableHeader). | Datenquelle | Name | Angegebenes Koordinatenreferenzsystem |
+| localhost_klarschiff_frontend | stadtteile| EPSG:25833 |
+| localhost_klarschiff_frontend | vorgaenge | EPSG:25833 |
+| localhost_klarschiff_frontend | klarschiff_geo_rss | EPSG:25833 |
+
+
+h3(solr). 6 Solr
+
+Das *Backend* und das *Frontend* von *Klarschiff* verfügen über eine Funktion für die Adress- und Standortsuche. Hier wird die Programmbibliothek *Apache Lucene* der Apache Software Foundation zur Volltextsuche genutzt. *Solr* ist ein in Lucene enthaltenes Servlet für entsprechende Container wie dem Webserver "*Apache Tomcat*":#tomcat.
+
+Maßgebend für die Konfiguration ist die XML-Datei _solr.xml_ Konfigurationsordner des Webservers "*Apache Tomcat*":#tomcat.
+
+bc. <?xml version="1.0"?>
+-<Context crossContext="true" debug="0" docBase="C:/share/solr/solr.war">
+<Environment override="true" value="/data/solr" type="java.lang.String" name="solr/home"/>
+</Context>
+
+Hier wird dem Webserver mitgeteilt, wo sich die WAR-Datei befindet und welches das Home-Verzeichnis von *Solr* ist.
+
+
+h3(#ruby). 7. Ruby
+
+Zum Betreiben der Anwendung *Klarschiff* wird die Programmiersprache *Ruby* nicht benötigt. Sie ist für die Nutzung der Hilfsprogramme für den Datenimport und der Applikationen *citysdk*, *field_service* und *klarschiff-xfall* notwendig. Alle Erweiterungen sind mithilfe der Programmiersprache *Ruby* entwickelt worden. *Ruby*-Programme werden zur Laufzeit interpretiert.
+
+Neben *Ruby* benötigt man für die Verbindung zu *PostgreSQL* noch das *RubyGem* *_PG_*. Lässt sich das *RubyGem* nicht einbinden, muss die Entwicklungsumgebung von *Ruby* installiert werden. Dieses ist abhängig vom verwendeten Betriebssystem.
+
+Eine aktuelle Beschreibung der Installation von *Ruby* für die verschiedenen Betriebssysteme findet man unter "https://www.ruby-lang.org/de/documentation/installation/":https://www.ruby-lang.org/de/documentation/installation/.
+
+
+h3(#github). 8. GitHub (Git)
+
+*GitHub* ist ein webbasierter Filehosting-Dienst für Software-Entwicklungsprojekte. Zum Betrieb von *Klarschiff* wird *GitHub* aber nicht benötigt.
+
+*Klarschiff* wird ständig weiterentwickelt. Die jeweils aktuellste Version des *Backends* und des *Frontends* findet man unter den Adressen die in der folgenden Tabelle aufgeführt sind.
+
+table. 
+(tableHeader). | Anwendung | URI |
+| Frontend | "https://github.com/bfpi/klarschiff-frontend":https://github.com/bfpi/klarschiff-frontend |
+| Backend | "https://github.com/bfpi/klarschiff-backend":https://github.com/bfpi/klarschiff-backend |
+
+Mithilfe von *GitHub* kann mit wenigen Schritten die jeweils aktuellste Version ausgecheckt werden. 
+
+
+Es besteht auch die Möglichkeit, an den in der Tabelle aufgeführten Orten eine ZIP-Datei herunterzuladen. Nach dem Entpacken müssen dann die Dateien bzw. Verzeichnisse an die entsprechende Stelle kopiert werden.
+
+Die aktuelle Version von *GitHub Desktop* für *MS Windows* findet man unter der Adresse "https://windows.github.com/":https://windows.github.com/. Auf linuxbasierten Betriebssystemen erfolgt die Installation mithilfe der entsprechenden Paketverwaltung. Es muss das Paket *Git* installiert werden.
+
+h3(#maven). 9. Maven
+
+*Maven* ist ein Build-Management-Tool der *Apache Software Foundation* und basiert auf *Java*. Mithilfe von *Maven* wird die Software für das *Backend* in eine WAR-Datei "gepackt". Voraussetzung für die Nutzung von *Maven* ist eine aktuelles "*Java SE Development Kit*":#java (JDK). Zur Nutzung von *Maven* muss die Umgebungsvariable _JAVA_HOME=Pfad/zum/jdk_ gesetzt sein. Weiterhin muss der Pfad zu *Maven* in der PATH Variablen bekannt gegeben werden.
+
+h3(#nodejs). 10. Nodejs
+
+*Node.js* ist eine serverseitige Plattform zum Betrieb von Netzanwendungen. *Node.js* enthält einige Module und den Node Package Manager (npm).
+
+Eine Installationsanleitung mithilfe eines Paketmanagers findet man unter "https://github.com/joyent/node/wiki/Installing-Node.js-via-package-manager#debian-and-ubuntu-based-linux-distributions":https://github.com/joyent/node/wiki/Installing-Node.js-via-package-manager#debian-and-ubuntu-based-linux-distributions.
+
+Die Version für *MS Windows* findet man unter "https://nodejs.org/":https://nodejs.org/.
+
+Nach der Installation muss gegebenenfalls ein Proxy angepasst werden.
+
+bc. npm config set proxy http://meine-proxy-domain:mein-proxy-port
+npm config set https-proxy http://meine-proxy-domain:mein-proxy-port
+
+h3(#openldap). 11. OpenLDAP
+
+Für die Nutzung von *Klarschiff* ist eine LDAP - Umgebung notwendig. In ihr werden die Nutzer, die zuständigen Gruppen und die damit verbundenen Rechte verwaltet. Ist keine LDAP - Umgebung vorhanden kann mithilfe von *OpenLDAP* eine solche aufgebaut werden. *OpenLDAP* ist Bestandteil der meisten aktuellen *Linux* Distributionen und kann über die Paketverwaltung installiert werden. Es sind der OpenLDAP-Server (slapd) und die OpenLDAP-Hilfsprogramme (ldap-utils) zu installieren. Eine Version für *MS Windows* findet man unter "http://www.userbooster.de/download/openldap-for-windows.aspx":http://www.userbooster.de/download/openldap-for-windows.aspx.
+
+Soll kein LDAP-Server eingerichtet werden, können mithilfe einer LDIF(LDAP Data Interchange Format) Datei Nutzer und zuständige Gruppen eingerichtet werden.
+
+Beispiel LDIF(LDAP Data Interchange Format)-Datei:
+
+bc.. dn: dc=klarschiff,dc=local
+objectClass: organization
+objectClass: top
+
+dn: ou=users,dc=klarschiff,dc=local
+objectClass: organizationalUnit
+objectClass: top
+description: Nutzer
+
+dn: ou=groups,dc=klarschiff,dc=local
+objectClass: organizationalUnit
+objectClass: top
+description: Gruppen
+
+# Administrator
+dn: uid=admin,dc=klarschiff,dc=local
+objectclass: person
+objectclass: oganizationalperson
+objectclass: inetorgperson
+uid:admin
+cn: Administrator
+userPassword: admin
+
+# Nutzer1
+dn: uid=u1,ou=users,dc=klarschiff,dc=local
+objectclass: person
+objectclass: oganizationalperson
+objectclass: inetorgperson
+uid: u1
+cn: u1
+userPassword: u1
+
+# Nutzer2
+dn: uid=u2,ou=users,dc=klarschiff,dc=local
+objectclass: person
+objectclass: oganizationalperson
+objectclass: inetorgperson
+uid:u2
+cn: u2
+userPassword: u2
+
+# Gruppe Bauamt
+dn: cn=bauamt,ou=groups,dc=klarschiff,dc=local
+objectclass: groupOfNames
+objectclass: top
+cn: a66_bauamt
+description: Bauamt
+o: intern
+member: uid=u1,ou=users,dc=klarschiff,dc=local
+l: Standort irgendwo
+
+
+# AdminGruppe für Klarschiff
+dn: cn=admin,ou=groups,dc=klarschiff,dc=local
+objectClass: groupOfNames
+objectClass: top
+cn: admin
+member: uid=u1,ou=users,dc=klarschiff,dc=local
+description: Administratoren des Backend von Klarschiff
+o: admin
+
+h2(#klarschiff_frontend). Klarschiff-Frontend
+
+Die Anwendung aus dem Git-Repository klonen.
+
+bc. git clone https://github.com/bfpi/klarschiff-frontend /Pfad/zum/Anwendungsverzeichnis/des/Webservers/apache
+
+oder als ZIP-Datei herunterladen und im Anwendungsverzeichnis des Webservers "*Apache*":#apache entpacken.
+Das Anwendungsverzeichnis des Webservers *Apache* wird in der Konfigurationsdatei des Webservers unter der Variablen _DocumentRoot_ festgelegt. Dieses kann auch in der Datei _klarschiff.conf_ erfolgen.
+
+Im Anwendungsverzeichnis des Webservers *Apache* einen symbolischen Link auf die Datei "_start.php_":#startphp im Anwendungsverzeichnis des Frontends anlegen. In dieser Datei wird entschieden ob die mobile Variante oder die Desktop-Variante des Frontends aufgerufen wird.
+
+Im Anwendungsverzeichnis des Frontends
+
+bc. npm install
+
+in der Konsole ausführen. Es wird der Javascript Task Runner *Grunt* mit den notwendigen Paketen installiert. Grundlage bildet die Datei _package.json_.
+
+Ist das Anwendungsverzeichnis des Frontends nicht _http://localhost/frontend_ muss dies in der Datei _Gruntfile.js_ auf _http://localhost/webserverpfad/zum/anwendungsverzeichnis_ angepasst werden.
+
+Im Anschluss
+
+bc. npm install -g grunt-cli
+
+ausführen.
+
+Zur Einrichtung der Datenbankverbindung die Datei _Anwendungsverzeichnis/config/database.sample.php_ bearbeiten und kopieren als _Anwendungsverzeichnis/config/database.php_.
+
+Installieren und einrichten der referenzierten Bibliotheken mithilfe von *Grunt*.
+
+bc. grunt install
+
+Für die Tasks sind zwei Umgebungen vorbereitet. In der Standardkonfiguration (development) werden die Javaskripte nur zusammengefasst. Es gibt eine Überwachungsfunktion die bei Änderungen an den Quelldateien automatisch neue Builds für die Referenz in der Seite erstellt. Mit dem Setzen einer Umgebungsvariablen _GRUNT_ENV=production_ werden die Skripte für eine bessere Leistung zusätzlich komprimiert an den Browser ausgeliefert. Eine Überwachung ist nicht konfiguriert.
+
+Für beide Umgebungen wir der Standard Task wie folgt aufgerufen:
+
+bc. grunt
+
+h3(#konfigurationsdateienfontend). 1. Konfigurationsdateien Frontend
+
+Die Konfigurationsdateien des *Frontends* befinden sich im Arbeitsverzeichnis und im Unterverzeichnis _Arbeitsverzeichnis/config_.
+
+h4(#startphp). 1.1 start.php
+
+In Abhängigkeit vom verwendeten Endgerät oder Browser wird hier entschieden, ob die mobile Variante oder die Desktopvariante von *Klarschiff* aufgerufen wird.
+
+h4(#urlsphp). 1.2 urls.php
+
+In dieser Datei wird unter anderem eingetragen, unter welcher URL die Anwendungen wie
+
+* *Backend*
+* *Frontend*
+* mobile Variante vom *Frontend*
+
+zu finden sind.
+
+h4(#configjsphp). 1.3 config.js.php
+
+Hier werden 
+* das Zentrum
+* die Größe und 
+* die Zoomstufen
+der Karte des *Frontends* festgelegt.
+
+Weiterhin wird hier entschieden, welcher Meldungstyp _Idee_ oder _Problem_ oder beide möglich sind. Es werden die Platzhalter für das Meldungsformular und die möglichen Fehlermeldungen definiert.
+
+Es erfolgt die Definition der Layer für das *Frontend*:
+* den Stadtplan,
+* das Luftbild,
+* der POI(Points of Interest) und
+* der Meldungen.
+
+h4(#mapphp). 1.4 map.php
+
+In dieser Datei erfolgt der Aufbau und die Steuerung des Menüs in der Kartendarstellung.
+
+
+h2(#klarschifffrontendmobil). Klarschiff Frontend mobil
+
+Das mobile Frontend für *Klarschiff* ist eine angepasste Version des Frontends für mobile Endgeräte wie PDA, Handhelds, Smartphones usw. Beim Ausführen der _start.php_ wird versucht mithilfe der Browserkennungen mobile Endgeräte zu erkennen. Wird ein solcher Browser erkannt, wird das mobile *Frontend* verwendet. Die angewendete Methode ist nicht immer zuverlässig, weil die Browserkennung vom Nutzer verändert oder unterdrückt und die Liste aller Kennungen nur schwerlich aktuell gehalten werden kann.
+
+Ein funktionsfähiges Build vom *Klarschiff Frontend mobil* sollte mithilfe eines *Linux*-Systems erzeugt werden. Bis zum Redaktionszeitpunkt war die Erzeugung mithilfe eines *MS Windows* nicht gelungen.
+
+Die Anwendung aus dem Git-Repository klonen.
+
+bc. git clone https://github.com/bfpi/klarschiff-mobil /Pfad/zu/einem/Arbeitsverzeichnis
+
+oder als ZIP-Datei herunterladen und in einem Arbeitsverzeichnis entpacken.
+
+In diesem Arbeitsverzeichnis "*Espresso*":https://github.com/mwaylabs/Espresso mithilfe von npm und der Datei _package.json_ installieren.
+
+bc. npm install
+alias espresso=`pwd`/node_modules/espresso/bin/espresso.js
+
+Um ein neues Build aus den aktuellen Anwendungsquellen zu erzeugen, wird im Verzeichnis _Arbeitsverzeichnis/KsMobil_ das Espresso-Build-Tool genutzt:
+
+bc. espresso build
+
+Das fertige Build wird automatisch im Verzeichnis _Arbeitsverzeichnis/KsMobil/build/{version}_ abgelegt. Der Inhalt dieses Verzeichnis muss dann in das Verzeichnis für das mobile *Frontend* des Webserver "*Apache*":#apache kopiert oder verschoben werden.
+
+
+Vor der Erstellung des Builds ist darauf zu achten, dass die entsprechenden Kartendaten, wie Mittelpunkt und die Größe der Karte, in der Datei _Arbeitsverzeichnis/KsMobil/app/controllers/MapController.js_ eingetragen werden.
+
+Das Verzeichnis für das mobile Frontend in der Datei "_urls.php_":#urlsphp im _Anwendungsverzeichnis/frontend/config_ anpassen.
+
+h2(#klarschiff_backend). Klarschiff-Backend
+
+Die Anwendung aus dem Git-Repository klonen
+
+bc. git clone https://github.com/bfpi/klarschiff-backend /Pfad/zu/einem/Arbeitsverzeichnis
+
+oder als ZIP-Datei herunterladen und in ein Arbeitsverzeichnis entpacken. Im Anschluss muss die Datei "_settings.sample.properties_":#settingproperties im Verzeichnis _Arbeitsverzeichnis/src/main/resources_ angepasst und in die Datei _settings.properties_ kopiert oder umbenannt werden.
+
+Durch das Ausführen von "*Maven*":#maven
+
+bc. mvn clean
+mvn package
+
+im Arbeitsverzeichnis wird im Verzeichnis _Arbeitsverzeichnis/target_ eine _backend-x.y.war_ Datei erstellt. Die so erzeugte Datei muss dann in _backend.war_ umbenannt werden.
+
+Die _WAR_-Datei in das entsprechende Verzeichnis des Webservers "*Tomcat*":#tomcat kopieren. Dieses ist, falls nicht anders konfiguriert, das Verzeichnis _../webapps_. Der Webserver installiert dann das *Backend* automatisch.
+
+Beim ersten Aufruf des *Backends* im Browser werden die Tabellen in der Datenbank _klarschiff_backend_ initialisiert. Ist die Datei "_settings.properties_":#settingproperties richtig konfiguriert werden auch die Tabellen der Datenbank _klarschiff_frontend_ erzeugt. Dieses kann mithilfe von *pgAdmin III* kontrolliert werden. Wurden keine Tabellen angelegt ist die Datei "_settings.properties_":#settingproperties nicht richtig konfiguriert. Die Tabellen kann ein Administrator des *Backends* im Bereich Administration auf der Registerkarte _Datenbank_ mithilfe eines Skripts anlegen. An dieser Stelle erfolgt auch die Bereitstellung der Trigger und Triggerfunktionen für die automatische Synchronisation der Daten aus der *Backend*- in die *Frontend*-Datenbank.
+
+h3(#settingproperties). 1. Setting.properties
+
+Der zentrale Punkt für die Einstellungen für das *Backend* ist die Datei _settings.properties_. Hier werden alle Parameter für den Lauf der Anwendung angepasst.
+
+Im Verzeichnis _Arbeitsverzeichnis/backend/src/main/resources_ befindet sich eine Datei _settings.sample.properties_. Diese Datei stellt ein Beispiel für Datei _settings.properties_ dar. Wird die Datei _settings.sample.properties_ als Vorlage genutzt, muss diese nach der Bearbeitung unter dem Namen _settings.properties_ gespeichert werden. Die Bearbeitung sollte vor dem Erzeugen der WAR-Datei für das *Backend* durchgeführt werden. Es besteht auch die Möglichkeit die Datei _settings.properties_ im Verzeichnis _../backend/WEB-INF/classes_ zu bearbeiten. Dabei zu beachten, dass bei einer Aktualisierung des *Backends* mithilfe einer WAR-Datei die so aktualisierte Datei überschrieben wird und damit die Änderungen verloren gehen.
+
+h4(#kontextderanwendung). 1.1 Kontext der Anwendung
+
+| @context.app.title@ | Titel der Anwendung z. B. Klarschiff |
+| @context.app.area@ | Geografisches Gebiet z.B. Stadt |
+| @context.app.demo@ | Kennzeichnung als Demo-Version (@true@, @false@) |
+
+h4(#serverurlsfueremails). 1.2 Server URLs für E-Mails
+
+| @mail.server.baseurl.backend@ und @mail.server.baseurl.frontend@ | Die URLs werden bei der Erzeugung von E-Mails an den Verfasser einer Meldung verwendet und sollten auf die entsprechenden URLs des Frontend und Backend verweisen. |
+
+h4(#mailversand). 1.3 Mailversand
+
+| @mail.host@ | IP-Adresse oder Hostname des SMTP-Host, der für den Versand der E-Mails verwendet wird |
 | @mail.smtp.starttls.enable@ | aktiviert (@true@) oder deaktiviert (@false@) die Verschlüsselung mit dem SMTP-Host; Eine Aktivierung wird z.B. bei der Verwendung eines Google-Mail-Accounts benötigt. |
 | @mail.username@ und @mail.password@ | Benutzername und Passwort für den SMTP-Zugang, wenn dieser benötigt wird |
 | @mail.from@ | Absenderadresse für die vom System versendeten E-Mails |
 | @mail.sendAllMailsTo@ | Wenn hier eine E-Mail-Adresse angegeben wird, werden alle E-Mails an diese Adresse versendet. Dieses ist beispielsweise zum Test der E-Mail-Funktionen sinnvoll. |
 
-h3. Datenbank
+h4(#encodingfueremailmailto). 1.4 Encoding für E-Mail-"mailto"
 
-| @database.host@, @database.port@, @database.schema@, @database.dbname@, @database.username@ und @database.password@ | Host, Port, Schema, Name der Datenbank, Benutzername und Password der verwendeten Datenbank für das Backend |
+| @mail.mailto.encoding@ | z. B. UTF-8 |
 
-h3. Datenbanksynchronisation
+h4(#einstellungendatenbankbackend). 1.5 Einstellungen Backend-Datenbank
 
-| @database.frontend.host@, @database.frontend.port@, @database.frontend.schema@, @database.frontend.dbname@, @database.frontend.password@ und @database.frontend.username@ |Host, Port, Schema, Name der Datenbank, Benutzername und Password der verwendeten Datenbank für das Frontend |
-| @database.frontend.extrascriptparams@ | weitere Parameter, die beim Script zur Erstellung der FrontendDB verwendet werden. Z.B. _f_exportimage_username_ Nutzername mit den Rechten zum Erstellen von Dateien aus der Datenbank heraus oder _f_exportimage_path_ Verzeichnispfad in dem die Bilder beim Frontend gespeichert werden sollen |
-| @init.sqlscript.frontenddb@ | Hiermit wird festgelegt, ob das SQL-Script zum Erzeugen der FrontendDb ausgeführt wird. Das Script wird nur ausgeführt, wenn noch keine Daten in der BackendDb vorhanden sind. Die Ausführung erfolgt nach dem Erzeugen der Tabellen in der BackendDb. Folgende Werte sind möglich: @disabled@ - Script wird nicht ausgeführt, @warn@ - Script wird ausgeführt und es gibt im Log eine Fehlermeldung bei einem Fehler, @error@ - Script wird ausgeführt und der Start des Backend wird im Fehlerfall abgebrochen |
-| @init.sqlscript.dblink@ | Hiermit wird festgelegt, ob das SQL-Script, welches für die Synchronisation der Frontend- und Backend-DB auf der Basis von dbLink verantwortlich ist, ausgeführt wird. Das Script wird nur ausgeführt, wenn noch keine Daten in der BackendDb vorhanden sind. Die Ausführung erfolgt nach dem Erzeugen der Tabellen in der BackendDb. Folgende Werte sind möglich: @disabled@ - Script wird nicht ausgeführt, @warn@ - Script wird ausgeführt und es gibt im Log eine Fehlermeldung bei einem Fehler, @error@ - Script wird ausgeführt und der Start des Backend wird im Fehlerfall abgebrochen |
+| @database.host@ | IP-Adresse oder Hostname |
+| @database.port@ | Port |
+| @database.schema@ | Schema |
+| @database.dbname@ | Name der Backend-Datenbank
+| @database.username@ | Benutzername für Backend-Datenbank |
+| @database.password@ |Password für Benutzer Backend-Datenbank |
 
-h3. Automatische Jobs
+h4(#einstellungendatenbankfrontend). 1.6 Einstellungen Frontend-Datenbank
+
+Die folgenden Angaben werden für die Erstellung der *Frontend*-Datenbank benötigt.
+
+| @database.frontend.host@ | IP-Adresse Host oder Hostname |
+| @database.frontend.port@ | Port |
+| @database.frontend.schema@ | Schema |
+| @database.frontend.dbname@ | Name der Frontend-Datenbank |
+| @database.frontend.username@ | Benutzername für Frontend-Datenbank|
+| @database.frontend.password@ | Password Benutzer Frontend-Datenbank |
+
+h4(#datenbankskriptefuerdblinkundfrontenddatenbank). 1.7 Datenbankskripte für dblink und Frontend-Datenbank
+
+| @init.sqlscript.frontenddb@ | Hier wird festgelegt, ob das SQL-Skript zum Erzeugen der FrontendDb ausgeführt wird. Das Skript wird nur ausgeführt, wenn noch keine Daten in der Backend-Datenbank vorhanden sind. Die Ausführung erfolgt nach dem Erzeugen der Tabellen in der Backend-Datenbank. Folgende Werte sind möglich: @disabled@ - Skript wird nicht ausgeführt, @warn@ - Skript wird ausgeführt und es gibt im Log eine Fehlermeldung bei einem Fehler, @error@ - Skript wird ausgeführt und der Start des Backends wird im Fehlerfall abgebrochen |
+| @init.sqlscript.dblink@ | Hier wird festgelegt, ob das SQL-Skript, welches für die Synchronisation der Frontend- und Backend-Datenbank auf der Basis von _dbLink_ verantwortlich ist, ausgeführt wird. Das Skript wird nur ausgeführt, wenn noch keine Daten in der Backend-Datenbank vorhanden sind. Die Ausführung erfolgt nach dem Erzeugen der Tabellen in der Backend-Datenbank. Folgende Werte sind möglich: @disabled@ - Skript wird nicht ausgeführt, @warn@ - Skript wird ausgeführt und es gibt im Log eine Fehlermeldung bei einem Fehler, @error@ - Skript wird ausgeführt und der Start des Backends wird im Fehlerfall abgebrochen |
+
+h4(#dateisystempfadundurlzudenfotos). 1.8 Dateisystempfad und URL zu den Fotos
+
+| @image.path@ | Ablageverzeichnis der Fotos |
+| @image.url@ | URL der Fotos |
+
+
+h4(#automatischejobs). 1.9 Automatische Jobs
 
 | @job.monthsToArchivVorgaenge@ | Alter abgeschlossener Vorgänge in Monaten, bis diese automatisch archiviert werden. |
 | @job.hoursToRemoveUnbestaetigtVorgang@ | Alter von unbestätigten Vorgängen in Stunden, bis diese automatisch gelöscht werden. |
 | @job.hoursToRemoveUnbestaetigtUnterstuetzer@ | Alter von unbestätigten Unterstützungen in Stunden, bis diese automatisch gelöscht werden. |
 | @job.hoursToRemoveUnbestaetigtMissbrauchsmeldung@ | Alter von unbestätigten Missbrauchsmeldungen in Stunden, bis diese automatisch gelöscht werden. |
 
-h3. Geo
+h4(#tmsfuerkarte). 1.10 TMS(Tile Map Service) für Karte
 
-| @geo.map.projection@ | verwendete Projektion im System |
+h5(#kartendarstellungmitopenlayers). 1.10.1 Kartendarstellung mit OpenLayers
 
-h3. Kartendarstellung mit OpenLayers
-
-| @geo.map.tms.server@ | TMS für die Darstellung der Karten im Backend |
-| @geo.map.tms.server.layers@ | Layer des TMS, die bei der Kartendarstellung verwendet werden sollen. Format: @[LayerNameInDerAnzeige1]:[LayernameBeimTms1],[LayerNameInDerAnzeige2]:[LayernameBeimTms2],...@ |
+| @geo.map.projection@ | Verwendete Projektion im System |
 | @geo.map.maxExtent@ | Begrenzen der Daten der Karte |
-| @geo.map.restrictedExtent@ | maximal anzuzeigende Größe der Karte |
-| @geo.map.resolutions@ | verwendete Zoomstufen |
-| @geo.map.serverResolutions@ | vom Server bereitgestellte Zoomstufen |
+| @geo.map.restrictedExtent@ | Maximal anzuzeigende Größe der Karte |
+| @geo.map.resolutions@ | Verwendbare Zoomstufen |
+| @geo.map.serverResolutions@ | Vom Server bereitgestellte Zoomstufen |
 | @geo.map.ovi.margin@ | Darzustellender Umkreis bei der Anzeige eines Ortes |
+| @geo.map.tms.server@ | TMS(Tile Map Service)-Server für die Darstellung der Karten im Backend |
+| @geo.map.tms.server.layers@ | Layer des TMS(Tile Map Service), die bei der Kartendarstellung verwendet werden sollen. Format: @[LayerNameInDerAnzeige1]:[LayernameBeimTms1],[LayerNameInDerAnzeige2]:[LayernameBeimTms2],...@ |
 
-h3. Darstellung eines Vorgangs bzw. des Ortes in einem externen System
+h5(#darstellungeinesvorgangsbzwdesortesineinemexternensystem). 1.10.2 Darstellung eines Vorgangs bzw. des Ortes in einem externen System
 
-| @geo.map.extern.projection@ | Projektion im externen System (@geo.map.extern.url@) |
-| @geo.map.extern.url@ | URL zur Darstellung eines Vorganges in einem externen System (es können die Variablen @%x%@, @%y%@ und @%id%@ verwendet werden) |
-| @geo.map.extern.extern.url@ | URL zur Darstellung eines Vorgangs in einem externen System, was von jedem Nutzer im Internet aufgerufen werden kann (es können die Variablen @%x%@, @%y%@ und @%id%@ verwendet werden) |
+| @geo.map.extern.projection@ | Projektion im externen System |
+| @geo.map.extern.url@ | URL zur Darstellung eines Ortes und mit der VorgangsID in einem externen System (es können die Variablen @%x%@, @%y%@ und @%id%@ verwendet werden) |
+| @geo.map.extern.extern.url@ | URL zur Darstellung eines Vorgangs im *Frontend* |
 
-h3. Anbindung des WFS für den Zuständigkeitsfinder
+h5(#wmsmitzusaetzlichenpoifuerkarte). 1.10.3 WMS(Web Map Service) mitzusätzlichen POI(Points of Interest) für Karte
 
-| @geo.wfs.url@ | URL zum Aufruf der Capabilities des WFS |
-| @geo.wfs.wfs.exception.handling@ | ExceptionHandling beim Initalisieren des WFS (@warn@ - Fehlermeldungen werden in das Log geschrieben, @error@ - der Start der Webanwendung wird bei einem Fehler abgebrochen) |
-| @geo.wfs.ovi.buffer@ | Umkreis in Metern, der bei der Berechnung der Features für den Zuständigkeitsfinder berücksichtigt werden soll |
+| @geo.wms.url@ | URL des WMS(Web Map Service-Servers) |
+| @geo.wms.title@ | Titelbezeichnung |
+| @geo.wms.layers@ | Bezeichnung der Layer auf dem WMS(Web Map Service)-Server (Komma getrennt) |
+| @geo.wms.image@ | Format des ausgelieferten Layers |
+| @geo.wms.tranparent@ | Transparenz des Layers @true@ - ja @false@ - nein |
+| @geo.wms.minScale@ | Größe des Layers |
+| @geo.wms.singleTile@ | Der Layer wird als ein Bild geliefert (@true@). Layer wird aus "Kacheln" zusammengesetzt. (@false@) |
 
-h3. Proxy
+h5(#wfsmitvorgaengenfuerkarte). 1.10.4 WFS(Web Feature Service) mit Vorgängen für Karte
 
-| @proxy.host@ und @proxy.port@ | Proxyeinstellungen, die der Server zur Kommunikation mit dem Internet benötigt. Diese werden z.B. für die Kommunikation mit dem WFS benötigt |
+| @geo.wfsvorgaenge.url@ | URL des WFS(Web Feature Service)-Servers |
+| @geo.wfsvorgaenge.featurens@ | Namensraum |
+| @geo.wfsvorgaenge.featureprefix@ | Arbeitsbereich |
+| @geo.wfsvorgaenge.featuretype@ | Typ des Vorganges |
 
-h3(#ldap). LDAP
+h5(#wfsfuerzustaendigkeitsfinder). 1.10.5 WFS(Web Feature Service) für Zuständigkeitsfinder
 
-Es kann ein LDAP-Server verwendet werden oder auf der Basis einer LDIF-Datei lokal ein LDAP mitgestartet werden, der dann verwendet wird. Hierzu ist jeweils der eine Parameter @ldap.server.ldif@ oder @ldap.server.url@ zu setzen und der andere frei zu lassen.
-| @ldap.server.ldif@ | Wenn der Wert gesetzt ist, wird ein lokaler LDAP gestartet und die Daten aus der hier angegebenen LDIF-Datei werden verwendet. |
-| @ldap.server.url@ | URL eines LDAP-Servers |
-| @ldap.root@ | Rootpfad für die Anfragen an den LDAP |
-| @ldap.managerDn@ und @ldap.managerPassword@ | Zugangsdaten für den LDAP-Server |
-| @ldap.userSearchBase@ | Pfad, in dem nach Benutzern gesucht werden soll |
-| @ldap.userObjectClass@ | Objektklasse für Benutzer |
-| @ldap.userSearchFilter@ | Filter zum Suchen von Benutzern |
+| @geo.wfszufi.exception.handling@ | Fehlerbehandlung beim Initialisieren des WFS(Web Feature Service) (@warn@ - Fehlermeldungen werden in das Log geschrieben, @error@ - der Start der Webanwendung wird bei einem Fehler abgebrochen) |
+| @geo.wfszufi.ovi.buffer@ | Umkreis in Metern, der bei der Berechnung der Features für den Zuständigkeitsfinder berücksichtigt werden soll |
+| @geo.wfszufi.capabilities.url@ | Abfrage der verfügbaren Methoden des WFS(Web Feature Service)-Servers (... request=GetCapabilities) |
+| @geo.wfszufi.featureprefix@ | Arbeitsbereich des Zuständigkeitsfinders |
+| @geo.wfszufi.bewirtschaftungskataster.featuretype@ | Typ des Vorgangs z.B. _bewirtschaftung_ |
+| @geo.wfszufi.bewirtschaftungskataster.propertyname@ |Feldname des Bewirtschafters |
+| @geo.wfszufi.bewirtschaftungskataster.geomname@ | Feldname der Geometriespalte |
+| @geo.wfszufi.flaechendaten.geomname@ | Feldname der restlichen Flächen |
+
+h4(#adressensuche). 1.11 Adressensuche
+
+| @geo.adressensuche.url@ | Adressensuche im Backend möglich (@true@) |
+
+###. | @geo.wfs.url@ | URL zum Aufruf der Capabilities des WFS(Web Feature Service) |
+###. | @geo.wfs.wfs.exception.handling@ | ExceptionHandling beim Initialisieren des WFS(Web Feature Service) (@warn@ - Fehlermeldungen werden in das Log geschrieben, @error@ - der Start der Webanwendung wird bei einem Fehler abgebrochen) |
+###. | @geo.wfs.ovi.buffer@ | Umkreis in Metern, der bei der Berechnung der Features für den Zuständigkeitsfinder berücksichtigt werden soll |
+
+h4(#proxy). 1.12 Proxy
+
+| @proxy.host@ und @proxy.port@ | Proxyeinstellungen, die der Server zur Kommunikation mit dem Internet benötigt. Diese werden z.B. für die Kommunikation mit dem WFS(Web Feature Service) benötigt |
+
+h4(#ldap). 1.13 LDAP(Lightweight Directory Access Protocol)
+
+Es kann ein "LDAP(Lightweight Directory Access Protocol)-Server":#openldap verwendet werden oder auf der Basis einer LDIF(LDAP Data Interchange Format)-Datei lokal ein LDAP(Lightweight Directory Access Protocol) mitgestartet werden, das dann verwendet wird. Hierzu ist jeweils der eine Parameter @ldap.server.ldif@ oder @ldap.server.url@ zu setzen und der andere frei zu lassen.
+| @ldap.server.ldif@ | Wenn der Wert gesetzt ist, wird ein lokales LDAP(Lightweight Directory Access Protocol) gestartet und die Daten aus der hier angegebenen LDIF(LDAP Data Interchange Format)-Datei werden verwendet. |
+| @ldap.server.url@ | URL eines LDAP(Lightweight Directory Access Protocol)-Servers |
+| @ldap.root@ | Rootpfad für die Anfragen an den LDAP(Lightweight Directory Access Protocol) |
+| @ldap.managerDn@ und @ldap.managerPassword@ | Zugangsdaten für den LDAP(Lightweight Directory Access Protocol)-Server |
+| @ldap.userSearchBase@ | Pfad, in dem nach Nutzern gesucht werden soll |
+| @ldap.userObjectClass@ | Objektklasse für Nutzer |
+| @ldap.userSearchFilter@ | Filter zum Suchen von Nutzern |
+| @ldap.userEmailFilter@ | Filter für die Suche der E-Mail-Adresse des Nutzers |
 | @ldap.groupSearchBase@ | Pfad, in dem nach Gruppen gesucht werden soll |
 | @ldap.groupObjectClass@ | Objektklasse für Gruppen |
 | @ldap.groupRoleAttribute@ | Attribut, in dem bei den Gruppen die Rolle _intern_ oder _extern_ gesetzt ist
 | @ldap.groupSearchFilter@ | Filter, in denen bei den Gruppen nach Benutzern gesucht wird |
 | @ldap.groupObjectId@ | Attribut mit der ID für die Gruppe |
-| @ldap.userAttributesMapping@ | Mapping für das Auslesen der Daten eines Benutzers beim LDAP. Format: @[AttributNameAnwendung1]=[AttributNameLdap1],[AttributNameAnwendung2]=[AttributNameLdap2],...@ |
-| @ldap.roleAttributesMapping@ | Mapping für das Auslesen der Daten einer Gruppe beim LDAP. Format: @[AttributNameAnwendung1]=[AttributNameLdap1],[AttributNameAnwendung2]=[AttributNameLdap2],...@ |
+| @ldap.userAttributesMapping@ | Mapping für das Auslesen der Daten eines Benutzers beim LDAP(Lightweight Directory Access Protocol). Format: @[AttributNameAnwendung1]=[AttributNameLdap1],[AttributNameAnwendung2]=[AttributNameLdap2],...@ |
+| @ldap.roleAttributesMapping@ | Mapping für das Auslesen der Daten einer Gruppe beim LDAP(Lightweight Directory Access Protocol). Format: @[AttributNameAnwendung1]=[AttributNameLdap1],[AttributNameAnwendung2]=[AttributNameLdap2],...@ |
 
-Die folgenden Abbildungen stellen zur näheren Erläuterung dar, wie Benutzer und Gruppen im LDAP abzubilden sind und wie die Einstellungen in der @settings.properties@ hierzu in Beziehung stehen.
+Die folgende Abbildung stellt zur näheren Erläuterung dar, wie Benutzer und Gruppen im LDAP(Lightweight Directory Access Protocol) abzubilden sind und wie die Einstellungen in der @settings.properties@ hierzu in Beziehung stehen.
 
-!{width:90%;padding:10px;background-color:#ffffff}imga_ldapBenutzer.png!
+!{width:95%;padding:10px;background-color:#ffffff}img_LDAP_Klarschiff.jpg!
 
-p(imgtext). _Abbildung:_ Abbildung von Benutzern im LDAP
+p(imgtext). _Abbildung:_ Abbildung von Benutzern im LDAP(Lightweight Directory Access Protocol)
 
-Benutzer benötigen eine @uid@ und ein @userPassword@, welche für das Login verwendet werden. Der Name (@cn@) und die Mailadresse (@mail@) werden im Backend für die Anzeige von Verlaufsdaten und für den Mailversand verwendet.   
+Benutzer benötigen eine @uid@ und ein @userPassword@, welche für das Login verwendet werden. Der Name (@cn@) und die Mailadresse (@mail@) werden im Backend für die Anzeige von Verlaufsdaten und für den Mailversand verwendet.
 
-!{width:90%;padding:10px;background-color:#ffffff}imga_ldapGruppen.png!
-
-p(imgtext). _Abbildung:_ Abbildung von Gruppen im LDAP
-
-Bei den Gruppen wird zwischen @intern@, @extern@, @dispatcher@ und @admin@ unterschieden. Die Gruppen @dispatcher@ und @admin@ existieren im LDAP nur jeweils einmal. Die Gruppen für @intern@ und @extern@ existieren i.d.R. mehrfach. Die Namen der Gruppen (@cn@) und die Beschreibung (@ou@) werden bei der Anzeige der Zuständigkeit bzw. beim Delegieren verwendet. 
-
-!{width:90%;padding:10px;background-color:#ffffff}imga_ldapBenutzerGruppen.png!
-
-p(imgtext). _Abbildung:_ Beziehungen zwischen Benutzern und Gruppen im LDAP
+Bei den Gruppen wird zwischen @intern@, @extern@, @koordinator@, @aussendienst@, @dispatcher@ und @admin@ unterschieden. Die Gruppen @dispatcher@ und @admin@ existieren im LDAP nur jeweils einmal. Die Gruppen für @intern@ und @extern@ existieren i.d.R. mehrfach. Die Namen der Gruppen (@cn@) und die Beschreibung (@ou@) werden bei der Anzeige der Zuständigkeit bzw. beim Delegieren verwendet. 
 
 Die Verknüpfung der Gruppen mit Benutzern erfolgt über das Attribut @member@ bei der Gruppe. Einer Gruppe können dabei mehrere Benutzer zugeordnet sein und auch ein Benutzer kann mehreren Gruppen angehören.
 
-h3. Loginseite
+h4. 1.14 Loginseite
 
 | @show.logins@ | Aktiviert (@true@) oder deaktiviert (@false@) eine Anzeige von statischen Logindaten unter dem Login |
 
-h3. Anzahl Unterstützer bei Ideen
+h4. 1.15 Anzahl Unterstützer bei Ideen
 
 | @vorgang.idee.unterstuetzer@ | Anzahl der Unterstützungen, die eine Idee benötigt, damit sie in der einfachen Suche angezeigt wird |
 
-h3. Fehlermeldungen
+h4. 1.16 Fehlermeldungen
 
 | @show.fehler.details@ | Aktiviert (@true@) oder deaktiviert (@false@) die ausführliche Fehleranzeige in der Webanwendung |
 | @bug.tracking.url@ | URL auf ein Bugtracking-System, die bei einem Fehler angezeigt wird |
 
-h3. Connector
+h4. 1.17 Connector
 
 | @show.connector@ | Aktiviert (@true@) oder deaktiviert (@false@) eine Anzeige des Connectors auf jeder Seite im Footer |
 
-h3. Version
+h4. 1.18 Version
 
 | @version@ | Bezeichnung der Version, die im Footer angezeigt werden soll |
 
+Systemspezifischere Anpassungen, die z.B. bei der Weiterentwicklung vorgenommen werden müssen, können im ApplicationContext (@src_main\META-INF\spring\..xml@), dem WebApplicationContext (@WebContent\WEB-INF\spring\webmvc-config.xml@) oder an anderen Stellen vorgenommen werden.
+h2(#cluster). Webanwendung in einem Cluster
 
-h2(#cluster). Webanwendung in einem Cluster laufen lassen
-
-Das Backend von Klarschiff ist für den Lauf in einem Cluster vorbereit. Hierzu wurden die folgenden Vorbereitungen getroffen:
+Das *Backend* von *Klarschiff* ist für den Lauf in einem Cluster vorbereitet. Hierzu wurden die folgenden Vorbereitungen getroffen:
 * Die Sessionattribute implementieren das Interface @java.io.Serializable@, damit die Sessions zwischen den einzelnen Clients im Cluster synchronisiert werden können.
 * Die Hintergrundjobs werden mit Hilfe der DB synchronisiert, damit beispielsweise Mails nicht mehrfach versendet werden.
 * In der @web.xml@ ist der Tag @<distributable/>@ aktiviert.
 
 Damit das Backend in einem Cluster laufen kann, müssen die folgenden Schritte vorgenommen werden:
-* Laufen auf einem Rechner mehrere Clients, so sind beim tomcat entsprechend die Ports anzupassen, damit es nicht zu Konflikten kommt.
-* In der @server.xml@ des einzelnen Tomcat muss eine ID für den Client (@jvmRoute="worker1"@) vergeben werden und der Lauf in einem Cluster muss aktiviert werden (@<Cluster .../>@).
+* Laufen auf einem Rechner mehrere Clients, so sind beim *Apache Tomcat*:#tomcat entsprechend die Ports anzupassen, damit es nicht zu Konflikten kommt.
+* In der @server.xml@ des einzelnen *Apache Tomcat*:#tomcat muss eine ID für den Client (@jvmRoute="worker1"@) vergeben werden und der Lauf in einem Cluster muss aktiviert werden (@<Cluster .../>@).
 bc.. 
 	<Engine defaultHost="localhost" name="Catalina" jvmRoute="worker1">
 		<Cluster className="org.apache.catalina.ha.tcp.SimpleTcpCluster"/>
 	...
 	</Engine>
 p. 
-* Ein Loadbalancer für die Verteilung der Anfragen auf die einzelnen Clients muss eingerichtet werden. Hierzu kann beispielsweise ein Apache oder Pound verwendet werden.
+* Ein Loadbalancer für die Verteilung der Anfragen auf die einzelnen Clients muss eingerichtet werden. Hierzu kann beispielsweise ein *Apache* oder *Pound* verwendet werden.
 
 *Loadbalancing mit einem Apache*
 
-Nähere Information zum Einrichten eines Tomcat in einem Cluster mit einem Apache ist beispielsweise unter "http://www.easywayserver.com/implementation-tomcat-clustering.htm":http://www.easywayserver.com/implementation-tomcat-clustering.htm zu finden.
+Nähere Information zum Einrichten eines Tomcat in einem Cluster mit einem *Apache* ist beispielsweise unter "http://www.easywayserver.com/implementation-tomcat-clustering.htm":http://www.easywayserver.com/implementation-tomcat-clustering.htm zu finden.
 
 *Loadbalancing mit Pound*
 
-Damit das Clustering mit Pound funktioniert, darf das Attribut @jvmRoute@ in der @server.xml@ der einzelnen Tomcats nicht gesetzt sein. Naher Informationen zum Verwenden und Einrichten von Pound als Loadbalencer sind unter "http://www.apsis.ch/pound/":http://www.apsis.ch/pound/ zu finden.
+Damit das Clustering mit *Pound* funktioniert, darf das Attribut @jvmRoute@ in der @server.xml@ der einzelnen Tomcats nicht gesetzt sein. Nähere Informationen zum Verwenden und Einrichten von *Pound* als Loadbalancer sind unter "http://www.apsis.ch/pound/":http://www.apsis.ch/pound/ zu finden.
+
+h2(#import). Import
+
+p. Für die Initialisierung von *Klarschiff* stehen die folgenden Hilfsmittel zur Verfügung:
+
+* Tool zum Importieren der "Stadteile":#stadtteile
+* Tool zum Erstellen der Geo-Koordinaten aus einer "Adressdatei":#adressen
+* Tool zum Importieren der "Kategorien":#kategorien
+* Tool zum Importieren der WFS(Web Feature Service) "Vektordaten":#wfs
+* Tool zum Importieren der Vektordaten für die Amtsflächen des "Zuständigkeitsfinders":#bewirtschafter
+
+Diese Werkzeuge können "https://github.com/bfpi/klarschiff-tools":https://github.com/bfpi/klarschiff-tools aus dem *GitHub* heruntergeladen werden. Voraussetzung für die Nutzung der Werkzeuge ist ein installiertes "*Ruby*":#ruby.
+
+h3(#stadtteile). 1. Stadtteile
+
+Beim Import der Stadtteile werden in der Datenbank _standortsuche_ die Tabelle _ortsteil und in der Datenbank _klarschiff_backend_ die Tabelle _klarschiff_stadtteil_grenze_ mit Daten gefüllt. Die Daten dafür werden aus der als Parameter übergebenen Shape-Datei entnommen.
+
+bc. ruby import-stadteile.rb shape-datei
+
+Die entsprechende Tabelle in der Datenbank _klarschiff_frontend_ erhält ihre Daten aus der Datenbank _klarschiff_backend_.
+
+h3(#adressen). 2. Adressen
+
+Die Grundlage bildet eine ASCII-Datei mit den amtlichen Hauskoordinaten Deutschland (HK-DE). Die HK-DE definiert die genaue räumliche Position von adressierten Gebäuden. Der Inhalt dieser Datei wird an die Datenbank _standortsuche_ übergeben. Dabei wird die Datenbank mit den Orten, Straßen und Adressen gefüllt. Voraussetzung ist, dass die Stadtteile in der Datenbank _klarschiff_backend_ vorhanden sind.
+
+bc. ruby import-adressen.rb adressdatei
+
+Nach dem Import der Adressen muss zur Indexierung der Adressen das PHP-Skript @updateIndex.php@ ausgeführt werden. Damit steht in den einzelnen Programmteilen die Suche nach Adressen zur Verfügung.
+
+h3(#kategorien). 3. Kategorien
+
+Zur Beschreibung eines Problems oder einer Idee ist eine Zuordnung zu einer Haupt- und Unterkategorie notwendig. Anhand dieser Kategorien wird eine erste Zuständigkeit ermittelt. Die Kategorien und Zuständigkeiten können mithilfe dieses Tools und einer CSV-Datei an das System übergeben werden.
+
+bc. ruby import-kategorien.rb CSV-Datei
+
+Aufbau der CSV-Datei:
+In der ersten Zeile steht eine Spaltenüberschrift. Diese Zeile wird nicht importiert.
+
+table. 
+(tableHeader). | Kategorie | Art | Zuständigkeit | Anliegen-ID |
+| Kategorie 1 | Problem |  |  |
+| Unterkategorie 1 |  | Abteilung 1 |  |
+| Unterkategorie 2 |  | Abteilung 2 |  |
+|{text-align:center}.* |  |{text-align:center}.* |  |
+|{text-align:center}. * |  |{text-align:center}. * |  |
+|{text-align:center}. * |  |{text-align:center}. * |  |
+| Unterkategorie n |  | Abteilung m |  |
+| Kategorie 2 | Problem |  |  |
+| Unterkategorie 1 |  | Abteilung 1 |  |
+| Unterkategorie 2 |  | Abteilung 2 |  |
+| Unterkategorie n |  | Abteilung m |  |
+|{text-align:center}. * |  |{text-align:center}. * |  |
+|{text-align:center}. * |  |{text-align:center}. * |  |
+|{text-align:center}. * |  |{text-align:center}. * |  |
+| Kategorie 2 | Idee |  |  |
+| Unterkategorie 1 |  | Abteilung 1 |  |
+| Unterkategorie 2 |  | Abteilung 2 |  |
+|{text-align:center}. * |  |{text-align:center}. * |  |
+|{text-align:center}. * |  |{text-align:center}. * |  |
+|{text-align:center}. * |  |{text-align:center}. * |  |
+| Unterkategorie n |  | Abteilung m |  |
+|{text-align:center}. * |{text-align:center}. * |{text-align:center}. * |  |
+|{text-align:center}. * |{text-align:center}. * |{text-align:center}. * |  |
+|{text-align:center}. * |{text-align:center}. * |{text-align:center}. * |  |
+
+h3(#wfs). 4. WFS(Web Feature Service)
+
+Mithilfe dieses Skripts werden die Bereichsgrenzen von *Klarschiff* in die Tabelle _klarschiff_stadt_grenze_ der Datenbank _backend_ importiert. In der Datei _config.yml_ wird die URL(Uniform Resource Locator) zum WFS(Web Feature Service) und die maximale Anzahl von Objekten, die der WFS(Web Feature Service) zurückgeben soll, angegeben. Der Typname bestimmt die Ebene, aus der die Grenzen ermittelt werden soll.
+
+table. 
+(tableHeader). | Typname | Schlüssel |
+| dvg:kreise | Kreisschlüssel z. B. 13074 Landkreis Nordwestmecklenburg |
+| dvg:aemter | Amtsschlüssel ohne Kreisschlüssel z. B. statt 13072 5259 für Amt Neubukow-Salzhaff nur 5259 verwenden. Da eindeutig.
+| dvg:gemeinden | Gemeindeschlüssel z. B. 13074 069  für die Gemeinde Roggenstorf
+Zur Ermittlung eines Kreisschlüssels kann man den folgenden Link nutzen.
+
+"http://www.geodaten-mv.de/dienste/dvg_laiv_wfs?SERVICE=WFS&VERSION=1.1.0&REQUEST=GetFeature&TYPENAME=dvg:kreise&maxFeatures=8":http://www.geodaten-mv.de/dienste/dvg_laiv_wfs?SERVICE=WFS&VERSION=1.1.0&REQUEST=GetFeature&TYPENAME=dvg:kreise&maxFeatures=8
+
+Es wird eine XML-Datei zurückgegeben in der alle kreisfreien Städte und die Landkreise von MVP aufgeführt sind. Einen Gemeindeschlüssel kann man auch über den entsprechenden *Wikipedia*-Eintrag der Gemeinde finden.
+
+Der WFS(Web Feature Service)-Import wird wie folgt aufgerufen:
+
+bc. ruby import-wfs.rb
+
+Die vom WFS(Web Feature Service) gelieferten Vektordaten werden in der Datenbank gespeichert.
+
+h3(#bewirtschafter). 5. Bewirtschafter
+
+Soll der Zuständigkeitsfinder genutzt werden ist ein Import von Amtsflächen möglich. Die Konfiguration des Imports wird in der Datei _config.yml_ durchgeführt. Die entsprechenden Amtsflächen sind dort zu aktivieren. Der Typname ist @dvg:aemter@. Dieser ist fest. Die Vektordaten werden in der Tabelle _bewirtschaftung_ der Datenbank _zufi_ gespeichert.
+
+
+h2(#administration). Administration
+
+Angemeldete Nutzer mit der Rolle *_admin_* können mit Klick auf die Schaltfläche *_Administration_* in den Bereich _Administration_ des *Backends* wechseln.
+
+!{width:90%;padding:10px;background-color:#ffffff}img_Registerkarte_Uebersicht.png!
+
+p(imgtext). _Abbildung:_ Registerkarte _Übersicht_
+
+Mit Klick auf einen Reiter einer Registerkarte wird diese geöffnet. Auf der Registerkarte _Benutzer_ findet man alle registrierten Nutzer des *Backends*. Von jedem Nutzer werden die entsprechenden Berechtigungen angezeigt
+
+!{width:90%;padding:10px;background-color:#ffffff}img_Registerkarte_Benutzer.png!
+
+p(imgtext). _Abbildung:_ Registerkarte _Benutzer_
+
+Auf der Registerkarte _Rollen_ werden die Gruppen einer Organisation in ihren Rollen abgebildet. Dabei wird unterschieden zwischen den Rollen _intern_, _extern_ und _aussendienst_.
+
+!{width:90%;padding:10px;background-color:#ffffff}img_Registerkarte_Rollen.png!
+
+p(imgtext). _Abbildung:_ Registerkarte _Rollen_
+
+Auf der Registerkarte _Außendienst_ erfolgt die Darstellung der Außendienstkoordinatoren und der Gruppen für den Außendienst.
+
+!{width:90%;padding:10px;background-color:#ffffff}img_Registerkarte_Aussendienst.png!
+
+p(imgtext). _Abbildung:_ Registerkarte _Außendienst_
+
+Auf der Registerkarte _Redaktion_ erfolgt die Darstellung der definierten Redaktionskriterien und der Empfänger der E-Mails, welche aufgrund der festgelegten Kriterien versendet werden. Die Redaktionskriterien können zum Zeitpunkt der Erstellung dieser Dokumentation nur mit datenbanktechnischen Mitteln definiert werden. Es wird hier die Behandlung von Meldungen definiert. Die Empfänger der redaktionellen E-Mails erhalten entsprechend der eingestellten Stufe nach einer definierten Anzahl von Tagen eine E-Mail über den Bearbeitungsstand einer Meldung die in ihren Zuständigkeitsbereich fallen.
+
+!{width:90%;padding:10px;background-color:#ffffff}img_Registerkarte_Redaktion.png!
+
+p(imgtext). _Abbildung:_ Registerkarte _Redaktion_
+
+Auf der Registerkarte _Lob/Hinweise/Kritik_ werden die Texte angezeigt die im Frontend an einer vorhandenen Meldung unter _Details_ -> _Lob, Hinweise oder Kritik zur Meldung_ von einem Nutzer erfasst werden. Mit Klick in die Spaltenbezeichnung kann die Tabelle nach dem Inhalt der entsprechenden Spalte auf oder absteigend sortiert werden.
+
+!{width:90%;padding:10px;background-color:#ffffff}img_Registerkarte_Lob.png!
+
+p(imgtext). _Abbildung:_ Registerkarte _Lob/Hinweise/Kritik_
+
+Auf der Registerkarte _Trashmail_ besteht die Möglichkeit eine Liste von Domains anzupassen, die durch *Klarschiff* geblockt werden sollen. Damit wird der Missbrauch des Systems eingeschränkt. E-Mails mit diesen Domains werden blockiert und eine Einstellung von Vorgängen, Unterstützungen und Missbrauchsmeldungen sind damit nicht möglich.
+
+!{width:90%;padding:10px;background-color:#ffffff}img_Registerkarte_Trashmail.png!
+
+p(imgtext). _Abbildung:_ Registerkarte _Trashmail_
+
+Die Registerkarte _Status_ gibt Auskunft über den gegenwärtigen Zustand des Servers. Neben den allgemeinen Angaben wie Hostname und IP-Adresse werden die Server im Cluster, der Status des WFS(Web Feature Service) und der Zustand der im Hintergrund laufenden Jobs angezeigt. Fehlerhafte Jobs werden in einer Tabelle angezeigt.
+
+!{width:90%;padding:10px;background-color:#ffffff}img_Registerkarte_Status.png!
+
+p(imgtext). _Abbildung:_ Registerkarte _Status_
+
+Auf der Registerkarte _Datenbank_ befinden sich die Schaltflächen zum Anlegen der relevanten Datenbankobjekte der Frontend-Datenbank und zum Anlegen der Funktionen für die automatische Synchronisation der Daten aus der Backend-Datenbank in die Frontend-Datenbank. Diese Aufgaben müssen nur einmal nach der Installation oder nach Fehlern in der Frontend-Datenbank ausgeführt werden.
+
+!{width:90%;padding:10px;background-color:#ffffff}img_Registerkarte_Datenbank.png!
+
+p(imgtext). _Abbildung:_ Registerkarte _Datenbank_
+
+
+
+
+

@@ -449,7 +449,7 @@ public class MailService {
     str = new StringBuilder();
     str.append(vorgang.getStatus().getText());
     if (!StringUtils.isBlank(vorgang.getStatusKommentar())) {
-      str.append(" (Info der Verwaltung: ").append(vorgang.getStatusKommentar()).append(")\n");
+      str.append(" (Statusinformation: ").append(vorgang.getStatusKommentar()).append(")\n");
     }
     mailtext = mailtext.replaceAll("%status%", str.toString());
 
@@ -487,7 +487,7 @@ public class MailService {
     str = new StringBuilder();
     str.append(vorgang.getStatus().getText());
     if (!StringUtils.isBlank(vorgang.getStatusKommentar())) {
-      str.append(" (Info der Verwaltung: ").append(vorgang.getStatusKommentar()).append(")\n");
+      str.append(" (Statusinformation: ").append(vorgang.getStatusKommentar()).append(")\n");
     }
     mailtext = mailtext.replaceAll("%status%", str.toString());
 

@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -193,7 +194,7 @@ public class VorgangSuchenController {
       modelMap.put("cmdvorgangsuchen", cmd);
     }
     updateKategorieInModel(modelMap, cmd);
-
+    
     if (cmd.getVorgangAuswaehlen() != null && cmd.getVorgangAuswaehlen().length > 0) {
       List<Vorgang> vorgaenge = vorgangDao.findVorgaenge(cmd.getVorgangAuswaehlen());
       for (Vorgang vorgang : vorgaenge) {
@@ -204,8 +205,10 @@ public class VorgangSuchenController {
         } else {
           auftrag = vorgang.getAuftrag();
         }
-        auftrag.setTeam(cmd.getAuftragTeam());
-        auftrag.setDatum(cmd.getAuftragDatum());
+        if ((!StringUtils.equals("Team wählen", cmd.getAuftragTeam()) && cmd.getAuftragDatum() != null) || ((StringUtils.equals("Team wählen", cmd.getAuftragTeam()) || cmd.getAuftragTeam() == null || StringUtils.equals("", cmd.getAuftragTeam())) && cmd.getAuftragDatum() == null)) {
+            auftrag.setTeam(cmd.getAuftragTeam());
+            auftrag.setDatum(cmd.getAuftragDatum());
+        }
         auftrag.setPrioritaet(null);
         auftrag.setStatus(EnumAuftragStatus.nicht_abgehakt);
         vorgang.setAuftrag(auftrag);
