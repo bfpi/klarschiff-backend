@@ -34,7 +34,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vividsolutions.jts.algorithm.distance.DistanceToPoint;
 import com.vividsolutions.jts.algorithm.distance.PointPairDistance;
-import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
@@ -71,22 +70,20 @@ public class GeoService {
   String mapMaxExtent;
   String mapRestrictedExtent;
   String mapResolutions;
-  String mapServerResolutions;
+  String mapUnits;
   Integer mapOviMargin;
-  String mapTmsServer;
-  String mapTmsServerLayers;
+  
+  String mapLayersOneType;
+  String mapLayersOneParams;
+  String mapLayersTwoType;
+  String mapLayersTwoParams;
+  String mapLayersPoiType;
+  String mapLayersPoiParams;
+  
   String mapExternProjection;
   String mapExternName;
   String mapExternUrl;
   String mapExternExternUrl;
-
-  String wmsUrl;
-  String wmsTitle;
-  String wmsLayers;
-  String wmsFormat;
-  Boolean wmsTransparent;
-  Integer wmsMinScale;
-  Boolean wmsSingleTile;
 
   String wfsVorgaengeUrl;
   String wfsVorgaengeFeatureNs;
@@ -411,6 +408,30 @@ public class GeoService {
     this.mapMaxExtent = mapMaxExtent;
   }
 
+  public String getMapRestrictedExtent() {
+    return mapRestrictedExtent;
+  }
+
+  public void setMapRestrictedExtent(String mapRestrictedExtent) {
+    this.mapRestrictedExtent = mapRestrictedExtent;
+  }
+
+  public String getMapResolutions() {
+    return mapResolutions;
+  }
+
+  public void setMapResolutions(String mapResolutions) {
+    this.mapResolutions = mapResolutions;
+  }
+
+  public String getMapUnits() {
+    return mapUnits;
+  }
+
+  public void setMapUnits(String mapUnits) {
+    this.mapUnits = mapUnits;
+  }
+
   public Integer getMapOviMargin() {
     return mapOviMargin;
   }
@@ -419,20 +440,52 @@ public class GeoService {
     this.mapOviMargin = mapOviMargin;
   }
 
-  public String getMapTmsServer() {
-    return mapTmsServer;
+  public String getMapLayersOneType() {
+    return mapLayersOneType;
   }
 
-  public void setMapTmsServer(String mapTmsServer) {
-    this.mapTmsServer = mapTmsServer;
+  public void setMapLayersOneType(String mapLayersOneType) {
+    this.mapLayersOneType = mapLayersOneType;
   }
 
-  public String getMapTmsServerLayers() {
-    return mapTmsServerLayers;
+  public String getMapLayersOneParams() {
+    return mapLayersOneParams;
   }
 
-  public void setMapTmsServerLayers(String mapTmsServerLayers) {
-    this.mapTmsServerLayers = mapTmsServerLayers;
+  public void setMapLayersOneParams(String mapLayersOneParams) {
+    this.mapLayersOneParams = mapLayersOneParams;
+  }
+
+  public String getMapLayersTwoType() {
+    return mapLayersTwoType;
+  }
+
+  public void setMapLayersTwoType(String mapLayersTwoType) {
+    this.mapLayersTwoType = mapLayersTwoType;
+  }
+
+  public String getMapLayersTwoParams() {
+    return mapLayersTwoParams;
+  }
+
+  public void setMapLayersTwoParams(String mapLayersTwoParams) {
+    this.mapLayersTwoParams = mapLayersTwoParams;
+  }
+
+  public String getMapLayersPoiType() {
+    return mapLayersPoiType;
+  }
+
+  public void setMapLayersPoiType(String mapLayersPoiType) {
+    this.mapLayersPoiType = mapLayersPoiType;
+  }
+
+  public String getMapLayersPoiParams() {
+    return mapLayersPoiParams;
+  }
+
+  public void setMapLayersPoiParams(String mapLayersPoiParams) {
+    this.mapLayersPoiParams = mapLayersPoiParams;
   }
 
   public String getMapExternProjection() {
@@ -465,62 +518,6 @@ public class GeoService {
 
   public void setMapExternExternUrl(String mapExternExternUrl) {
     this.mapExternExternUrl = mapExternExternUrl;
-  }
-
-  public String getWmsUrl() {
-    return wmsUrl;
-  }
-
-  public void setWmsUrl(String wmsUrl) {
-    this.wmsUrl = wmsUrl;
-  }
-
-  public String getWmsTitle() {
-    return wmsTitle;
-  }
-
-  public void setWmsTitle(String wmsTitle) {
-    this.wmsTitle = wmsTitle;
-  }
-
-  public String getWmsLayers() {
-    return wmsLayers;
-  }
-
-  public void setWmsLayers(String wmsLayers) {
-    this.wmsLayers = wmsLayers;
-  }
-
-  public String getWmsFormat() {
-    return wmsFormat;
-  }
-
-  public void setWmsFormat(String wmsFormat) {
-    this.wmsFormat = wmsFormat;
-  }
-
-  public Boolean getWmsTransparent() {
-    return wmsTransparent;
-  }
-
-  public void setWmsTransparent(Boolean wmsTransparent) {
-    this.wmsTransparent = wmsTransparent;
-  }
-
-  public Integer getWmsMinScale() {
-    return wmsMinScale;
-  }
-
-  public void setWmsMinScale(Integer wmsMinScale) {
-    this.wmsMinScale = wmsMinScale;
-  }
-
-  public Boolean getWmsSingleTile() {
-    return wmsSingleTile;
-  }
-
-  public void setWmsSingleTile(Boolean wmsSingleTile) {
-    this.wmsSingleTile = wmsSingleTile;
   }
 
   public String getWfsZufiCapabilitiesUrl() {
@@ -587,31 +584,7 @@ public class GeoService {
     this.adressensucheUrl = adressensucheUrl;
   }
 
-  public String getMapRestrictedExtent() {
-    return mapRestrictedExtent;
-  }
-
-  public void setMapRestrictedExtent(String mapRestrictedExtent) {
-    this.mapRestrictedExtent = mapRestrictedExtent;
-  }
-
-  public String getMapResolutions() {
-    return mapResolutions;
-  }
-
-  public void setMapResolutions(String mapResolutions) {
-    this.mapResolutions = mapResolutions;
-  }
-
   public DataStore getDataStore() {
     return dataStore;
-  }
-
-  public String getMapServerResolutions() {
-    return mapServerResolutions;
-  }
-
-  public void setMapServerResolutions(String mapServerResolutions) {
-    this.mapServerResolutions = mapServerResolutions;
   }
 }
