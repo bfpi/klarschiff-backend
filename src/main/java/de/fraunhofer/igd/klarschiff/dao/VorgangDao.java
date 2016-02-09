@@ -136,8 +136,14 @@ public class VorgangDao {
         }
       }
       if (vorgangOld.getZustaendigkeitStatus() != vorgang.getZustaendigkeitStatus()) {
-        verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.zustaendigkeitAkzeptiert,
-          vorgangOld.getZustaendigkeitStatus().getText(), vorgang.getZustaendigkeitStatus().getText());
+        String wertAlt = null, wertNeu = null;
+        if (vorgangOld.getZustaendigkeitStatus() != null) {
+          wertAlt = vorgangOld.getZustaendigkeitStatus().getText();
+        }
+        if (vorgang.getZustaendigkeitStatus() != null) {
+          wertNeu = vorgang.getZustaendigkeitStatus().getText();
+        }
+        verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.zustaendigkeitAkzeptiert, wertAlt, wertNeu);
       }
       //Zuständigkeit beim ClassificationService registrieren
       if (vorgang.getZustaendigkeitStatus() == EnumZustaendigkeitStatus.akzeptiert
