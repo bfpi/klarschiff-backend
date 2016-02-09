@@ -184,9 +184,9 @@ public class VorgangFeedController {
       str.append("<br/>");
       str.append("<b>Zuständigkeit: </b>");
       str.append(securityService.getZustaendigkeit(vorgang.getZustaendigkeit()).getDescription());
-      str.append(" (");
-      str.append(vorgang.getZustaendigkeitStatus().getText());
-      str.append(")");
+      if (vorgang.getZustaendigkeitStatus() != null) {
+        str.append(" (").append(vorgang.getZustaendigkeitStatus().getText()).append(")");
+      }
       if (StringUtils.isNotBlank(vorgang.getDelegiertAn())) {
         str.append(", delegiert an: ");
         str.append(securityService.getZustaendigkeit(vorgang.getDelegiertAn()).getDescription());
