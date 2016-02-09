@@ -15,29 +15,16 @@
   <jsp:directive.attribute name="restrictedExtent" type="java.lang.String" required="true" rtexprvalue="true"/>
   <jsp:directive.attribute name="resolutions" type="java.lang.String" required="true" rtexprvalue="true"/>
   <jsp:directive.attribute name="units" type="java.lang.String" required="true" rtexprvalue="true"/>
+  <jsp:directive.attribute name="layersOneType" type="java.lang.String" required="true" rtexprvalue="true"/>
+  <jsp:directive.attribute name="layersOneParams" type="java.lang.String" required="true" rtexprvalue="true"/>
+  <jsp:directive.attribute name="layersTwoType" type="java.lang.String" required="true" rtexprvalue="true"/>
+  <jsp:directive.attribute name="layersTwoParams" type="java.lang.String" required="true" rtexprvalue="true"/>
+  <jsp:directive.attribute name="layersPoiType" type="java.lang.String" required="true" rtexprvalue="true"/>
+  <jsp:directive.attribute name="layersPoiParams" type="java.lang.String" required="true" rtexprvalue="true"/>
   <jsp:directive.attribute name="oviMargin" type="java.lang.String" required="false" rtexprvalue="true"/>
-  <jsp:directive.attribute name="wmsOneUrl" type="java.lang.String" required="true" rtexprvalue="true"/>
-  <jsp:directive.attribute name="wmsOneTitle" type="java.lang.String" required="true" rtexprvalue="true"/>
-  <jsp:directive.attribute name="wmsOneLayers" type="java.lang.String" required="true" rtexprvalue="true"/>
-  <jsp:directive.attribute name="wmsOneFormat" type="java.lang.String" required="true" rtexprvalue="true"/>
-  <jsp:directive.attribute name="wmsOneTransparent" type="java.lang.String" required="true" rtexprvalue="true"/>
-  <jsp:directive.attribute name="wmsOneSingleTile" type="java.lang.String" required="true" rtexprvalue="true"/>
-  <jsp:directive.attribute name="wmsTwoUrl" type="java.lang.String" required="true" rtexprvalue="true"/>
-  <jsp:directive.attribute name="wmsTwoTitle" type="java.lang.String" required="true" rtexprvalue="true"/>
-  <jsp:directive.attribute name="wmsTwoLayers" type="java.lang.String" required="true" rtexprvalue="true"/>
-  <jsp:directive.attribute name="wmsTwoFormat" type="java.lang.String" required="true" rtexprvalue="true"/>
-  <jsp:directive.attribute name="wmsTwoTransparent" type="java.lang.String" required="true" rtexprvalue="true"/>
-  <jsp:directive.attribute name="wmsTwoSingleTile" type="java.lang.String" required="true" rtexprvalue="true"/>
   <jsp:directive.attribute name="ovi" type="java.lang.String" required="false" rtexprvalue="true"/>
   <jsp:directive.attribute name="oviFormElementId" type="java.lang.String" required="true" rtexprvalue="true"/>
   <jsp:directive.attribute name="cssStyle" type="java.lang.String" required="false" rtexprvalue="true"/>
-  <jsp:directive.attribute name="wmsUrl" type="java.lang.String" required="true" rtexprvalue="true"/>
-  <jsp:directive.attribute name="wmsTitle" type="java.lang.String" required="true" rtexprvalue="true"/>
-  <jsp:directive.attribute name="wmsLayers" type="java.lang.String" required="true" rtexprvalue="true"/>
-  <jsp:directive.attribute name="wmsFormat" type="java.lang.String" required="true" rtexprvalue="true"/>
-  <jsp:directive.attribute name="wmsTransparent" type="java.lang.String" required="true" rtexprvalue="true"/>
-  <jsp:directive.attribute name="wmsMinScale" type="java.lang.String" required="true" rtexprvalue="true"/>
-  <jsp:directive.attribute name="wmsSingleTile" type="java.lang.String" required="true" rtexprvalue="true"/>
   <jsp:directive.attribute name="wfsVorgaengeUrl" type="java.lang.String" required="true" rtexprvalue="true"/>
   <jsp:directive.attribute name="wfsVorgaengeFeatureNs" type="java.lang.String" required="true" rtexprvalue="true"/>
   <jsp:directive.attribute name="wfsVorgaengeFeaturePrefix" type="java.lang.String" required="true" rtexprvalue="true"/>
@@ -70,11 +57,10 @@ function initOpenLayers() {
   OpenLayers.ImgPath = "${url}";
 
   //Formater definieren
-  var formatOptions = {
-    'internalProjection': new OpenLayers.Projection('${projection}'),
-    'externalProjection': new OpenLayers.Projection('${projection}')
-  };
-  formater = new OpenLayers.Format.WKT(formatOptions);
+  formater = new OpenLayers.Format.WKT({
+    internalProjection: new OpenLayers.Projection('${projection}'),
+    externalProjection: new OpenLayers.Projection('${projection}')
+  });
 
   //Regeln für das Clustering definieren
     <c:url value="/images/generalisiert.png" var="png_generalisiert"/>
@@ -199,8 +185,8 @@ function initOpenLayers() {
 
   //Handler für den OVI Vector
   vlayer.events.on({
-    'sketchstarted': vectorReset,
-    'sketchcomplete': vectorToInput
+    sketchstarted: vectorReset,
+    sketchcomplete: vectorToInput
   });
 
   //Controls
@@ -216,6 +202,7 @@ function initOpenLayers() {
   control_navigation = editingToolbar.controls[0];
   //Control: OVI einzeichnen
   control_drawFeaturePoint = editingToolbar.controls[1];
+  control_dragFeaturePoint = new OpenLayers.Control.DragFeature(vlayer)
   //Control: maximal herauszoomen
   control_zoomToMaxExtent = new OpenLayers.Control.ZoomToMaxExtent({title: 'ganze Kartenausdehnung anzeigen'});
   //Control: Zoom in
@@ -223,6 +210,7 @@ function initOpenLayers() {
   //Control: Zoom out
   control_zoomOut = new OpenLayers.Control.ZoomOut({title: 'aus Karte herauszoomen'});
 
+  var restrictedExtent = new OpenLayers.Bounds(${restrictedExtent});
   map = new OpenLayers.Map('map', {
     controls: [
       new OpenLayers.Control.LayerSwitcher({roundedCorner: false}),
@@ -230,54 +218,21 @@ function initOpenLayers() {
       new OpenLayers.Control.Navigation(),
       new OpenLayers.Control.MousePosition({numDigits: 0, suffix: ' m Nord ETRS89/UTM-33N', separator: ' m Ost, '}),
       editingToolbar,
+      control_dragFeaturePoint,
       control_zoomToMaxExtent
     ],
     projection: '${projection}',
     resolutions: [${resolutions}],
     units: '${units}',
-    restrictedExtent: new OpenLayers.Bounds(${restrictedExtent}),
+    restrictedExtent: restrictedExtent,
     maxExtent: bounds
   });
-  
-  var oneLayer = new OpenLayers.Layer.WMS(
-          "${wmsOneTitle}",
-          "${wmsOneUrl}", {
-            layers: "${wmsOneLayers}",
-            format: "${wmsOneFormat}",
-            transparent: "${wmsOneTransparent}"
-          }, {
-    displayInLayerSwitcher: true,
-    isBaseLayer: true,
-    singleTile: Boolean("${wmsOneSingleTile}")
-  });
-  map.addLayer(oneLayer);
-  
-  var twoLayer = new OpenLayers.Layer.WMS(
-          "${wmsTwoTitle}",
-          "${wmsTwoUrl}", {
-            layers: "${wmsTwoLayers}",
-            format: "${wmsTwoFormat}",
-            transparent: "${wmsTwoTransparent}"
-          }, {
-    displayInLayerSwitcher: true,
-    isBaseLayer: true,
-    singleTile: Boolean("${wmsTwoSingleTile}")
-  });
-  map.addLayer(twoLayer);
-  
-  var poiLayer = new OpenLayers.Layer.WMS(
-          "${wmsTitle}",
-          "${wmsUrl}", {
-            layers: "${wmsLayers}",
-            format: "${wmsFormat}",
-            transparent: "${wmsTransparent}"
-          }, {
-    displayInLayerSwitcher: true,
-    isBaseLayer: false,
-    minScale: 1100,
-    singleTile: Boolean("${wmsSingleTile}")
-  });
-  map.addLayer(poiLayer);
+
+  map.addLayer(new OpenLayers.Layer.${layersOneType}(${layersOneParams}));
+  map.addLayer(new OpenLayers.Layer.${layersTwoType}(${layersTwoParams}));
+    <c:if test="${not empty layersPoiType}">
+  map.addLayer(new OpenLayers.Layer.${layersPoiType}(${layersPoiParams}));
+    </c:if>
 
   //höchste Zoomstufe ermitteln (auf dieser soll kein Clustering mehr stattfinden)
   var clusterMaxZoom = map.getNumZoomLevels() - 1;
@@ -318,7 +273,7 @@ function initOpenLayers() {
   map.zoomToExtent(initBounds);
     </c:if>
     <c:if test="${empty ovi}">
-  map.zoomToMaxExtent();
+  map.zoomToExtent(restrictedExtent);
     </c:if>
   $('div.olControlNavigationItemActive').attr("title", "Karte verschieben");
   $('div.olControlNavigationItemInactive').attr("title", "Karte verschieben");
@@ -331,15 +286,19 @@ function initOpenLayers() {
 
 function vectorReset(evt) {
   window.setTimeout(function () {
-    vlayer.destroyFeatures();
-    vlayer.redraw();
+    control_dragFeaturePoint.deactivate();
   }, 10);
 }
 function vectorToInput(evt) {
   window.setTimeout(function () {
+    vlayer.removeAllFeatures();
+    vlayer.addFeatures([evt.feature]);
+    vlayer.redraw();
     if (document.getElementById('${oviFormElementId}')) {
-      document.getElementById('${oviFormElementId}').value = formater.write(vlayer.features[0], true);
+      document.getElementById('${oviFormElementId}').value = formater.write(evt.feature, true);
     }
+    control_drawFeaturePoint.deactivate();
+    control_dragFeaturePoint.activate();
   }, 10);
 }
 

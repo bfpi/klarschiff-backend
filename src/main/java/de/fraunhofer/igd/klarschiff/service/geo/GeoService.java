@@ -73,32 +73,17 @@ public class GeoService {
   String mapUnits;
   Integer mapOviMargin;
   
-  String mapWmsOneUrl;
-  String mapWmsOneTitle;
-  String mapWmsOneLayers;
-  String mapWmsOneFormat;
-  Boolean mapWmsOneTransparent;
-  Boolean mapWmsOneSingleTile;
-  
-  String mapWmsTwoUrl;
-  String mapWmsTwoTitle;
-  String mapWmsTwoLayers;
-  String mapWmsTwoFormat;
-  Boolean mapWmsTwoTransparent;
-  Boolean mapWmsTwoSingleTile;
+  String mapLayersOneType;
+  String mapLayersOneParams;
+  String mapLayersTwoType;
+  String mapLayersTwoParams;
+  String mapLayersPoiType;
+  String mapLayersPoiParams;
   
   String mapExternProjection;
   String mapExternName;
   String mapExternUrl;
   String mapExternExternUrl;
-
-  String wmsUrl;
-  String wmsTitle;
-  String wmsLayers;
-  String wmsFormat;
-  Boolean wmsTransparent;
-  Integer wmsMinScale;
-  Boolean wmsSingleTile;
 
   String wfsVorgaengeUrl;
   String wfsVorgaengeFeatureNs;
@@ -408,7 +393,6 @@ public class GeoService {
     }
   }
 
-  /* --------------- GET + SET ----------------------------*/
   public String getMapProjection() {
     return mapProjection;
   }
@@ -456,103 +440,55 @@ public class GeoService {
   public void setMapOviMargin(Integer mapOviMargin) {
     this.mapOviMargin = mapOviMargin;
   }
-  
-  public String getMapWmsOneUrl() {
-    return mapWmsOneUrl;
+
+  public String getMapLayersOneType() {
+    return mapLayersOneType;
   }
 
-  public void setMapWmsOneUrl(String mapWmsOneUrl) {
-    this.mapWmsOneUrl = mapWmsOneUrl;
+  public void setMapLayersOneType(String mapLayersOneType) {
+    this.mapLayersOneType = mapLayersOneType;
   }
 
-  public String getMapWmsOneTitle() {
-    return mapWmsOneTitle;
+  public String getMapLayersOneParams() {
+    return mapLayersOneParams;
   }
 
-  public void setMapWmsOneTitle(String mapWmsOneTitle) {
-    this.mapWmsOneTitle = mapWmsOneTitle;
+  public void setMapLayersOneParams(String mapLayersOneParams) {
+    this.mapLayersOneParams = mapLayersOneParams;
   }
 
-  public String getMapWmsOneLayers() {
-    return mapWmsOneLayers;
+  public String getMapLayersTwoType() {
+    return mapLayersTwoType;
   }
 
-  public void setMapWmsOneLayers(String mapWmsOneLayers) {
-    this.mapWmsOneLayers = mapWmsOneLayers;
+  public void setMapLayersTwoType(String mapLayersTwoType) {
+    this.mapLayersTwoType = mapLayersTwoType;
   }
 
-  public String getMapWmsOneFormat() {
-    return mapWmsOneFormat;
+  public String getMapLayersTwoParams() {
+    return mapLayersTwoParams;
   }
 
-  public void setMapWmsOneFormat(String mapWmsOneFormat) {
-    this.mapWmsOneFormat = mapWmsOneFormat;
+  public void setMapLayersTwoParams(String mapLayersTwoParams) {
+    this.mapLayersTwoParams = mapLayersTwoParams;
   }
 
-  public Boolean getMapWmsOneTransparent() {
-    return mapWmsOneTransparent;
+  public String getMapLayersPoiType() {
+    return mapLayersPoiType;
   }
 
-  public void setMapWmsOneTransparent(Boolean mapWmsOneTransparent) {
-    this.mapWmsOneTransparent = mapWmsOneTransparent;
+  public void setMapLayersPoiType(String mapLayersPoiType) {
+    this.mapLayersPoiType = mapLayersPoiType;
   }
 
-  public Boolean getMapWmsOneSingleTile() {
-    return mapWmsOneSingleTile;
+  public String getMapLayersPoiParams() {
+    return mapLayersPoiParams;
   }
 
-  public void setMapWmsOneSingleTile(Boolean mapWmsOneSingleTile) {
-    this.mapWmsOneSingleTile = mapWmsOneSingleTile;
-  }
-  
-  public String getMapWmsTwoUrl() {
-    return mapWmsTwoUrl;
+  public void setMapLayersPoiParams(String mapLayersPoiParams) {
+    this.mapLayersPoiParams = mapLayersPoiParams;
   }
 
-  public void setMapWmsTwoUrl(String mapWmsTwoUrl) {
-    this.mapWmsTwoUrl = mapWmsTwoUrl;
-  }
-
-  public String getMapWmsTwoTitle() {
-    return mapWmsTwoTitle;
-  }
-
-  public void setMapWmsTwoTitle(String mapWmsTwoTitle) {
-    this.mapWmsTwoTitle = mapWmsTwoTitle;
-  }
-
-  public String getMapWmsTwoLayers() {
-    return mapWmsTwoLayers;
-  }
-
-  public void setMapWmsTwoLayers(String mapWmsTwoLayers) {
-    this.mapWmsTwoLayers = mapWmsTwoLayers;
-  }
-
-  public String getMapWmsTwoFormat() {
-    return mapWmsTwoFormat;
-  }
-
-  public void setMapWmsTwoFormat(String mapWmsTwoFormat) {
-    this.mapWmsTwoFormat = mapWmsTwoFormat;
-  }
-
-  public Boolean getMapWmsTwoTransparent() {
-    return mapWmsTwoTransparent;
-  }
-
-  public void setMapWmsTwoTransparent(Boolean mapWmsTwoTransparent) {
-    this.mapWmsTwoTransparent = mapWmsTwoTransparent;
-  }
-
-  public Boolean getMapWmsTwoSingleTile() {
-    return mapWmsTwoSingleTile;
-  }
-
-  public void setMapWmsTwoSingleTile(Boolean mapWmsTwoSingleTile) {
-    this.mapWmsTwoSingleTile = mapWmsTwoSingleTile;
-  }
-  
   public String getMapExternProjection() {
     return mapExternProjection;
   }
@@ -583,62 +519,6 @@ public class GeoService {
 
   public void setMapExternExternUrl(String mapExternExternUrl) {
     this.mapExternExternUrl = mapExternExternUrl;
-  }
-
-  public String getWmsUrl() {
-    return wmsUrl;
-  }
-
-  public void setWmsUrl(String wmsUrl) {
-    this.wmsUrl = wmsUrl;
-  }
-
-  public String getWmsTitle() {
-    return wmsTitle;
-  }
-
-  public void setWmsTitle(String wmsTitle) {
-    this.wmsTitle = wmsTitle;
-  }
-
-  public String getWmsLayers() {
-    return wmsLayers;
-  }
-
-  public void setWmsLayers(String wmsLayers) {
-    this.wmsLayers = wmsLayers;
-  }
-
-  public String getWmsFormat() {
-    return wmsFormat;
-  }
-
-  public void setWmsFormat(String wmsFormat) {
-    this.wmsFormat = wmsFormat;
-  }
-
-  public Boolean getWmsTransparent() {
-    return wmsTransparent;
-  }
-
-  public void setWmsTransparent(Boolean wmsTransparent) {
-    this.wmsTransparent = wmsTransparent;
-  }
-
-  public Integer getWmsMinScale() {
-    return wmsMinScale;
-  }
-
-  public void setWmsMinScale(Integer wmsMinScale) {
-    this.wmsMinScale = wmsMinScale;
-  }
-
-  public Boolean getWmsSingleTile() {
-    return wmsSingleTile;
-  }
-
-  public void setWmsSingleTile(Boolean wmsSingleTile) {
-    this.wmsSingleTile = wmsSingleTile;
   }
 
   public String getWfsZufiCapabilitiesUrl() {

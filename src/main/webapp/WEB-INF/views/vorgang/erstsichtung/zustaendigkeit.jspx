@@ -110,40 +110,27 @@
 				</tr>
 				<tr>
 					<td class="label">Karte</td>
-					<td colspan="10" width="100%">
-                        <vorgang:mapExternOeffnen vorgang="${vorgang}" isLonelyIcon="true"/>
-			        	<map:view
-			        		projection="${geoService.mapProjection}"
-                            maxExtent="${geoService.mapMaxExtent}"
-                            restrictedExtent="${geoService.mapRestrictedExtent}"
-                            resolutions="${geoService.mapResolutions}"
-                            units="${geoService.mapUnits}"
-                            oviMargin="${geoService.mapOviMargin}"
-                            wmsOneUrl="${geoService.mapWmsOneUrl}"
-                            wmsOneTitle="${geoService.mapWmsOneTitle}"
-                            wmsOneLayers="${geoService.mapWmsOneLayers}"
-                            wmsOneFormat="${geoService.mapWmsOneFormat}"
-                            wmsOneTransparent="${geoService.mapWmsOneTransparent}"
-                            wmsOneSingleTile="${geoService.mapWmsOneSingleTile}"
-                            wmsTwoUrl="${geoService.mapWmsTwoUrl}"
-                            wmsTwoTitle="${geoService.mapWmsTwoTitle}"
-                            wmsTwoLayers="${geoService.mapWmsTwoLayers}"
-                            wmsTwoFormat="${geoService.mapWmsTwoFormat}"
-                            wmsTwoTransparent="${geoService.mapWmsTwoTransparent}"
-                            wmsTwoSingleTile="${geoService.mapWmsTwoSingleTile}"
-			        		ovi="${vorgang.oviWkt}"
-			        		cssStyle="height: 300px; width: 100%;"
-			        		vorgangTyp="${vorgang.typ}"
-			        		vorgangStatus="${vorgang.status}"
-                            wmsUrl="${geoService.wmsUrl}"
-                            wmsTitle="${geoService.wmsTitle}"
-                            wmsLayers="${geoService.wmsLayers}"
-                            wmsFormat="${geoService.wmsFormat}"
-                            wmsTransparent="${geoService.wmsTransparent}"
-                            wmsMinScale="${geoService.wmsMinScale}"
-                            wmsSingleTile="${geoService.wmsSingleTile}"
-			        	/>
-					</td>
+          <td colspan="10" width="100%">
+            <vorgang:mapExternOeffnen vorgang="${vorgang}" isLonelyIcon="true"/>
+            <map:view
+              projection="${geoService.mapProjection}"
+              maxExtent="${geoService.mapMaxExtent}"
+              restrictedExtent="${geoService.mapRestrictedExtent}"
+              resolutions="${geoService.mapResolutions}"
+              units="${geoService.mapUnits}"
+              layersOneType="${geoService.mapLayersOneType}"
+              layersOneParams="${geoService.mapLayersOneParams}"
+              layersTwoType="${geoService.mapLayersTwoType}"
+              layersTwoParams="${geoService.mapLayersTwoParams}"
+              layersPoiType="${geoService.mapLayersPoiType}"
+              layersPoiParams="${geoService.mapLayersPoiParams}"
+              oviMargin="${geoService.mapOviMargin}"
+              ovi="${vorgang.oviWkt}"
+              cssStyle="height: 300px; width: 100%;"
+              vorgangTyp="${vorgang.typ}"
+              vorgangStatus="${vorgang.status}"
+              />
+          </td>
 				</tr>
 				<c:if test="${vorgang.fotoExists}">
 					<tr>

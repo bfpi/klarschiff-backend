@@ -15,30 +15,17 @@
   <jsp:directive.attribute name="restrictedExtent" type="java.lang.String" required="true" rtexprvalue="true"/>
   <jsp:directive.attribute name="resolutions" type="java.lang.String" required="true" rtexprvalue="true"/>
   <jsp:directive.attribute name="units" type="java.lang.String" required="true" rtexprvalue="true"/>
+  <jsp:directive.attribute name="layersOneType" type="java.lang.String" required="true" rtexprvalue="true"/>
+  <jsp:directive.attribute name="layersOneParams" type="java.lang.String" required="true" rtexprvalue="true"/>
+  <jsp:directive.attribute name="layersTwoType" type="java.lang.String" required="true" rtexprvalue="true"/>
+  <jsp:directive.attribute name="layersTwoParams" type="java.lang.String" required="true" rtexprvalue="true"/>
+  <jsp:directive.attribute name="layersPoiType" type="java.lang.String" required="true" rtexprvalue="true"/>
+  <jsp:directive.attribute name="layersPoiParams" type="java.lang.String" required="true" rtexprvalue="true"/>
   <jsp:directive.attribute name="oviMargin" type="java.lang.String" required="false" rtexprvalue="true"/>
-  <jsp:directive.attribute name="wmsOneUrl" type="java.lang.String" required="true" rtexprvalue="true"/>
-  <jsp:directive.attribute name="wmsOneTitle" type="java.lang.String" required="true" rtexprvalue="true"/>
-  <jsp:directive.attribute name="wmsOneLayers" type="java.lang.String" required="true" rtexprvalue="true"/>
-  <jsp:directive.attribute name="wmsOneFormat" type="java.lang.String" required="true" rtexprvalue="true"/>
-  <jsp:directive.attribute name="wmsOneTransparent" type="java.lang.String" required="true" rtexprvalue="true"/>
-  <jsp:directive.attribute name="wmsOneSingleTile" type="java.lang.String" required="true" rtexprvalue="true"/>
-  <jsp:directive.attribute name="wmsTwoUrl" type="java.lang.String" required="true" rtexprvalue="true"/>
-  <jsp:directive.attribute name="wmsTwoTitle" type="java.lang.String" required="true" rtexprvalue="true"/>
-  <jsp:directive.attribute name="wmsTwoLayers" type="java.lang.String" required="true" rtexprvalue="true"/>
-  <jsp:directive.attribute name="wmsTwoFormat" type="java.lang.String" required="true" rtexprvalue="true"/>
-  <jsp:directive.attribute name="wmsTwoTransparent" type="java.lang.String" required="true" rtexprvalue="true"/>
-  <jsp:directive.attribute name="wmsTwoSingleTile" type="java.lang.String" required="true" rtexprvalue="true"/>
   <jsp:directive.attribute name="ovi" type="java.lang.String" required="true" rtexprvalue="true"/>
   <jsp:directive.attribute name="cssStyle" type="java.lang.String" required="false" rtexprvalue="true"/>
   <jsp:directive.attribute name="vorgangTyp" type="java.lang.String" required="false" rtexprvalue="true"/>
   <jsp:directive.attribute name="vorgangStatus" type="java.lang.String" required="false" rtexprvalue="true"/>
-  <jsp:directive.attribute name="wmsUrl" type="java.lang.String" required="true" rtexprvalue="true"/>
-  <jsp:directive.attribute name="wmsTitle" type="java.lang.String" required="true" rtexprvalue="true"/>
-  <jsp:directive.attribute name="wmsLayers" type="java.lang.String" required="true" rtexprvalue="true"/>
-  <jsp:directive.attribute name="wmsFormat" type="java.lang.String" required="true" rtexprvalue="true"/>
-  <jsp:directive.attribute name="wmsTransparent" type="java.lang.String" required="true" rtexprvalue="true"/>
-  <jsp:directive.attribute name="wmsMinScale" type="java.lang.String" required="true" rtexprvalue="true"/>
-  <jsp:directive.attribute name="wmsSingleTile" type="java.lang.String" required="true" rtexprvalue="true"/>
 
   <c:if test="${empty projection}">
     <c:set var="projection" value="EPSG:25833"/>
@@ -128,45 +115,11 @@ function initOpenLayers() {
     maxExtent: bounds
   });
 
-  var oneLayer = new OpenLayers.Layer.WMS(
-          "${wmsOneTitle}",
-          "${wmsOneUrl}", {
-            layers: "${wmsOneLayers}",
-            format: "${wmsOneFormat}",
-            transparent: "${wmsOneTransparent}"
-          }, {
-    displayInLayerSwitcher: true,
-    isBaseLayer: true,
-    singleTile: Boolean("${wmsOneSingleTile}")
-  });
-  map.addLayer(oneLayer);
-  
-  var twoLayer = new OpenLayers.Layer.WMS(
-          "${wmsTwoTitle}",
-          "${wmsTwoUrl}", {
-            layers: "${wmsTwoLayers}",
-            format: "${wmsTwoFormat}",
-            transparent: "${wmsTwoTransparent}"
-          }, {
-    displayInLayerSwitcher: true,
-    isBaseLayer: true,
-    singleTile: Boolean("${wmsTwoSingleTile}")
-  });
-  map.addLayer(twoLayer);
-
-  var poiLayer = new OpenLayers.Layer.WMS(
-          "${wmsTitle}",
-          "${wmsUrl}", {
-            layers: "${wmsLayers}",
-            format: "${wmsFormat}",
-            transparent: "${wmsTransparent}"
-          }, {
-    displayInLayerSwitcher: true,
-    isBaseLayer: false,
-    minScale: 1100,
-    singleTile: Boolean("${wmsSingleTile}")
-  });
-  map.addLayer(poiLayer);
+  map.addLayer(new OpenLayers.Layer.${layersOneType}(${layersOneParams}));
+  map.addLayer(new OpenLayers.Layer.${layersTwoType}(${layersTwoParams}));
+  <c:if test="${not empty layersPoiType}">
+  map.addLayer(new OpenLayers.Layer.${layersPoiType}(${layersPoiParams}));
+  </c:if>
 
   map.addLayer(vlayer);
 
