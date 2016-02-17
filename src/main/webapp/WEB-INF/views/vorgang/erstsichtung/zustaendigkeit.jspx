@@ -110,30 +110,27 @@
 				</tr>
 				<tr>
 					<td class="label">Karte</td>
-					<td colspan="10" width="100%">
-                        <vorgang:mapExternOeffnen vorgang="${vorgang}" isLonelyIcon="true"/>
-			        	<map:view
-			        		projection="${geoService.mapProjection}"
-			        		tmsUrl="${geoService.mapTmsServer}" 
-			        		tmsLayers="${geoService.mapTmsServerLayers}" 
-			        		maxExtent="${geoService.mapMaxExtent}"
-				       		restrictedExtent="${geoService.mapRestrictedExtent}"
-				       		resolutions="${geoService.mapResolutions}"
-			        		serverResolutions="${geoService.mapServerResolutions}"
-			        		ovi="${vorgang.oviWkt}"
-			        		oviMargin="${geoService.mapOviMargin/2}"
-			        		cssStyle="height: 300px; width: 100%;"
-			        		vorgangTyp="${vorgang.typ}"
-			        		vorgangStatus="${vorgang.status}"
-                            wmsUrl="${geoService.wmsUrl}"
-                            wmsTitle="${geoService.wmsTitle}"
-                            wmsLayers="${geoService.wmsLayers}"
-                            wmsFormat="${geoService.wmsFormat}"
-                            wmsTransparent="${geoService.wmsTransparent}"
-                            wmsMinScale="${geoService.wmsMinScale}"
-                            wmsSingleTile="${geoService.wmsSingleTile}"
-			        	/>
-					</td>
+          <td colspan="10" width="100%">
+            <vorgang:mapExternOeffnen vorgang="${vorgang}" isLonelyIcon="true"/>
+            <map:view
+              projection="${geoService.mapProjection}"
+              maxExtent="${geoService.mapMaxExtent}"
+              restrictedExtent="${geoService.mapRestrictedExtent}"
+              resolutions="${geoService.mapResolutions}"
+              units="${geoService.mapUnits}"
+              layersOneType="${geoService.mapLayersOneType}"
+              layersOneParams="${geoService.mapLayersOneParams}"
+              layersTwoType="${geoService.mapLayersTwoType}"
+              layersTwoParams="${geoService.mapLayersTwoParams}"
+              layersPoiType="${geoService.mapLayersPoiType}"
+              layersPoiParams="${geoService.mapLayersPoiParams}"
+              oviMargin="${geoService.mapOviMargin}"
+              ovi="${vorgang.oviWkt}"
+              cssStyle="height: 300px; width: 100%;"
+              vorgangTyp="${vorgang.typ}"
+              vorgangStatus="${vorgang.status}"
+              />
+          </td>
 				</tr>
 				<c:if test="${vorgang.fotoExists}">
 					<tr>

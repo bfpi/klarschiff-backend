@@ -174,6 +174,7 @@ public class BackendController {
       }
 
       vorgang.setStatus(EnumVorgangStatus.gemeldet);
+      vorgang.setStatusDatum(new Date());
       vorgangParameterUebernehmen(autorEmail, vorgang, typ, kategorie, positionWGS84, oviWkt,
         beschreibung, fotowunsch, bild, false);
 
@@ -183,6 +184,7 @@ public class BackendController {
       
       if (authCode != null && authCode.equals(settingsService.getPropertyValue("auth.kod_code")) && vorgang.autorIntern()) {
         vorgang.setStatus(EnumVorgangStatus.offen);
+        vorgang.setStatusDatum(new Date());
         vorgangDao.persist(vorgang);
 
         vorgang.setZustaendigkeit(classificationService.calculateZustaendigkeitforVorgang(vorgang).getId());
@@ -295,6 +297,7 @@ public class BackendController {
           verlaufDao.persist(verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.status, vorgang.getStatus().getText(), evs.getText(), autorEmail));
         }
         vorgang.setStatus(evs);
+        vorgang.setStatusDatum(new Date());
       }
 
       if (statusKommentar != null) {
@@ -491,6 +494,7 @@ public class BackendController {
       }
 
       vorgang.setStatus(EnumVorgangStatus.offen);
+      vorgang.setStatusDatum(new Date());
 
       verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.vorgangBestaetigung, null, null);
       vorgangDao.merge(vorgang);
@@ -1006,6 +1010,7 @@ public class BackendController {
       if ((vorgang.getStatus() == EnumVorgangStatus.gemeldet || vorgang.getStatus() == EnumVorgangStatus.offen)
         && vorgang.getUnterstuetzer().size() == 0 && vorgang.getMissbrauchsmeldungen().size() == 0) {
         vorgang.setStatus(EnumVorgangStatus.geloescht);
+        vorgang.setStatusDatum(new Date());
         vorgangDao.merge(vorgang);
 
       } else {
@@ -1323,6 +1328,7 @@ public class BackendController {
         VorgangSuchenCommand cmd = new VorgangSuchenCommand();
         // Suchtyp aussendienst würde nur Vorgänge mit zustaendigkeit_status = 'akzeptiert' ausgeben
         cmd.setSuchtyp(VorgangSuchenCommand.Suchtyp.erweitert);
+        cmd.setErweitertArchiviert(false);
         // Sortieren nach ID
         cmd.setOrder(0);
         cmd.setOrderDirection(0);
@@ -1382,10 +1388,10 @@ public class BackendController {
           cmd.setAuftragDatum(new Date());
           cmd.setOrder(8);
         }
-
         List<Object[]> vg = vorgangDao.getVorgaenge(cmd);
         for (Object[] entry : vg) {
           Vorgang vorgang = (Vorgang) entry[0];
+          vorgang.setUnterstuetzerCount((Integer) entry[2]);
           vorgang.setSecurityService(securityService);
           vorgaenge.add(vorgang);
         }

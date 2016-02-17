@@ -154,23 +154,20 @@
 <br/>
 <br/>
         <map:multiview
-       		projection="${geoService.mapProjection}"
-       		tmsUrl="${geoService.mapTmsServer}" 
-       		tmsLayers="${geoService.mapTmsServerLayers}" 
-       		maxExtent="${geoService.mapMaxExtent}"
-       		restrictedExtent="${geoService.mapRestrictedExtent}"
-       		resolutions="${geoService.mapResolutions}"
-       		serverResolutions="${geoService.mapServerResolutions}"
-       		vorgaenge="${vorgaenge}"
-       		oviMargin="${geoService.mapOviMargin}" 
-       		cssStyle="height: 500px; width: 100%;"
-            wmsUrl="${geoService.wmsUrl}"
-            wmsTitle="${geoService.wmsTitle}"
-            wmsLayers="${geoService.wmsLayers}"
-            wmsFormat="${geoService.wmsFormat}"
-            wmsTransparent="${geoService.wmsTransparent}"
-            wmsMinScale="${geoService.wmsMinScale}"
-            wmsSingleTile="${geoService.wmsSingleTile}"
+          projection="${geoService.mapProjection}"
+          maxExtent="${geoService.mapMaxExtent}"
+          restrictedExtent="${geoService.mapRestrictedExtent}"
+          resolutions="${geoService.mapResolutions}"
+          units="${geoService.mapUnits}"
+          layersOneType="${geoService.mapLayersOneType}"
+          layersOneParams="${geoService.mapLayersOneParams}"
+          layersTwoType="${geoService.mapLayersTwoType}"
+          layersTwoParams="${geoService.mapLayersTwoParams}"
+          layersPoiType="${geoService.mapLayersPoiType}"
+          layersPoiParams="${geoService.mapLayersPoiParams}"
+          oviMargin="${geoService.mapOviMargin}"
+          vorgaenge="${vorgaenge}"
+          cssStyle="height: 500px; width: 100%;"
        		/>
 			</c:when>
 			<c:otherwise>

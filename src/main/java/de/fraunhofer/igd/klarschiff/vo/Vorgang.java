@@ -86,6 +86,14 @@ public class Vorgang implements Serializable {
   private Date datum;
 
   /**
+   * Zeitpunkt der letzten Statusänderung
+   */
+  @NotNull
+  @Temporal(TemporalType.TIMESTAMP)
+  @DateTimeFormat(style = "S-")
+  private Date statusDatum;
+
+  /**
    * Vorgangstyp
    */
   @NotNull
@@ -102,6 +110,7 @@ public class Vorgang implements Serializable {
    * Information über das Eigentum des Flürstücks, in dem der Vorgang liegt
    */
   @Size(max = 300)
+  @JsonIgnore
   private String flurstueckseigentum;
 
   /**
@@ -129,12 +138,14 @@ public class Vorgang implements Serializable {
    * E-Mail-Adresse des Erstellers
    */
   @Size(max = 300)
+  @JsonIgnore
   private String autorEmail;
 
   /**
    * Hash zum Bestätigen des Vorganges
    */
   @Size(max = 32)
+  @JsonIgnore
   private String hash;
 
   /**
@@ -160,6 +171,7 @@ public class Vorgang implements Serializable {
   /**
    * Erstsichtung erfolgt
    */
+  @JsonIgnore
   private boolean erstsichtungErfolgt = false;
 
   /**
@@ -186,12 +198,14 @@ public class Vorgang implements Serializable {
   /**
    * Zuständigkeit (Id der Rolle) für den Vorgang
    */
+  @JsonIgnore
   String zustaendigkeit;
 
   /**
    * Status der Zuständigkeit
    */
   @Enumerated(EnumType.STRING)
+  @JsonIgnore
   EnumZustaendigkeitStatus zustaendigkeitStatus;
 
   /**
@@ -253,6 +267,7 @@ public class Vorgang implements Serializable {
    */
   @NotNull
   @Enumerated(EnumType.STRING)
+  @JsonIgnore
   EnumPrioritaet prioritaet;
 
   /**
@@ -265,6 +280,7 @@ public class Vorgang implements Serializable {
   /**
    * Flag zum Markieren archivierte Vorgänge
    */
+  @JsonIgnore
   Boolean archiviert;
 
   /**
@@ -303,6 +319,9 @@ public class Vorgang implements Serializable {
   @OneToOne(mappedBy = "vorgang", cascade = CascadeType.ALL)
   private Auftrag auftrag;
 
+  @Transient
+  private Integer unterstuetzerCount;
+
   /**
    * Setzen der Position als WKT
    *
@@ -320,6 +339,7 @@ public class Vorgang implements Serializable {
    * @return Position als WKT
    */
   @Transient
+  @JsonIgnore
   public String getOviWkt() {
     return (ovi == null) ? null : wktWriter.write(ovi);
   }
@@ -364,6 +384,7 @@ public class Vorgang implements Serializable {
    * @return <code>true</code> - es exisitiert eine Foto
    */
   @Transient
+  @JsonIgnore
   public boolean getFotoExists() {
     return (fotoNormal != null);
   }
@@ -382,6 +403,14 @@ public class Vorgang implements Serializable {
 
   public void setVersion(Date version) {
     this.version = version;
+  }
+  
+  public Date getStatusDatum() {
+    return this.statusDatum;
+  }
+
+  public void setStatusDatum(Date statusDatum) {
+    this.statusDatum = statusDatum;
   }
 
   public String getAdresse() {
@@ -473,7 +502,8 @@ public class Vorgang implements Serializable {
   public Integer getTrustLevel() {
     int trust_level = 0;
 
-    if (getStatus() != EnumVorgangStatus.gemeldet) {
+    if (this.autorEmail.matches(settingsService.getPropertyValue("auth.internal_author_match"))
+      && getStatus() != EnumVorgangStatus.gemeldet) {
       trust_level = 1;
       if (autorAussendienst()) {
         trust_level = 3;
@@ -521,16 +551,11 @@ public class Vorgang implements Serializable {
   }
 
   public Integer getUnterstuetzerCount() {
-    if (this.unterstuetzer == null) {
-      return 0;
-    }
-    int unt = 0;
-    for (Unterstuetzer u : this.unterstuetzer) {
-      if (u.getDatumBestaetigung() != null) {
-        unt++;
-      }
-    }
-    return unt;
+    return this.unterstuetzerCount;
+  }
+
+  public void setUnterstuetzerCount(Integer unterstuetzerCount) {
+    this.unterstuetzerCount = unterstuetzerCount;
   }
 
   public void setUnterstuetzer(List<Unterstuetzer> unterstuetzer) {
@@ -570,17 +595,6 @@ public class Vorgang implements Serializable {
   public void setStatus(EnumVorgangStatus status) {
     this.status = status;
     this.statusOrdinal = status;
-  }
-
-  public Date getStatusDatum() {
-    for (int i = verlauf.size() - 1; i >= 0; i--) {
-      Verlauf v = verlauf.get(i);
-      if (v.getTyp() == EnumVerlaufTyp.erzeugt || v.getTyp() == EnumVerlaufTyp.status) {
-        return v.getDatum();
-      }
-    }
-
-    return null;
   }
 
   public EnumZustaendigkeitStatus getZustaendigkeitStatus() {
@@ -702,6 +716,7 @@ public class Vorgang implements Serializable {
     this.auftrag = auftrag;
   }
 
+  @JsonIgnore
   public String getAuftragTeam() {
     if (getAuftrag() == null) {
       return null;

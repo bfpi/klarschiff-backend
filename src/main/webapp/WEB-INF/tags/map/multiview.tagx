@@ -9,25 +9,22 @@
   version="2.0"
   >
   <jsp:output omit-xml-declaration="yes" />
-
-  <jsp:directive.attribute name="projection" type="java.lang.String" required="false" rtexprvalue="true"/>
-  <jsp:directive.attribute name="tmsUrl" type="java.lang.String" required="true" rtexprvalue="true"/>
-  <jsp:directive.attribute name="tmsLayers" type="java.lang.String" required="true" rtexprvalue="true"/>
+  
+  <jsp:directive.attribute name="projection" type="java.lang.String" required="true" rtexprvalue="true"/>
   <jsp:directive.attribute name="maxExtent" type="java.lang.String" required="true" rtexprvalue="true"/>
   <jsp:directive.attribute name="restrictedExtent" type="java.lang.String" required="true" rtexprvalue="true"/>
   <jsp:directive.attribute name="resolutions" type="java.lang.String" required="true" rtexprvalue="true"/>
-  <jsp:directive.attribute name="serverResolutions" type="java.lang.String" required="true" rtexprvalue="true"/>
-  <jsp:directive.attribute name="vorgaenge" type="java.util.List" required="true" rtexprvalue="true"/>
+  <jsp:directive.attribute name="units" type="java.lang.String" required="true" rtexprvalue="true"/>
   <jsp:directive.attribute name="oviMargin" type="java.lang.String" required="false" rtexprvalue="true"/>
+  <jsp:directive.attribute name="layersOneType" type="java.lang.String" required="true" rtexprvalue="true"/>
+  <jsp:directive.attribute name="layersOneParams" type="java.lang.String" required="true" rtexprvalue="true"/>
+  <jsp:directive.attribute name="layersTwoType" type="java.lang.String" required="true" rtexprvalue="true"/>
+  <jsp:directive.attribute name="layersTwoParams" type="java.lang.String" required="true" rtexprvalue="true"/>
+  <jsp:directive.attribute name="layersPoiType" type="java.lang.String" required="true" rtexprvalue="true"/>
+  <jsp:directive.attribute name="layersPoiParams" type="java.lang.String" required="true" rtexprvalue="true"/>
+  <jsp:directive.attribute name="vorgaenge" type="java.util.List" required="true" rtexprvalue="true"/>
   <jsp:directive.attribute name="cssStyle" type="java.lang.String" required="false" rtexprvalue="true"/>
   <jsp:directive.attribute name="delegiert" type="java.lang.Boolean" required="false" rtexprvalue="true"/>
-  <jsp:directive.attribute name="wmsUrl" type="java.lang.String" required="true" rtexprvalue="true"/>
-  <jsp:directive.attribute name="wmsTitle" type="java.lang.String" required="true" rtexprvalue="true"/>
-  <jsp:directive.attribute name="wmsLayers" type="java.lang.String" required="true" rtexprvalue="true"/>
-  <jsp:directive.attribute name="wmsFormat" type="java.lang.String" required="true" rtexprvalue="true"/>
-  <jsp:directive.attribute name="wmsTransparent" type="java.lang.String" required="true" rtexprvalue="true"/>
-  <jsp:directive.attribute name="wmsMinScale" type="java.lang.String" required="true" rtexprvalue="true"/>
-  <jsp:directive.attribute name="wmsSingleTile" type="java.lang.String" required="true" rtexprvalue="true"/>
 
   <c:if test="${empty projection}">
     <c:set var="projection" value="EPSG:25833"/>
@@ -81,12 +78,11 @@ function initOpenLayers() {
   //Theme definieren
   OpenLayers.ImgPath = "${url}";
 
-//Formater definieren
-  var formatOptions = {
-    'internalProjection': new OpenLayers.Projection('${projection}'),
-    'externalProjection': new OpenLayers.Projection('${projection}')
-  };
-  formater = new OpenLayers.Format.WKT(formatOptions);
+  //Formater definieren
+  formater = new OpenLayers.Format.WKT({
+    internalProjection: new OpenLayers.Projection('${projection}'),
+    externalProjection: new OpenLayers.Projection('${projection}')
+  });
 
 //Regeln für das Clustering definieren
     <c:url value="/images/generalisiert.png" var="png_generalisiert"/>
@@ -229,49 +225,16 @@ function initOpenLayers() {
     ],
     projection: '${projection}',
     resolutions: [${resolutions}],
-    units: 'm',
+    units: '${units}',
     restrictedExtent: new OpenLayers.Bounds(${restrictedExtent}),
     maxExtent: bounds
   });
 
-    <c:forEach items="${fx:array(tmsLayers)}" var="layer">
-      <c:set value="${fx:array2(layer,':')}" var="layerOption"/>
-  layer = new OpenLayers.Layer.TMS(
-          "${layerOption[0]}",
-          "${tmsUrl}", {
-            layername: '${layerOption[1]}',
-            type: 'png',
-            transitionEffect: 'resize',
-            serverResolutions: [${serverResolutions}],
-            tileSize: new OpenLayers.Size(256, 256)
-          });
-  map.addLayer(layer);
-    </c:forEach>
-
-  var luftbild = new OpenLayers.Layer.TMS(
-          "Luftbild",
-          "http://geo.sv.rostock.de/geodienste/luftbild/tms/", {
-            layername: 'luftbild_EPSG25833',
-            type: 'png',
-            transitionEffect: 'resize',
-            serverResolutions: [529.166666667, 352.777777778, 264.583333333, 176.388888889, 88.1944444444, 52.9166666667, 35.2777777778, 28.2222222222, 22.9305555556, 17.6388888889, 12.3472222222, 8.8194444444, 7.0555555556, 5.2916666667, 3.5277777778, 2.6458333333, 1.7638888889, 0.8819444444, 0.3527777778, 0.1763888889],
-            tileSize: new OpenLayers.Size(256, 256)
-          });
-  map.addLayer(luftbild);
-
-  var poiLayer = new OpenLayers.Layer.WMS(
-          "${wmsTitle}",
-          "${wmsUrl}", {
-            layers: "${wmsLayers}",
-            format: "${wmsFormat}",
-            transparent: "${wmsTransparent}"
-          }, {
-    displayInLayerSwitcher: true,
-    isBaseLayer: false,
-    minScale: 1100,
-    singleTile: Boolean("${wmsSingleTile}")
-  });
-  map.addLayer(poiLayer);
+  map.addLayer(new OpenLayers.Layer.${layersOneType}(${layersOneParams}));
+  map.addLayer(new OpenLayers.Layer.${layersTwoType}(${layersTwoParams}));
+    <c:if test="${not empty layersPoiType}">
+  map.addLayer(new OpenLayers.Layer.${layersPoiType}(${layersPoiParams}));
+    </c:if>
 
 //höchste Zoomstufe ermitteln (auf dieser soll kein Clustering mehr stattfinden)
   var clusterMaxZoom = map.getNumZoomLevels() - 1;

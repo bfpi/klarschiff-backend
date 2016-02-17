@@ -61,13 +61,13 @@ ALTER SCHEMA ${f_schema} OWNER TO ${f_username};
 CREATE TABLE klarschiff_geo_rss (
     id integer NOT NULL,
     klarschiff_geo_rss_fid integer NOT NULL,               --########### @deprecated ############
+    the_geom geometry(MultiPolygon,25833),
     ideen boolean NOT NULL,
     ideen_kategorien character varying(255),
     probleme boolean NOT NULL,
     probleme_kategorien character varying(255)
 );
 ALTER TABLE klarschiff_geo_rss OWNER TO ${f_username};
-SELECT AddGeometryColumn('klarschiff_geo_rss', 'the_geom', 25833, 'MULTIPOLYGON', 2);
 
 
 -- Name: klarschiff_kategorie; Type: TABLE; Schema: ${f_schema}; Owner: ${f_username}; Tablespace: 
@@ -93,18 +93,18 @@ ALTER TABLE klarschiff_missbrauchsmeldung OWNER TO ${f_username};
 
 -- Name: klarschiff_stadtgrenze_hro; Type: TABLE; Schema: ${f_schema}; Owner: ${f_username}; Tablespace: 
 CREATE TABLE klarschiff_stadtgrenze_hro (
-    ogc_fid integer NOT NULL
+    ogc_fid integer NOT NULL,
+    the_geom geometry(Polygon,25833)
 );
 ALTER TABLE klarschiff_stadtgrenze_hro OWNER TO ${f_username};
-SELECT AddGeometryColumn('klarschiff_stadtgrenze_hro', 'the_geom', 25833, 'MULTIPOLYGON', 2);
 
 -- Name: klarschiff_stadtteile_hro; Type: TABLE; Schema: ${f_schema}; Owner: ${f_username}; Tablespace: 
 CREATE TABLE klarschiff_stadtteile_hro (
     ogc_fid integer NOT NULL,
-    bezeichnung character varying
+    bezeichnung character varying,
+    the_geom geometry(Polygon,25833)
 );
 ALTER TABLE klarschiff_stadtteile_hro OWNER TO ${f_username};
-SELECT AddGeometryColumn('klarschiff_stadtteile_hro', 'the_geom', 25833, 'MULTIPOLYGON', 2);
 
 -- Name: klarschiff_status; Type: TABLE; Schema: ${f_schema}; Owner: ${f_username}; Tablespace: 
 CREATE TABLE klarschiff_status (
@@ -139,6 +139,7 @@ CREATE TABLE klarschiff_vorgang (
     datum_statusaenderung timestamp without time zone,
     beschreibung text,
     kategorieid bigint,
+    the_geom geometry(Point,25833),
     titel character varying(300),
     vorgangstyp character varying(255),
     status character varying(255),
@@ -152,10 +153,7 @@ CREATE TABLE klarschiff_vorgang (
     archiviert boolean,
     zustaendigkeit character varying(255)
 );
-
 ALTER TABLE klarschiff_vorgang OWNER TO ${f_username};
-
-SELECT AddGeometryColumn('klarschiff_vorgang', 'the_geom', 25833, 'POINT', 2);
 
 
 -- Name: klarschiff_vorgangstyp; Type: TABLE; Schema: ${f_schema}; Owner: ${f_username}; Tablespace: 

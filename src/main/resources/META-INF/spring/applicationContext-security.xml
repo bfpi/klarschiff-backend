@@ -36,7 +36,7 @@
         <secure:intercept-url pattern="/vorgangneu" access="hasRole('ROLE_EXTERN') or hasRole('ROLE_ADMIN') or hasRole('ROLE_INTERN')" />
         <secure:intercept-url pattern="/kategorien/**" access="hasRole('ROLE_EXTERN') or hasRole('ROLE_ADMIN') or hasRole('ROLE_INTERN')" />
         <secure:intercept-url pattern="/" access="hasRole('ROLE_EXTERN') or hasRole('ROLE_INTERN') or hasRole('ROLE_ADMIN') or hasRole('ROLE_KOORDINATOR') or hasRole('ROLE_AUSSENDIENST')"/>
-        <secure:intercept-url pattern="/vorgang/delegiert/**" access="permitAll" />
+        <secure:intercept-url pattern="/vorgang/delegiert/**" access="hasRole('ROLE_EXTERN') or hasRole('ROLE_INTERN') or hasRole('ROLE_ADMIN')" /> 
         <secure:intercept-url pattern="/aussendienst/**" access="hasRole('ROLE_KOORDINATOR')" />
         <secure:intercept-url pattern="/auftragsliste/**" access="hasRole('ROLE_AUSSENDIENST')" />
         <secure:intercept-url pattern="/**" access="hasRole('ROLE_INTERN') or hasRole('ROLE_ADMIN')" />
