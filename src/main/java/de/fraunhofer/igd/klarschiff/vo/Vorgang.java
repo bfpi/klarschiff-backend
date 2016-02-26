@@ -551,7 +551,10 @@ public class Vorgang implements Serializable {
   }
 
   public Integer getUnterstuetzerCount() {
-    return this.unterstuetzerCount;
+    if(this.unterstuetzerCount != null) {
+      return this.unterstuetzerCount;
+    }
+    return this.unterstuetzer.size();
   }
 
   public void setUnterstuetzerCount(Integer unterstuetzerCount) {
