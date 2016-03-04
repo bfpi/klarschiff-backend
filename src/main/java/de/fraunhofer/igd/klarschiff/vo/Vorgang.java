@@ -489,7 +489,7 @@ public class Vorgang implements Serializable {
   }
 
   public Boolean autorAussendienst() {
-    if (this.autorEmail == null || securityService == null) {
+    if (securityService == null || !autorIntern()) {
       return false;
     }
     User user = securityService.getUserByEmail(this.autorEmail);
@@ -502,8 +502,7 @@ public class Vorgang implements Serializable {
   public Integer getTrustLevel() {
     int trust_level = 0;
 
-    if (this.autorEmail.matches(settingsService.getPropertyValue("auth.internal_author_match"))
-      && getStatus() != EnumVorgangStatus.gemeldet) {
+    if (getStatus() != EnumVorgangStatus.gemeldet) {
       trust_level = 1;
       if (autorAussendienst()) {
         trust_level = 3;
