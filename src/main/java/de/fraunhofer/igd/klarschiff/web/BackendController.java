@@ -51,7 +51,9 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Objects;
+import java.util.Random;
 import java.util.logging.Level;
 import org.codehaus.jackson.map.ObjectMapper;
 
@@ -181,7 +183,7 @@ public class BackendController {
       if (vorgang.autorAussendienst()) {
         vorgang.setBeschreibungFreigabeStatus(EnumFreigabeStatus.extern);
       }
-      
+
       if (authCode != null && authCode.equals(settingsService.getPropertyValue("auth.kod_code")) && vorgang.autorIntern()) {
         vorgang.setStatus(EnumVorgangStatus.offen);
         vorgang.setStatusDatum(new Date());
@@ -1251,7 +1253,7 @@ public class BackendController {
     HttpServletResponse response) throws IOException {
 
     try {
-      List<Kategorie> kategorien = kategorieDao.findUnterKategorien();
+      List<Kategorie> kategorien = kategorieDao.getKategorien();
       sendOk(response, mapper.writeValueAsString(kategorien));
     } catch (Exception ex) {
       java.util.logging.Logger.getLogger(BackendController.class.getName()).log(Level.SEVERE, null, ex);
@@ -1299,6 +1301,7 @@ public class BackendController {
    * @param agency_responsible
    * @param negation
    * @param restriction_area
+   * @param just_times
    * @param response
    * @throws java.io.IOException
    */
@@ -1316,14 +1319,24 @@ public class BackendController {
     @RequestParam(value = "agency_responsible", required = false) String agency_responsible,
     @RequestParam(value = "negation", required = false) String negation,
     @RequestParam(value = "restriction_area", required = false) String restriction_area,
+    @RequestParam(value = "just_times", required = false) boolean just_times,
     HttpServletResponse response) throws IOException {
 
     try {
       List<Vorgang> vorgaenge = new ArrayList<Vorgang>();
+      List<HashMap> times = new ArrayList<HashMap>();
+
       if (id != null) {
         Vorgang vg = vorgangDao.findVorgang(id);
-        vg.setSecurityService(securityService);
-        vorgaenge.add(vg);
+        if(just_times) {
+          HashMap hm = new HashMap<String, String>();
+          hm.put("id", vg.getId());
+          hm.put("version", vg.getVersion());
+          times.add(hm);
+        } else {
+          vg.setSecurityService(securityService);
+          vorgaenge.add(vg);
+        }
       } else {
         VorgangSuchenCommand cmd = new VorgangSuchenCommand();
         // Suchtyp aussendienst würde nur Vorgänge mit zustaendigkeit_status = 'akzeptiert' ausgeben
@@ -1333,6 +1346,7 @@ public class BackendController {
         cmd.setOrder(0);
         cmd.setOrderDirection(0);
         cmd.setUeberspringeVorgaengeMitMissbrauchsmeldungen(true);
+        cmd.setJustTimes(just_times);
 
         if (negation != null) {
           cmd.setNegation(negation);
@@ -1362,13 +1376,15 @@ public class BackendController {
           }
         }
 
-        String[] status_list = status.split(",");
-        EnumVorgangStatus[] evs = new EnumVorgangStatus[status_list.length];
+        if(status != null) {
+          String[] status_list = status.split(",");
+          EnumVorgangStatus[] evs = new EnumVorgangStatus[status_list.length];
 
-        for (int i = 0; i < status_list.length; i++) {
-          evs[i] = EnumVorgangStatus.valueOf(status_list[i]);
+          for (int i = 0; i < status_list.length; i++) {
+            evs[i] = EnumVorgangStatus.valueOf(status_list[i]);
+          }
+          cmd.setErweitertVorgangStatus(evs);
         }
-        cmd.setErweitertVorgangStatus(evs);
 
         if (date_from != null) {
           cmd.setErweitertDatumVon(getDateFromParam(date_from));
@@ -1388,15 +1404,31 @@ public class BackendController {
           cmd.setAuftragDatum(new Date());
           cmd.setOrder(8);
         }
-        List<Object[]> vg = vorgangDao.getVorgaenge(cmd);
-        for (Object[] entry : vg) {
-          Vorgang vorgang = (Vorgang) entry[0];
-          vorgang.setUnterstuetzerCount((Integer) entry[2]);
-          vorgang.setSecurityService(securityService);
-          vorgaenge.add(vorgang);
+
+        if (just_times) {
+          List<Object[]> vg = vorgangDao.getVorgaengeIdAndVersion(cmd);
+          for (Object[] entry : vg) {
+            HashMap hm = new HashMap<String, String>();
+            hm.put("id", entry[0]);
+            hm.put("version", entry[1]);
+            times.add(hm);
+          }
+        } else {
+          List<Object[]> vg = vorgangDao.getVorgaenge(cmd);
+          for (Object[] entry : vg) {
+            Vorgang vorgang = (Vorgang) entry[0];
+            vorgang.setUnterstuetzerCount((Integer) entry[2]);
+            vorgang.setSecurityService(securityService);
+            vorgaenge.add(vorgang);
+          }
         }
       }
-      sendOk(response, mapper.writeValueAsString(vorgaenge));
+
+      if (just_times) {
+        sendOk(response, mapper.writeValueAsString(times));
+      } else {
+        sendOk(response, mapper.writeValueAsString(vorgaenge));
+      }
     } catch (Exception ex) {
       java.util.logging.Logger.getLogger(BackendController.class.getName()).log(Level.SEVERE, null, ex);
       sendError(response, ex);

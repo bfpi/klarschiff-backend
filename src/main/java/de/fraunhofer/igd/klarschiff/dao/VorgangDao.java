@@ -35,6 +35,7 @@ import de.fraunhofer.igd.klarschiff.web.VorgangFeedCommand;
 import de.fraunhofer.igd.klarschiff.web.VorgangFeedDelegiertAnCommand;
 import de.fraunhofer.igd.klarschiff.web.VorgangSuchenCommand;
 import java.math.BigInteger;
+import java.util.HashMap;
 import java.util.Objects;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.hibernate.SQLQuery;
@@ -393,7 +394,7 @@ public class VorgangDao {
           conds.add("vo.typ = '" + cmd.getErweitertVorgangTyp().name() + "'");
         }
         //Status
-         {
+        if(cmd.getErweitertVorgangStatus() != null) {
           List<EnumVorgangStatus> inStatus = Arrays.asList(cmd.getErweitertVorgangStatus());
           List<EnumVorgangStatus> notInStatus;
           if (cmd.getSuchtyp() == VorgangSuchenCommand.Suchtyp.aussendienst) {
@@ -666,10 +667,14 @@ public class VorgangDao {
    */
   public List<Object[]> getVorgaenge(VorgangSuchenCommand cmd) {
     StringBuilder sql = new StringBuilder();
-    sql.append("SELECT vo.*,")
-      .append(" verlauf1.datum AS aenderungsdatum,")
-      .append(" COALESCE(un.count, 0) AS unterstuetzer,")
-      .append(" COALESCE(mi.count, 0) AS missbrauchsmeldung");
+    if(cmd.getJustTimes()) {
+      sql.append("SELECT vo.id, vo.version, vo.adresse ");
+    } else {
+      sql.append("SELECT vo.*,")
+        .append(" verlauf1.datum AS aenderungsdatum,")
+        .append(" COALESCE(un.count, 0) AS unterstuetzer,")
+        .append(" COALESCE(mi.count, 0) AS missbrauchsmeldung");
+    }
     sql.append(" FROM klarschiff_vorgang vo");
     // Für Sortierung
     sql.append(" LEFT JOIN klarschiff_kategorie kat_unter ON vo.kategorie = kat_unter.id");
@@ -680,6 +685,11 @@ public class VorgangDao {
     sql.append(" INNER JOIN (SELECT vorgang, MAX(datum) AS datum FROM klarschiff_verlauf")
       .append(" GROUP BY vorgang) verlauf1 ON vo.id = verlauf1.vorgang");
     sql = addFilter(cmd, sql);
+
+    if(cmd.getJustTimes()) {
+      return ((Session) em.getDelegate()).createSQLQuery(sql.toString()).list();
+    }
+
     // ORDER
     ArrayList orderBys = new ArrayList();
     for (String field : cmd.getOrderString().split(",")) {
@@ -695,6 +705,7 @@ public class VorgangDao {
     if (cmd.getPage() != null && cmd.getSize() != null) {
       sql.append(" OFFSET ").append((cmd.getPage() - 1) * cmd.getSize());
     }
+
     return ((Session) em.getDelegate())
       .createSQLQuery(sql.toString())
       .addEntity("vo", Vorgang.class)
@@ -702,6 +713,25 @@ public class VorgangDao {
       .addScalar("unterstuetzer", StandardBasicTypes.INTEGER)
       .addScalar("missbrauchsmeldung", StandardBasicTypes.LONG)
       .list();
+  }
+
+  /**
+   * Ermittelt die Liste der Vorgänge zur Suche anhand der Parameter im
+   * <code>VorgangSuchenCommand</code> und gibt die ID und das letzte 
+   * Änderungsdatum zurück
+   *
+   * @param cmd Command mit den Parametern zur Suche
+   * @return Ergebnisliste der Vorgänge
+   */
+  public List<Object[]> getVorgaengeIdAndVersion(VorgangSuchenCommand cmd) {
+    StringBuilder sql = new StringBuilder();
+    sql.append("SELECT vo.id, vo.version ");
+    sql.append(" FROM klarschiff_vorgang vo");
+    // Für Auftrag
+    sql.append(" LEFT JOIN klarschiff_auftrag auftrag ON vo.id = auftrag.vorgang");
+    sql = addFilter(cmd, sql);
+
+    return ((Session) em.getDelegate()).createSQLQuery(sql.toString()).list();
   }
 
   /**
