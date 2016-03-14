@@ -311,7 +311,7 @@ public class Vorgang implements Serializable {
    * securityService wird benötigt, um das Trust-Level zu ermitteln
    */
   @Transient
-  private static SecurityService securityService = new SecurityService();
+  private SecurityService securityService = new SecurityService();
 
   /**
    * Auftrag zu dem Vorgang
@@ -507,22 +507,25 @@ public class Vorgang implements Serializable {
 
   private boolean checkTrustConditions(String key) {
     String pre = "trust.level." + key + ".";
-    return this.autorEmail.matches(settingsService.getPropertyValue(pre + "mail_match")) &&
-      (settingsService.getPropertyValue(pre + "ldap_match").length() == 0 ||
-      this.securityService.getGroupsByUserEmailAndGroupMatcher(this.autorEmail,
-        settingsService.getPropertyValue(pre + "ldap_match")).size() > 0
-      );
+    return this.autorEmail.matches(settingsService.getPropertyValue(pre + "mail_match"))
+      && (settingsService.getPropertyValue(pre + "ldap_match").length() == 0
+      || securityService.getGroupsByUserEmailAndGroupMatcher(this.autorEmail,
+        settingsService.getPropertyValue(pre + "ldap_match")).size() > 0);
   }
 
   public Boolean autorAussendienst() {
-    if (this.securityService == null || !autorIntern()) {
+    if (securityService == null || !autorIntern()) {
       return false;
     }
-    User user = this.securityService.getUserByEmail(this.autorEmail);
+    User user = securityService.getUserByEmail(this.autorEmail);
     if (user == null) {
       return false;
     }
     return !user.getAussendienstTeams().isEmpty();
+  }
+
+  public void setSecurityService(SecurityService securityService) {
+    this.securityService = securityService;
   }
 
   public List<Kommentar> getKommentare() {

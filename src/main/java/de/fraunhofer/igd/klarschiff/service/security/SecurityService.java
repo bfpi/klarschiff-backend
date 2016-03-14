@@ -219,6 +219,9 @@ public class SecurityService {
    */
   public List<Role> getGroupsByUserEmailAndGroupMatcher(String email, String groupMatchCondition) {
     User user = getUserByEmail(email);
+    if(user == null) {
+      return new ArrayList<Role>();
+    }
     return securityServiceLdap.getObjectListFromLdap(groupSearchBase, "(&(objectclass=" + groupObjectClass + ")(" + groupMatchCondition + ")(" + StringUtils.replace(groupSearchFilter, "{0}", user.getDn()) + "))", roleContextMapper);
   }
 

@@ -106,6 +106,7 @@ public class VorgangNeuController {
   public String form(ModelMap model) {
     VorgangNeuCommand cmd = new VorgangNeuCommand();
     cmd.getVorgang().setTyp(EnumVorgangTyp.problem);
+    cmd.getVorgang().setSecurityService(securityService);
     model.addAttribute("cmd", cmd);
     updateKategorieInModel(model, cmd);
     return "vorgangneu/form";
