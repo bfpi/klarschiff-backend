@@ -141,6 +141,8 @@ public class Vorgang implements Serializable {
   @JsonIgnore
   private String autorEmail;
 
+  private Integer trust;
+
   /**
    * Hash zum Bestätigen des Vorganges
    */
@@ -308,9 +310,8 @@ public class Vorgang implements Serializable {
   /**
    * securityService wird benötigt, um das Trust-Level zu ermitteln
    */
-  @JsonIgnore
   @Transient
-  private SecurityService securityService;
+  private static SecurityService securityService = new SecurityService();
 
   /**
    * Auftrag zu dem Vorgang
@@ -404,7 +405,7 @@ public class Vorgang implements Serializable {
   public void setVersion(Date version) {
     this.version = version;
   }
-  
+
   public Date getStatusDatum() {
     return this.statusDatum;
   }
@@ -475,6 +476,7 @@ public class Vorgang implements Serializable {
 
   public void setAutorEmail(String autorEmail) {
     this.autorEmail = autorEmail;
+    calculateTrust();
   }
 
   public Boolean autorIntern() {
@@ -484,33 +486,43 @@ public class Vorgang implements Serializable {
     return this.autorEmail.matches(settingsService.getPropertyValue("auth.internal_author_match"));
   }
 
-  public void setSecurityService(SecurityService securityService) {
-    this.securityService = securityService;
+  public Integer getTrust() {
+    return trust;
+  }
+
+  public void setTrust(Integer trust) {
+    this.trust = trust;
+  }
+
+  private void calculateTrust() {
+    int tmp = 0;
+    if (checkTrustConditions("one")) {
+      tmp = 1;
+    }
+    if (checkTrustConditions("two")) {
+      tmp = 2;
+    }
+    setTrust(tmp);
+  }
+
+  private boolean checkTrustConditions(String key) {
+    String pre = "trust.level." + key + ".";
+    return this.autorEmail.matches(settingsService.getPropertyValue(pre + "mail_match")) &&
+      (settingsService.getPropertyValue(pre + "ldap_match").length() == 0 ||
+      this.securityService.getGroupsByUserEmailAndGroupMatcher(this.autorEmail,
+        settingsService.getPropertyValue(pre + "ldap_match")).size() > 0
+      );
   }
 
   public Boolean autorAussendienst() {
-    if (securityService == null || !autorIntern()) {
+    if (this.securityService == null || !autorIntern()) {
       return false;
     }
-    User user = securityService.getUserByEmail(this.autorEmail);
+    User user = this.securityService.getUserByEmail(this.autorEmail);
     if (user == null) {
       return false;
     }
     return !user.getAussendienstTeams().isEmpty();
-  }
-
-  public Integer getTrustLevel() {
-    int trust_level = 0;
-
-    if (getStatus() != EnumVorgangStatus.gemeldet) {
-      trust_level = 1;
-      if (autorAussendienst()) {
-        trust_level = 3;
-      } else if (autorIntern()) {
-        trust_level = 2;
-      }
-    }
-    return trust_level;
   }
 
   public List<Kommentar> getKommentare() {
@@ -550,7 +562,7 @@ public class Vorgang implements Serializable {
   }
 
   public Integer getUnterstuetzerCount() {
-    if(this.unterstuetzerCount != null) {
+    if (this.unterstuetzerCount != null) {
       return this.unterstuetzerCount;
     }
     return this.unterstuetzer.size();

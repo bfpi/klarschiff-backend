@@ -147,7 +147,6 @@ public class BackendController {
     }
     try {
       Vorgang vorgang = new Vorgang();
-      vorgang.setSecurityService(securityService);
 
       if (StringUtils.isBlank(typ)) {
         throw new BackendControllerException(1, "[typ] fehlt", "Der Typ ist nicht angegeben.");
@@ -1334,7 +1333,6 @@ public class BackendController {
           hm.put("version", vg.getVersion());
           times.add(hm);
         } else {
-          vg.setSecurityService(securityService);
           vorgaenge.add(vg);
         }
       } else {
@@ -1418,7 +1416,6 @@ public class BackendController {
           for (Object[] entry : vg) {
             Vorgang vorgang = (Vorgang) entry[0];
             vorgang.setUnterstuetzerCount((Integer) entry[2]);
-            vorgang.setSecurityService(securityService);
             vorgaenge.add(vorgang);
           }
         }
