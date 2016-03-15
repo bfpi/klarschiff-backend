@@ -82,7 +82,7 @@ public class MailService {
   SimpleMailMessage kriteriumOffenNichtAkzeptiertTemplate;
   SimpleMailMessage kriteriumOffenInbearbeitungOhneStatusKommentarTemplate;
   SimpleMailMessage kriteriumIdeeOffenOhneUnterstuetzungTemplate;
-  SimpleMailMessage kriteriumWirdnichtbearbeitetOhneStatuskommentarTemplate;
+  SimpleMailMessage kriteriumNichtLoesbarOhneStatuskommentarTemplate;
   SimpleMailMessage kriteriumNichtMehrOffenNichtAkzeptiertTemplate;
   SimpleMailMessage kriteriumOhneRedaktionelleFreigabenTemplate;
   SimpleMailMessage kriteriumOhneZustaendigkeitTemplate;
@@ -508,7 +508,7 @@ public class MailService {
    * die in der E-Mail dargestellt werden sollen.
    * @param vorgaengeIdeeOffenOhneUnterstuetzung Liste der Vorgänge zu Redaktionskriterium 3, die in
    * der E-Mail dargestellt werden sollen.
-   * @param vorgaengeWirdnichtbearbeitetOhneStatuskommentar Liste der Vorgänge zu
+   * @param vorgaengeNichtLoesbarOhneStatuskommentar Liste der Vorgänge zu
    * Redaktionskriterium 4, die in der E-Mail dargestellt werden sollen.
    * @param vorgaengeNichtMehrOffenNichtAkzeptiert Liste der Vorgänge zu Redaktionskriterium 5, die
    * in der E-Mail dargestellt werden sollen.
@@ -522,7 +522,7 @@ public class MailService {
   public void sendInformRedaktionEmpfaengerMail(Short tageOffenNichtAkzeptiert,
     Short tageInbearbeitungOhneStatusKommentar, Short tageIdeeOffenOhneUnterstuetzung,
     List<Vorgang> vorgaengeOffenNichtAkzeptiert, List<Vorgang> vorgaengeInbearbeitungOhneStatusKommentar,
-    List<Vorgang> vorgaengeIdeeOffenOhneUnterstuetzung, List<Vorgang> vorgaengeWirdnichtbearbeitetOhneStatuskommentar,
+    List<Vorgang> vorgaengeIdeeOffenOhneUnterstuetzung, List<Vorgang> vorgaengeNichtLoesbarOhneStatuskommentar,
     List<Vorgang> vorgaengeNichtMehrOffenNichtAkzeptiert, List<Vorgang> vorgaengeOhneRedaktionelleFreigaben,
     List<Vorgang> vorgaengeOhneZustaendigkeit, String to, String zustaendigkeit) {
 
@@ -530,7 +530,7 @@ public class MailService {
     if ((CollectionUtils.isEmpty(vorgaengeOffenNichtAkzeptiert))
       && (CollectionUtils.isEmpty(vorgaengeInbearbeitungOhneStatusKommentar))
       && (CollectionUtils.isEmpty(vorgaengeIdeeOffenOhneUnterstuetzung))
-      && (CollectionUtils.isEmpty(vorgaengeWirdnichtbearbeitetOhneStatuskommentar))
+      && (CollectionUtils.isEmpty(vorgaengeNichtLoesbarOhneStatuskommentar))
       && (CollectionUtils.isEmpty(vorgaengeNichtMehrOffenNichtAkzeptiert))
       && (CollectionUtils.isEmpty(vorgaengeOhneRedaktionelleFreigaben))
       && (CollectionUtils.isEmpty(vorgaengeOhneZustaendigkeit))) {
@@ -548,8 +548,8 @@ public class MailService {
       = new SimpleMailMessage(kriteriumOffenInbearbeitungOhneStatusKommentarTemplate);
     SimpleMailMessage textKriteriumIdeeOffenOhneUnterstuetzung
       = new SimpleMailMessage(kriteriumIdeeOffenOhneUnterstuetzungTemplate);
-    SimpleMailMessage textKriteriumWirdnichtbearbeitetOhneStatuskommentar
-      = new SimpleMailMessage(kriteriumWirdnichtbearbeitetOhneStatuskommentarTemplate);
+    SimpleMailMessage textKriteriumNichtLoesbarOhneStatuskommentar
+      = new SimpleMailMessage(kriteriumNichtLoesbarOhneStatuskommentarTemplate);
     SimpleMailMessage textKriteriumNichtMehrOffenNichtAkzeptiert
       = new SimpleMailMessage(kriteriumNichtMehrOffenNichtAkzeptiertTemplate);
     SimpleMailMessage textKriteriumOhneRedaktionelleFreigaben
@@ -649,11 +649,11 @@ public class MailService {
     }
 
     //falls Liste der Vorgänge zu Redaktionskriterium 4 nicht leer ist...
-    if (!CollectionUtils.isEmpty(vorgaengeWirdnichtbearbeitetOhneStatuskommentar)) {
+    if (!CollectionUtils.isEmpty(vorgaengeNichtLoesbarOhneStatuskommentar)) {
 
       //Liste der Vorgänge auslesen und zu String zusammenbauen
       StringBuilder str = new StringBuilder();
-      for (Vorgang vorgang : vorgaengeWirdnichtbearbeitetOhneStatuskommentar) {
+      for (Vorgang vorgang : vorgaengeNichtLoesbarOhneStatuskommentar) {
         str.append(String.format("%1$-9s", vorgang.getId()))
           .append(String.format("%1$-27s", vorgang.getZustaendigkeit()))
           .append(String.format("%1$-10s", vorgang.getTyp().getText()))
@@ -664,13 +664,13 @@ public class MailService {
       }
 
       //Platzhalter für Teiltexte ersetzen und Teiltexte in Gesamt-E-Mail einfügen
-      textKriteriumWirdnichtbearbeitetOhneStatuskommentar.setText(
-        textKriteriumWirdnichtbearbeitetOhneStatuskommentar.getText().replaceAll("%vorgaenge%", str.toString()));
-      msg.setText(msg.getText().replaceAll("%kriteriumWirdnichtbearbeitetOhneStatuskommentar%",
-        textKriteriumWirdnichtbearbeitetOhneStatuskommentar.getText()));
+      textKriteriumNichtLoesbarOhneStatuskommentar.setText(
+        textKriteriumNichtLoesbarOhneStatuskommentar.getText().replaceAll("%vorgaenge%", str.toString()));
+      msg.setText(msg.getText().replaceAll("%kriteriumNichtLoesbarOhneStatuskommentar%",
+        textKriteriumNichtLoesbarOhneStatuskommentar.getText()));
     } //ansonsten Platzhalter für Teiltexte des Redaktionskriteriums 4 (plus nachfolgende Linebreaks) aus Gesamt-E-Mail entfernen
     else {
-      msg.setText(msg.getText().replaceAll("%kriteriumWirdnichtbearbeitetOhneStatuskommentar%\n\n", ""));
+      msg.setText(msg.getText().replaceAll("%kriteriumNichtLoesbarOhneStatuskommentar%\n\n", ""));
     }
 
     //falls Liste der Vorgänge zu Redaktionskriterium 5 nicht leer ist...
@@ -892,13 +892,13 @@ public class MailService {
     this.kriteriumIdeeOffenOhneUnterstuetzungTemplate = kriteriumIdeeOffenOhneUnterstuetzungTemplate;
   }
 
-  public SimpleMailMessage getKriteriumWirdnichtbearbeitetOhneStatuskommentarTemplate() {
-    return kriteriumWirdnichtbearbeitetOhneStatuskommentarTemplate;
+  public SimpleMailMessage getKriteriumNichtLoesbarOhneStatuskommentarTemplate() {
+    return kriteriumNichtLoesbarOhneStatuskommentarTemplate;
   }
 
-  public void setKriteriumWirdnichtbearbeitetOhneStatuskommentarTemplate(
-    SimpleMailMessage kriteriumWirdnichtbearbeitetOhneStatuskommentarTemplate) {
-    this.kriteriumWirdnichtbearbeitetOhneStatuskommentarTemplate = kriteriumWirdnichtbearbeitetOhneStatuskommentarTemplate;
+  public void setKriteriumNichtLoesbarOhneStatuskommentarTemplate(
+    SimpleMailMessage kriteriumNichtLoesbarOhneStatuskommentarTemplate) {
+    this.kriteriumNichtLoesbarOhneStatuskommentarTemplate = kriteriumNichtLoesbarOhneStatuskommentarTemplate;
   }
 
   public SimpleMailMessage getKriteriumNichtMehrOffenNichtAkzeptiertTemplate() {

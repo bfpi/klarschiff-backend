@@ -50,8 +50,8 @@
                         <c:choose>
 							<c:when test="${verlaufItem.typ=='status'}">
                                 <c:choose>
-									<c:when test="${verlaufItem.wertAlt=='wird nicht bearbeitet'}">
-                                        <c:set value="status_wirdNichtBearbeitet_15.png" var="altAlt"/>
+									<c:when test="${verlaufItem.wertAlt=='nicht lösbar'}">
+                                        <c:set value="status_nichtLoesbar_15.png" var="altAlt"/>
                                     </c:when>
                                     <c:when test="${verlaufItem.wertAlt=='Duplikat'}">
                                         <c:set value="status_duplikat_15.png" var="altAlt"/>
@@ -61,8 +61,8 @@
                                     </c:otherwise>
 								</c:choose>
                                 <c:choose>
-									<c:when test="${verlaufItem.wertNeu=='wird nicht bearbeitet'}">
-                                        <c:set value="status_wirdNichtBearbeitet_15.png" var="altNeu"/>
+									<c:when test="${verlaufItem.wertNeu=='nicht lösbar'}">
+                                        <c:set value="status_nichtLoesbar_15.png" var="altNeu"/>
                                     </c:when>
                                     <c:when test="${verlaufItem.wertNeu=='Duplikat'}">
                                         <c:set value="status_duplikat_15.png" var="altNeu"/>

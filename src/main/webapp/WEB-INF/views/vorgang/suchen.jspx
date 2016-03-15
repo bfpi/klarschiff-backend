@@ -80,8 +80,8 @@
 				<spring:param name="einfacheSuche" value="abgeschlossene" />
 			</spring:url>
 			<util:button url="${url}" disabled="${cmdvorgangsuchen.einfacheSuche == 'abgeschlossene'}">
- 				<util:img url="/images/status_abgeschlossen_15.png" cssStyle="padding-right:3px;"/>
-				<util:img url="/images/status_wirdNichtBearbeitet_15.png"/>
+ 				<util:img url="/images/status_geloest_15.png" cssStyle="padding-right:3px;"/>
+				<util:img url="/images/status_nichtLoesbar_15.png"/>
 				abgeschlossene Vorgänge
 			</util:button>
 			
@@ -586,13 +586,13 @@
 				</tr>
 				<tr>
 					<td colspan="3"></td>
-					<td><img alt="wird nicht bearbeitet/Duplikat" src="${url}status_wirdNichtBearbeitet_15.png" height="15" width="15"  title="Status: wird nicht bearbeitet/Duplikat"/></td>
-					<td style="vertical-align:top;">wird nicht bearbeitet / Duplikat</td>
+					<td><img alt="nicht lösbar/Duplikat" src="${url}status_nichtLoesbar_15.png" height="15" width="15"  title="Status: nicht lösbar/Duplikat"/></td>
+					<td style="vertical-align:top;">nicht lösbar / Duplikat</td>
 				</tr>
 				<tr>
 					<td colspan="3"></td>
-					<td><img alt="abgeschlossen" src="${url}status_abgeschlossen_15.png" height="15" width="15"  title="Status: abgeschlossen"/></td>
-					<td style="vertical-align:top;">abgeschlossen</td>
+					<td><img alt="gelöst" src="${url}status_geloest_15.png" height="15" width="15"  title="Status: gelöst"/></td>
+					<td style="vertical-align:top;">gelöst</td>
 				</tr>
 				<tr>
 					<td colspan="3"></td>

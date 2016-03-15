@@ -1090,7 +1090,7 @@ public class VorgangDao {
       .addWhereConditions("ve.typ = :verlaufTyp").addParameter("verlaufTyp", EnumVerlaufTyp.status)
       .addWhereConditions("ve.datum >= :datum").addParameter("datum", lastChange)
       .addWhereConditions("vo.status IN (:status)").addParameter("status", Arrays.asList(EnumVorgangStatus.closedVorgangStatus()))
-      .addWhereConditions("ve.wertNeu IN ('abgeschlossen', 'wird nicht bearbeitet')")
+      .addWhereConditions("ve.wertNeu IN ('geloest', 'nichtLoesbar')")
       .addWhereConditions("vo.autorEmail IS NOT NULL")
       .addWhereConditions("vo.autorEmail != :autorEmail").addParameter("autorEmail", "");
     return query.getResultList(em);
@@ -1194,18 +1194,18 @@ public class VorgangDao {
   }
 
   /**
-   * Ermittelt alle Vorgänge mit dem Status 'wird nicht bearbeitet', die bisher keine öffentliche Statusinformation aufweisen.
+   * Ermittelt alle Vorgänge mit dem Status 'nicht lösbar', die bisher keine öffentliche Statusinformation aufweisen.
    *
    * @param administrator Zuständigkeit ignorieren?
    * @param zustaendigkeit Zuständigkeit, der die Vorgänge zugewiesen sind
    * @return Liste mit Vorgängen
    */
   @SuppressWarnings("unchecked")
-  public List<Vorgang> findVorgaengeWirdnichtbearbeitetOhneStatuskommentar(Boolean administrator, String zustaendigkeit) {
+  public List<Vorgang> findVorgaengeNichtLoesbarOhneStatuskommentar(Boolean administrator, String zustaendigkeit) {
     HqlQueryHelper query = (new HqlQueryHelper()).addSelectAttribute("vo")
       .addFromTables("Vorgang vo")
       .addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert = FALSE)")
-      .addWhereConditions("vo.status = 'wirdNichtBearbeitet'")
+      .addWhereConditions("vo.status = 'nichtLoesbar'")
       .addWhereConditions("(vo.statusKommentar IS NULL OR vo.statusKommentar = '')");
     if (administrator == false) {
       query.addWhereConditions("vo.zustaendigkeit = :zustaendigkeit").addParameter("zustaendigkeit", zustaendigkeit);
@@ -1249,7 +1249,7 @@ public class VorgangDao {
     HqlQueryHelper query = (new HqlQueryHelper()).addSelectAttribute("vo")
       .addFromTables("Vorgang vo")
       .addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert = FALSE)")
-      .addWhereConditions("vo.status IN ('offen', 'inBearbeitung', 'wirdNichtBearbeitet', 'abgeschlossen')")
+      .addWhereConditions("vo.status IN ('offen', 'inBearbeitung', 'nichtLoesbar', 'geloest')")
       .addWhereConditions("vo.erstsichtungErfolgt = TRUE")
       .addWhereConditions("((vo.beschreibung IS NOT NULL AND vo.beschreibung != '' AND (beschreibungFreigabeStatus IS NULL OR beschreibungFreigabeStatus = 'intern')) OR (vo.fotoThumb IS NOT NULL AND (fotoFreigabeStatus IS NULL OR fotoFreigabeStatus = 'intern')))");
     if (administrator == false) {

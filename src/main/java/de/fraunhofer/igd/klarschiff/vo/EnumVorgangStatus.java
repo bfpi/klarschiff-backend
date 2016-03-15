@@ -13,9 +13,9 @@ public enum EnumVorgangStatus implements EnumText {
   gemeldet("gemeldet"),
   offen("offen"),
   inBearbeitung("in Bearbeitung"),
-  wirdNichtBearbeitet("wird nicht bearbeitet"),
+  nichtLoesbar("nicht l&#246;sbar"),
   duplikat("Duplikat"),
-  abgeschlossen("abgeschlossen"),
+  geloest("gel&#246;st"),
   geloescht("gel&#246;scht");
 
   /**
@@ -42,7 +42,7 @@ public enum EnumVorgangStatus implements EnumText {
    * @return geschlossen Status
    */
   public static EnumVorgangStatus[] closedVorgangStatus() {
-    return new EnumVorgangStatus[]{wirdNichtBearbeitet, duplikat, abgeschlossen, geloescht};
+    return new EnumVorgangStatus[]{nichtLoesbar, duplikat, geloest, geloescht};
   }
 
   /**
@@ -51,7 +51,7 @@ public enum EnumVorgangStatus implements EnumText {
    * @return geschlossen Status
    */
   public static EnumVorgangStatus[] aussendienstVorgangStatus() {
-    return new EnumVorgangStatus[]{offen, inBearbeitung, wirdNichtBearbeitet, duplikat, abgeschlossen};
+    return new EnumVorgangStatus[]{offen, inBearbeitung, nichtLoesbar, duplikat, geloest};
   }
 
   /**
@@ -60,7 +60,7 @@ public enum EnumVorgangStatus implements EnumText {
    * @return delegiert Status
    */
   public static EnumVorgangStatus[] delegiertVorgangStatus() {
-    return new EnumVorgangStatus[]{inBearbeitung, wirdNichtBearbeitet, duplikat, abgeschlossen};
+    return new EnumVorgangStatus[]{inBearbeitung, nichtLoesbar, duplikat, geloest};
   }
 
   private String text;

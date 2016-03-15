@@ -52,11 +52,11 @@ public class RedaktionKriterien implements Serializable {
   private Short tageIdeeOffenOhneUnterstuetzung;
 
   /**
-   * Vorgänge ausweisen mit dem Status 'wird nicht bearbeitet', die bisher keine öffentliche Statusinformation
+   * Vorgänge ausweisen mit dem Status 'nicht lösbar', die bisher keine öffentliche Statusinformation
    * aufweisen?
    */
   @NotNull
-  private Boolean wirdnichtbearbeitetOhneStatuskommentar;
+  private Boolean nichtLoesbarOhneStatuskommentar;
 
   /**
    * Vorgänge ausweisen mit dem Status 'offen', die bisher nicht akzeptiert wurden?
@@ -118,12 +118,12 @@ public class RedaktionKriterien implements Serializable {
     this.tageIdeeOffenOhneUnterstuetzung = tageIdeeOffenOhneUnterstuetzung;
   }
 
-  public Boolean getWirdnichtbearbeitetOhneStatuskommentar() {
-    return wirdnichtbearbeitetOhneStatuskommentar;
+  public Boolean getNichtLoesbarOhneStatuskommentar() {
+    return nichtLoesbarOhneStatuskommentar;
   }
 
-  public void setWirdnichtbearbeitetOhneStatuskommentar(boolean wirdnichtbearbeitetOhneStatuskommentar) {
-    this.wirdnichtbearbeitetOhneStatuskommentar = wirdnichtbearbeitetOhneStatuskommentar;
+  public void setNichtLoesbarOhneStatuskommentar(boolean nichtLoesbarOhneStatuskommentar) {
+    this.nichtLoesbarOhneStatuskommentar = nichtLoesbarOhneStatuskommentar;
   }
 
   public Boolean getNichtMehrOffenNichtAkzeptiert() {
