@@ -93,9 +93,9 @@ Jeder "Vorgang":#Meldungbzw.Vorgang hat einen Status. Über den Vorgangsstatus i
 * !../images/status_gemeldet_15.png! *gemeldet*
 * !../images/status_offen_15.png! *offen*
 * !../images/status_inBearbeitung_15.png! *in Bearbeitung*
-* !../images/status_wirdNichtBearbeitet_15.png! *wird nicht bearbeitet*
-* !../images/status_wirdNichtBearbeitet_15.png! *Duplikat*
-* !../images/status_abgeschlossen_15.png! *abgeschlossen*
+* !../images/status_nichtLoesbar_15.png! *nicht lösbar*
+* !../images/status_nichtLoesbar_15.png! *Duplikat*
+* !../images/status_geloest_15.png! *gelöst*
 * !../images/status_geloescht_15.png! *gelöscht*
 
 Die Status unterteilen sich in die beiden Gruppen "_offen_ und _abgeschlossen_":#OffeneundabgeschlosseneVorgnge. 
@@ -129,9 +129,9 @@ Jeder "Vorgang":#Meldungbzw.Vorgang hat einen aktuellen "Status":#Status. die ve
 * offen
 * in Bearbeitung
 Zu den abgeschlossenen gehören die folgenden Status:
-* wird nicht bearbeitet
+* nicht lösbar
 * Duplikat
-* abgeschlossen
+* gelöst
 * gelöscht
 
 Nur abgeschlossene Vorgänge können "archiviert":#Archiv werden.
