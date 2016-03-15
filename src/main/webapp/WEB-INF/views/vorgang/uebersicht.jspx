@@ -21,8 +21,8 @@
 	</div>
 	
 	<!-- TABMENU -->
-	<tiles:importAttribute name="tabmenu_item" ignore="true" toName="tabmenu_item"/>
-	<menu:tabmenuvorgang currentId="${tabmenu_item}" vorgangId="${vorgang.id}"/>
+	<tiles:importAttribute name="tabmenu_item" ignore="true" toName="tabmenu_item" />
+	<menu:tabmenuvorgang currentId="${tabmenu_item}" vorgangId="${vorgang.id}" vorgangZustaendigkeit="${vorgangZustaendigkeit}" />
 	
 	<!-- ITEMINFO -->
 	<vorgang:iteminfo vorgang="${vorgang}"/>
@@ -34,7 +34,7 @@
 		
 		<!-- Vorganginfos -->
 		<div class="fieldset">
-			<div class="fieldsettitle">Vorgangsdaten</div>
+			<div class="fieldsettitle">Vorgangsdaten ${vorgangZustaendigkeit}</div>
 			
 			<table class="result">
 				<tr>
@@ -223,6 +223,7 @@
                   onClick="${url}"
                   initOpenLayers="false"
                   title="Klicken Sie für eine größere Ansicht auf die Karte."
+                  zustaendigkeit="${vorgangZustaendigkeit}"
  			        		/>  
 					</div>				
 				</td>
@@ -233,8 +234,15 @@
 							<table>
 								<tr>
 									<td title="Klicken Sie zum Bearbeiten auf das Foto.">
-										<c:url value="/vorgang/${vorgang.id}/foto" var="url"/>
-										<foto:foto vorgang="${vorgang}" typ="thumb" onclick="location.href='${url}'"/>
+										<c:choose>
+											<c:when test="${vorgangZustaendigkeit}">
+												<c:url value="/vorgang/${vorgang.id}/foto" var="url"/>
+												<foto:foto vorgang="${vorgang}" typ="thumb" onclick="location.href = '${url}'"/>
+											</c:when>
+											<c:otherwise>
+												<foto:foto vorgang="${vorgang}" typ="thumb"/>
+											</c:otherwise>
+										</c:choose>
 									</td>
 									<td valign="top">
 										<c:url value="/images/freigabeStatus_${vorgang.fotoFreigabeStatus}.png" var="url"/>

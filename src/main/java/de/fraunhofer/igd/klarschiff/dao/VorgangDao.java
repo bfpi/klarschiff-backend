@@ -364,20 +364,26 @@ public class VorgangDao {
         }
         //FullText
         if (!StringUtils.isBlank(cmd.getErweitertFulltext())) {
-          String text = StringEscapeUtils.escapeSql("%" + cmd.getErweitertFulltext() + "%");
-          conds.add("vo.beschreibung ILIKE '" + text + "'"
-            + " OR vo.status_kommentar ILIKE '" + text + "'"
-            + " OR vo.id IN (SELECT vorgang FROM klarschiff_missbrauchsmeldung "
-            + "   WHERE datum_bestaetigung IS NOT NULL AND text ILIKE '" + text + "')"
-            + " OR vo.id IN (SELECT vorgang FROM klarschiff_kommentar "
-            + "   WHERE NOT geloescht AND text ILIKE '" + text + "')"
-            + " OR vo.kategorie IN (SELECT id FROM klarschiff_kategorie WHERE name ILIKE '" + text + "')"
-            + " OR vo.kategorie IN (SELECT id FROM klarschiff_kategorie WHERE parent in ("
-            + "SELECT id FROM klarschiff_kategorie WHERE name ILIKE '" + text + "'))");
+          if(cmd.getErweitertFulltext().trim().equals(securityService.getCurrentUser().getEmail())) {
+            String text = StringEscapeUtils.escapeSql("%" + cmd.getErweitertFulltext().trim() + "%");
+            conds.add("vo.autor_email ILIKE '" + text + "'");
+          } else {
+            String text = StringEscapeUtils.escapeSql("%" + cmd.getErweitertFulltext() + "%");
+            conds.add("vo.beschreibung ILIKE '" + text + "'"
+              + " OR vo.status_kommentar ILIKE '" + text + "'"
+              + " OR vo.id IN (SELECT vorgang FROM klarschiff_missbrauchsmeldung "
+              + "   WHERE datum_bestaetigung IS NOT NULL AND text ILIKE '" + text + "')"
+              + " OR vo.id IN (SELECT vorgang FROM klarschiff_kommentar "
+              + "   WHERE NOT geloescht AND text ILIKE '" + text + "')"
+              + " OR vo.kategorie IN (SELECT id FROM klarschiff_kategorie WHERE name ILIKE '" + text + "')"
+              + " OR vo.kategorie IN (SELECT id FROM klarschiff_kategorie WHERE parent in ("
+              + "SELECT id FROM klarschiff_kategorie WHERE name ILIKE '" + text + "'))");
+          }
         }
         //Nummer
         if (cmd.getErweitertNummerAsLong() != null) {
           conds.add("vo.id = " + cmd.getErweitertNummerAsLong());
+          cmd.setErweitertZustaendigkeit(null);
         }
         if (cmd.getVorgangAuswaehlen() != null && cmd.getVorgangAuswaehlen().length > 0) {
           conds.add("vo.id in (" + StringUtils.join(cmd.getVorgangAuswaehlen(), ",") + ")");
