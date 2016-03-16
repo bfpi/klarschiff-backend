@@ -179,7 +179,9 @@
 		<c:if test="${not empty kommentare}">
 			<div class="fieldset">
 				<div class="fieldsettitle">interne Kommentare</div>
-					
+		  		<c:if test="${not empty maxPages and not empty kommentare}">
+		  			<util:pagination maxPages="${maxPages}" page="${page}" size="${size}" additionalClass="top"/>
+		  		</c:if>
 		  		<c:forEach items="${kommentare}" var="kommentar" varStatus="s">
 		  			<div class="kommentar ${(s.index%2==0) ? 'odd' : 'even'}">
 		  				<div class="kommentarHeader">
@@ -193,7 +195,6 @@
 				</c:forEach>
 	            <c:if test="${not empty maxPages and not empty kommentare}">
 		            <util:pagination maxPages="${maxPages}" page="${page}" size="${size}"/>
-		            <br/>
 	            </c:if>
 			</div>
 		</c:if>

@@ -30,6 +30,9 @@
 		<vorgang:vorgangPrintEmail vorgang="${vorgang}"/>
 		<div class="fieldset">
 			<div class="fieldsettitle">Verlauf</div>
+	  		<c:if test="${not empty maxPages and not empty verlauf}">
+	  			<util:pagination maxPages="${maxPages}" page="${page}" size="${size}" additionalClass="top" />
+	  		</c:if>
 	  		<c:forEach items="${verlauf}" var="verlaufItem">
                 <c:if test="${verlaufItem.wertNeu!=verlaufItem.wertAlt or verlaufItem.wertNeu==null or verlaufItem.wertAlt==null}">
 	  			<div class="verlauf">

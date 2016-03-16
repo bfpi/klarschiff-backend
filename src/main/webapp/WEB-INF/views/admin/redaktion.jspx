@@ -58,6 +58,9 @@
         
         <div class="fieldset">
 			<div class="fieldsettitle">Empfänger redaktioneller E-Mails</div>
+			<c:if test="${not empty maxPages}">
+				<util:pagination maxPages="${maxPages}" page="${cmdredaktionempfaengerlistung.page}" size="${cmdredaktionempfaengerlistung.size}" additionalClass="top"/>
+			</c:if>
 			<table class="resulttable" width="100%">
 				<thead>
 					<tr>
@@ -81,16 +84,10 @@
 						</tr>
 					</c:forEach>
 				</tbody>
-                <tfoot>
-                    <tr class="footer">
-                        <td colspan="10">
-                            <c:if test="${not empty maxPages}">
-                                <util:pagination maxPages="${maxPages}" page="${cmdredaktionempfaengerlistung.page}" size="${cmdredaktionempfaengerlistung.size}"/>
-                            </c:if>
-                        </td>
-                    </tr>
-                </tfoot>
-			</table>			
+			</table>
+			<c:if test="${not empty maxPages}">
+				<util:pagination maxPages="${maxPages}" page="${cmdredaktionempfaengerlistung.page}" size="${cmdredaktionempfaengerlistung.size}"/>
+			</c:if>
 		</div>
 	</div>
 	

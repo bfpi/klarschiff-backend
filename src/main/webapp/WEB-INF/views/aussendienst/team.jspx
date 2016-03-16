@@ -78,6 +78,7 @@
 			    <tbody>
 				  	<c:forEach items="${auftraege}" var="auftrag" varStatus="rowCounter">
 				  		<c:set value="${auftrag.vorgang}" var="vorgang"/>
+              <c:url value="/vorgang/${vorgang.getId()}/uebersicht" var="url"/>
                         <fmt:formatDate value="${vorgang.datum}" pattern="dd.MM.yyyy" var="erstellung_datum"/>
                         <fmt:formatDate value="${vorgang.datum}" pattern="dd.MM.yyyy HH:mm:ss" var="erstellung_datum_uhrzeit"/>
                         <fmt:formatDate value="${vorgang.datum}" pattern="HH:mm:ss" var="erstellung_uhrzeit"/>
@@ -85,29 +86,29 @@
                         <fmt:formatDate value="${heute}" pattern="dd.MM.yyyy" var="heute_datum"/>
 				      <tr class="row ${(rowCounter.count%2==0)? 'odd' : 'even'}">
 				        <td class="id" style="text-align: center;">
-									<span class="show-tooltip" title="Vorgangsnummer: ${vorgang.id}" data-id="${vorgang.id}">${vorgang.id}</span>
+									<a href="${url}"><span class="show-tooltip" title="Vorgangsnummer: ${vorgang.id}" data-id="${vorgang.id}">${vorgang.id}</span></a>
 								</td>
 				        <td style="text-align: center;">
-				        	<c:url value="/images/${vorgang.typ}_15.png" var="url"/>
-									<img alt="${vorgang.typ.text}" src="${url}" height="15" width="15"  title="Typ: ${vorgang.typ.text}"/>
+									<c:url value="/images/${vorgang.typ}_15.png" var="imageUrl"/>
+									<a href="${url}"><img alt="${vorgang.typ.text}" src="${url}" height="15" width="15"  title="Typ: ${vorgang.typ.text}"/></a>
 								</td>
 				        <c:choose>
                                     <c:when test="${erstellung_datum eq heute_datum}">
-                                        <td style="text-align: center;" title="${erstellung_datum_uhrzeit}">${erstellung_uhrzeit}</td>
+                                        <td style="text-align: center;" title="${erstellung_datum_uhrzeit}"><a href="${url}">${erstellung_uhrzeit}</a></td>
                                     </c:when>
                                     <c:otherwise>
-                                        <td style="text-align: center;" title="${erstellung_datum_uhrzeit}">${erstellung_datum}</td>
+                                        <td style="text-align: center;" title="${erstellung_datum_uhrzeit}"><a href="${url}">${erstellung_datum}</a></td>
                                     </c:otherwise>
                                 </c:choose>
 				        <td>
-									${vorgang.kategorie.parent.name}
+									<a href="${url}">${vorgang.kategorie.parent.name}</a>
 								</td>
 				        <td>
-									${vorgang.kategorie.name}
+									<a href="${url}">${vorgang.kategorie.name}</a>
 								</td>
 				        <td style="text-align: center;">
-				        	<c:url value="/images/${vorgang.typ}_${vorgang.status}_15.png" var="url"/>
-									<img alt="${vorgang.status}" src="${url}"  title="Status: ${vorgang.status.text}"/>
+									<c:url value="/images/${vorgang.typ}_${vorgang.status}_15.png" var="imageUrl"/>
+									<a href="${url}"><img alt="${vorgang.status}" src="${imageUrl}"  title="Status: ${vorgang.status.text}"/></a>
 								</td>
 				        <td style="font-size: 17px; text-align: center;">
                   <c:if test="${not empty auftrag.status}">

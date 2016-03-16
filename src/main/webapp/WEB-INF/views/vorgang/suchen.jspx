@@ -391,6 +391,9 @@
         <form:form method="GET" modelAttribute="cmdvorgangsuchen">
             <c:choose>
                 <c:when test="${not empty vorgaenge}">
+                    <c:if test="${not empty maxPages}">
+                      <util:pagination maxPages="${maxPages}" page="${cmdvorgangsuchen.page}" size="${cmdvorgangsuchen.size}" additionalClass="top" />
+                    </c:if>
                     <table class="resulttable">
                         <thead>
                             <tr>
@@ -430,7 +433,7 @@
                                 <fmt:formatDate value="${heute}" pattern="dd.MM.yyyy" var="heute_datum"/>
                                 <tr class="row ${(missbrauchsmeldung>0)? 'missbrauchsmeldung' : ''} ${(rowCounter.count%2==0)? 'odd' : 'even'}" data-tr-click-target="${url}" style="cursor:pointer;">
                                     <td style="text-align: center;">
-                                        <span  title="Vorgangsnummer: ${vorgang.id}">${vorgang.id}</span>
+                                      <a href="${url}"><span  title="Vorgangsnummer: ${vorgang.id}">${vorgang.id}</span></a>
                                     </td>
                                     <c:if test="${cmdvorgangsuchen.suchtyp == 'aussendienst'}">
                                         <td class="skip-tr-click" style="text-align: center;">
@@ -438,65 +441,61 @@
                                         </td>
                                     </c:if>
                                     <td style="text-align: center;">
-                                        <c:url value="/images/${vorgang.typ}_15.png" var="url"/>
-                                        <img alt="${vorgang.typ.text}" src="${url}" height="15" width="15"  title="Typ: ${vorgang.typ.text}"/>
+                                        <c:url value="/images/${vorgang.typ}_15.png" var="imageUrl"/>
+                                        <a href="${url}"><img alt="${vorgang.typ.text}" src="${imageUrl}" height="15" width="15"  title="Typ: ${vorgang.typ.text}"/></a>
                                     </td>
                                     <c:choose>
                                         <c:when test="${erstellung_datum eq heute_datum}">
-                                            <td style="text-align: center;" title="${erstellung_datum_uhrzeit}">${erstellung_uhrzeit}</td>
+                                            <td style="text-align: center;" title="${erstellung_datum_uhrzeit}"><a href="${url}">${erstellung_uhrzeit}</a></td>
                                         </c:when>
                                         <c:otherwise>
-                                            <td style="text-align: center;" title="${erstellung_datum_uhrzeit}">${erstellung_datum}</td>
+                                            <td style="text-align: center;" title="${erstellung_datum_uhrzeit}"><a href="${url}">${erstellung_datum}</a></td>
                                         </c:otherwise>
                                     </c:choose>
                                     <td>
-                                        ${vorgang.kategorie.parent.name}
+                                      <a href="${url}">${vorgang.kategorie.parent.name}</a>
                                     </td>
                                     <td>
-                                        ${vorgang.kategorie.name}
+                                      <a href="${url}">${vorgang.kategorie.name}</a>
                                     </td>
                                     <td style="text-align: center;">
-                                        <c:url value="/images/${vorgang.typ}_${vorgang.status}_15.png" var="url"/>
-                                        <img alt="${vorgang.status}" src="${url}"  title="Status: ${vorgang.status.text}"/>
+                                      <a href="${url}">
+                                        <c:url value="/images/${vorgang.typ}_${vorgang.status}_15.png" var="imageUrl"/>
+                                        <img alt="${vorgang.status}" src="${imageUrl}"  title="Status: ${vorgang.status.text}"/>
                                         <c:if test="${vorgang.archiviert}">
-                                            <c:url value="/images/archiviert_15.png" var="url"/>
-                                            <img alt="archiviert" src="${url}" style="padding-left:5px;" title="archiviert"/>
+                                            <c:url value="/images/archiviert_15.png" var="imageUrl"/>
+                                            <img alt="archiviert" src="${imageUrl}" style="padding-left:5px;" title="archiviert"/>
                                         </c:if>
+                                      </a>
                                     </td>
                                     <td style="text-align: center;">
-                                        ${vorgang.adresse}
+                                      <a href="${url}">${vorgang.adresse}</a>
                                     </td>
                                     <td style="text-align: center;">
-                                        ${unterstuetzer}
+                                      <a href="${url}">${unterstuetzer}</a>
                                     </td>
                                     <td>
-                                        <vorgang:zustaendigkeit vorgang="${vorgang}" statusAlignRight="true"/>
+                                      <a href="${url}"><vorgang:zustaendigkeit vorgang="${vorgang}" statusAlignRight="true"/></a>
                                     </td>
                                     <c:if test="${cmdvorgangsuchen.suchtyp == 'aussendienst'}">
                                         <td style="text-align: center;">
                                             <c:if test="${vorgang.auftrag != null}">
-                                                ${vorgang.auftrag.team}
+                                              <a href="${url}">${vorgang.auftrag.team}</a>
                                             </c:if>
                                         </td>
                                         <td style="text-align: center;">
                                             <c:if test="${vorgang.auftrag != null}">
-                                                <fmt:formatDate value="${vorgang.auftrag.datum}" pattern="dd.MM.yyyy"/>
+                                              <a href="${url}"><fmt:formatDate value="${vorgang.auftrag.datum}" pattern="dd.MM.yyyy"/></a>
                                             </c:if>
                                         </td>
                                     </c:if>
                                 </tr>
                             </c:forEach>
                         </tbody>
-                        <tfoot>
-                            <tr class="footer">
-                                <td colspan="9">
-                                    <c:if test="${not empty maxPages}">
-                                        <util:pagination maxPages="${maxPages}" page="${cmdvorgangsuchen.page}" size="${cmdvorgangsuchen.size}"/>
-                                    </c:if>
-                                </td>
-                            </tr>
-                        </tfoot>
                     </table>
+                    <c:if test="${not empty maxPages}">
+                      <util:pagination maxPages="${maxPages}" page="${cmdvorgangsuchen.page}" size="${cmdvorgangsuchen.size}"/>
+                    </c:if>
                     <c:if test="${cmdvorgangsuchen.suchtyp == 'aussendienst'}">
                         <div class="fieldset" style="margin-top:10px;">
                             <div class="fieldsettitle">Außendiensteinheiten-Team zuweisen</div>

@@ -24,7 +24,10 @@
 	<!-- CONTENT -->
 	<div id="root_style_content">
 
-        <c:if test="${not empty alleLobHinweiseKritik}">
+      <c:if test="${not empty alleLobHinweiseKritik}">
+        <c:if test="${not empty maxPages}">
+          <util:pagination maxPages="${maxPages}" page="${cmdlobhinweisekritik.page}" size="${cmdlobhinweisekritik.size}" additionalClass="top"/>
+        </c:if>
         <table class="resulttable">
             <thead>
                 <tr>
@@ -43,33 +46,27 @@
                     <fmt:formatDate value="${lobHinweisKritik.datum}" pattern="HH:mm:ss" var="erstellung_uhrzeit"/>
                     <jsp:useBean id="heute" class="java.util.Date" />
                     <fmt:formatDate value="${heute}" pattern="dd.MM.yyyy" var="heute_datum"/>
-                    <tr class="${(rowCounter.count%2==0)? 'odd' : 'even'}" onClick="location.href='${url}'" style="cursor:pointer;">
-                        <td>${lobHinweisKritik.vorgang.getId()}</td>
+                    <tr class="${(rowCounter.count%2==0)? 'odd' : 'even'}">
+                      <td><a href="${url}">${lobHinweisKritik.vorgang.getId()}</a></td>
                         <c:choose>
                             <c:when test="${erstellung_datum eq heute_datum}">
-                                <td style="text-align: center;" title="${erstellung_datum_uhrzeit}">${erstellung_uhrzeit}</td>
+                              <td style="text-align: center;" title="${erstellung_datum_uhrzeit}"><a href="${url}">${erstellung_uhrzeit}</a></td>
                             </c:when>
                             <c:otherwise>
-                                <td style="text-align: center;" title="${erstellung_datum_uhrzeit}">${erstellung_datum}</td>
+                              <td style="text-align: center;" title="${erstellung_datum_uhrzeit}"><a href="${url}">${erstellung_datum}</a></td>
                             </c:otherwise>
                         </c:choose>
-                        <td>${lobHinweisKritik.autorEmail}</td>
-                        <td>${lobHinweisKritik.empfaengerEmail}</td>
-                        <td>${lobHinweisKritik.freitext}</td>
+                        <td><a href="${url}">${lobHinweisKritik.autorEmail}</a></td>
+                        <td><a href="${url}">${lobHinweisKritik.empfaengerEmail}</a></td>
+                        <td><a href="${url}">${lobHinweisKritik.freitext}</a></td>
                     </tr>
                 </c:forEach>
             </tbody>
-            <tfoot>
-                <tr class="footer">
-                    <td colspan="5">
-                        <c:if test="${not empty maxPages}">
-                            <util:pagination maxPages="${maxPages}" page="${cmdlobhinweisekritik.page}" size="${cmdlobhinweisekritik.size}"/>
-                        </c:if>
-                    </td>
-                </tr>
-            </tfoot>
         </table>
+        <c:if test="${not empty maxPages}">
+          <util:pagination maxPages="${maxPages}" page="${cmdlobhinweisekritik.page}" size="${cmdlobhinweisekritik.size}"/>
         </c:if>
+      </c:if>
     
     </div>
 	

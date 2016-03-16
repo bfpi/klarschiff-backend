@@ -500,7 +500,6 @@ label.error,div.error {
 /* #########################  ERGEBNISTABELLE ######################### */
 table.resulttable {
   padding-top: 10px;
-  padding-bottom: 20px;
 }
 
 table.resulttable td,table.resulttable th {
@@ -521,7 +520,6 @@ table.resulttable tbody tr.even {
 }
 
 table.resulttable tbody tr:hover {
-  color: #006CB7;
   _background-color: #82B0D2;
   background-color: #CBE3ED;
 }
@@ -532,6 +530,15 @@ table.resulttable tbody tr span.time {
 }
 
 table.resulttable tbody tr:hover span.time {
+  color: #006CB7;
+}
+
+table.resulttable tbody tr td a {
+  color: #000000;
+}
+
+table.resulttable tbody tr:hover,
+table.resulttable tbody tr:hover td a {
   color: #006CB7;
 }
 
@@ -595,20 +602,28 @@ table.resulttable th.sortable.asc {
   background-image: url("../images/sortAsc.png");
 }
 
-table.resulttable tfoot td,div.pagination {
+div.pagination {
+  padding-bottom: 20px;
+  padding-left: 10px;
   padding-top: 10px;
   font-size: 11px;
   color: #777;
 }
 
-div.pagination a,div.pagination span.submit {
+div.pagination.top {
+  padding-bottom: 0;
+}
+
+div.pagination a,
+div.pagination span.submit {
   font-size: 1.1em;
   padding: 3px;
   color: #006CB7;
   cursor: pointer;
 }
 
-div.pagination a:hover,div.pagination span.submit:hover {
+div.pagination a:hover,
+div.pagination span.submit:hover {
   /*background-color: #941616;*/
   color: #D81922;
 }

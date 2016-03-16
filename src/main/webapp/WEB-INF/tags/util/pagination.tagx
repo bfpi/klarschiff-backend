@@ -14,6 +14,7 @@
   <jsp:directive.attribute name="size" type="java.lang.Integer" required="false" rtexprvalue="true" description="The number of records per page (not required, defaults to 10)" />
   <jsp:directive.attribute name="post" type="java.lang.Boolean" required="false" rtexprvalue="true" description="(default 'false')" />
   <jsp:directive.attribute name="render" type="java.lang.Boolean" required="false" rtexprvalue="true" description="Indicate if the contents of this tag and all enclosed tags should be rendered (default 'true')" />
+  <jsp:directive.attribute name="additionalClass" type="java.lang.String" required="false" rtexprvalue="true" />
 
   <c:if test="${empty post}">
     <c:set var="post" value="false"/>
@@ -21,7 +22,7 @@
 
   <c:if test="${empty render or render}">
 
-    <div class="pagination">
+    <div class="pagination ${additionalClass}">
       <c:if test="${empty page || page lt 1}">
         <c:set var="page" value="1" />
       </c:if>
