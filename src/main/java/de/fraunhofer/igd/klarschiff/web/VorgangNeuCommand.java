@@ -1,5 +1,6 @@
 package de.fraunhofer.igd.klarschiff.web;
 
+import de.fraunhofer.igd.klarschiff.dao.GrenzenDao;
 import static de.fraunhofer.igd.klarschiff.web.Assert.*;
 
 import java.io.Serializable;
@@ -9,6 +10,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
 
 import de.fraunhofer.igd.klarschiff.dao.KategorieDao;
+import de.fraunhofer.igd.klarschiff.service.settings.SettingsService;
 import de.fraunhofer.igd.klarschiff.vo.Kategorie;
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
 
@@ -38,7 +40,7 @@ public class VorgangNeuCommand implements Serializable {
    * @param result Bindingresult mit den Fehlermeldungen
    * @param kategorieDao
    */
-  public void validate(BindingResult result, KategorieDao kategorieDao) {
+  public void validate(BindingResult result, KategorieDao kategorieDao, GrenzenDao grenzenDao, SettingsService settingsService) {
     if (StringUtils.equals("Bitte beschreiben Sie Ihre Meldung genauer.", vorgang.getBeschreibung())) {
       vorgang.setBeschreibung("");
     }
@@ -46,13 +48,15 @@ public class VorgangNeuCommand implements Serializable {
     assertNotEmpty(this, result, Assert.EvaluateOn.ever, "kategorie", "Bitte geben Sie eine Hauptkategorie für Ihren neuen Vorgang an.");
     assertNotEmpty(this, result, Assert.EvaluateOn.ever, "vorgang.kategorie", "Bitte geben Sie eine Unterkategorie für Ihren neuen Vorgang an.");
     assertNotEmpty(this, result, Assert.EvaluateOn.ever, "vorgang.oviWkt", "Bitte tragen Sie die Position Ihres neuen Vorgangs in der Karte ein.");
+    if (!vorgang.getOvi().within(grenzenDao.getStadtgrenze().getGrenze())) {
+      addErrorMessage(result, "vorgang.oviWkt", "Bitte setzen Sie die Position Ihres Vorgangs innerhalb des Bereichs " + settingsService.getPropertyValue("context.app.area") + ".");
+    }
+
     assertNotEmpty(this, result, Assert.EvaluateOn.ever, "vorgang.autorEmail", "Bitte geben Sie eine E-Mail-Adresse an.");
 
     if (!StringUtils.isBlank(vorgang.getAutorEmail())) {
       assertEmail(this, result, Assert.EvaluateOn.ever, "vorgang.autorEmail", "Die angegebene E-Mail-Adresse ist nicht gültig.");
     }
-    
-    assertNotEmpty(this, result, Assert.EvaluateOn.ever, "vorgang.beschreibung", "Bitte beschreiben Sie Ihre Meldung genauer.");
   }
 
   public Vorgang getVorgang() {
