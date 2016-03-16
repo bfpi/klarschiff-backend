@@ -34,7 +34,7 @@
 		
 		<!-- Vorganginfos -->
 		<div class="fieldset">
-			<div class="fieldsettitle">Vorgangsdaten ${vorgangZustaendigkeit}</div>
+			<div class="fieldsettitle">Vorgangsdaten</div>
 			
 			<table class="result">
 				<tr>
