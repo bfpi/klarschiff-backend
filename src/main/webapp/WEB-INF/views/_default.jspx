@@ -25,7 +25,12 @@
 		<LINK REL="SHORTCUT ICON" HREF="${url}"/>
 
 		<!-- Titel -->
-		<title>${fx:titleWithVorgang(vorgang)}</title>
+		<c:if test="${not empty vorgang}">
+			<title>${fx:titleWithVorgang(vorgang)}</title>
+		</c:if>
+		<c:if test="${empty vorgang and not empty cmd.vorgang}">
+			<title>${fx:titleWithVorgang(cmd.vorgang)}</title>
+		</c:if>
 		
 		<!-- Style -->
 		<c:url value="/styles/styles.css" var="url"/>
