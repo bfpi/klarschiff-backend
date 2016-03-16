@@ -46,9 +46,6 @@
 	<div id="root_style_content">
 		<vorgang:vorgangPrintEmail vorgang="${vorgang}"/>
 
-		<c:choose>
-			<c:when test="${not cmd.vorgang.archiviert}">
-			
 				<!-- Zuständigkeit -->
 				<div class="fieldset" id="zustaendigkeitpanel">
 					<div class="fieldsettitle closepanel" id="zustaendigkeittab"><div style="width:100%; height:15px;">Zuständigkeit</div></div>
@@ -627,33 +624,22 @@
 					<div class="fieldset" id="archivpanel">
 						<div class="fieldsettitle closepanel" id="archivtab"><div style="width:100%; height:15px;">Archiv</div></div>
 						<div id="archivcontent">
-							<form:form method="POST" modelAttribute="cmd.vorgang" >
-								<div>
-									Vorgang <input type="submit" value="archivieren" name="action"/>
-								</div>
-							</form:form>
+						  <form:form method="POST" modelAttribute="cmd.vorgang" >
+						    <div>
+						      <c:choose>
+						        <c:when test="${not cmd.vorgang.archiviert}">
+						          Vorgang <input type="submit" value="archivieren" name="action"/>
+						        </c:when>
+						        <c:otherwise>
+						          Vorgang aus dem Archiv <input type="submit" value="wiederherstellen" name="action"/>
+						        </c:otherwise>
+						      </c:choose>
+						    </div>
+						  </form:form>
 						</div>
 					</div>
 					<util:ddpanel name="archiv"/>
 				</c:if>
-			</c:when>
-
-			<c:otherwise>
-				<!-- Archiv -->
-				<c:if test="${cmd.vorgang.status!='gemeldet' and cmd.vorgang.status!='offen' and cmd.vorgang.status!='inBearbeitung'}">
-					<div class="fieldset" id="archivpanel">
-						<div class="fieldsettitle closepanel" id="archivtab"><div style="width:100%; height:15px;">Archiv</div></div>
-						<div id="archivcontent">
-							<form:form method="POST" modelAttribute="cmd.vorgang" >
-								<div>
-									Vorgang aus dem Archiv <input type="submit" value="wiederherstellen" name="action"/>
-								</div>
-							</form:form>
-						</div>
-					</div>
-				</c:if>
-			</c:otherwise>		
-		</c:choose>
 	</div>
 	
 	<!-- HELP -->

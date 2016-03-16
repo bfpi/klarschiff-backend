@@ -334,7 +334,9 @@ public class VorgangDao {
           }
           conds.add("vo.zustaendigkeit IN ('" + StringUtils.join(zustaendigkeiten, "', '") + "')");
         }
-        conds.add("vo.archiviert IS NULL OR NOT vo.archiviert");
+        if(cmd.getEinfacheSuche() != VorgangSuchenCommand.EinfacheSuche.abgeschlossene) {
+          conds.add("vo.archiviert IS NULL OR NOT vo.archiviert");
+        }
         switch (cmd.getEinfacheSuche()) {
           case offene:
             conds.add("vo.status IN ('" + EnumVorgangStatus.offen + "', '"
