@@ -218,8 +218,13 @@ public class VorgangSuchenController {
       cmd.setAuftragTeam(null);
       cmd.setAuftragDatum(null);
     }
+    List<Object[]> vorgaenge = vorgangDao.getVorgaenge(cmd);
+    if(cmd.suchtyp == Suchtyp.schnellsuche && vorgaenge.size() == 1) {
+      Object[] v = vorgaenge.get(0);
+      return "redirect:/vorgang/" + ((Vorgang) v[0]).getId() + "/uebersicht";
+    }
     //Suchen
-    modelMap.addAttribute("vorgaenge", vorgangDao.getVorgaenge(cmd));
+    modelMap.addAttribute("vorgaenge", vorgaenge);
     if (cmd.suchtyp == Suchtyp.einfach && cmd.einfacheSuche == EinfacheSuche.offene) {
       modelMap.put("missbrauchsmeldungenAbgeschlossenenVorgaenge", vorgangDao.missbrauchsmeldungenAbgeschlossenenVorgaenge());
     }

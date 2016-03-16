@@ -1403,8 +1403,12 @@ span.show-tooltip-text {
   color: white;
 }
 
-#root_style_menu ul li div {
+#root_style_menu ul li.quicksearch {
+  background-color: #ffffff;
+}
 
+#root_style_menu ul li.quicksearch form input {
+  width: 90%;
 }
 
 #root_style_menu ul li a {

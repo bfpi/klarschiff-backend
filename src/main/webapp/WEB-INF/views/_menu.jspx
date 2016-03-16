@@ -50,6 +50,15 @@
 						<menu:item label="Anmeldung" url="/login" id="menu.login" currentId="${menu_item}"/>
 					</c:otherwise>
 		 		</c:choose>
+
+				<sec:authorize access="hasAnyRole('ROLE_INTERN', 'ROLE_EXTERN', 'ROLE_ADMIN')">
+					<li class="quicksearch">
+						<form method="GET" action="/vorgang/suchen" class="suche">
+							<input type="hidden" value="schnellsuche" name="suchtyp" />
+							<input class="inputtext" type="text" value="" name="erweitertNummer" placeholder="Nummer" />
+						</form>
+					</li>
+				</sec:authorize>
 			</ul>
 			<br />
 			<ul>

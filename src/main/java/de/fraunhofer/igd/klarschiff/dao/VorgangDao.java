@@ -496,6 +496,12 @@ public class VorgangDao {
           conds.add("ST_Within(ST_Transform(vo.ovi, 4326), " + cmd.getSuchbereich() + ")");
         }
         break;
+      case schnellsuche:
+        //Nummer
+        if (cmd.getErweitertNummerAsLong() != null) {
+          conds.add("vo.id = " + cmd.getErweitertNummerAsLong());
+        }
+        break;
     }
     // Unterstützer
     sql.append(" LEFT JOIN (SELECT vorgang, COUNT(DISTINCT id) FROM klarschiff_unterstuetzer")
