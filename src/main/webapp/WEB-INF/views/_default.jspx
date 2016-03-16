@@ -25,7 +25,7 @@
 		<LINK REL="SHORTCUT ICON" HREF="${url}"/>
 
 		<!-- Titel -->
-		<title>${fx:title()}</title>
+		<title>${fx:titleWithVorgang(vorgang)}</title>
 		
 		<!-- Style -->
 		<c:url value="/styles/styles.css" var="url"/>
