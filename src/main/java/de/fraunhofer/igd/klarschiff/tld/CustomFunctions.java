@@ -119,7 +119,7 @@ public class CustomFunctions {
    */
   public static String titleWithVorgang(de.fraunhofer.igd.klarschiff.vo.Vorgang vorgang) {
     String title = title();
-    if(vorgang != null) {
+    if(vorgang != null && vorgang.getId() != null) {
       title += " - #" + vorgang.getId();
     }
     return title;
