@@ -431,7 +431,7 @@
                                 <fmt:formatDate value="${vorgang.datum}" pattern="HH:mm:ss" var="erstellung_uhrzeit"/>
                                 <jsp:useBean id="heute" class="java.util.Date" />
                                 <fmt:formatDate value="${heute}" pattern="dd.MM.yyyy" var="heute_datum"/>
-                                <tr class="row ${(missbrauchsmeldung>0)? 'missbrauchsmeldung' : ''} ${(rowCounter.count%2==0)? 'odd' : 'even'}" data-tr-click-target="${url}" style="cursor:pointer;">
+                                <tr class="row ${(missbrauchsmeldung>0)? 'missbrauchsmeldung' : ''} ${(rowCounter.count%2==0)? 'odd' : 'even'}">
                                     <td style="text-align: center;">
                                       <a href="${url}"><span  title="Vorgangsnummer: ${vorgang.id}">${vorgang.id}</span></a>
                                     </td>

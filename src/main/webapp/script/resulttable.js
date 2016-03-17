@@ -6,12 +6,6 @@ $(function () {
   var width1;
   var width2;
 
-  function addResultTableTrClick() {
-    $('table.resulttable tr[data-tr-click-target]').on("click", "td:not(.skip-tr-click)", function (elem) {
-      window.location.href = $(elem.currentTarget).parent("tr[data-tr-click-target]").data("trClickTarget");
-    });
-  }
-
   function addResultTableSelectAllFunction() {
     var vorgang_checkboxen = $('table.resulttable tr td input[type=checkbox][name=vorgangAuswaehlen]');
     $('table.resulttable tr th input[type=checkbox]#alleVorgaengeAuswaehlen').on("change", function (elem) {
@@ -56,7 +50,6 @@ $(function () {
   }
 
   if ($('table.resulttable') !== undefined) {
-    addResultTableTrClick();
     addResultTableSelectAllFunction();
     resizeResultTable();
     window.onresize = resizeResultTable;
