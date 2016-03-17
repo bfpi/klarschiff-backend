@@ -39,6 +39,8 @@ public class VorgangNeuCommand implements Serializable {
    *
    * @param result Bindingresult mit den Fehlermeldungen
    * @param kategorieDao
+   * @param grenzenDao
+   * @param settingsService
    */
   public void validate(BindingResult result, KategorieDao kategorieDao, GrenzenDao grenzenDao, SettingsService settingsService) {
     if (StringUtils.equals("Bitte beschreiben Sie Ihre Meldung genauer.", vorgang.getBeschreibung())) {
@@ -48,7 +50,8 @@ public class VorgangNeuCommand implements Serializable {
     assertNotEmpty(this, result, Assert.EvaluateOn.ever, "kategorie", "Bitte geben Sie eine Hauptkategorie für Ihren neuen Vorgang an.");
     assertNotEmpty(this, result, Assert.EvaluateOn.ever, "vorgang.kategorie", "Bitte geben Sie eine Unterkategorie für Ihren neuen Vorgang an.");
     assertNotEmpty(this, result, Assert.EvaluateOn.ever, "vorgang.oviWkt", "Bitte tragen Sie die Position Ihres neuen Vorgangs in der Karte ein.");
-    if (!vorgang.getOvi().within(grenzenDao.getStadtgrenze().getGrenze())) {
+
+    if (vorgang.getOvi() != null && !vorgang.getOvi().within(grenzenDao.getStadtgrenze().getGrenze())) {
       addErrorMessage(result, "vorgang.oviWkt", "Bitte setzen Sie die Position Ihres Vorgangs innerhalb des Bereichs " + settingsService.getPropertyValue("context.app.area") + ".");
     }
 
