@@ -53,7 +53,8 @@
 
 				<sec:authorize access="hasAnyRole('ROLE_INTERN', 'ROLE_EXTERN', 'ROLE_ADMIN')">
 					<li class="quicksearch">
-						<form method="GET" action="/vorgang/suchen" class="suche">
+						<c:url value="/vorgang/suchen" var="url"/>
+						<form method="GET" action="${url}" class="suche">
 							<input type="hidden" value="schnellsuche" name="suchtyp" />
 							<input class="inputtext" type="text" value="" name="erweitertNummer" placeholder="Nummer" />
 						</form>
