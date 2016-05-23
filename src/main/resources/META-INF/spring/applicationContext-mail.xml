@@ -38,7 +38,7 @@
     	p:kriteriumOffenNichtAkzeptiertTemplate-ref="kriteriumOffenNichtAkzeptiertTemplate"
     	p:kriteriumOffenInbearbeitungOhneStatusKommentarTemplate-ref="kriteriumOffenInbearbeitungOhneStatusKommentarTemplate"
     	p:kriteriumIdeeOffenOhneUnterstuetzungTemplate-ref="kriteriumIdeeOffenOhneUnterstuetzungTemplate"
-    	p:kriteriumWirdnichtbearbeitetOhneStatuskommentarTemplate-ref="kriteriumWirdnichtbearbeitetOhneStatuskommentarTemplate"
+    	p:kriteriumNichtLoesbarOhneStatuskommentarTemplate-ref="kriteriumNichtLoesbarOhneStatuskommentarTemplate"
     	p:kriteriumNichtMehrOffenNichtAkzeptiertTemplate-ref="kriteriumNichtMehrOffenNichtAkzeptiertTemplate"
     	p:kriteriumOhneRedaktionelleFreigabenTemplate-ref="kriteriumOhneRedaktionelleFreigabenTemplate"
     	p:kriteriumOhneZustaendigkeitTemplate-ref="kriteriumOhneZustaendigkeitTemplate"
@@ -196,17 +196,17 @@ Nummer   aktuelle Zuständigkeit     Typ       unverändert seit
 	</bean>
 	
 	<bean class="org.springframework.mail.SimpleMailMessage" id="kriteriumIdeeOffenOhneUnterstuetzungTemplate">
-		<property name="text"><value><![CDATA[Folgende Ideen mit dem Status „offen“ haben ihre Erstsichtung seit mindestens %tage% Tagen hinter sich, weisen aber bisher noch nicht die notwendige Anzahl von %unterstuetzungen% Unterstützungen auf. Falls Sie die jeweilige Idee abschließen möchten, so setzen Sie diese bitte auf den Status „wird nicht bearbeitet“ und geben Sie den Bürgerinnen und Bürgern eine kurze Begründung mittels der öffentlichen Statusinformation:
+		<property name="text"><value><![CDATA[Folgende Ideen mit dem Status „offen“ haben ihre Erstsichtung seit mindestens %tage% Tagen hinter sich, weisen aber bisher noch nicht die notwendige Anzahl von %unterstuetzungen% Unterstützungen auf. Falls Sie die jeweilige Idee abschließen möchten, so setzen Sie diese bitte auf den Status „nicht lösbar“ und geben Sie den Bürgerinnen und Bürgern eine kurze Begründung mittels der öffentlichen Statusinformation:
 
 Nummer   aktuelle Zuständigkeit     Unterstützungen   Erstsichtungszeitpunkt
 ******   **********************     ***************   **********************
 %vorgaenge%]]></value></property>
 	</bean>
 	
-	<bean class="org.springframework.mail.SimpleMailMessage" id="kriteriumWirdnichtbearbeitetOhneStatuskommentarTemplate">
-		<property name="text"><value><![CDATA[Folgende Vorgänge mit dem Status „wird nicht bearbeitet“ weisen bisher keine öffentliche Statusinformation auf. Bitte geben Sie den Bürgerinnen und Bürgern jeweils eine kurze Info zum Bearbeitungsstand mittels der öffentlichen Statusinformation:
+	<bean class="org.springframework.mail.SimpleMailMessage" id="kriteriumNichtLoesbarOhneStatuskommentarTemplate">
+		<property name="text"><value><![CDATA[Folgende Vorgänge mit dem Status „nicht lösbar“ weisen bisher keine öffentliche Statusinformation auf. Bitte geben Sie den Bürgerinnen und Bürgern jeweils eine kurze Info zum Bearbeitungsstand mittels der öffentlichen Statusinformation:
 
-Nummer   aktuelle Zuständigkeit     Typ       Status „wird nicht bearbeitet“ seit
+Nummer   aktuelle Zuständigkeit     Typ       Status „nicht lösbar“ seit
 ******   **********************     ***       ***********************************
 %vorgaenge%]]></value></property>
 	</bean>
@@ -247,7 +247,7 @@ es gibt folgende wichtige Hinweise zum Bearbeitungsstand in Ihrer %title%-Rolle 
 
 %kriteriumIdeeOffenOhneUnterstuetzung%
 
-%kriteriumWirdnichtbearbeitetOhneStatuskommentar%
+%kriteriumNichtLoesbarOhneStatuskommentar%
 
 %kriteriumNichtMehrOffenNichtAkzeptiert%
 

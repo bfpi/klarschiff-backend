@@ -1,5 +1,6 @@
 package de.fraunhofer.igd.klarschiff.web;
 
+import de.fraunhofer.igd.klarschiff.dao.GrenzenDao;
 import static de.fraunhofer.igd.klarschiff.web.Assert.addErrorMessage;
 
 import java.util.Arrays;
@@ -26,6 +27,7 @@ import de.fraunhofer.igd.klarschiff.service.geo.GeoService;
 import de.fraunhofer.igd.klarschiff.service.image.ImageService;
 import de.fraunhofer.igd.klarschiff.service.security.Role;
 import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
+import de.fraunhofer.igd.klarschiff.service.settings.SettingsService;
 import de.fraunhofer.igd.klarschiff.vo.EnumPrioritaet;
 import de.fraunhofer.igd.klarschiff.vo.EnumVorgangStatus;
 import de.fraunhofer.igd.klarschiff.vo.EnumVorgangTyp;
@@ -51,6 +53,9 @@ public class VorgangNeuController {
   VorgangDao vorgangDao;
 
   @Autowired
+  GrenzenDao grenzenDao;
+
+  @Autowired
   SecurityService securityService;
 
   @Autowired
@@ -61,6 +66,9 @@ public class VorgangNeuController {
 
   @Autowired
   GeoService geoService;
+
+  @Autowired
+  SettingsService settingsService;
 
   /**
    * Liefert alle möglichen Ausprägungen für Vorgangstypen
@@ -106,6 +114,7 @@ public class VorgangNeuController {
   public String form(ModelMap model) {
     VorgangNeuCommand cmd = new VorgangNeuCommand();
     cmd.getVorgang().setTyp(EnumVorgangTyp.problem);
+    cmd.getVorgang().setSecurityService(securityService);
     model.addAttribute("cmd", cmd);
     updateKategorieInModel(model, cmd);
     return "vorgangneu/form";
@@ -125,7 +134,7 @@ public class VorgangNeuController {
   public String submit(@ModelAttribute("cmd") VorgangNeuCommand cmd, BindingResult result, ModelMap model, HttpServletRequest request) {
     Vorgang vorgang = cmd.getVorgang();
 
-    cmd.validate(result, kategorieDao);
+    cmd.validate(result, kategorieDao, grenzenDao, settingsService);
 
     if (result.hasErrors()) {
       if (cmd.getKategorie() != null) {

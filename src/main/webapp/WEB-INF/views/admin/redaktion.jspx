@@ -33,7 +33,7 @@
 						<th>n Tage offen, aber nicht akzeptiert</th>
 						<th>n Tage in Bearbeitung, aber ohne öffentliche Statusinformation</th>
 						<th>Idee n Tage offen, aber ohne notwendige Zahl an Unterstützungen</th>
-						<th>wird nicht bearbeitet, aber ohne öffentliche Statusinformation</th>
+						<th>nicht lösbar, aber ohne öffentliche Statusinformation</th>
 						<th>nicht mehr offen, aber nicht akzeptiert</th>
 						<th>nicht mehr offen, aber ohne redaktionelle Freigaben</th>
 						<th>ohne Zuständigkeit</th>
@@ -46,7 +46,7 @@
 							<td align="center">${kriterien.tageOffenNichtAkzeptiert}</td>
 							<td align="center">${kriterien.tageInbearbeitungOhneStatusKommentar}</td>
 							<td align="center">${kriterien.tageIdeeOffenOhneUnterstuetzung}</td>
-                            <td align="center"><c:if test="${kriterien.wirdnichtbearbeitetOhneStatuskommentar}">&#x2714;</c:if></td>
+                            <td align="center"><c:if test="${kriterien.nichtLoesbarOhneStatuskommentar}">&#x2714;</c:if></td>
                             <td align="center"><c:if test="${kriterien.nichtMehrOffenNichtAkzeptiert}">&#x2714;</c:if></td>
                             <td align="center"><c:if test="${kriterien.ohneRedaktionelleFreigaben}">&#x2714;</c:if></td>
                             <td align="center"><c:if test="${kriterien.ohneZustaendigkeit}">&#x2714;</c:if></td>
@@ -58,6 +58,9 @@
         
         <div class="fieldset">
 			<div class="fieldsettitle">Empfänger redaktioneller E-Mails</div>
+			<c:if test="${not empty maxPages}">
+				<util:pagination maxPages="${maxPages}" page="${cmdredaktionempfaengerlistung.page}" size="${cmdredaktionempfaengerlistung.size}" additionalClass="top"/>
+			</c:if>
 			<table class="resulttable" width="100%">
 				<thead>
 					<tr>
@@ -81,16 +84,10 @@
 						</tr>
 					</c:forEach>
 				</tbody>
-                <tfoot>
-                    <tr class="footer">
-                        <td colspan="10">
-                            <c:if test="${not empty maxPages}">
-                                <util:pagination maxPages="${maxPages}" page="${cmdredaktionempfaengerlistung.page}" size="${cmdredaktionempfaengerlistung.size}"/>
-                            </c:if>
-                        </td>
-                    </tr>
-                </tfoot>
-			</table>			
+			</table>
+			<c:if test="${not empty maxPages}">
+				<util:pagination maxPages="${maxPages}" page="${cmdredaktionempfaengerlistung.page}" size="${cmdredaktionempfaengerlistung.size}"/>
+			</c:if>
 		</div>
 	</div>
 	

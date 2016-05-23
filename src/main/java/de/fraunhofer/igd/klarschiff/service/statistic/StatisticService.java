@@ -51,8 +51,8 @@ public class StatisticService {
     datum = DateUtils.addDays(jetzt, -60);
     statistic.setVorgaengeIdeeOffenOhneUnterstuetzung(statisticDao.findVorgaengeIdeeOffenOhneUnterstuetzung(datum));
 
-    // Vorgänge mit dem Status 'wird nicht bearbeitet', die bisher keine öffentliche Statusinformation aufweisen
-    statistic.setVorgaengeWirdnichtbearbeitetOhneStatuskommentar(statisticDao.findVorgaengeWirdnichtbearbeitetOhneStatuskommentar());
+    // Vorgänge mit dem Status 'nicht lösbar', die bisher keine öffentliche Statusinformation aufweisen
+    statistic.setVorgaengeNichtLoesbarOhneStatuskommentar(statisticDao.findVorgaengeNichtLoesbarOhneStatuskommentar());
 
     // Vorgänge, die zwar nicht mehr den Status 'offen' aufweisen, bisher aber dennoch nicht akzeptiert wurden
     statistic.setVorgaengeNichtMehrOffenNichtAkzeptiert(statisticDao.findVorgaengeNichtMehrOffenNichtAkzeptiert());

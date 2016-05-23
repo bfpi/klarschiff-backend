@@ -35,6 +35,7 @@ import de.fraunhofer.igd.klarschiff.web.VorgangFeedCommand;
 import de.fraunhofer.igd.klarschiff.web.VorgangFeedDelegiertAnCommand;
 import de.fraunhofer.igd.klarschiff.web.VorgangSuchenCommand;
 import java.math.BigInteger;
+import java.util.HashMap;
 import java.util.Objects;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.hibernate.SQLQuery;
@@ -333,7 +334,9 @@ public class VorgangDao {
           }
           conds.add("vo.zustaendigkeit IN ('" + StringUtils.join(zustaendigkeiten, "', '") + "')");
         }
-        conds.add("vo.archiviert IS NULL OR NOT vo.archiviert");
+        if(cmd.getEinfacheSuche() != VorgangSuchenCommand.EinfacheSuche.abgeschlossene) {
+          conds.add("vo.archiviert IS NULL OR NOT vo.archiviert");
+        }
         switch (cmd.getEinfacheSuche()) {
           case offene:
             conds.add("vo.status IN ('" + EnumVorgangStatus.offen + "', '"
@@ -363,20 +366,26 @@ public class VorgangDao {
         }
         //FullText
         if (!StringUtils.isBlank(cmd.getErweitertFulltext())) {
-          String text = StringEscapeUtils.escapeSql("%" + cmd.getErweitertFulltext() + "%");
-          conds.add("vo.beschreibung ILIKE '" + text + "'"
-            + " OR vo.status_kommentar ILIKE '" + text + "'"
-            + " OR vo.id IN (SELECT vorgang FROM klarschiff_missbrauchsmeldung "
-            + "   WHERE datum_bestaetigung IS NOT NULL AND text ILIKE '" + text + "')"
-            + " OR vo.id IN (SELECT vorgang FROM klarschiff_kommentar "
-            + "   WHERE NOT geloescht AND text ILIKE '" + text + "')"
-            + " OR vo.kategorie IN (SELECT id FROM klarschiff_kategorie WHERE name ILIKE '" + text + "')"
-            + " OR vo.kategorie IN (SELECT id FROM klarschiff_kategorie WHERE parent in ("
-            + "SELECT id FROM klarschiff_kategorie WHERE name ILIKE '" + text + "'))");
+          if(cmd.getErweitertFulltext().trim().equals(securityService.getCurrentUser().getEmail())) {
+            String text = StringEscapeUtils.escapeSql("%" + cmd.getErweitertFulltext().trim() + "%");
+            conds.add("vo.autor_email ILIKE '" + text + "'");
+          } else {
+            String text = StringEscapeUtils.escapeSql("%" + cmd.getErweitertFulltext() + "%");
+            conds.add("vo.beschreibung ILIKE '" + text + "'"
+              + " OR vo.status_kommentar ILIKE '" + text + "'"
+              + " OR vo.id IN (SELECT vorgang FROM klarschiff_missbrauchsmeldung "
+              + "   WHERE datum_bestaetigung IS NOT NULL AND text ILIKE '" + text + "')"
+              + " OR vo.id IN (SELECT vorgang FROM klarschiff_kommentar "
+              + "   WHERE NOT geloescht AND text ILIKE '" + text + "')"
+              + " OR vo.kategorie IN (SELECT id FROM klarschiff_kategorie WHERE name ILIKE '" + text + "')"
+              + " OR vo.kategorie IN (SELECT id FROM klarschiff_kategorie WHERE parent in ("
+              + "SELECT id FROM klarschiff_kategorie WHERE name ILIKE '" + text + "'))");
+          }
         }
         //Nummer
         if (cmd.getErweitertNummerAsLong() != null) {
           conds.add("vo.id = " + cmd.getErweitertNummerAsLong());
+          cmd.setErweitertZustaendigkeit(null);
         }
         if (cmd.getVorgangAuswaehlen() != null && cmd.getVorgangAuswaehlen().length > 0) {
           conds.add("vo.id in (" + StringUtils.join(cmd.getVorgangAuswaehlen(), ",") + ")");
@@ -393,7 +402,7 @@ public class VorgangDao {
           conds.add("vo.typ = '" + cmd.getErweitertVorgangTyp().name() + "'");
         }
         //Status
-         {
+        if(cmd.getErweitertVorgangStatus() != null) {
           List<EnumVorgangStatus> inStatus = Arrays.asList(cmd.getErweitertVorgangStatus());
           List<EnumVorgangStatus> notInStatus;
           if (cmd.getSuchtyp() == VorgangSuchenCommand.Suchtyp.aussendienst) {
@@ -487,6 +496,12 @@ public class VorgangDao {
 
         if (cmd.getSuchbereich() != null) {
           conds.add("ST_Within(ST_Transform(vo.ovi, 4326), " + cmd.getSuchbereich() + ")");
+        }
+        break;
+      case schnellsuche:
+        //Nummer
+        if (cmd.getErweitertNummerAsLong() != null) {
+          conds.add("vo.id = " + cmd.getErweitertNummerAsLong());
         }
         break;
     }
@@ -666,10 +681,14 @@ public class VorgangDao {
    */
   public List<Object[]> getVorgaenge(VorgangSuchenCommand cmd) {
     StringBuilder sql = new StringBuilder();
-    sql.append("SELECT vo.*,")
-      .append(" verlauf1.datum AS aenderungsdatum,")
-      .append(" COALESCE(un.count, 0) AS unterstuetzer,")
-      .append(" COALESCE(mi.count, 0) AS missbrauchsmeldung");
+    if(cmd.getJustTimes()) {
+      sql.append("SELECT vo.id, vo.version, vo.adresse ");
+    } else {
+      sql.append("SELECT vo.*,")
+        .append(" verlauf1.datum AS aenderungsdatum,")
+        .append(" COALESCE(un.count, 0) AS unterstuetzer,")
+        .append(" COALESCE(mi.count, 0) AS missbrauchsmeldung");
+    }
     sql.append(" FROM klarschiff_vorgang vo");
     // Für Sortierung
     sql.append(" LEFT JOIN klarschiff_kategorie kat_unter ON vo.kategorie = kat_unter.id");
@@ -680,6 +699,11 @@ public class VorgangDao {
     sql.append(" INNER JOIN (SELECT vorgang, MAX(datum) AS datum FROM klarschiff_verlauf")
       .append(" GROUP BY vorgang) verlauf1 ON vo.id = verlauf1.vorgang");
     sql = addFilter(cmd, sql);
+
+    if(cmd.getJustTimes()) {
+      return ((Session) em.getDelegate()).createSQLQuery(sql.toString()).list();
+    }
+
     // ORDER
     ArrayList orderBys = new ArrayList();
     for (String field : cmd.getOrderString().split(",")) {
@@ -695,6 +719,7 @@ public class VorgangDao {
     if (cmd.getPage() != null && cmd.getSize() != null) {
       sql.append(" OFFSET ").append((cmd.getPage() - 1) * cmd.getSize());
     }
+
     return ((Session) em.getDelegate())
       .createSQLQuery(sql.toString())
       .addEntity("vo", Vorgang.class)
@@ -702,6 +727,25 @@ public class VorgangDao {
       .addScalar("unterstuetzer", StandardBasicTypes.INTEGER)
       .addScalar("missbrauchsmeldung", StandardBasicTypes.LONG)
       .list();
+  }
+
+  /**
+   * Ermittelt die Liste der Vorgänge zur Suche anhand der Parameter im
+   * <code>VorgangSuchenCommand</code> und gibt die ID und das letzte 
+   * Änderungsdatum zurück
+   *
+   * @param cmd Command mit den Parametern zur Suche
+   * @return Ergebnisliste der Vorgänge
+   */
+  public List<Object[]> getVorgaengeIdAndVersion(VorgangSuchenCommand cmd) {
+    StringBuilder sql = new StringBuilder();
+    sql.append("SELECT vo.id, vo.version ");
+    sql.append(" FROM klarschiff_vorgang vo");
+    // Für Auftrag
+    sql.append(" LEFT JOIN klarschiff_auftrag auftrag ON vo.id = auftrag.vorgang");
+    sql = addFilter(cmd, sql);
+
+    return ((Session) em.getDelegate()).createSQLQuery(sql.toString()).list();
   }
 
   /**
@@ -1060,7 +1104,7 @@ public class VorgangDao {
       .addWhereConditions("ve.typ = :verlaufTyp").addParameter("verlaufTyp", EnumVerlaufTyp.status)
       .addWhereConditions("ve.datum >= :datum").addParameter("datum", lastChange)
       .addWhereConditions("vo.status IN (:status)").addParameter("status", Arrays.asList(EnumVorgangStatus.closedVorgangStatus()))
-      .addWhereConditions("ve.wertNeu IN ('abgeschlossen', 'wird nicht bearbeitet')")
+      .addWhereConditions("ve.wertNeu IN ('geloest', 'nichtLoesbar')")
       .addWhereConditions("vo.autorEmail IS NOT NULL")
       .addWhereConditions("vo.autorEmail != :autorEmail").addParameter("autorEmail", "");
     return query.getResultList(em);
@@ -1164,18 +1208,18 @@ public class VorgangDao {
   }
 
   /**
-   * Ermittelt alle Vorgänge mit dem Status 'wird nicht bearbeitet', die bisher keine öffentliche Statusinformation aufweisen.
+   * Ermittelt alle Vorgänge mit dem Status 'nicht lösbar', die bisher keine öffentliche Statusinformation aufweisen.
    *
    * @param administrator Zuständigkeit ignorieren?
    * @param zustaendigkeit Zuständigkeit, der die Vorgänge zugewiesen sind
    * @return Liste mit Vorgängen
    */
   @SuppressWarnings("unchecked")
-  public List<Vorgang> findVorgaengeWirdnichtbearbeitetOhneStatuskommentar(Boolean administrator, String zustaendigkeit) {
+  public List<Vorgang> findVorgaengeNichtLoesbarOhneStatuskommentar(Boolean administrator, String zustaendigkeit) {
     HqlQueryHelper query = (new HqlQueryHelper()).addSelectAttribute("vo")
       .addFromTables("Vorgang vo")
       .addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert = FALSE)")
-      .addWhereConditions("vo.status = 'wirdNichtBearbeitet'")
+      .addWhereConditions("vo.status = 'nichtLoesbar'")
       .addWhereConditions("(vo.statusKommentar IS NULL OR vo.statusKommentar = '')");
     if (administrator == false) {
       query.addWhereConditions("vo.zustaendigkeit = :zustaendigkeit").addParameter("zustaendigkeit", zustaendigkeit);
@@ -1219,7 +1263,7 @@ public class VorgangDao {
     HqlQueryHelper query = (new HqlQueryHelper()).addSelectAttribute("vo")
       .addFromTables("Vorgang vo")
       .addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert = FALSE)")
-      .addWhereConditions("vo.status IN ('offen', 'inBearbeitung', 'wirdNichtBearbeitet', 'abgeschlossen')")
+      .addWhereConditions("vo.status IN ('offen', 'inBearbeitung', 'nichtLoesbar', 'geloest')")
       .addWhereConditions("vo.erstsichtungErfolgt = TRUE")
       .addWhereConditions("((vo.beschreibung IS NOT NULL AND vo.beschreibung != '' AND (beschreibungFreigabeStatus IS NULL OR beschreibungFreigabeStatus = 'intern')) OR (vo.fotoThumb IS NOT NULL AND (fotoFreigabeStatus IS NULL OR fotoFreigabeStatus = 'intern')))");
     if (administrator == false) {

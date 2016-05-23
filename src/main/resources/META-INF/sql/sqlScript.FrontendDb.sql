@@ -315,7 +315,7 @@ CREATE OR REPLACE VIEW klarschiff_wfs_georss AS
         uk.name::text AS unterkategorie,
         uk.id::smallint AS unterkategorie_id,
         CASE
-            WHEN v.status::text = 'wirdNichtBearbeitet'::text THEN 'wird nicht bearbeitet'::text
+            WHEN v.status::text = 'nichtLoesbar'::text THEN 'nicht lösbar'::text
             ELSE regexp_replace(v.status::text, '([A-Z])'::text, ' \1'::text, 'g'::text)
         END AS status,
         CASE

@@ -55,7 +55,9 @@
 				        		</tr>
 				        	</table>
 						</form:form>
-						
+						<c:if test="${not empty maxPagesKommentare and not empty kommentare}">
+							<util:pagination maxPages="${maxPagesKommentare}" page="${cmd.page}" size="${cmd.size}" post="true" additionalClass="top"/>
+						</c:if>
 				  		<c:forEach items="${kommentare}" var="kommentar" varStatus="s">
 				  			<div class="kommentar ${(s.index%2==0) ? 'odd' : 'even'}">
 				  				<div class="kommentarHeader">
@@ -110,7 +112,6 @@
 						</script>
 			            <c:if test="${not empty maxPagesKommentare and not empty kommentare}">
 				            <util:pagination maxPages="${maxPagesKommentare}" page="${cmd.page}" size="${cmd.size}" post="true"/>
-				            <br/>
 			            </c:if>
 					</div>	
 				</div>
@@ -151,7 +152,9 @@
                     <div class="fieldset" id="lobhinweisekritikpanel">
                         <div class="fieldsettitle closepanel " id="lobhinweisekritiktab"><div style="width:100%; height:15px;">Lob, Hinweise oder Kritik von Bürger/-innen</div></div>
                         <div id="lobhinweisekritikcontent">
-            
+                            <c:if test="${not empty maxPagesLobHinweiseKritik and not empty allelobhinweisekritik}">
+                              <util:pagination maxPages="${maxPagesLobHinweiseKritik}" page="${cmd.page}" size="${cmd.size}" post="true" additionalClass="top"/>
+                            </c:if>
                             <c:forEach items="${allelobhinweisekritik}" var="einlobhinweisekritik" varStatus="t">
                                 <div class="kommentar ${(t.index%2==0) ? 'odd' : 'even'}">
                                     <div class="kommentarHeader">
@@ -165,7 +168,6 @@
                             </c:forEach>
                             <c:if test="${not empty maxPagesLobHinweiseKritik and not empty allelobhinweisekritik}">
                                 <util:pagination maxPages="${maxPagesLobHinweiseKritik}" page="${cmd.page}" size="${cmd.size}" post="true"/>
-                                <br/>
                             </c:if>
                         </div>	
                     </div>

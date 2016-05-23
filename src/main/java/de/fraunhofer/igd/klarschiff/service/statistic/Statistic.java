@@ -16,7 +16,7 @@ public class Statistic {
   List<Vorgang> vorgaengeOffenNichtAkzeptiert;
   List<Vorgang> vorgaengeInbearbeitungOhneStatusKommentar;
   List<Vorgang> vorgaengeIdeeOffenOhneUnterstuetzung;
-  List<Vorgang> vorgaengeWirdnichtbearbeitetOhneStatuskommentar;
+  List<Vorgang> vorgaengeNichtLoesbarOhneStatuskommentar;
   List<Vorgang> vorgaengeNichtMehrOffenNichtAkzeptiert;
   List<Vorgang> vorgaengeOhneRedaktionelleFreigaben;
   List<StatusVerteilungEntry> statusVerteilung;
@@ -62,12 +62,12 @@ public class Statistic {
     this.vorgaengeIdeeOffenOhneUnterstuetzung = vorgaengeIdeeOffenOhneUnterstuetzung;
   }
 
-  public List<Vorgang> getVorgaengeWirdnichtbearbeitetOhneStatuskommentar() {
-    return vorgaengeWirdnichtbearbeitetOhneStatuskommentar;
+  public List<Vorgang> getVorgaengeNichtLoesbarOhneStatuskommentar() {
+    return vorgaengeNichtLoesbarOhneStatuskommentar;
   }
 
-  public void setVorgaengeWirdnichtbearbeitetOhneStatuskommentar(List<Vorgang> vorgaengeWirdnichtbearbeitetOhneStatuskommentar) {
-    this.vorgaengeWirdnichtbearbeitetOhneStatuskommentar = vorgaengeWirdnichtbearbeitetOhneStatuskommentar;
+  public void setVorgaengeNichtLoesbarOhneStatuskommentar(List<Vorgang> vorgaengeNichtLoesbarOhneStatuskommentar) {
+    this.vorgaengeNichtLoesbarOhneStatuskommentar = vorgaengeNichtLoesbarOhneStatuskommentar;
   }
 
   public List<Vorgang> getVorgaengeNichtMehrOffenNichtAkzeptiert() {

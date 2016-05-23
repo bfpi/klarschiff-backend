@@ -79,6 +79,7 @@ public class VorgangController {
     }
 
     model.put("vorgang", vorgang);
+    model.put("vorgangZustaendigkeit", securityService.isCurrentZustaendigkeiten(vorgang.getId()));
     model.put("geoService", geoService);
     model.put("unterstuetzer", vorgangDao.countUnterstuetzerByVorgang(vorgang));
     model.put("missbrauch", vorgangDao.countOpenMissbrauchsmeldungByVorgang(vorgang));

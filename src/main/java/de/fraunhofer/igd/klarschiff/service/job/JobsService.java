@@ -148,7 +148,7 @@ public class JobsService {
       Short tageOffenNichtAkzeptiert = 0;
       Short tageInbearbeitungOhneStatusKommentar = 0;
       Short tageIdeeOffenOhneUnterstuetzung = 0;
-      Boolean sollVorgaengeWirdnichtbearbeitetOhneStatuskommentar = false;
+      Boolean sollVorgaengeNichtLoesbarOhneStatuskommentar = false;
       Boolean sollVorgaengeNichtMehrOffenNichtAkzeptiert = false;
       Boolean sollVorgaengeOhneRedaktionelleFreigaben = false;
       Boolean sollVorgaengeOhneZustaendigkeit = false;
@@ -156,7 +156,7 @@ public class JobsService {
       List<Vorgang> vorgaengeOffenNichtAkzeptiert = new ArrayList<Vorgang>();
       List<Vorgang> vorgaengeInbearbeitungOhneStatusKommentar = new ArrayList<Vorgang>();
       List<Vorgang> vorgaengeIdeeOffenOhneUnterstuetzung = new ArrayList<Vorgang>();
-      List<Vorgang> vorgaengeWirdnichtbearbeitetOhneStatuskommentar = new ArrayList<Vorgang>();
+      List<Vorgang> vorgaengeNichtLoesbarOhneStatuskommentar = new ArrayList<Vorgang>();
       List<Vorgang> vorgaengeNichtMehrOffenNichtAkzeptiert = new ArrayList<Vorgang>();
       List<Vorgang> vorgaengeOhneRedaktionelleFreigaben = new ArrayList<Vorgang>();
       List<Vorgang> vorgaengeOhneZustaendigkeit = new ArrayList<Vorgang>();
@@ -189,7 +189,7 @@ public class JobsService {
               tageOffenNichtAkzeptiert = kriterium.getTageOffenNichtAkzeptiert();
               tageInbearbeitungOhneStatusKommentar = kriterium.getTageInbearbeitungOhneStatusKommentar();
               tageIdeeOffenOhneUnterstuetzung = kriterium.getTageIdeeOffenOhneUnterstuetzung();
-              sollVorgaengeWirdnichtbearbeitetOhneStatuskommentar = kriterium.getWirdnichtbearbeitetOhneStatuskommentar();
+              sollVorgaengeNichtLoesbarOhneStatuskommentar = kriterium.getNichtLoesbarOhneStatuskommentar();
               sollVorgaengeNichtMehrOffenNichtAkzeptiert = kriterium.getNichtMehrOffenNichtAkzeptiert();
               sollVorgaengeOhneRedaktionelleFreigaben = kriterium.getOhneRedaktionelleFreigaben();
               sollVorgaengeOhneZustaendigkeit = kriterium.getOhneZustaendigkeit();
@@ -216,9 +216,9 @@ public class JobsService {
           vorgaengeIdeeOffenOhneUnterstuetzung = vorgangDao.findVorgaengeIdeeOffenOhneUnterstuetzung(administrator, empfaenger.getZustaendigkeit(), datum);
 
           //falls dies gemacht werden soll...
-          if (sollVorgaengeWirdnichtbearbeitetOhneStatuskommentar == true) {
-            //finde alle Vorgänge mit dem Status 'wird nicht bearbeitet', die bisher keine öffentliche Statusinformation aufweisen
-            vorgaengeWirdnichtbearbeitetOhneStatuskommentar = vorgangDao.findVorgaengeWirdnichtbearbeitetOhneStatuskommentar(administrator, empfaenger.getZustaendigkeit());
+          if (sollVorgaengeNichtLoesbarOhneStatuskommentar == true) {
+            //finde alle Vorgänge mit dem Status 'nicht lösbar', die bisher keine öffentliche Statusinformation aufweisen
+            vorgaengeNichtLoesbarOhneStatuskommentar = vorgangDao.findVorgaengeNichtLoesbarOhneStatuskommentar(administrator, empfaenger.getZustaendigkeit());
           }
 
           //falls dies gemacht werden soll...
@@ -240,13 +240,13 @@ public class JobsService {
           }
 
           //falls Vorgänge existieren...
-          if ((!vorgaengeOffenNichtAkzeptiert.isEmpty()) || (!vorgaengeInbearbeitungOhneStatusKommentar.isEmpty()) || (!vorgaengeIdeeOffenOhneUnterstuetzung.isEmpty()) || (!vorgaengeWirdnichtbearbeitetOhneStatuskommentar.isEmpty()) || (!vorgaengeNichtMehrOffenNichtAkzeptiert.isEmpty()) || (!vorgaengeOhneRedaktionelleFreigaben.isEmpty()) || (!vorgaengeOhneZustaendigkeit.isEmpty())) {
+          if ((!vorgaengeOffenNichtAkzeptiert.isEmpty()) || (!vorgaengeInbearbeitungOhneStatusKommentar.isEmpty()) || (!vorgaengeIdeeOffenOhneUnterstuetzung.isEmpty()) || (!vorgaengeNichtLoesbarOhneStatuskommentar.isEmpty()) || (!vorgaengeNichtMehrOffenNichtAkzeptiert.isEmpty()) || (!vorgaengeOhneRedaktionelleFreigaben.isEmpty()) || (!vorgaengeOhneZustaendigkeit.isEmpty())) {
 
             //setzte Zeitstempel des letzten E-Mail-Versands an aktuellen Empfänger auf aktuellen Zeitstempel
             empfaenger.setLetzteMail(jetzt);
 
             //sende E-Mail an aktuellen Empfänger
-            mailService.sendInformRedaktionEmpfaengerMail(tageOffenNichtAkzeptiert, tageInbearbeitungOhneStatusKommentar, tageIdeeOffenOhneUnterstuetzung, vorgaengeOffenNichtAkzeptiert, vorgaengeInbearbeitungOhneStatusKommentar, vorgaengeIdeeOffenOhneUnterstuetzung, vorgaengeWirdnichtbearbeitetOhneStatuskommentar, vorgaengeNichtMehrOffenNichtAkzeptiert, vorgaengeOhneRedaktionelleFreigaben, vorgaengeOhneZustaendigkeit, empfaenger.getEmail(), empfaenger.getZustaendigkeit());
+            mailService.sendInformRedaktionEmpfaengerMail(tageOffenNichtAkzeptiert, tageInbearbeitungOhneStatusKommentar, tageIdeeOffenOhneUnterstuetzung, vorgaengeOffenNichtAkzeptiert, vorgaengeInbearbeitungOhneStatusKommentar, vorgaengeIdeeOffenOhneUnterstuetzung, vorgaengeNichtLoesbarOhneStatuskommentar, vorgaengeNichtMehrOffenNichtAkzeptiert, vorgaengeOhneRedaktionelleFreigaben, vorgaengeOhneZustaendigkeit, empfaenger.getEmail(), empfaenger.getZustaendigkeit());
           }
         }
       }
