@@ -321,7 +321,7 @@ public class VorgangBearbeitenController {
 
     action = StringEscapeUtils.escapeHtml(action);
 
-    if (StringUtils.equals("wird nicht bearbeitet", cmd.getVorgang().getStatus().getText())) {
+    if (cmd.getVorgang().getStatus() != null && StringUtils.equals("wird nicht bearbeitet", cmd.getVorgang().getStatus().getText())) {
       assertNotEmpty(cmd, result, Assert.EvaluateOn.ever, "vorgang.statusKommentar",
         "Für diesen Status müssen Sie eine öffentliche Statusinformation angeben!");
     }
@@ -365,14 +365,21 @@ public class VorgangBearbeitenController {
       cmd.getVorgang().setZustaendigkeitFrontend(securityService.getZustaendigkeit(cmd.getVorgang().getZustaendigkeit()).getL());
       vorgangDao.merge(cmd.getVorgang());
     } else if (action.equals("&Auml;nderungen &uuml;bernehmen")) {
+      Vorgang vorg = getVorgang(id);
+      EnumVorgangStatus newStatus = cmd.getVorgang().getStatus();
+
       assertNotEmpty(cmd, result, Assert.EvaluateOn.ever, "vorgang.status", null);
       if (result.hasErrors()) {
-        cmd.setVorgang(getVorgang(id));
+        cmd.setVorgang(vorg);
         updateKategorieInModel(model, cmd);
         updateKommentarInModel(model, cmd);
         updateLobHinweiseKritikInModel(model, cmd);
         updateZustaendigkeitStatusInModel(model, cmd);
         return "vorgang/bearbeiten";
+      }
+
+      if(vorg.getStatus() != newStatus) {
+        cmd.getVorgang().setStatusDatum(new Date());
       }
       vorgangDao.merge(cmd.getVorgang());
     } else if (action.equals("freigabeStatus_Beschreibung_extern")) {
