@@ -471,12 +471,7 @@ public class VorgangDao {
         }
         //Unterstützer
         if (cmd.getErweitertUnterstuetzerAb() != null) {
-          unStatus.add(EnumVorgangStatus.inBearbeitung);
-          conds.add("vo.typ != '" + EnumVorgangTyp.idee + "' "
-            + " OR NOT vo.erstsichtung_erfolgt "
-            + " OR vo.status IN ('" + StringUtils.join(unStatus, "', '") + "')"
-            + " OR un.count >= " + cmd.getErweitertUnterstuetzerAb()
-          );
+          conds.add("un.count >= " + cmd.getErweitertUnterstuetzerAb());
         }
         //Missbrauchsmeldungen
         if (cmd.getUeberspringeVorgaengeMitMissbrauchsmeldungen()) {
