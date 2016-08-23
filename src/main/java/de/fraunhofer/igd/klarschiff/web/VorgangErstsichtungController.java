@@ -205,6 +205,10 @@ public class VorgangErstsichtungController {
         cmd.getVorgang().setStatus(EnumVorgangStatus.inBearbeitung);
         cmd.getVorgang().setStatusDatum(new Date());
       }
+      cmd.getVorgang().setBeschreibungFreigabeStatus(EnumFreigabeStatus.extern);
+      if(cmd.getVorgang().getFotoExists()) {
+        cmd.getVorgang().setFotoFreigabeStatus(EnumFreigabeStatus.extern);
+      }
 
       vorgangDao.merge(cmd.getVorgang());
 
@@ -223,15 +227,6 @@ public class VorgangErstsichtungController {
       vorgangDao.merge(cmd.getVorgang());
       cmd.setVorgang(vorgangDao.findVorgang(id));
       for (@SuppressWarnings("unused") Verlauf verlauf : cmd.getVorgang().getVerlauf());
-      return "vorgang/erstsichtung/pruefen";
-    } else if (action.startsWith("freigabeStatus")) {
-      String str[] = action.split("_");
-      EnumFreigabeStatus freigabeStatus = EnumFreigabeStatus.valueOf(str[2]);
-      if(str[1].equals("Beschreibung")) {
-        cmd.getVorgang().setBeschreibungFreigabeStatus(freigabeStatus);
-      } else if(str[1].equals("Foto")) {
-        cmd.getVorgang().setFotoFreigabeStatus(freigabeStatus);
-      }
       return "vorgang/erstsichtung/pruefen";
     }
 

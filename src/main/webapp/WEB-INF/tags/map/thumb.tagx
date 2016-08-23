@@ -27,6 +27,7 @@
   <jsp:directive.attribute name="title" type="java.lang.String" required="false" rtexprvalue="true"/>
   <jsp:directive.attribute name="initOpenLayers" type="java.lang.Boolean" required="false"/>
   <jsp:directive.attribute name="cssStyle" type="java.lang.String" required="false" rtexprvalue="true"/>
+  <jsp:directive.attribute name="zustaendigkeit" type="java.lang.Boolean" required="false" rtexprvalue="true"/>
 
   <c:if test="${empty projection}">
     <c:set var="projection" value="EPSG:25833"/>
@@ -38,10 +39,10 @@
     <c:set var="initOpenLayers" value="true"/>
   </c:if>
 
-  <c:if test="${empty onClick}">
+  <c:if test="${empty onClick or not zustaendigkeit}">
     <div id="map" class="smallmap" style="${cssStyle}" title="${title}"><!-- //OpenLayers --></div>
   </c:if>
-  <c:if test="${not empty onClick}">
+  <c:if test="${not empty onClick and zustaendigkeit}">
     <div id="map" class="smallmap" style="${cssStyle}" onClick="location.href = '${onClick}'" title="${title}"><!-- //OpenLayers --></div>
   </c:if>
 

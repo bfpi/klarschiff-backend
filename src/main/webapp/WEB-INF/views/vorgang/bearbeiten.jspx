@@ -46,9 +46,6 @@
 	<div id="root_style_content">
 		<vorgang:vorgangPrintEmail vorgang="${vorgang}"/>
 
-		<c:choose>
-			<c:when test="${not cmd.vorgang.archiviert}">
-			
 				<!-- Zuständigkeit -->
 				<div class="fieldset" id="zustaendigkeitpanel">
 					<div class="fieldsettitle closepanel" id="zustaendigkeittab"><div style="width:100%; height:15px;">Zuständigkeit</div></div>
@@ -217,7 +214,9 @@
 				        		</tr>
 				        	</table>
 						</form:form>
-						
+				  		<c:if test="${not empty maxPagesKommentare and not empty kommentare}">
+				  			<util:pagination maxPages="${maxPagesKommentare}" page="${cmd.page}" size="${cmd.size}" post="true" additionalClass="top"/>
+				  		</c:if>
 				  		<c:forEach items="${kommentare}" var="kommentar" varStatus="s">
 				  			<div class="kommentar ${(s.index%2==0) ? 'odd' : 'even'}">
 				  				<div class="kommentarHeader">
@@ -272,7 +271,6 @@
 						</script>
 			            <c:if test="${not empty maxPagesKommentare and not empty kommentare}">
 				            <util:pagination maxPages="${maxPagesKommentare}" page="${cmd.page}" size="${cmd.size}" post="true"/>
-				            <br/>
 			            </c:if>
 					</div>	
 				</div>
@@ -485,7 +483,9 @@
                     <div class="fieldset" id="lobhinweisekritikpanel">
                         <div class="fieldsettitle closepanel " id="lobhinweisekritiktab"><div style="width:100%; height:15px;">Lob, Hinweise oder Kritik von Bürger/-innen</div></div>
                         <div id="lobhinweisekritikcontent">
-            
+                            <c:if test="${not empty maxPagesLobHinweiseKritik and not empty allelobhinweisekritik}">
+                              <util:pagination maxPages="${maxPagesLobHinweiseKritik}" page="${cmd.page}" size="${cmd.size}" post="true" additionalClass="top" />
+                            </c:if>
                             <c:forEach items="${allelobhinweisekritik}" var="einlobhinweisekritik" varStatus="t">
                                 <div class="kommentar ${(t.index%2==0) ? 'odd' : 'even'}">
                                     <div class="kommentarHeader">
@@ -504,7 +504,6 @@
                             </c:forEach>
                             <c:if test="${not empty maxPagesLobHinweiseKritik and not empty allelobhinweisekritik}">
                                 <util:pagination maxPages="${maxPagesLobHinweiseKritik}" page="${cmd.page}" size="${cmd.size}" post="true"/>
-                                <br/>
                             </c:if>
                         </div>	
                     </div>
@@ -625,33 +624,22 @@
 					<div class="fieldset" id="archivpanel">
 						<div class="fieldsettitle closepanel" id="archivtab"><div style="width:100%; height:15px;">Archiv</div></div>
 						<div id="archivcontent">
-							<form:form method="POST" modelAttribute="cmd.vorgang" >
-								<div>
-									Vorgang <input type="submit" value="archivieren" name="action"/>
-								</div>
-							</form:form>
+						  <form:form method="POST" modelAttribute="cmd.vorgang" >
+						    <div>
+						      <c:choose>
+						        <c:when test="${not cmd.vorgang.archiviert}">
+						          Vorgang <input type="submit" value="archivieren" name="action"/>
+						        </c:when>
+						        <c:otherwise>
+						          Vorgang aus dem Archiv <input type="submit" value="wiederherstellen" name="action"/>
+						        </c:otherwise>
+						      </c:choose>
+						    </div>
+						  </form:form>
 						</div>
 					</div>
 					<util:ddpanel name="archiv"/>
 				</c:if>
-			</c:when>
-
-			<c:otherwise>
-				<!-- Archiv -->
-				<c:if test="${cmd.vorgang.status!='gemeldet' and cmd.vorgang.status!='offen' and cmd.vorgang.status!='inBearbeitung'}">
-					<div class="fieldset" id="archivpanel">
-						<div class="fieldsettitle closepanel" id="archivtab"><div style="width:100%; height:15px;">Archiv</div></div>
-						<div id="archivcontent">
-							<form:form method="POST" modelAttribute="cmd.vorgang" >
-								<div>
-									Vorgang aus dem Archiv <input type="submit" value="wiederherstellen" name="action"/>
-								</div>
-							</form:form>
-						</div>
-					</div>
-				</c:if>
-			</c:otherwise>		
-		</c:choose>
 	</div>
 	
 	<!-- HELP -->

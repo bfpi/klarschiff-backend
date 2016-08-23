@@ -25,7 +25,7 @@ public class VorgangSuchenCommand implements Serializable {
   /* --------------- Attribute ----------------------------*/
   public enum Suchtyp {
 
-    einfach, erweitert, aussendienst
+    einfach, erweitert, aussendienst, schnellsuche
   };
 
   public enum EinfacheSuche {
@@ -68,6 +68,7 @@ public class VorgangSuchenCommand implements Serializable {
   String negation;
   String suchbereich;
   Boolean ueberspringeVorgaengeMitMissbrauchsmeldungen;
+  Boolean justTimes;
 
   //NUR ADMIN dürfen andere Zuständigkeiten sehen
   public String getOrderString() {
@@ -358,5 +359,13 @@ public class VorgangSuchenCommand implements Serializable {
 
   public void setUeberspringeVorgaengeMitMissbrauchsmeldungen(Boolean ueberspringeVorgaengeMitMissbrauchsmeldungen) {
     this.ueberspringeVorgaengeMitMissbrauchsmeldungen = ueberspringeVorgaengeMitMissbrauchsmeldungen;
+  }
+
+  public Boolean getJustTimes() {
+    return justTimes == null ? false : justTimes;
+  }
+
+  public void setJustTimes(Boolean justTimes) {
+    this.justTimes = justTimes;
   }
 }

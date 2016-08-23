@@ -46,7 +46,7 @@
  	<bean id="interceptRequestPathFilter" class="de.fraunhofer.igd.klarschiff.service.security.InterceptRequestPathFilter">
  		<property name="pattern">
  			<map>
-  				<entry key="/vorgang/(\d*)/" value="zusteandigkeit"/>
+ 				<entry key="/vorgang/(\d*)/(?!uebersicht)" value="zusteandigkeit"/>
  				<entry key="/vorgang/delegiert/(\d*)/" value="delegiertAn"/>
  			</map>
  		</property>

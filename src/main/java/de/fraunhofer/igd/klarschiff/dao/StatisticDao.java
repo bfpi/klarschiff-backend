@@ -102,11 +102,11 @@ public class StatisticDao {
   }
 
   @SuppressWarnings("unchecked")
-  public List<Vorgang> findVorgaengeWirdnichtbearbeitetOhneStatuskommentar() {
+  public List<Vorgang> findVorgaengeNichtLoesbarOhneStatuskommentar() {
     HqlQueryHelper query = (new HqlQueryHelper()).addSelectAttribute("vo")
       .addFromTables("Vorgang vo")
       .addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert = FALSE)")
-      .addWhereConditions("vo.status = 'wirdNichtBearbeitet'")
+      .addWhereConditions("vo.status = 'nichtLoesbar'")
       .addWhereConditions("(vo.statusKommentar IS NULL OR vo.statusKommentar = '')")
       .orderBy("vo.id");
     processZustaendigkeitDelegiertAn(query);
@@ -130,7 +130,7 @@ public class StatisticDao {
     HqlQueryHelper query = (new HqlQueryHelper()).addSelectAttribute("vo")
       .addFromTables("Vorgang vo")
       .addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert = FALSE)")
-      .addWhereConditions("vo.status IN ('offen', 'inBearbeitung', 'wirdNichtBearbeitet', 'abgeschlossen')")
+      .addWhereConditions("vo.status IN ('offen', 'inBearbeitung', 'nichtLoesbar', 'geloest')")
       .addWhereConditions("vo.erstsichtungErfolgt = TRUE")
       .addWhereConditions("((vo.beschreibung IS NOT NULL AND vo.beschreibung != '' AND (beschreibungFreigabeStatus IS NULL OR beschreibungFreigabeStatus = 'intern')) OR (vo.fotoThumb IS NOT NULL AND (fotoFreigabeStatus IS NULL OR fotoFreigabeStatus = 'intern')))")
       .orderBy("vo.id");

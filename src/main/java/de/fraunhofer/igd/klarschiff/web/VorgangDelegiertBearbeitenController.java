@@ -70,7 +70,7 @@ public class VorgangDelegiertBearbeitenController {
   @ModelAttribute("allVorgangStatus")
   public EnumVorgangStatus[] allVorgangStatus() {
     EnumVorgangStatus[] allVorgangStatus = EnumVorgangStatus.values();
-    allVorgangStatus = (EnumVorgangStatus[]) ArrayUtils.removeElement(ArrayUtils.removeElement(ArrayUtils.removeElement(ArrayUtils.removeElement(ArrayUtils.removeElement(allVorgangStatus, EnumVorgangStatus.gemeldet), EnumVorgangStatus.offen), EnumVorgangStatus.geloescht), EnumVorgangStatus.wirdNichtBearbeitet), EnumVorgangStatus.duplikat);
+    allVorgangStatus = (EnumVorgangStatus[]) ArrayUtils.removeElement(ArrayUtils.removeElement(ArrayUtils.removeElement(ArrayUtils.removeElement(ArrayUtils.removeElement(allVorgangStatus, EnumVorgangStatus.gemeldet), EnumVorgangStatus.offen), EnumVorgangStatus.geloescht), EnumVorgangStatus.nichtLoesbar), EnumVorgangStatus.duplikat);
     return allVorgangStatus;
   }
 
