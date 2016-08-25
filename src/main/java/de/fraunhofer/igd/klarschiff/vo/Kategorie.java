@@ -85,6 +85,10 @@ public class Kategorie implements Serializable {
   @ElementCollection(fetch = FetchType.EAGER)
   private List<String> initialZustaendigkeiten;
 
+  @NotNull
+  @Column(columnDefinition = "boolean default false")
+  private boolean geloescht = false;
+
   /**
    * Gibt den Namen der Kategorie als "escaped HTML" zurück.
    *
