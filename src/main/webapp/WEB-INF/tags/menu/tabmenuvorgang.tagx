@@ -12,11 +12,15 @@
   <jsp:directive.attribute name="delegiert" type="java.lang.Boolean" required="false" rtexprvalue="true"/>
   <jsp:directive.attribute name="currentId" type="java.lang.String" required="false" rtexprvalue="true" description="die ID des gerade aktuellen Menüpunktes" />
   <jsp:directive.attribute name="vorgangId" type="java.lang.Integer" required="false" rtexprvalue="true" description="die ID des gerade aktuellen Menüpunktes" />
+  <jsp:directive.attribute name="vorgangZustaendigkeit" type="java.lang.Boolean" required="false" rtexprvalue="true" description="die Zuständigkeit des Aktuellen Nutzers für den Vorgang" />
 
   <c:if test="${empty delegiert}">
     <c:set var="delegiert" value="false"/>
   </c:if>
   <c:set var="_url" value="${(delegiert) ? 'delegiert/' : ''}"/>
+  <c:if test="${empty vorgangZustaendigkeit}">
+    <c:set var="vorgangZustaendigkeit" value="true"/>
+  </c:if>
 
   <menu:tabmenu>
     <menu:tabmenuitem label="Suche" url="/vorgang/${_url}suchen" id="vorgang.suchen" cssClass="extra" currentId="${currentId}"/>
@@ -25,14 +29,16 @@
     </c:if>
     <c:if test="${currentId!='vorgang.suchen' and currentId!='vorgang.erstsichtung'}">
       <menu:tabmenuitem label="Übersicht" url="/vorgang/${_url}${vorgangId}/uebersicht" id="vorgang.uebersicht" currentId="${currentId}"/>
-      <menu:tabmenuitem label="Bearbeiten" url="/vorgang/${_url}${vorgangId}/bearbeiten" id="vorgang.bearbeiten" currentId="${currentId}"/>
-      <c:if test="${not delegiert}">
-        <menu:tabmenuitem label="Missbrauchsmeldungen" url="/vorgang/${_url}${vorgangId}/missbrauch" id="vorgang.missbrauch" currentId="${currentId}"/>
-      </c:if>
-      <menu:tabmenuitem label="Karte" url="/vorgang/${_url}${vorgangId}/karte" id="vorgang.karte" currentId="${currentId}"/>
-      <menu:tabmenuitem label="Foto" url="/vorgang/${_url}${vorgangId}/foto" id="vorgang.foto" currentId="${currentId}"/>
-      <c:if test="${not delegiert}">
-        <menu:tabmenuitem label="Verlauf" url="/vorgang/${_url}${vorgangId}/verlauf" id="vorgang.verlauf" currentId="${currentId}"/>
+      <c:if test="${vorgangZustaendigkeit}">
+        <menu:tabmenuitem label="Bearbeiten" url="/vorgang/${_url}${vorgangId}/bearbeiten" id="vorgang.bearbeiten" currentId="${currentId}"/>
+        <c:if test="${not delegiert}">
+          <menu:tabmenuitem label="Missbrauchsmeldungen" url="/vorgang/${_url}${vorgangId}/missbrauch" id="vorgang.missbrauch" currentId="${currentId}"/>
+        </c:if>
+        <menu:tabmenuitem label="Karte" url="/vorgang/${_url}${vorgangId}/karte" id="vorgang.karte" currentId="${currentId}"/>
+        <menu:tabmenuitem label="Foto" url="/vorgang/${_url}${vorgangId}/foto" id="vorgang.foto" currentId="${currentId}"/>
+        <c:if test="${not delegiert}">
+          <menu:tabmenuitem label="Verlauf" url="/vorgang/${_url}${vorgangId}/verlauf" id="vorgang.verlauf" currentId="${currentId}"/>
+        </c:if>
       </c:if>
     </c:if>
   </menu:tabmenu>

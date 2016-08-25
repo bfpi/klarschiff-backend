@@ -321,7 +321,7 @@ public class VorgangBearbeitenController {
 
     action = StringEscapeUtils.escapeHtml(action);
 
-    if (cmd.getVorgang().getStatus() != null && StringUtils.equals("wird nicht bearbeitet", cmd.getVorgang().getStatus().getText())) {
+    if (cmd.getVorgang().getStatus() != null && StringUtils.equals(EnumVorgangStatus.nichtLoesbar.getText(), cmd.getVorgang().getStatus().getText())) {
       assertNotEmpty(cmd, result, Assert.EvaluateOn.ever, "vorgang.statusKommentar",
         "Für diesen Status müssen Sie eine öffentliche Statusinformation angeben!");
     }

@@ -211,6 +211,21 @@ public class SecurityService {
   }
 
   /**
+   * Ermittelt alle Gruppen für einen Benutzer anhand der EMail-Adresse.
+   *
+   * @param email EMail des Benutzers für den die Gruppen gesucht werden sollen
+   * @param groupMatchCondition MatchCondition auf die die Suche eingeschränkt werden soll
+   * @return Liste von Gruppen
+   */
+  public List<Role> getGroupsByUserEmailAndGroupMatcher(String email, String groupMatchCondition) {
+    User user = getUserByEmail(email);
+    if(user == null) {
+      return new ArrayList<Role>();
+    }
+    return securityServiceLdap.getObjectListFromLdap(groupSearchBase, "(&(objectclass=" + groupObjectClass + ")(" + groupMatchCondition + ")(" + StringUtils.replace(groupSearchFilter, "{0}", user.getDn()) + "))", roleContextMapper);
+  }
+
+  /**
    * Ermittelt die Benutzer-E-Mail-Adresse für einen Benutzer in einer gegebenen Rolle anhand des
    * Benutzernamens.
    *

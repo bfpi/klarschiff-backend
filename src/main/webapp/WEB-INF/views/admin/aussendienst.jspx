@@ -33,15 +33,15 @@
                 <tbody>
                     <c:forEach items="${benutzer}" var="user" varStatus="rowCounter">
                         <c:url value="/admin/aussendienst/${user.id}/bearbeiten" var="url"/>
-                        <tr class="${(rowCounter.count%2==0)? 'odd' : 'even'}" onClick="location.href='${url}'" style="cursor:pointer;" title="Verknüpfungen durchführen">
-                            <td>${user.name} (${user.id})</td>    
-                            <td>
-                                <ul>
-                                    <c:forEach items="${user.aussendienstKoordinatorZustaendigkeiten}" var="aussendienst">
-                                        <li><span>${aussendienst}</span></li>
-                                    </c:forEach>
-                                </ul>
-                            </td>
+                        <tr class="${(rowCounter.count%2==0)? 'odd' : 'even'}" title="Verknüpfungen durchführen">
+                          <td><a href="${url}">${user.name} (${user.id})</a></td>
+                          <td>
+                            <ul>
+                              <c:forEach items="${user.aussendienstKoordinatorZustaendigkeiten}" var="aussendienst">
+                                <li><a href="${url}"><span>${aussendienst}</span></a></li>
+                              </c:forEach>
+                            </ul>
+                          </td>
                         </tr>
                     </c:forEach>
                 </tbody>
