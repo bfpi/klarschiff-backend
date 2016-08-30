@@ -24,11 +24,8 @@
                 Falls Ihnen das Benutzerhandbuch nicht weiterhilft beziehungsweise Sie Kommentare, Anregungen oder Kritik zum Backend von ${fx:title()}
                 äußern möchten, so wenden Sie sich bitte an:<br/>
                 <br/>
-                KSM Kommunalservice Mecklenburg AöR<br/>
-                Eckdrift 93<br/>
-                19061 Schwerin<br/>
-                Telefon: +49-385-633-1234<br/>
-                Mail: <a href="mailto:ksm-sis-benutzerservice@sis-schwerin.de">KSM-Benutzerservice</a><br/>
+                <c:set var="req" value="${pageContext.request}" />
+                <c:import url="${req.scheme}://${req.serverName}/resources/backend/service.html" charEncoding="UTF-8" />
             </div>
         </c:otherwise>
     </c:choose>

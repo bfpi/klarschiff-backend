@@ -18,18 +18,16 @@
     <div style="position:relative">
       Konzept und Betreuung:<br/>
       <br/>
-      KSM Kommunalservice Mecklenburg AöR<br/>
-      Eckdrift 93<br/>
-      19061 Schwerin<br/>
-      Telefon: +49-385-633-5100<br/>
+      <c:set var="req" value="${pageContext.request}" />
+      <c:import url="${req.scheme}://${req.serverName}/resources/backend/impressum_konzept_betreuung.html" charEncoding="UTF-8" />
       <div style="position:absolute;top:0px;left:350px">
         Technische Realisierung:<br/>
         <br/>
         BFPI Büro für praktische Informatik GmbH<br/>
-        Alter Holzhafen 17a<br/>
-        23966 Wismar<br/>
-        Telefon: +49-3841-758-1210<br/>
-        Telefax: +49-3841-758-1211<br/>
+        Fleckebyer Str. 1<br/>
+        18239 Satow<br/>
+        Telefon: +49-38295-77878-0<br/>
+        Telefax: +49-38295-77878-1<br/>
         E-Mail: <a href="mailto:info@bfpi.de">info@bfpi.de</a>
       </div>
     </div>

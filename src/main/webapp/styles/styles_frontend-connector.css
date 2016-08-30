@@ -14,7 +14,7 @@ body {
   width:100%;
   margin:0 auto;
   margin-bottom:40px;
-  background-image:url("../images/banner.png");
+  background-image: url("/resources/backend/header.png");
   background-repeat:no-repeat;
   background-position:center;
 }

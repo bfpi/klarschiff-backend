@@ -1303,7 +1303,7 @@ span.show-tooltip-text {
 #root_style_header {
   height:120px;
   margin-bottom: 10px;
-  background-image: url("../images/header.png");
+  background-image: url("/resources/backend/header.png");
   background-repeat: repeat-x;
   color:#FFFFFF;
   /* abgerundete Ecken */
