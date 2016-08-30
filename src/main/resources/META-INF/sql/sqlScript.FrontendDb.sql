@@ -68,7 +68,6 @@ CREATE TABLE klarschiff_geo_rss (
     probleme_kategorien character varying(255)
 );
 ALTER TABLE klarschiff_geo_rss OWNER TO ${f_username};
-SELECT AddGeometryColumn('klarschiff_geo_rss', 'the_geom', 25833, 'MULTIPOLYGON', 2);
 
 
 -- Name: klarschiff_kategorie; Type: TABLE; Schema: ${f_schema}; Owner: ${f_username}; Tablespace: 
@@ -96,19 +95,19 @@ ALTER TABLE klarschiff_missbrauchsmeldung OWNER TO ${f_username};
 -- Name: klarschiff_stadtgrenze_hro; Type: TABLE; Schema: ${f_schema}; Owner: ${f_username}; Tablespace: 
 CREATE TABLE klarschiff_stadtgrenze_hro (
     ogc_fid integer NOT NULL,
-    the_geom geometry(Polygon,25833)
+    the_geom geometry(MultiPolygon,25833)
 );
 ALTER TABLE klarschiff_stadtgrenze_hro OWNER TO ${f_username};
-SELECT AddGeometryColumn('klarschiff_stadtgrenze_hro', 'the_geom', 25833, 'MULTIPOLYGON', 2);
+
 
 -- Name: klarschiff_stadtteile_hro; Type: TABLE; Schema: ${f_schema}; Owner: ${f_username}; Tablespace: 
 CREATE TABLE klarschiff_stadtteile_hro (
     ogc_fid integer NOT NULL,
     bezeichnung character varying,
-    the_geom geometry(Polygon,25833)
+    the_geom geometry(MultiPolygon,25833)
 );
 ALTER TABLE klarschiff_stadtteile_hro OWNER TO ${f_username};
-SELECT AddGeometryColumn('klarschiff_stadtteile_hro', 'the_geom', 25833, 'MULTIPOLYGON', 2);
+
 
 -- Name: klarschiff_status; Type: TABLE; Schema: ${f_schema}; Owner: ${f_username}; Tablespace: 
 CREATE TABLE klarschiff_status (
@@ -157,10 +156,7 @@ CREATE TABLE klarschiff_vorgang (
     archiviert boolean,
     zustaendigkeit character varying(255)
 );
-
 ALTER TABLE klarschiff_vorgang OWNER TO ${f_username};
-
-SELECT AddGeometryColumn('klarschiff_vorgang', 'the_geom', 25833, 'POINT', 2);
 
 
 -- Name: klarschiff_vorgangstyp; Type: TABLE; Schema: ${f_schema}; Owner: ${f_username}; Tablespace: 

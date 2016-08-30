@@ -22,9 +22,8 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=Edge" />	
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
-		<!-- Favicon -->
-		<c:url value="/favicon.ico" var="url" />
-		<LINK REL="SHORTCUT ICON" HREF="${url}"/>
+    <!-- Favicon -->
+    <LINK REL="SHORTCUT ICON" HREF="/resources/backend/favicon.ico"/>
 
 		<!-- Titel -->
 		<title>${fx:title()}</title>
