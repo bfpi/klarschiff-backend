@@ -169,7 +169,7 @@ public class VorgangDelegiertBearbeitenController {
    */
   @Transactional
   @RequestMapping(value = "/vorgang/delegiert/{id}/bearbeiten", method = RequestMethod.POST)
-  public String bearbeitenSubbmit(
+  public String bearbeitenSubmit(
     @ModelAttribute(value = "cmd") VorgangDelegiertBearbeitenCommand cmd,
     BindingResult result,
     @PathVariable("id") Long id,

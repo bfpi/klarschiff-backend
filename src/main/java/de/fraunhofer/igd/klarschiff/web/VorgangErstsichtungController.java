@@ -139,7 +139,7 @@ public class VorgangErstsichtungController {
    * @return View, die zum Rendern des Request verwendet wird
    */
   @RequestMapping(value = "/{id}/erstsichtung", method = RequestMethod.POST)
-  public String erstsichtungSubbmit(
+  public String erstsichtungSubmit(
     @ModelAttribute(value = "cmd") VorgangErstsichtungCommand cmd,
     BindingResult result,
     @PathVariable("id") Long id,

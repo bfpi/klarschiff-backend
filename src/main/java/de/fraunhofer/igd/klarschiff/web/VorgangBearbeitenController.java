@@ -311,7 +311,7 @@ public class VorgangBearbeitenController {
    */
   @Transactional
   @RequestMapping(value = "/vorgang/{id}/bearbeiten", method = RequestMethod.POST)
-  public String bearbeitenSubbmit(
+  public String bearbeitenSubmit(
     @ModelAttribute(value = "cmd") VorgangBearbeitenCommand cmd,
     BindingResult result,
     @PathVariable("id") Long id,

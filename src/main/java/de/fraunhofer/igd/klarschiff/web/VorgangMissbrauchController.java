@@ -75,7 +75,7 @@ public class VorgangMissbrauchController {
    * @return Missbrauchs-View mit neuer Meldung oder als nun bearbeitet markiertem Missbrauch
    */
   @RequestMapping(value = "/vorgang/{id}/missbrauch", method = RequestMethod.POST)
-  public String missbrauchSubbmit(
+  public String missbrauchSubmit(
     @ModelAttribute(value = "cmd") VorgangMissbrauchCommand cmd,
     BindingResult result,
     @PathVariable("id") Long id,
