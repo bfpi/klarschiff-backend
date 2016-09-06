@@ -43,7 +43,7 @@ table(tableclass).
 | Stefan Gladisch | Fraunhofer IGD | Backend | Gestaltung | stefan.gladisch@igd-r.fraunhofer.de | 
 | Martin Gielow | Fraunhofer IGD | Backend | fotomanipulation | martin.gielow@igd-r.fraunhofer.de | 
 | Dethleff Neitz | Hansestadt Rostock | | Auftraggeber, Projektleiter, Konzept | detlef.neitz@rostock.de | 
-| Sebastian Schwarz | Hansestadt Rostock | | Konzept | (sebastian.schwarz@rostock.de | 
+| Sebastian Gutzeit | Hansestadt Rostock | | Konzept | (sebastian.gutzeit@rostock.de | 
 | Peter König | WhereGroup | Frontend | Projektleiter, Datensynchronisation | peter.koenig@wheregroup.com |
 | Christian Wygoda, Uli Rothstein, Toni Pignataro | WhereGroup | Frontend | Entwickler | christian.wygoda@wheregroup.com, ulrich.rothstein@wheregroup.com, toni.pignataro@wheregroup.com |
 

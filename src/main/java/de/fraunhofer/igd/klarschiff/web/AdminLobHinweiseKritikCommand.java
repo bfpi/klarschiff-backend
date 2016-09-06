@@ -8,7 +8,7 @@ import java.io.Serializable;
  * <code>order</code>: die Spalte nach der sortiert wird<br/>
  * <code>orderDirection</code>: die Sortierreihenfolge (1:absteigend,default:aufsteigend)
  *
- * @author Sebastian Schwarz (Hansestadt Rostock)
+ * @author Sebastian Gutzeit (Hansestadt Rostock)
  */
 @SuppressWarnings("serial")
 public class AdminLobHinweiseKritikCommand implements Serializable {
