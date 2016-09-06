@@ -353,16 +353,16 @@ public class VorgangBearbeitenController {
       vorgangDao.merge(cmd.getVorgang());
     } else if (action.equals("&uuml;bernehmen und akzeptieren")) {
       cmd.getVorgang().setZustaendigkeitStatus(EnumZustaendigkeitStatus.akzeptiert);
-      cmd.getVorgang().setZustaendigkeitFrontend(securityService.getZustaendigkeit(cmd.getVorgang().getZustaendigkeit()).getL());
+      setZustaendigkeitFrontend(cmd);
       vorgangDao.merge(cmd.getVorgang());
     } else if (action.equals("automatisch neu zuweisen")) {
       cmd.getVorgang().setZustaendigkeit(classificationService.calculateZustaendigkeitforVorgang(cmd.getVorgang()).getId());
-      cmd.getVorgang().setZustaendigkeitFrontend(securityService.getZustaendigkeit(cmd.getVorgang().getZustaendigkeit()).getL());
+      setZustaendigkeitFrontend(cmd);
       cmd.getVorgang().setZustaendigkeitStatus(EnumZustaendigkeitStatus.zugewiesen);
       vorgangDao.merge(cmd.getVorgang());
     } else if (action.equals("zuweisen")) {
       cmd.getVorgang().setZustaendigkeitStatus(EnumZustaendigkeitStatus.zugewiesen);
-      cmd.getVorgang().setZustaendigkeitFrontend(securityService.getZustaendigkeit(cmd.getVorgang().getZustaendigkeit()).getL());
+      setZustaendigkeitFrontend(cmd);
       vorgangDao.merge(cmd.getVorgang());
     } else if (action.equals("&Auml;nderungen &uuml;bernehmen")) {
       Vorgang vorg = getVorgang(id);
@@ -428,14 +428,11 @@ public class VorgangBearbeitenController {
         kommentarDao.persist(kommentar);
       }
     } else if (action.equals("delegieren")) {
-      /*if (cmd.getVorgang().getDelegiertAn()!=null && !cmd.getVorgang().getDelegiertAn().isEmpty())
-       cmd.getVorgang().setZustaendigkeitFrontend(securityService.getZustaendigkeit(cmd.getVorgang().getDelegiertAn()).getL());
-       else
-       cmd.getVorgang().setZustaendigkeitFrontend(securityService.getZustaendigkeit(cmd.getVorgang().getZustaendigkeit()).getL());*/
+      setZustaendigkeitFrontend(cmd);
       vorgangDao.merge(cmd.getVorgang());
     } else if (action.equals("zur&uuml;ckholen")) {
       cmd.getVorgang().setDelegiertAn(null);
-      //cmd.getVorgang().setZustaendigkeitFrontend(securityService.getZustaendigkeit(cmd.getVorgang().getZustaendigkeit()).getL());
+      setZustaendigkeitFrontend(cmd);
       vorgangDao.merge(cmd.getVorgang());
     } else if (action.equals("archivieren")) {
       cmd.getVorgang().setArchiviert(true);
@@ -462,6 +459,20 @@ public class VorgangBearbeitenController {
     updateLobHinweiseKritikInModel(model, cmd);
     updateZustaendigkeitStatusInModel(model, cmd);
     return "vorgang/bearbeiten";
+  }
+
+  private void setZustaendigkeitFrontend(VorgangBearbeitenCommand cmd) {
+    String zustaendigkeit = "";
+    if(cmd.getVorgang().getZustaendigkeit() != null && !cmd.getVorgang().getZustaendigkeit().isEmpty()) {
+      zustaendigkeit = securityService.getZustaendigkeit(cmd.getVorgang().getZustaendigkeit()).getL();
+    }
+    if (cmd.getVorgang().getDelegiertAn() != null && !cmd.getVorgang().getDelegiertAn().isEmpty()) {
+      Role r = securityService.getZustaendigkeit(cmd.getVorgang().getDelegiertAn());
+      if(r != null) {
+        zustaendigkeit += " (" + r.getL()+ ")";
+      }
+    }
+    cmd.getVorgang().setZustaendigkeitFrontend(zustaendigkeit);
   }
 
   /**

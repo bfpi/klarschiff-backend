@@ -27,13 +27,14 @@ import de.fraunhofer.igd.klarschiff.dao.KommentarDao;
 import de.fraunhofer.igd.klarschiff.dao.LobHinweiseKritikDao;
 import de.fraunhofer.igd.klarschiff.dao.VorgangDao;
 import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
+import de.fraunhofer.igd.klarschiff.service.settings.SettingsService;
 import de.fraunhofer.igd.klarschiff.tld.CustomFunctions;
 import de.fraunhofer.igd.klarschiff.vo.EnumVorgangStatus;
 import de.fraunhofer.igd.klarschiff.vo.Kommentar;
-import de.fraunhofer.igd.klarschiff.vo.LobHinweiseKritik;
 import de.fraunhofer.igd.klarschiff.vo.StatusKommentarVorlage;
 import de.fraunhofer.igd.klarschiff.vo.Verlauf;
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
+import static de.fraunhofer.igd.klarschiff.web.Assert.assertNotEmpty;
 import java.util.Date;
 
 /**
@@ -59,9 +60,21 @@ public class VorgangDelegiertBearbeitenController {
   @Autowired
   SecurityService securityService;
 
+  @Autowired
+  SettingsService settingsService;
+
   @ModelAttribute("delegiert")
   public boolean delegiert() {
     return true;
+  }
+
+  /**
+   * Liefert (in Systemkonfiguration festgelegte) maximale Zeichenanzahl für Statuskommentare zu
+   * Vorgängen
+   */
+  @ModelAttribute("vorgangStatusKommentarTextlaengeMaximal")
+  public Integer vorgangStatusKommentarTextlaengeMaximal() {
+    return settingsService.getVorgangStatusKommentarTextlaengeMaximal();
   }
 
   /**
@@ -179,7 +192,16 @@ public class VorgangDelegiertBearbeitenController {
 
     action = StringEscapeUtils.escapeHtml(action);
 
-    assertMaxLength(cmd, result, Assert.EvaluateOn.ever, "vorgang.statusKommentar", 500, "Die öffentliche Statusinformation ist zu lang.");
+    if (cmd.getVorgang().getStatus() != null && StringUtils.equals(EnumVorgangStatus.nichtLoesbar.getText(), cmd.getVorgang().getStatus().getText())) {
+      assertNotEmpty(cmd, result, Assert.EvaluateOn.ever, "vorgang.statusKommentar",
+        "Für diesen Status müssen Sie eine öffentliche Statusinformation angeben!");
+    }
+
+    assertMaxLength(cmd, result, Assert.EvaluateOn.ever, "vorgang.statusKommentar",
+      vorgangStatusKommentarTextlaengeMaximal(),
+      "Die öffentliche Statusinformation ist zu lang! Erlaubt sind hier maximal "
+      + vorgangStatusKommentarTextlaengeMaximal().toString() + " Zeichen.");
+
     if (result.hasErrors()) {
       cmd.setVorgang(getVorgang(id));
       updateKommentarInModel(model, cmd);
@@ -188,6 +210,20 @@ public class VorgangDelegiertBearbeitenController {
     }
 
     if (action.equals("&Auml;nderungen &uuml;bernehmen")) {
+      Vorgang vorg = getVorgang(id);
+      EnumVorgangStatus newStatus = cmd.getVorgang().getStatus();
+
+      assertNotEmpty(cmd, result, Assert.EvaluateOn.ever, "vorgang.status", null);
+      if (result.hasErrors()) {
+        cmd.setVorgang(vorg);
+        updateKommentarInModel(model, cmd);
+        updateLobHinweiseKritikInModel(model, cmd);
+        return "vorgang/bearbeiten";
+      }
+
+      if(vorg.getStatus() != newStatus) {
+        cmd.getVorgang().setStatusDatum(new Date());
+      }
       vorgangDao.merge(cmd.getVorgang());
     } else if (action.equals("zur&uuml;ckweisen")) {
       cmd.getVorgang().setDelegiertAn(null);
