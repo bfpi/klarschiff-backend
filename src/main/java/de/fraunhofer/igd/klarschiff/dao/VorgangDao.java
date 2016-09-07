@@ -505,6 +505,9 @@ public class VorgangDao {
         }
         break;
     }
+    if(!cmd.getShowTips()) {
+      conds.add("vo.typ <> 'tipp'");
+    }
     // Unterstützer
     sql.append(" LEFT JOIN (SELECT vorgang, COUNT(DISTINCT id) FROM klarschiff_unterstuetzer")
       .append(" WHERE datum_bestaetigung IS NOT NULL GROUP BY vorgang) un")

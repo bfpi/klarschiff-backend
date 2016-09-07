@@ -8,7 +8,8 @@ package de.fraunhofer.igd.klarschiff.vo;
 public enum EnumVorgangTyp implements EnumText {
 
   problem("Problem"),
-  idee("Idee");
+  idee("Idee"),
+  tipp("Tipp");
 
   private String text;
 
