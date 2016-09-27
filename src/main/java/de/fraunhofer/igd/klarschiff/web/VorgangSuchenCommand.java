@@ -69,6 +69,7 @@ public class VorgangSuchenCommand implements Serializable {
   String suchbereich;
   Boolean ueberspringeVorgaengeMitMissbrauchsmeldungen;
   Boolean justTimes;
+  Boolean showTips = true;
 
   //NUR ADMIN dürfen andere Zuständigkeiten sehen
   public String getOrderString() {
@@ -367,5 +368,13 @@ public class VorgangSuchenCommand implements Serializable {
 
   public void setJustTimes(Boolean justTimes) {
     this.justTimes = justTimes;
+  }
+  
+  public Boolean getShowTips() {
+    return showTips;
+  }
+
+  public void setShowTips(Boolean showTips) {
+    this.showTips = showTips;
   }
 }

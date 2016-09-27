@@ -1301,6 +1301,7 @@ public class BackendController {
    * @param negation
    * @param restriction_area
    * @param just_times
+   * @param authCode
    * @param response
    * @throws java.io.IOException
    */
@@ -1319,6 +1320,7 @@ public class BackendController {
     @RequestParam(value = "negation", required = false) String negation,
     @RequestParam(value = "restriction_area", required = false) String restriction_area,
     @RequestParam(value = "just_times", required = false) boolean just_times,
+    @RequestParam(value = "authCode", required = false) String authCode,
     HttpServletResponse response) throws IOException {
 
     try {
@@ -1340,6 +1342,11 @@ public class BackendController {
         VorgangSuchenCommand cmd = new VorgangSuchenCommand();
         // Suchtyp aussendienst würde nur Vorgänge mit zustaendigkeit_status = 'akzeptiert' ausgeben
         cmd.setSuchtyp(VorgangSuchenCommand.Suchtyp.erweitert);
+        if (authCode != null && authCode.equals(settingsService.getPropertyValue("auth.kod_code"))) {
+          cmd.setShowTips(true);
+        } else {
+          cmd.setShowTips(false);
+        }
         cmd.setErweitertArchiviert(false);
         // Sortieren nach ID
         cmd.setOrder(0);
