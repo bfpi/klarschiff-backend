@@ -1327,106 +1327,97 @@ public class BackendController {
       List<Vorgang> vorgaenge = new ArrayList<Vorgang>();
       List<HashMap> times = new ArrayList<HashMap>();
 
+      VorgangSuchenCommand cmd = new VorgangSuchenCommand();
+      // Suchtyp aussendienst würde nur Vorgänge mit zustaendigkeit_status = 'akzeptiert' ausgeben
+      cmd.setSuchtyp(VorgangSuchenCommand.Suchtyp.erweitert);
+      if (authCode != null && authCode.equals(settingsService.getPropertyValue("auth.kod_code"))) {
+        cmd.setShowTips(true);
+      } else {
+        cmd.setShowTips(false);
+      }
+      cmd.setErweitertArchiviert(false);
+      // Sortieren nach ID
+      cmd.setOrder(0);
+      cmd.setOrderDirection(0);
+      cmd.setUeberspringeVorgaengeMitMissbrauchsmeldungen(true);
+      cmd.setJustTimes(just_times);
+
       if (id != null) {
-        Vorgang vg = vorgangDao.findVorgang(id);
-        if(just_times) {
+        cmd.setErweitertNummer(id.toString());
+      }
+
+      if (negation != null) {
+        cmd.setNegation(negation);
+      }
+
+      if (restriction_area != null) {
+        cmd.setSuchbereich(restriction_area);
+      }
+
+      if (ids != null && ids.length() > 0) {
+        String[] idStrList = ids.split(",");
+        Long[] data = new Long[idStrList.length];
+        for (int i = 0; i < idStrList.length; i++) {
+          data[i] = Long.valueOf(idStrList[i]);
+        }
+        cmd.setVorgangAuswaehlen(data);
+      }
+
+      if (category_id != null) {
+        Kategorie kat = kategorieDao.findKategorie(category_id);
+        if (kat != null) {
+          if (kat.getParent() == null) {
+            cmd.setErweitertHauptkategorie(kat);
+          } else {
+            cmd.setErweitertKategorie(kat);
+          }
+        }
+      }
+
+      if (status != null) {
+        String[] status_list = status.split(",");
+        EnumVorgangStatus[] evs = new EnumVorgangStatus[status_list.length];
+
+        for (int i = 0; i < status_list.length; i++) {
+          evs[i] = EnumVorgangStatus.valueOf(status_list[i]);
+        }
+        cmd.setErweitertVorgangStatus(evs);
+      }
+
+      if (date_from != null) {
+        cmd.setErweitertDatumVon(getDateFromParam(date_from));
+      }
+      if (date_to != null) {
+        cmd.setErweitertDatumBis(getDateFromParam(date_to));
+      }
+      if (updated_from != null) {
+        cmd.setAktualisiertVon(getDateFromParam(updated_from));
+      }
+      if (updated_to != null) {
+        cmd.setAktualisiertBis(getDateFromParam(updated_to));
+      }
+
+      if (agency_responsible != null) {
+        cmd.setAuftragTeam(agency_responsible);
+        cmd.setAuftragDatum(new Date());
+        cmd.setOrder(8);
+      }
+
+      if (just_times) {
+        List<Object[]> vg = vorgangDao.getVorgaengeIdAndVersion(cmd);
+        for (Object[] entry : vg) {
           HashMap hm = new HashMap<String, String>();
-          hm.put("id", vg.getId());
-          hm.put("version", vg.getVersion());
+          hm.put("id", entry[0]);
+          hm.put("version", entry[1]);
           times.add(hm);
-        } else {
-          vg.setSecurityService(securityService);
-          vorgaenge.add(vg);
         }
       } else {
-        VorgangSuchenCommand cmd = new VorgangSuchenCommand();
-        // Suchtyp aussendienst würde nur Vorgänge mit zustaendigkeit_status = 'akzeptiert' ausgeben
-        cmd.setSuchtyp(VorgangSuchenCommand.Suchtyp.erweitert);
-        if (authCode != null && authCode.equals(settingsService.getPropertyValue("auth.kod_code"))) {
-          cmd.setShowTips(true);
-        } else {
-          cmd.setShowTips(false);
-        }
-        cmd.setErweitertArchiviert(false);
-        // Sortieren nach ID
-        cmd.setOrder(0);
-        cmd.setOrderDirection(0);
-        cmd.setUeberspringeVorgaengeMitMissbrauchsmeldungen(true);
-        cmd.setJustTimes(just_times);
-
-        if (negation != null) {
-          cmd.setNegation(negation);
-        }
-
-        if (restriction_area != null) {
-          cmd.setSuchbereich(restriction_area);
-        }
-
-        if (ids != null && ids.length() > 0) {
-          String[] idStrList = ids.split(",");
-          Long[] data = new Long[idStrList.length];
-          for (int i = 0; i < idStrList.length; i++) {
-            data[i] = Long.valueOf(idStrList[i]);
-          }
-          cmd.setVorgangAuswaehlen(data);
-        }
-
-        if (category_id != null) {
-          Kategorie kat = kategorieDao.findKategorie(category_id);
-          if (kat != null) {
-            if (kat.getParent() == null) {
-              cmd.setErweitertHauptkategorie(kat);
-            } else {
-              cmd.setErweitertKategorie(kat);
-            }
-          }
-        }
-
-        if(status != null) {
-          String[] status_list = status.split(",");
-          EnumVorgangStatus[] evs = new EnumVorgangStatus[status_list.length];
-
-          for (int i = 0; i < status_list.length; i++) {
-            evs[i] = EnumVorgangStatus.valueOf(status_list[i]);
-          }
-          cmd.setErweitertVorgangStatus(evs);
-        }
-
-        if (date_from != null) {
-          cmd.setErweitertDatumVon(getDateFromParam(date_from));
-        }
-        if (date_to != null) {
-          cmd.setErweitertDatumBis(getDateFromParam(date_to));
-        }
-        if (updated_from != null) {
-          cmd.setAktualisiertVon(getDateFromParam(updated_from));
-        }
-        if (updated_to != null) {
-          cmd.setAktualisiertBis(getDateFromParam(updated_to));
-        }
-
-        if (agency_responsible != null) {
-          cmd.setAuftragTeam(agency_responsible);
-          cmd.setAuftragDatum(new Date());
-          cmd.setOrder(8);
-        }
-
-        if (just_times) {
-          List<Object[]> vg = vorgangDao.getVorgaengeIdAndVersion(cmd);
-          for (Object[] entry : vg) {
-            HashMap hm = new HashMap<String, String>();
-            hm.put("id", entry[0]);
-            hm.put("version", entry[1]);
-            times.add(hm);
-          }
-        } else {
-          List<Object[]> vg = vorgangDao.getVorgaenge(cmd);
-          for (Object[] entry : vg) {
-            Vorgang vorgang = (Vorgang) entry[0];
-            vorgang.setUnterstuetzerCount((Integer) entry[2]);
-            vorgang.setSecurityService(securityService);
-            vorgaenge.add(vorgang);
-          }
+        List<Object[]> vg = vorgangDao.getVorgaenge(cmd);
+        for (Object[] entry : vg) {
+          Vorgang vorgang = (Vorgang) entry[0];
+          vorgang.setUnterstuetzerCount((Integer) entry[2]);
+          vorgang.setSecurityService(securityService);
+          vorgaenge.add(vorgang);
         }
       }
 
