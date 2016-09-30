@@ -218,61 +218,43 @@ DECLARE
   query text;
 
 BEGIN
-  PERFORM dblink_connect('hostaddr=${f_host} port=${f_port} dbname=${f_dbname} user=${f_username} password=${f_password}');
+  PERFORM dblink_connect('hostaddr=${f_host} port=${f_port} dbname=${f_dbname} ' ||
+    'user=${f_username} password=${f_password}');
+
+  query := CASE TG_OP
+    WHEN 'DELETE' THEN
+      'DELETE FROM ${f_schema}.klarschiff_kategorie WHERE id = ' || old.id
+
+    WHEN 'UPDATE' THEN
+      'UPDATE ${f_schema}.klarschiff_kategorie ' ||
+      'SET "name" = ' || quote_literal(new."name") || ', ' ||
+      'parent = ' || COALESCE(new.parent::text, 'NULL') || ', ' ||
+      'vorgangstyp = ' || COALESCE(quote_literal(new.typ), 'NULL') || ', ' ||
+      'geloescht = ' || new.geloescht || ' ' ||
+      'WHERE id = ' || new.id
+
+    WHEN 'INSERT' THEN
+      'INSERT INTO ${f_schema}.klarschiff_kategorie (id, "name", parent, ' ||
+      'vorgangstyp, geloescht) ' ||
+      'VALUES (' || new.id || ', ' || quote_literal(new."name") || ', ' ||
+      COALESCE(new.parent::text, 'NULL') || ', ' ||
+      COALESCE(quote_literal(new.typ), 'NULL') || ', ' ||
+      new.geloescht || ')'
+    ELSE
+      'SELECT 1'
+    END;
+
+  RAISE DEBUG 'Query : %', query;
+  EXECUTE 'SELECT dblink_exec(' || quote_literal(query) || ');';
+  PERFORM dblink_disconnect();
 
   IF TG_OP = 'DELETE' THEN
-    query := 'DELETE FROM ${f_schema}.klarschiff_kategorie WHERE id = ' || old.id;
-    RAISE DEBUG 'Query : %', query;
-    EXECUTE 'SELECT dblink_exec(' || quote_literal(query) || ');';
-    PERFORM dblink_disconnect();
     RETURN old;
-
-  ELSIF TG_OP = 'UPDATE' THEN
-    query := 'UPDATE ${f_schema}.klarschiff_kategorie ' ||
-      'SET "name" = ' || quote_literal(new."name") || ', ';
-    --parent
-    IF new.parent IS NOT NULL THEN
-        query := query || 'parent = ' || new.parent || ', ';
-     ELSE
-        query := query || 'parent = NULL, ';
-    END IF;
-    --typ
-    IF new.typ IS NOT NULL THEN
-        query := query || 'vorgangstyp = ' || quote_literal(new.typ) || ', ';
-     ELSE
-        query := query || 'vorgangstyp = NULL, ';
-    END IF;
-    query := query || 'WHERE id = ' || new.id;
-    RAISE DEBUG 'Query : %', query;
-    EXECUTE 'SELECT dblink_exec(' || quote_literal(query) || ');';
-    PERFORM dblink_disconnect();
+  ELSIF TG_OP IN ('INSERT', 'UPDATE') THEN
     RETURN new;
-
-  ELSIF TG_OP = 'INSERT' THEN
-    query := 'INSERT INTO ${f_schema}.klarschiff_kategorie (id, "name", parent, ' ||
-      'vorgangstyp) ' ||
-      'VALUES (' || new.id || ', ' || quote_literal(new."name") || ', '; 
-    --parent
-    IF new.parent IS NOT NULL THEN
-        query := query || new.parent || ', ';
-     ELSE
-        query := query || 'NULL, ';
-    END IF;
-    --typ
-    IF new.typ IS NOT NULL THEN
-        query := query || quote_literal(new.typ) || ', ';
-     ELSE
-        query := query || 'NULL, ';
-    END IF;
-    RAISE DEBUG 'Query : %', query;
-    EXECUTE 'SELECT dblink_exec(' || quote_literal(query) || ');';
-    PERFORM dblink_disconnect();
-    RETURN new;
-   
+  ELSE
+    RETURN NULL;
   END IF;
-   
-  PERFORM dblink_disconnect();
-  RETURN NULL;
 EXCEPTION WHEN others THEN
   PERFORM dblink_disconnect();
   RAISE;
