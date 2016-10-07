@@ -1,9 +1,5 @@
 package de.fraunhofer.igd.klarschiff.web;
 
-import java.io.Serializable;
-
-import de.fraunhofer.igd.klarschiff.vo.Vorgang;
-
 /**
  * Command für das Vorgangbearbeiten im Backend durch Externe (Delegierte)
  * <br />
@@ -12,21 +8,12 @@ import de.fraunhofer.igd.klarschiff.vo.Vorgang;
  * @author Stefan Audersch (Fraunhofer IGD)
  */
 @SuppressWarnings("serial")
-public class VorgangDelegiertBearbeitenCommand implements Serializable {
+public class VorgangDelegiertBearbeitenCommand extends Command {
 
-  Vorgang vorgang;
   String kommentar;
 
   Integer page;
   Integer size;
-
-  public Vorgang getVorgang() {
-    return vorgang;
-  }
-
-  public void setVorgang(Vorgang vorgang) {
-    this.vorgang = vorgang;
-  }
 
   public String getKommentar() {
     return kommentar;

@@ -1,14 +1,12 @@
 package de.fraunhofer.igd.klarschiff.web;
 
-import java.io.Serializable;
-
 /**
  * Command für Trashmails im Adminbereich
  *
  * @author Stefan Audersch (Fraunhofer IGD)
  */
 @SuppressWarnings("serial")
-public class AdminTrashmailCommand implements Serializable {
+public class AdminTrashmailCommand extends Command {
 
   /* --------------- Attribute ----------------------------*/
   /**

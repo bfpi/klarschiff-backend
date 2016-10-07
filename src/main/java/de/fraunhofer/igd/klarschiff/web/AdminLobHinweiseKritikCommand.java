@@ -1,7 +1,5 @@
 package de.fraunhofer.igd.klarschiff.web;
 
-import java.io.Serializable;
-
 /**
  * Command für Lob/Hinweise/Kritik im Adminbereich <code>page</code>: die aktuelle Seitenzahl<br/>
  * <code>size</code>: die konfigurierte Anzahl von Einträgen pro Seite<br/>
@@ -11,7 +9,7 @@ import java.io.Serializable;
  * @author Sebastian Schwarz (Hansestadt Rostock)
  */
 @SuppressWarnings("serial")
-public class AdminLobHinweiseKritikCommand implements Serializable {
+public class AdminLobHinweiseKritikCommand extends Command {
 
   /* --------------- Attribute ----------------------------*/
   Integer page;

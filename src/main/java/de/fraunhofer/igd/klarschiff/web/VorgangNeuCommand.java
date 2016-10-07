@@ -2,8 +2,6 @@ package de.fraunhofer.igd.klarschiff.web;
 
 import static de.fraunhofer.igd.klarschiff.web.Assert.*;
 
-import java.io.Serializable;
-
 import org.apache.commons.lang.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,14 +17,17 @@ import de.fraunhofer.igd.klarschiff.vo.Vorgang;
  * @author Stefan Audersch (Fraunhofer IGD)
  */
 @SuppressWarnings("serial")
-public class VorgangNeuCommand implements Serializable {
+public class VorgangNeuCommand extends Command {
 
-  Vorgang vorgang = new Vorgang();
   Kategorie kategorie;
   MultipartFile foto;
   String fotoName;
   String zustaendigkeit;
   String zustaendigkeitFrontend;
+  
+  public void VorgangNeuCommand() {
+    vorgang = new Vorgang();
+  }
 
   /**
    * Methode zur Prüfung eines neuen Vorganges auf Vollständigkeit benötigter Attribute sowie
@@ -53,14 +54,6 @@ public class VorgangNeuCommand implements Serializable {
     }
     
     assertNotEmpty(this, result, Assert.EvaluateOn.ever, "vorgang.beschreibung", "Bitte beschreiben Sie Ihre Meldung genauer.");
-  }
-
-  public Vorgang getVorgang() {
-    return vorgang;
-  }
-
-  public void setVorgang(Vorgang vorgang) {
-    this.vorgang = vorgang;
   }
 
   public Kategorie getKategorie() {
