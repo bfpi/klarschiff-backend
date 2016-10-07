@@ -31,6 +31,9 @@
 		<c:if test="${empty vorgang and not empty cmd.vorgang}">
 			<title>${fx:titleWithVorgang(cmd.vorgang)}</title>
 		</c:if>
+		<c:if test="${empty vorgang and empty cmd.vorgang}">
+			<title>${fx:title()}</title>
+		</c:if>
 		
 		<!-- Style -->
 		<c:url value="/styles/styles.css" var="url"/>

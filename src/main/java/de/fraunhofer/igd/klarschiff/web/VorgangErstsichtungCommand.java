@@ -1,9 +1,5 @@
 package de.fraunhofer.igd.klarschiff.web;
 
-import java.io.Serializable;
-
-import de.fraunhofer.igd.klarschiff.vo.Vorgang;
-
 /**
  * Command für die Erstsichtung im Backend <br />
  * Beinhaltet lediglich ein Vorgangs-Objekt.
@@ -11,15 +7,6 @@ import de.fraunhofer.igd.klarschiff.vo.Vorgang;
  * @author Stefan Audersch (Fraunhofer IGD)
  */
 @SuppressWarnings("serial")
-public class VorgangErstsichtungCommand implements Serializable {
+public class VorgangErstsichtungCommand extends Command {
 
-  Vorgang vorgang;
-
-  public Vorgang getVorgang() {
-    return vorgang;
-  }
-
-  public void setVorgang(Vorgang vorgang) {
-    this.vorgang = vorgang;
-  }
 }
