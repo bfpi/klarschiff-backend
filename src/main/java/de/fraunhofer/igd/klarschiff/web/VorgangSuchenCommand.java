@@ -1,6 +1,5 @@
 package de.fraunhofer.igd.klarschiff.web;
 
-import java.io.Serializable;
 import java.util.Date;
 
 import de.fraunhofer.igd.klarschiff.vo.EnumPrioritaet;
@@ -20,7 +19,7 @@ import de.fraunhofer.igd.klarschiff.vo.Kategorie;
  * @author Stefan Audersch (Fraunhofer IGD)
  */
 @SuppressWarnings("serial")
-public class VorgangSuchenCommand implements Serializable {
+public class VorgangSuchenCommand extends Command {
 
   /* --------------- Attribute ----------------------------*/
   public enum Suchtyp {

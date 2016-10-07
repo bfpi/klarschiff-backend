@@ -1,7 +1,6 @@
 package de.fraunhofer.igd.klarschiff.web;
 
 import de.fraunhofer.igd.klarschiff.vo.EnumAuftragStatus;
-import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -10,7 +9,7 @@ import java.util.Date;
  * @author Robert Voß (BFPI GmbH)
  */
 @SuppressWarnings("serial")
-public class AuftragslisteCommand implements Serializable {
+public class AuftragslisteCommand extends Command {
 
   Date datum;
   EnumAuftragStatus status;

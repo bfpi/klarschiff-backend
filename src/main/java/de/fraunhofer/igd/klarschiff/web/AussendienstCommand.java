@@ -1,6 +1,5 @@
 package de.fraunhofer.igd.klarschiff.web;
 
-import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -9,7 +8,7 @@ import java.util.Date;
  * @author Robert Voß (BFPI GmbH)
  */
 @SuppressWarnings("serial")
-public class AussendienstCommand implements Serializable {
+public class AussendienstCommand extends Command {
 
   Date datum;
 

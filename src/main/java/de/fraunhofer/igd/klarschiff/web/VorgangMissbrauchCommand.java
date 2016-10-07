@@ -1,7 +1,5 @@
 package de.fraunhofer.igd.klarschiff.web;
 
-import java.io.Serializable;
-
 import de.fraunhofer.igd.klarschiff.vo.Missbrauchsmeldung;
 
 /**
@@ -11,7 +9,7 @@ import de.fraunhofer.igd.klarschiff.vo.Missbrauchsmeldung;
  * @author Stefan Audersch (Fraunhofer IGD)
  */
 @SuppressWarnings("serial")
-public class VorgangMissbrauchCommand implements Serializable {
+public class VorgangMissbrauchCommand extends Command {
 
   Missbrauchsmeldung missbrauchsmeldung;
   Long missbrauchsmeldungId;
