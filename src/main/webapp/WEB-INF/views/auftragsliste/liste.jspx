@@ -158,7 +158,9 @@
           <td></td>
         </tr>
         <tr>
-          <td colspan="3"></td>
+          <td><img alt="Tipp" src="${url}tipp_15.png" height="15" width="15" title="Typ: Tipp"/></td>
+          <td style="vertical-align:top;">Tipp</td>
+          <td></td>
           <td><img alt="in Bearbeitung" src="${url}status_inBearbeitung_15.png" height="15" width="15" title="Status: in Bearbeitung"/></td>
           <td style="vertical-align:top;">in Bearbeitung</td>
           <td colspan="4"></td>
@@ -166,7 +168,7 @@
         <tr>
           <td colspan="3"></td>
           <td><img alt="nicht lösbar/Duplikat" src="${url}status_nichtLoesbar_15.png" height="15" width="15"  title="Status: nicht lösbar/Duplikat"/></td>
-          <td style="vertical-align:top;">nicht lösbar / Duplikat</td>
+          <td style="vertical-align:top;">nicht lösbar bzw. Duplikat</td>
         </tr>
         <tr>
           <td colspan="3"></td>
