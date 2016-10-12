@@ -1,9 +1,5 @@
 package de.fraunhofer.igd.klarschiff.web;
 
-import java.io.Serializable;
-
-import de.fraunhofer.igd.klarschiff.vo.Vorgang;
-
 /**
  * Command für den Mailversand im Backend <br />
  * Beinhaltet ein Vorgangs-Objekt sowie Emaildetails (Absenderadresse und -name, Empfängeradresse
@@ -12,9 +8,8 @@ import de.fraunhofer.igd.klarschiff.vo.Vorgang;
  * @author Stefan Audersch (Fraunhofer IGD)
  */
 @SuppressWarnings("serial")
-public class VorgangEmailCommand implements Serializable {
+public class VorgangEmailCommand extends Command {
 
-  Vorgang vorgang;
   String fromEmail;
   String fromName;
   String toEmail;
@@ -26,14 +21,6 @@ public class VorgangEmailCommand implements Serializable {
   boolean sendKommentare = true;
   boolean sendLobHinweiseKritik = true;
   boolean sendMissbrauchsmeldungen = true;
-
-  public Vorgang getVorgang() {
-    return vorgang;
-  }
-
-  public void setVorgang(Vorgang vorgang) {
-    this.vorgang = vorgang;
-  }
 
   public String getFromEmail() {
     return fromEmail;

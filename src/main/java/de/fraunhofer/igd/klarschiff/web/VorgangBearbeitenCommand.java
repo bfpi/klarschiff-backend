@@ -1,9 +1,6 @@
 package de.fraunhofer.igd.klarschiff.web;
 
-import java.io.Serializable;
-
 import de.fraunhofer.igd.klarschiff.vo.Kategorie;
-import de.fraunhofer.igd.klarschiff.vo.Vorgang;
 
 /**
  * Command für das Vorgangbearbeiten im Backend <br />
@@ -13,22 +10,13 @@ import de.fraunhofer.igd.klarschiff.vo.Vorgang;
  * @author Stefan Audersch (Fraunhofer IGD)
  */
 @SuppressWarnings("serial")
-public class VorgangBearbeitenCommand implements Serializable {
+public class VorgangBearbeitenCommand extends Command {
 
-  Vorgang vorgang;
   Kategorie kategorie;
   String kommentar;
 
   Integer page;
   Integer size;
-
-  public Vorgang getVorgang() {
-    return vorgang;
-  }
-
-  public void setVorgang(Vorgang vorgang) {
-    this.vorgang = vorgang;
-  }
 
   public Kategorie getKategorie() {
     return kategorie;
