@@ -27,7 +27,7 @@ public class VorgangNeuCommand extends Command {
   String zustaendigkeit;
   String zustaendigkeitFrontend;
   
-  public void VorgangNeuCommand() {
+  public VorgangNeuCommand() {
     vorgang = new Vorgang();
   }
 
