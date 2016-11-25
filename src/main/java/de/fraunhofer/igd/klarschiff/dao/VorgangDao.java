@@ -930,10 +930,11 @@ public class VorgangDao {
    * @return Ergebnisliste mit Vorgängen
    * @see de.fraunhofer.igd.klarschiff.service.job.JobsService#archivVorgaenge()
    */
-  public List<Vorgang> findNotArchivVorgang(Date versionBefor) {
-    return em.createQuery("SELECT o FROM Vorgang o WHERE o.status IN (:status) AND version <= :versionBefor AND (archiviert IS NULL OR archiviert = FALSE)", Vorgang.class)
+  public List<Vorgang> findNotArchivVorgang(EnumVorgangTyp typ, Date versionBefor) {
+    return em.createQuery("SELECT o FROM Vorgang o WHERE o.status IN (:status) AND version <= :versionBefor AND (archiviert IS NULL OR archiviert = FALSE) AND typ = :typ", Vorgang.class)
       .setParameter("status", Arrays.asList(EnumVorgangStatus.closedVorgangStatus()))
       .setParameter("versionBefor", versionBefor)
+      .setParameter("typ", typ)
       .getResultList();
   }
 

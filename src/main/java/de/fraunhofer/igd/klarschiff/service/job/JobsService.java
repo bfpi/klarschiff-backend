@@ -24,6 +24,7 @@ import de.fraunhofer.igd.klarschiff.service.cluster.ScheduledSyncInCluster;
 import de.fraunhofer.igd.klarschiff.service.mail.MailService;
 import de.fraunhofer.igd.klarschiff.service.security.Role;
 import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
+import de.fraunhofer.igd.klarschiff.vo.EnumVorgangTyp;
 import de.fraunhofer.igd.klarschiff.vo.Missbrauchsmeldung;
 import de.fraunhofer.igd.klarschiff.vo.RedaktionEmpfaenger;
 import de.fraunhofer.igd.klarschiff.vo.RedaktionKriterien;
@@ -42,7 +43,8 @@ public class JobsService {
 
   private static final Logger logger = Logger.getLogger(JobsService.class);
 
-  int monthsToArchivVorgaenge;
+  int monthsToArchivProbleme;
+  int monthsToArchivIdeen;
   int hoursToRemoveUnbestaetigtVorgang;
   int hoursToRemoveUnbestaetigtUnterstuetzer;
   int hoursToRemoveUnbestaetigtMissbrauchsmeldung;
@@ -127,8 +129,13 @@ public class JobsService {
   @Transactional
   @ScheduledSyncInCluster(cron = "0 40 00 * * *", name = "abgeschlossene Vorgaenge archivieren")
   public void archivVorgaenge() {
-    Date date = DateUtils.addMonths(new Date(), -monthsToArchivVorgaenge);
-    for (Vorgang vorgang : vorgangDao.findNotArchivVorgang(date)) {
+    archivVorgaengeByTyp(monthsToArchivProbleme, EnumVorgangTyp.problem);
+    archivVorgaengeByTyp(monthsToArchivIdeen, EnumVorgangTyp.idee);
+  }
+
+  private void archivVorgaengeByTyp(int months, EnumVorgangTyp typ) {
+    Date dateP = DateUtils.addMonths(new Date(), -months);
+    for (Vorgang vorgang : vorgangDao.findNotArchivVorgang(typ, dateP)) {
       vorgang.setArchiviert(true);
       vorgangDao.merge(vorgang);
     }
@@ -336,12 +343,20 @@ public class JobsService {
     clusterDao.notifyAliveServer();
   }
 
-  public int getMonthsToArchivVorgaenge() {
-    return monthsToArchivVorgaenge;
+  public int getMonthsToArchivProbleme() {
+    return monthsToArchivProbleme;
   }
 
-  public void setMonthsToArchivVorgaenge(int monthsToArchivVorgaenge) {
-    this.monthsToArchivVorgaenge = monthsToArchivVorgaenge;
+  public void setMonthsToArchivProbleme(int monthsToArchivProbleme) {
+    this.monthsToArchivProbleme = monthsToArchivProbleme;
+  }
+
+  public int getMonthsToArchivIdeen() {
+    return monthsToArchivIdeen;
+  }
+
+  public void setMonthsToArchivIdeen(int monthsToArchivIdeen) {
+    this.monthsToArchivIdeen = monthsToArchivIdeen;
   }
 
   public int getHoursToRemoveUnbestaetigtVorgang() {
