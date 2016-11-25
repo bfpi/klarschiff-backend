@@ -112,6 +112,20 @@ public class CustomFunctions {
   }
 
   /**
+   * Ermittelt den Titel von Klarschiff inkl. der Aktuellen Vorgangsnummer
+   *
+   * @param vorgang
+   * @return Titel
+   */
+  public static String titleWithVorgang(de.fraunhofer.igd.klarschiff.vo.Vorgang vorgang) {
+    String title = title();
+    if(vorgang != null && vorgang.getId() != null) {
+      title += " - #" + vorgang.getId();
+    }
+    return title;
+	}
+
+  /**
    * Ermittelt das Gebiet, auf das sich Klarschiff bezieht
    *
    * @return Gebiet

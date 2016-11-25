@@ -74,6 +74,11 @@
     <function-signature>java.lang.String title()</function-signature>
   </function>
   <function>
+    <name>titleWithVorgang</name>
+    <function-class>de.fraunhofer.igd.klarschiff.tld.CustomFunctions</function-class>
+    <function-signature>java.lang.String titleWithVorgang(de.fraunhofer.igd.klarschiff.vo.Vorgang)</function-signature>
+  </function>
+  <function>
     <name>area</name>
     <function-class>de.fraunhofer.igd.klarschiff.tld.CustomFunctions</function-class>
     <function-signature>java.lang.String area()</function-signature>
