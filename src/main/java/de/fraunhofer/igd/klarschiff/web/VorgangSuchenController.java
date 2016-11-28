@@ -83,6 +83,14 @@ public class VorgangSuchenController {
   }
 
   /**
+   * Liefert Zuständigkeiten des Nutzers
+   */
+  @ModelAttribute("currentZustaendigkeiten")
+  public List<Role> currentZustaendigkeiten() {
+    return securityService.getCurrentZustaendigkeiten(true);
+  }
+
+  /**
    * Liefert alle im System vorhandenen Rollen zum Delegieren
    */
   @ModelAttribute("allDelegiertAn")
