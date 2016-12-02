@@ -19,7 +19,7 @@
     <slf4j.version>1.6.1</slf4j.version>
 
     <hibernate.version>3.6.0.Final</hibernate.version>
-    <postgresql.version>9.0-801.jdbc4</postgresql.version>
+    <postgresql.version>9.4.1212.jre6</postgresql.version>
     <postgis.version>[1.1.6,)</postgis.version>
     <poi.version>3.7</poi.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -30,7 +30,12 @@
     <repository>
       <id>maven-repository</id>
       <name>Maven Repository</name>
-      <url>http://repo1.maven.org/maven2</url>
+      <url>http://repo.maven.apache.org/maven2</url>
+    </repository>
+    <repository>
+      <id>alt-maven-repository-for-postgresql</id>
+      <name>Alternative Maven Repository for PostgreSQL</name>
+      <url>http://central.maven.org/maven2</url>
     </repository>
     <repository>
       <id>taverna</id>
@@ -277,7 +282,7 @@
       <version>${spring.version}</version>
     </dependency>
     <dependency>
-      <groupId>postgresql</groupId>
+      <groupId>org.postgresql</groupId>
       <artifactId>postgresql</artifactId>
       <version>${postgresql.version}</version>
     </dependency>
