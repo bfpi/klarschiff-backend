@@ -10,8 +10,17 @@ import java.util.Date;
 @SuppressWarnings("serial")
 public class StatistikCommand extends Command {
 
+  String type;
   Date zeitraumVon;
   Date zeitraumBis;
+
+  public String getType() {
+    return type;
+  }
+
+  public void setType(String type) {
+    this.type = type;
+  }
 
   public Date getZeitraumVon() {
     return zeitraumVon;

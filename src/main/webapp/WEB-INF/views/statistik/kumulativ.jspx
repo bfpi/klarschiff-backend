@@ -63,6 +63,9 @@ $(function () {
 });
           </script>
         </div>
+        <div>
+					<input type="submit" value="Exportieren" />
+				</div>
       </div>
     </form:form>
   </div>

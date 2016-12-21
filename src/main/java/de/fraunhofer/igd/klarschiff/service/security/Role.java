@@ -20,6 +20,7 @@ public class Role {
   String description;
   String dn;
   String l;
+  String ou;
 
   public static List<String> toString(Collection<Role> roles) {
     List<String> _roles = new ArrayList<String>();
@@ -78,5 +79,13 @@ public class Role {
 
   public void setL(String l) {
     this.l = l;
+  }
+
+  public String getOu() {
+    return ou;
+  }
+
+  public void setOu(String ou) {
+    this.ou = ou;
   }
 }
