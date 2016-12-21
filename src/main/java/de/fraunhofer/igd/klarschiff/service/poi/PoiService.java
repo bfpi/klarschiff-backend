@@ -1,5 +1,9 @@
 package de.fraunhofer.igd.klarschiff.service.poi;
 
+import de.fraunhofer.igd.klarschiff.dao.GrenzenDao;
+import de.fraunhofer.igd.klarschiff.vo.EnumVerlaufTyp;
+import de.fraunhofer.igd.klarschiff.vo.EnumVorgangStatus;
+import de.fraunhofer.igd.klarschiff.vo.Verlauf;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
@@ -14,6 +18,8 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
+import java.util.EnumMap;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Die Klasse stellt einen Service zur Erstellung von Excel-dokumenten bereit. Dabei werden
@@ -24,6 +30,9 @@ import de.fraunhofer.igd.klarschiff.vo.Vorgang;
  */
 @Service
 public class PoiService {
+
+  @Autowired
+  GrenzenDao grenzenDao;
 
   /**
    * Zur Verfügung stehende Templates von Excel-Dokumenten.
@@ -72,6 +81,8 @@ public class PoiService {
         int r = 1;
         for (Object[] vorgangData : (List<Object[]>) data) {
           Vorgang vorgang = (Vorgang) vorgangData[0];
+          EnumMap<EnumVorgangStatus, Long> times = calculateTimes(vorgang);
+
           Date aenderungsdatum = (Date) vorgangData[1];
           int unterstuetzer = (Integer) vorgangData[2];
           Row row = sheet.createRow(r);
@@ -83,13 +94,21 @@ public class PoiService {
           row.createCell(5).setCellValue(vorgang.getKategorie().getName());
           row.createCell(6).setCellValue(vorgang.getStatus().getText());
           row.createCell(7).setCellValue(vorgang.getAdresse());
-          row.createCell(8).setCellValue(unterstuetzer);
-          row.createCell(9).setCellValue(vorgang.getZustaendigkeit());
+          row.createCell(8).setCellValue(grenzenDao.findStadtteilGrenzeByVorgang(vorgang).getName());
+          row.createCell(9).setCellValue(unterstuetzer);
+          row.createCell(10).setCellValue(vorgang.getZustaendigkeit());
           if (vorgang.getZustaendigkeitStatus() != null) {
-            row.createCell(10).setCellValue(vorgang.getZustaendigkeitStatus().getText());
+            row.createCell(11).setCellValue(vorgang.getZustaendigkeitStatus().getText());
           }
-          row.createCell(11).setCellValue(vorgang.getDelegiertAn());
-          row.createCell(12).setCellValue(vorgang.getPrioritaet().getText());
+          row.createCell(12).setCellValue(vorgang.getDelegiertAn());
+          row.createCell(13).setCellValue(vorgang.getPrioritaet().getText());
+          row.createCell(14).setCellValue(formatTime(times.get(EnumVorgangStatus.offen))); // Dauer offen
+          row.createCell(15).setCellValue(formatTime(times.get(EnumVorgangStatus.inBearbeitung))); // Dauer in Bearbeitung
+          row.createCell(16).setCellValue(formatTime(times.get(EnumVorgangStatus.wirdNichtBearbeitet))); // Dauer wird nicht Bearbeitet
+          row.createCell(17).setCellValue(formatTime(times.get(EnumVorgangStatus.duplikat))); // Dauer Duplikat
+          row.createCell(18).setCellValue(formatTime(times.get(EnumVorgangStatus.abgeschlossen))); // Dauer abgeschlossen
+          row.createCell(19).setCellValue(formatTime(times.get(EnumVorgangStatus.geloescht))); // Dauer gelöscht
+
           r++;
         }
       }
@@ -136,4 +155,52 @@ public class PoiService {
     this.templates = templates;
   }
 
+  private EnumMap<EnumVorgangStatus, Long> calculateTimes(Vorgang vorgang) {
+
+    EnumMap<EnumVorgangStatus, Long> times = new EnumMap<EnumVorgangStatus, Long>(EnumVorgangStatus.class);
+    EnumVorgangStatus status = null;
+    Date datum = null;
+
+    for (Verlauf verlauf : vorgang.getVerlauf()) {
+      if (verlauf.getTyp() == EnumVerlaufTyp.vorgangBestaetigung) {
+        status = EnumVorgangStatus.offen;
+        datum = verlauf.getDatum();
+      } else if (verlauf.getTyp().equals(EnumVerlaufTyp.status)) {
+        long diff = 0;
+        if (status != null && datum != null) {
+          diff = (verlauf.getDatum().getTime() - datum.getTime());
+          if (times.containsKey(status)) {
+            diff += times.get(status);
+          }
+          times.put(status, diff);
+        }
+        for (EnumVorgangStatus value : EnumVorgangStatus.values()) {
+          if (verlauf.getWertNeu().equals(value.getText())) {
+            status = value;
+            datum = verlauf.getDatum();
+          }
+        }
+      }
+    }
+
+    if (status != null && datum != null) {
+      long diff = (new Date().getTime() - datum.getTime());
+      if (times.containsKey(status)) {
+        diff += times.get(status);
+      }
+      times.put(status, diff);
+    }
+
+    return times;
+  }
+
+  private String formatTime(Long time) {
+    if (time == null) {
+      return "";
+    }
+    time = time / 1000;
+    Long hours = time / (60 * 60);
+    Long minutes = (time - (hours * (60 * 60))) / 60;
+    return hours + ":" + minutes;
+  }
 }
