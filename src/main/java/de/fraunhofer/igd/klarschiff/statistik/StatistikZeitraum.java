@@ -1,7 +1,6 @@
 package de.fraunhofer.igd.klarschiff.statistik;
 
 import de.fraunhofer.igd.klarschiff.dao.StatistikDao;
-import de.fraunhofer.igd.klarschiff.service.security.Role;
 import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
 import de.fraunhofer.igd.klarschiff.web.StatistikCommand;
 import java.io.IOException;
@@ -21,11 +20,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
 
-public class StatistikZeitraum {
-
-  StatistikDao statistikDao;
-  SecurityService securityService;
-  HashMap OUs = new HashMap();
+public class StatistikZeitraum extends StatistikCommon {
 
   int[] hauptkategorieIds = {1, 18, 35, 54, 66, 87, 111};
   int[] kategorieIds = {52, 53};
@@ -171,39 +166,6 @@ public class StatistikZeitraum {
     }
   }
 
-  private void setCellValue(Row row, int col, String prefix, Map.Entry<Integer, Integer> entry, HashMap values) {
-    Cell cell = row.getCell(col);
-    if (values.containsKey(prefix + entry.getValue())) {
-      cell.setCellValue(Double.parseDouble(values.get(prefix + entry.getValue()).toString()));
-    }
-  }
-
-  private void setCellMergedValue(Row row, int col, String prefix, HashMap values) {
-    setCellMergedValue(row, col, prefix, values, null);
-  }
-
-  private void setCellMergedValue(Row row, int col, String prefix, HashMap values, int[] excludeKategorieIds) {
-    if (values == null) {
-      return;
-    }
-    int tmp = 0;
-    Iterator itKeys = values.keySet().iterator();
-    while (itKeys.hasNext()) {
-      String key = (String) itKeys.next();
-
-      if (key.startsWith(prefix)) {
-
-        Integer[] newArray = ArrayUtils.toObject(excludeKategorieIds);
-        if (key.startsWith(prefix) && (newArray == null
-          || !Arrays.asList(newArray).contains(Integer.parseInt(key.replace(prefix, ""))))) {
-          tmp += Integer.parseInt(values.get(key).toString());
-        }
-      }
-    }
-    Cell cell = row.getCell(col);
-    cell.setCellValue(Double.parseDouble(String.valueOf(tmp)));
-  }
-
   private HashMap getData(StatistikCommand cmd) throws ParseException {
     OUs.clear();
     HashMap zusammenfassung = new HashMap();
@@ -233,49 +195,5 @@ public class StatistikZeitraum {
     zusammenfassung = mergeResults(zusammenfassung, "weiterhinOffen", weiterhinOffenKategorien);
 
     return zusammenfassung;
-  }
-
-  private HashMap mergeResults(HashMap zusammenfassung, String prefix, List<Object[]> liste) {
-    for (Object[] result : liste) {
-      if (result[1] != null) {
-        int anzahl = Integer.parseInt(result[0].toString());
-        String zustaendigkeit = result[1].toString();
-        String kategorieId = result[2].toString();
-        String stadtteilId = result[4].toString();
-        String ou = findOu(zustaendigkeit);
-
-        if (ou != null) {
-          HashMap tmpHash = new HashMap();
-          if (zusammenfassung.containsKey(ou)) {
-            tmpHash = (HashMap) zusammenfassung.get(ou);
-          }
-
-          int tmpAnzKategorie = 0;
-          String kategoryKey = prefix + kategorieId;
-          if (tmpHash.containsKey(kategoryKey)) {
-            tmpAnzKategorie = Integer.parseInt(tmpHash.get(kategoryKey).toString());
-          }
-          tmpHash.put(kategoryKey, tmpAnzKategorie + anzahl);
-          zusammenfassung.put(ou, tmpHash);
-
-          int tmpAnzStadtteil = 0;
-          String stadtteilKey = "stadtteil_" + prefix + stadtteilId;
-          if (zusammenfassung.containsKey(stadtteilKey)) {
-            tmpAnzStadtteil = Integer.parseInt(zusammenfassung.get(stadtteilKey).toString());
-          }
-          zusammenfassung.put(stadtteilKey, tmpAnzStadtteil + anzahl);
-        }
-      }
-    }
-    return zusammenfassung;
-  }
-
-  private String findOu(String zustaendigkeit) {
-    if (OUs.containsKey(zustaendigkeit)) {
-      return (String) OUs.get(zustaendigkeit);
-    }
-    Role r = securityService.getZustaendigkeit(zustaendigkeit);
-    OUs.put(zustaendigkeit, r.getOu());
-    return r.getOu();
   }
 }

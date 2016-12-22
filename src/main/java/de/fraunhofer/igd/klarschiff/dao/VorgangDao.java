@@ -25,6 +25,7 @@ import de.fraunhofer.igd.klarschiff.vo.EnumVorgangStatus;
 import de.fraunhofer.igd.klarschiff.vo.EnumVorgangTyp;
 import de.fraunhofer.igd.klarschiff.vo.EnumZustaendigkeitStatus;
 import de.fraunhofer.igd.klarschiff.vo.Missbrauchsmeldung;
+import de.fraunhofer.igd.klarschiff.vo.StadtteilGrenze;
 import de.fraunhofer.igd.klarschiff.vo.StatusKommentarVorlage;
 import de.fraunhofer.igd.klarschiff.vo.Unterstuetzer;
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
@@ -1252,5 +1253,19 @@ public class VorgangDao {
       .addWhereConditions("(vo.zustaendigkeit IS NULL OR vo.zustaendigkeitStatus IS NULL)")
       .orderBy("vo.id");
     return query.getResultList(em);
+  }
+  
+
+  /**
+   * Holt den zuletzt angelegten Vorgang
+   *
+   * @param vorgang Vorgang
+   * @return Stadtteilgrenze
+   */
+  public Vorgang getLastVorgang() {
+    HqlQueryHelper query = (new HqlQueryHelper()).addSelectAttribute("vo")
+      .addFromTables("Vorgang vo")
+      .orderBy("vo.id desc").maxResults(1);
+    return (Vorgang) query.getResultList(em).get(0);
   }
 }
