@@ -27,7 +27,7 @@ The initiators of the **Klarschiff** project are offering a ready-to-use virtual
 
 ## Online demo
 
-Additionally, the initiators of the **Klarschiff** project are hosting a [demo version](http://demo.klarschiff-hro.de/backend) of the project on their servers. This demo version uses the code hosted here on GitHub, with `settings.properties` slightly adjusted to the local environment, of course.
+Additionally, the initiators of the **Klarschiff** project are hosting a [demo version](https://demo.klarschiff-hro.de/backend) of the project on their servers. This demo version uses the code hosted here on GitHub, with `settings.properties` slightly adjusted to the local environment, of course.
 
 
 ## In production
