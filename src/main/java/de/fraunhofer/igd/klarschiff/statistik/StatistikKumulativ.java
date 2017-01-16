@@ -85,15 +85,15 @@ public class StatistikKumulativ extends StatistikCommon {
     int startRow = 5;
     for (Map.Entry<Integer, Integer> entry : mapping.entrySet()) {
       row = sheet.getRow(startRow + entry.getKey());
-      setCellValue(row, 4, "gesamt", entry, values);
-      setCellValue(row, 6, "duplikate", entry, values);
-      setCellValue(row, 7, "wirdNichtBearbeitet", entry, values);
+//      setCellValue(row, 4, "gesamt", entry, values);
+//      setCellValue(row, 6, "duplikate", entry, values);
+//      setCellValue(row, 7, "wirdNichtBearbeitet", entry, values);
     }
     startRow = 38;
     for (Map.Entry<Integer, Integer> entry : mapping.entrySet()) {
       row = sheet.getRow(startRow + entry.getKey());
-      setCellValue(row, 3, "abgeschlossen", entry, values);
-      setCellValue(row, 5, "weiterhinOffen", entry, values);
+//      setCellValue(row, 3, "abgeschlossen", entry, values);
+//      setCellValue(row, 5, "weiterhinOffen", entry, values);
     }
 
     values = (HashMap) daten.get("Amt 30");
@@ -110,24 +110,24 @@ public class StatistikKumulativ extends StatistikCommon {
     startRow = 15;
     for (Map.Entry<Integer, Integer> entry : mapping.entrySet()) {
       row = sheet.getRow(startRow + entry.getKey());
-      setCellValue(row, 4, "gesamt", entry, values);
-      setCellValue(row, 6, "duplikate", entry, values);
-      setCellValue(row, 7, "wirdNichtBearbeitet", entry, values);
+//      setCellValue(row, 4, "gesamt", entry, values);
+//      setCellValue(row, 6, "duplikate", entry, values);
+//      setCellValue(row, 7, "wirdNichtBearbeitet", entry, values);
     }
     startRow = 48;
     for (Map.Entry<Integer, Integer> entry : mapping.entrySet()) {
       row = sheet.getRow(startRow + entry.getKey());
-      setCellValue(row, 3, "abgeschlossen", entry, values);
-      setCellValue(row, 5, "weiterhinOffen", entry, values);
+//      setCellValue(row, 3, "abgeschlossen", entry, values);
+//      setCellValue(row, 5, "weiterhinOffen", entry, values);
     }
 
     row = sheet.getRow(20);
-    setCellMergedValue(row, 4, "gesamt", values, kategorieIds);
-    setCellMergedValue(row, 6, "duplikate", values, kategorieIds);
-    setCellMergedValue(row, 7, "wirdNichtBearbeitet", values, kategorieIds);
+//    setCellMergedValue(row, 4, "gesamt", values, kategorieIds);
+//    setCellMergedValue(row, 6, "duplikate", values, kategorieIds);
+//    setCellMergedValue(row, 7, "wirdNichtBearbeitet", values, kategorieIds);
     row = sheet.getRow(53);
-    setCellMergedValue(row, 3, "abgeschlossen", values, kategorieIds);
-    setCellMergedValue(row, 5, "weiterhinOffen", values, kategorieIds);
+//    setCellMergedValue(row, 3, "abgeschlossen", values, kategorieIds);
+//    setCellMergedValue(row, 5, "weiterhinOffen", values, kategorieIds);
 
     values = (HashMap) daten.get("Amt 32");
     row = sheet.getRow(23);
@@ -181,15 +181,15 @@ public class StatistikKumulativ extends StatistikCommon {
     int startRow = 3;
     for (Map.Entry<Integer, Integer> entry : mapping.entrySet()) {
       row = sheet.getRow(startRow + entry.getKey());
-      setCellValue(row, 4, "stadtteil_gesamt", entry, daten);
-      setCellValue(row, 6, "stadtteil_duplikate", entry, daten);
-      setCellValue(row, 7, "stadtteil_wirdNichtBearbeitet", entry, daten);
+//      setCellValue(row, 4, "stadtteil_gesamt", entry, daten);
+//      setCellValue(row, 6, "stadtteil_duplikate", entry, daten);
+//      setCellValue(row, 7, "stadtteil_wirdNichtBearbeitet", entry, daten);
     }
     startRow = 31;
     for (Map.Entry<Integer, Integer> entry : mapping.entrySet()) {
       row = sheet.getRow(startRow + entry.getKey());
-      setCellValue(row, 3, "stadtteil_abgeschlossen", entry, daten);
-      setCellValue(row, 5, "stadtteil_weiterhinOffen", entry, daten);
+//      setCellValue(row, 3, "stadtteil_abgeschlossen", entry, daten);
+//      setCellValue(row, 5, "stadtteil_weiterhinOffen", entry, daten);
     }
 
     row = sheet.getRow(31);
@@ -201,30 +201,30 @@ public class StatistikKumulativ extends StatistikCommon {
     OUs.clear();
     HashMap zusammenfassung = new HashMap();
 
-    List<Object[]> gesamtHauptkategorien = statistikDao.getAnzahlErzeugteVorgaengeNachHauptkategorienInZeitraum(hauptkategorieIds, cmd.getZeitraumVon(), cmd.getZeitraumBis());
-    zusammenfassung = mergeResults(zusammenfassung, "gesamt", gesamtHauptkategorien);
-    List<Object[]> gesamtKategorien = statistikDao.getAnzahlErzeugteVorgaengeNachKategorienInZeitraum(kategorieIds, cmd.getZeitraumVon(), cmd.getZeitraumBis());
-    zusammenfassung = mergeResults(zusammenfassung, "gesamt", gesamtKategorien);
-
-    List<Object[]> duplikateHauptkategorien = statistikDao.getAnzahlVorgaengeNachHauptkategorienUndStatusInZeitraum(hauptkategorieIds, EnumVorgangStatus.duplikat, cmd.getZeitraumVon(), cmd.getZeitraumBis());
-    zusammenfassung = mergeResults(zusammenfassung, "duplikate", duplikateHauptkategorien);
-    List<Object[]> duplikateKategorien = statistikDao.getAnzahlVorgaengeNachKategorienUndStatusInZeitraum(kategorieIds, EnumVorgangStatus.duplikat, cmd.getZeitraumVon(), cmd.getZeitraumBis());
-    zusammenfassung = mergeResults(zusammenfassung, "duplikate", duplikateKategorien);
-
-    List<Object[]> wirdNichtBearbeitetHauptkategorien = statistikDao.getAnzahlVorgaengeNachHauptkategorienUndStatusInZeitraum(hauptkategorieIds, EnumVorgangStatus.wirdNichtBearbeitet, cmd.getZeitraumVon(), cmd.getZeitraumBis());
-    zusammenfassung = mergeResults(zusammenfassung, "wirdNichtBearbeitet", wirdNichtBearbeitetHauptkategorien);
-    List<Object[]> wirdNichtBearbeitetKategorien = statistikDao.getAnzahlVorgaengeNachKategorienUndStatusInZeitraum(kategorieIds, EnumVorgangStatus.wirdNichtBearbeitet, cmd.getZeitraumVon(), cmd.getZeitraumBis());
-    zusammenfassung = mergeResults(zusammenfassung, "wirdNichtBearbeitet", wirdNichtBearbeitetKategorien);
-
-    List<Object[]> abgeschlossenHauptkategorien = statistikDao.getAnzahlAbgeschlosseneVorgaengeNachHauptkategorienInZeitraum(hauptkategorieIds, cmd.getZeitraumVon(), cmd.getZeitraumBis());
-    zusammenfassung = mergeResults(zusammenfassung, "abgeschlossen", abgeschlossenHauptkategorien);
-    List<Object[]> abgeschlossenKategorien = statistikDao.getAnzahlAbgeschlosseneVorgaengeNachKategorienInZeitraum(kategorieIds, cmd.getZeitraumVon(), cmd.getZeitraumBis());
-    zusammenfassung = mergeResults(zusammenfassung, "abgeschlossen", abgeschlossenKategorien);
-
-    List<Object[]> weiterhinOffenHauptkategorien = statistikDao.getAnzahlOffeneVorgaengeNachHauptkategorienBis(hauptkategorieIds, cmd.getZeitraumBis());
-    zusammenfassung = mergeResults(zusammenfassung, "weiterhinOffen", weiterhinOffenHauptkategorien);
-    List<Object[]> weiterhinOffenKategorien = statistikDao.getAnzahlOffeneVorgaengeNachKategorienBis(kategorieIds, cmd.getZeitraumBis());
-    zusammenfassung = mergeResults(zusammenfassung, "weiterhinOffen", weiterhinOffenKategorien);
+//    List<Object[]> gesamtHauptkategorien = statistikDao.getAnzahlErzeugteVorgaengeNachHauptkategorienInZeitraum(hauptkategorieIds, cmd.getZeitraumVon(), cmd.getZeitraumBis());
+//    zusammenfassung = mergeResults(zusammenfassung, "gesamt", gesamtHauptkategorien);
+//    List<Object[]> gesamtKategorien = statistikDao.getAnzahlErzeugteVorgaengeNachKategorienInZeitraum(kategorieIds, cmd.getZeitraumVon(), cmd.getZeitraumBis());
+//    zusammenfassung = mergeResults(zusammenfassung, "gesamt", gesamtKategorien);
+//
+//    List<Object[]> duplikateHauptkategorien = statistikDao.getAnzahlVorgaengeNachHauptkategorienUndStatusInZeitraum(hauptkategorieIds, EnumVorgangStatus.duplikat, cmd.getZeitraumVon(), cmd.getZeitraumBis());
+//    zusammenfassung = mergeResults(zusammenfassung, "duplikate", duplikateHauptkategorien);
+//    List<Object[]> duplikateKategorien = statistikDao.getAnzahlVorgaengeNachKategorienUndStatusInZeitraum(kategorieIds, EnumVorgangStatus.duplikat, cmd.getZeitraumVon(), cmd.getZeitraumBis());
+//    zusammenfassung = mergeResults(zusammenfassung, "duplikate", duplikateKategorien);
+//
+//    List<Object[]> wirdNichtBearbeitetHauptkategorien = statistikDao.getAnzahlVorgaengeNachHauptkategorienUndStatusInZeitraum(hauptkategorieIds, EnumVorgangStatus.wirdNichtBearbeitet, cmd.getZeitraumVon(), cmd.getZeitraumBis());
+//    zusammenfassung = mergeResults(zusammenfassung, "wirdNichtBearbeitet", wirdNichtBearbeitetHauptkategorien);
+//    List<Object[]> wirdNichtBearbeitetKategorien = statistikDao.getAnzahlVorgaengeNachKategorienUndStatusInZeitraum(kategorieIds, EnumVorgangStatus.wirdNichtBearbeitet, cmd.getZeitraumVon(), cmd.getZeitraumBis());
+//    zusammenfassung = mergeResults(zusammenfassung, "wirdNichtBearbeitet", wirdNichtBearbeitetKategorien);
+//
+//    List<Object[]> abgeschlossenHauptkategorien = statistikDao.getAnzahlAbgeschlosseneVorgaengeNachHauptkategorienInZeitraum(hauptkategorieIds, cmd.getZeitraumVon(), cmd.getZeitraumBis());
+//    zusammenfassung = mergeResults(zusammenfassung, "abgeschlossen", abgeschlossenHauptkategorien);
+//    List<Object[]> abgeschlossenKategorien = statistikDao.getAnzahlAbgeschlosseneVorgaengeNachKategorienInZeitraum(kategorieIds, cmd.getZeitraumVon(), cmd.getZeitraumBis());
+//    zusammenfassung = mergeResults(zusammenfassung, "abgeschlossen", abgeschlossenKategorien);
+//
+//    List<Object[]> weiterhinOffenHauptkategorien = statistikDao.getAnzahlOffeneVorgaengeNachHauptkategorienBis(hauptkategorieIds, cmd.getZeitraumBis());
+//    zusammenfassung = mergeResults(zusammenfassung, "weiterhinOffen", weiterhinOffenHauptkategorien);
+//    List<Object[]> weiterhinOffenKategorien = statistikDao.getAnzahlOffeneVorgaengeNachKategorienBis(kategorieIds, cmd.getZeitraumBis());
+//    zusammenfassung = mergeResults(zusammenfassung, "weiterhinOffen", weiterhinOffenKategorien);
 
     return zusammenfassung;
   }

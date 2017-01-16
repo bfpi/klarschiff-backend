@@ -1,5 +1,7 @@
 package de.fraunhofer.igd.klarschiff.web;
 
+import de.fraunhofer.igd.klarschiff.dao.GrenzenDao;
+import de.fraunhofer.igd.klarschiff.dao.KategorieDao;
 import de.fraunhofer.igd.klarschiff.dao.StatistikDao;
 import de.fraunhofer.igd.klarschiff.dao.VorgangDao;
 import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
@@ -33,11 +35,17 @@ public class StatistikController {
   Logger logger = Logger.getLogger(StatistikController.class);
 
   @Autowired
+  GrenzenDao grenzenDao;
+  
+  @Autowired
+  KategorieDao kategorieDao;
+  
+  @Autowired
   StatistikDao statistikDao;
   
   @Autowired
   VorgangDao vorgangDao;
-
+  
   @Autowired
   SecurityService securityService;
 
@@ -128,7 +136,7 @@ public class StatistikController {
         return "redirect:/statistik/zeitraum";
       }
 
-      StatistikZeitraum sz = new StatistikZeitraum(statistikDao, securityService);
+      StatistikZeitraum sz = new StatistikZeitraum(grenzenDao, kategorieDao, statistikDao, securityService, settingsService);
       HSSFWorkbook workbook = sz.createStatistik(cmd);
 
       response.setHeader("Content-Type", "application/ms-excel");
