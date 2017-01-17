@@ -40,38 +40,8 @@ public class StatistikDao {
       + "      kverl_last.datum between '" + sdf.format(cVon.getTime()) + "' and '" + sdf.format(cBis.getTime()) + "' order by vorgang, datum desc "
       + "  ) and "
       + "  (kverl.typ = 'status' and kverl.wert_neu IN ('abgeschlossen')) "
-      + "  and kvorg.status NOT IN ('duplikat', 'geloescht', 'wirdNichtBearbeitet') "
+      + "  and kvorg.status NOT IN ('geloescht') "
       + "group by kvorg.zustaendigkeit, kk.id, kk.parent, kk.name, ksg.id, ksg.name order by kvorg.zustaendigkeit, kk.name")
-      .getResultList();
-  }
-
-  /*
-   * Holt die Anzahl der 'erzeugten' Vorgänge eingeschränkt auf die übergebenen Hauptkategorie-IDS
-   * gruppiert nach Zuständigkeit, Hauptkategorie und Stadtteil
-   */
-  public List<Object[]> getAnzahlErzeugteVorgaengeNachHauptkategorienInZeitraum(Date von, Date bis) {
-    Calendar cVon = Calendar.getInstance();
-    cVon.setTime(von);
-
-    Calendar cBis = Calendar.getInstance();
-    cBis.setTime(bis);
-    cBis.add(Calendar.DATE, 1);
-
-    return entityManager.createNativeQuery("select count(kvorg.id), kvorg.zustaendigkeit, kk.parent, kkp.name, ksg.id stadtteil, ksg.name from klarschiff_verlauf kverl "
-      + "  inner join ( "
-      + "	select vorgang from klarschiff_verlauf where typ in ('erzeugt') and datum between '" + sdf.format(cVon.getTime()) + "' and '" + sdf.format(cBis.getTime()) + "' "
-      + "  ) kverl_erzeug on kverl.vorgang = kverl_erzeug.vorgang "
-      + "  left join klarschiff_vorgang kvorg on kverl.vorgang = kvorg.id "
-      + "  left join klarschiff_kategorie kk on kk.id = kvorg.kategorie "
-      + "  left join klarschiff_stadtteil_grenze ksg on ST_Within(kvorg.ovi, ksg.grenze) "
-      + "  inner join klarschiff_kategorie kkp on kk.parent = kkp.id "
-      + "where "
-      + "  kverl.id in ( "
-      + "    select distinct on (vorgang) id from klarschiff_verlauf kverl_last where typ in ('status', 'erzeugt') and "
-      + "      kverl_last.datum between '" + sdf.format(cVon.getTime()) + "' and '" + sdf.format(cBis.getTime()) + "' order by vorgang, datum desc "
-      + "  ) and "
-      + "  (kverl.typ = 'erzeugt' or (kverl.typ = 'status' and kverl.wert_neu NOT IN ('gelöscht'))) "
-      + "group by kvorg.zustaendigkeit, kk.parent, kkp.name, ksg.id, ksg.name order by kvorg.zustaendigkeit, kkp.name")
       .getResultList();
   }
 
@@ -79,7 +49,7 @@ public class StatistikDao {
    * Holt die Anzahl der 'erzeugten' Vorgänge eingeschränkt auf die übergebenen Kategorie-IDS
    * gruppiert nach Zuständigkeit, Hauptkategorie und Stadtteil
    */
-  public List<Object[]> getAnzahlErzeugteVorgaengeNachKategorienInZeitraum(Date von, Date bis) {
+  public List<Object[]> getAnzahlErzeugteVorgaengeInZeitraum(Date von, Date bis) {
     Calendar cVon = Calendar.getInstance();
     cVon.setTime(von);
 
@@ -87,7 +57,7 @@ public class StatistikDao {
     cBis.setTime(bis);
     cBis.add(Calendar.DATE, 1);
 
-    return entityManager.createNativeQuery("select count(kvorg.id), kvorg.zustaendigkeit, kk.id, kk.name, ksg.id stadtteil, ksg.name from klarschiff_verlauf kverl "
+    return entityManager.createNativeQuery("select count(kvorg.id), kvorg.zustaendigkeit, kk.id, kk.parent, kk.name, ksg.id stadtteil, ksg.name from klarschiff_verlauf kverl "
       + "  inner join ( "
       + "	select vorgang from klarschiff_verlauf where typ in ('erzeugt') and datum between '" + sdf.format(cVon.getTime()) + "' and '" + sdf.format(cBis.getTime()) + "' "
       + "  ) kverl_erzeug on kverl.vorgang = kverl_erzeug.vorgang "
@@ -100,7 +70,8 @@ public class StatistikDao {
       + "      kverl_last.datum between '" + sdf.format(cVon.getTime()) + "' and '" + sdf.format(cBis.getTime()) + "' order by vorgang, datum desc "
       + "  ) and "
       + "  (kverl.typ = 'erzeugt' or (kverl.typ = 'status' and kverl.wert_neu NOT IN ('gelöscht'))) "
-      + "group by kvorg.zustaendigkeit, kk.id, kk.name, ksg.id, ksg.name order by kvorg.zustaendigkeit, kk.name")
+      + "  and kvorg.status NOT IN ('geloescht') "
+      + "group by kvorg.zustaendigkeit, kk.id, kk.parent, kk.name, ksg.id, ksg.name order by kvorg.zustaendigkeit, kk.name")
       .getResultList();
   }
 
@@ -154,7 +125,7 @@ public class StatistikDao {
       + "      kverl_last.datum < '" + sdf.format(c.getTime()) + "' order by vorgang, datum desc "
       + "  ) and "
       + "  (kverl.typ = 'erzeugt' or (kverl.typ = 'status' and kverl.wert_neu NOT IN ('abgeschlossen', 'Duplikat', 'wird nicht bearbeitet', 'gelöscht'))) "
-      + "  and kvorg.status NOT IN ('duplikat', 'geloescht', 'wirdNichtBearbeitet') "
+      + "  and kvorg.status NOT IN ('geloescht') "
       + "group by kvorg.zustaendigkeit, kk.id, kk.parent, kk.name, ksg.id, ksg.name order by kvorg.zustaendigkeit, kk.name");
     return q.getResultList();
   }
@@ -163,7 +134,7 @@ public class StatistikDao {
    * Holt die Anzahl der Vorgänge eingeschränkt auf den übergebenen Status und die übergebenen Hauptkategorie-IDS
    * gruppiert nach Zuständigkeit, Hauptkategorie und Stadtteil
    */
-  public List<Object[]> getAnzahlVorgaengeNachHauptkategorienUndStatusInZeitraum(EnumVorgangStatus status, Date von, Date bis) {
+  public List<Object[]> getAnzahlVorgaengeNachStatusInZeitraum(EnumVorgangStatus status, Date von, Date bis) {
     Calendar cVon = Calendar.getInstance();
     cVon.setTime(von);
 
@@ -171,33 +142,7 @@ public class StatistikDao {
     cBis.setTime(bis);
     cBis.add(Calendar.DATE, 1);
 
-    Query q = entityManager.createNativeQuery("select count(kvorg.id), kvorg.zustaendigkeit, kk.parent, kkp.name, ksg.id stadtteil, ksg.name from klarschiff_verlauf kverl "
-      + "  left join klarschiff_vorgang kvorg on kverl.vorgang = kvorg.id "
-      + "  left join klarschiff_kategorie kk on kk.id = kvorg.kategorie "
-      + "  left join klarschiff_stadtteil_grenze ksg on ST_Within(kvorg.ovi, ksg.grenze) "
-      + "  inner join klarschiff_kategorie kkp on kk.parent = kkp.id "
-      + "where "
-      + "  kverl.id in ( "
-      + "    select distinct on (vorgang) id from klarschiff_verlauf kverl_last where typ = 'status' and "
-      + "      datum between '" + sdf.format(cVon.getTime()) + "' and '" + sdf.format(cBis.getTime()) + "' order by kverl_last.vorgang, kverl_last.datum desc "
-      + "  ) and kverl.typ = 'status' and kverl.wert_neu = '" + status.getText() + "' "
-      + "group by kvorg.zustaendigkeit, kk.parent, kkp.name, ksg.id, ksg.name order by kvorg.zustaendigkeit, kkp.name");
-    return q.getResultList();
-  }
-
-  /*
-   * Holt die Anzahl der Vorgänge eingeschränkt auf den übergebenen Status und die übergebenen Hauptkategorie-IDS
-   * gruppiert nach Zuständigkeit, Hauptkategorie und Stadtteil
-   */
-  public List<Object[]> getAnzahlVorgaengeNachKategorienUndStatusInZeitraum(EnumVorgangStatus status, Date von, Date bis) {
-    Calendar cVon = Calendar.getInstance();
-    cVon.setTime(von);
-
-    Calendar cBis = Calendar.getInstance();
-    cBis.setTime(bis);
-    cBis.add(Calendar.DATE, 1);
-
-    Query q = entityManager.createNativeQuery("select count(kvorg.id), kvorg.zustaendigkeit, kk.id, kk.name, ksg.id stadtteil, ksg.name from klarschiff_verlauf kverl "
+    Query q = entityManager.createNativeQuery("select count(kvorg.id), kvorg.zustaendigkeit, kk.id, kk.parent, kk.name, ksg.id stadtteil, ksg.name from klarschiff_verlauf kverl "
       + "  left join klarschiff_vorgang kvorg on kverl.vorgang = kvorg.id "
       + "  left join klarschiff_stadtteil_grenze ksg on ST_Within(kvorg.ovi, ksg.grenze) "
       + "  inner join klarschiff_kategorie kk on kk.id = kvorg.kategorie "
@@ -206,7 +151,8 @@ public class StatistikDao {
       + "    select distinct on (vorgang) id from klarschiff_verlauf kverl_last where typ = 'status' and "
       + "      datum between '" + sdf.format(cVon.getTime()) + "' and '" + sdf.format(cBis.getTime()) + "' order by kverl_last.vorgang, kverl_last.datum desc "
       + "  ) and kverl.typ = 'status' and kverl.wert_neu = '" + status.getText() + "' "
-      + "group by kvorg.zustaendigkeit, kk.id, kk.name, ksg.id, ksg.name order by kvorg.zustaendigkeit, kk.name");
+      + "  and kvorg.status NOT IN ('geloescht') "
+      + "group by kvorg.zustaendigkeit, kk.id, kk.parent, kk.name, ksg.id, ksg.name order by kvorg.zustaendigkeit, kk.name");
     return q.getResultList();
   }
 }

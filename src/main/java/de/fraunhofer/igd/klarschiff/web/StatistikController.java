@@ -85,7 +85,7 @@ public class StatistikController {
         return "redirect:/statistik/kumulativ";
       }
 
-      StatistikKumulativ sz = new StatistikKumulativ(statistikDao, securityService, vorgangDao);
+      StatistikKumulativ sz = new StatistikKumulativ(grenzenDao, kategorieDao, statistikDao, securityService, vorgangDao, settingsService);
       HSSFWorkbook workbook = sz.createStatistik(cmd);
 
       response.setHeader("Content-Type", "application/ms-excel");

@@ -24,10 +24,6 @@ import org.springframework.core.io.Resource;
 
 public class StatistikZeitraum extends StatistikCommon {
 
-  private int rowCountKategorien = 0;
-  private int rowCountStadtteile = 0;
-  private ArrayList<Integer> headlineRows = new ArrayList<Integer>();
-
   public StatistikZeitraum(GrenzenDao grenzenDao, KategorieDao kategorieDao, StatistikDao statistikDao, SecurityService securityService, SettingsService settingsService) {
     this.grenzenDao = grenzenDao;
     this.kategorieDao = kategorieDao;
@@ -72,7 +68,7 @@ public class StatistikZeitraum extends StatistikCommon {
     Row tmpl_row_sum_begin = sheet.getRow(9);
     Row tmpl_row_sum_counts = sheet.getRow(10);
     Row tmpl_row_sum_end = sheet.getRow(11);
-
+    
     int current_row = 4;
     headlineRows.clear();
     rowCountKategorien += current_row;
@@ -185,7 +181,6 @@ public class StatistikZeitraum extends StatistikCommon {
 
   private void updateSheetValuesStadtteile(Sheet sheet, StatistikCommand cmd, HashMap daten) throws ParseException {
     SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
-    String prefix = "kategorie_";
 
     Row row = sheet.getRow(0);
     Cell cell = row.getCell(0);
@@ -329,6 +324,13 @@ public class StatistikZeitraum extends StatistikCommon {
   }
 
   private Row setSummenRow(Row row, List<Integer> add_rows) {
+    Cell cell = row.getCell(8);
+    String form = "H" + (row.getRowNum() + 1) + "/F" + (row.getRowNum() + 1) + "%";
+    cell.setCellFormula("IF(ISERROR(" + form + "),0," + form + ")");
+
+    cell = row.getCell(10);
+    form = "J" + (row.getRowNum() + 1) + "/F" + (row.getRowNum() + 1) + "%";
+    cell.setCellFormula("IF(ISERROR(" + form + "),0," + form + ")");
 
     Map<Integer, String> mapping = new HashMap<Integer, String>() {
       {
@@ -341,27 +343,6 @@ public class StatistikZeitraum extends StatistikCommon {
       }
     };
 
-    Cell cell;
-    String form = "";
-    for (Map.Entry<Integer, String> entry : mapping.entrySet()) {
-      form = "";
-      for (Integer add_row : add_rows) {
-        if (form.length() > 0) {
-          form += "+";
-        }
-        form += entry.getValue() + (add_row + 1);
-      }
-      cell = row.getCell(entry.getKey());
-      cell.setCellFormula(form);
-    }
-    cell = row.getCell(8);
-    form = "H" + (row.getRowNum() + 1) + "/F" + (row.getRowNum() + 1) + "%";
-    cell.setCellFormula("IF(ISERROR(" + form + "),0," + form + ")");
-
-    cell = row.getCell(10);
-    form = "J" + (row.getRowNum() + 1) + "/F" + (row.getRowNum() + 1) + "%";
-    cell.setCellFormula("IF(ISERROR(" + form + "),0," + form + ")");
-
-    return row;
+    return setSummenRow(row, add_rows, mapping);
   }
 }

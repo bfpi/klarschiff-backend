@@ -8,6 +8,7 @@ import de.fraunhofer.igd.klarschiff.service.security.Role;
 import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
 import de.fraunhofer.igd.klarschiff.service.settings.SettingsService;
 import de.fraunhofer.igd.klarschiff.vo.Kategorie;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -28,6 +29,9 @@ public class StatistikCommon {
   VorgangDao vorgangDao;
   HashMap OUs = new HashMap();
   HashMap kategorien = new HashMap();
+  ArrayList<Integer> headlineRows = new ArrayList<Integer>();
+  int rowCountKategorien = 0;
+  int rowCountStadtteile = 0;
 
   protected HashMap mergeResults(HashMap zusammenfassung, String prefix, List<Object[]> liste) {
     for (Object[] result : liste) {
@@ -105,35 +109,62 @@ public class StatistikCommon {
     }
   }
 
-  protected Row copyRow(Row sourceRow, Sheet worksheet, int destinationRowNum) {
-    Row newRow = worksheet.createRow(destinationRowNum);
+  protected Row copyRow(Row sourceRow, Sheet sheet, int destinationRowNum) {
+    return copyRow(sourceRow, sheet, destinationRowNum, false);
+  }
 
-    for (int i = 0; i < sourceRow.getLastCellNum(); i++) {
-      Cell oldCell = sourceRow.getCell(i);
-      Cell newCell = newRow.createCell(i);
+  protected Row copyRow(Row sourceRow, Sheet sheet, int destinationRowNum, boolean moveFollowingRows) {
+    Row newRow = sheet.createRow(destinationRowNum);
 
-      if (oldCell != null) {
-        newCell.setCellStyle(oldCell.getCellStyle());
-        newCell.setCellType(oldCell.getCellType());
-        switch (oldCell.getCellType()) {
-          case Cell.CELL_TYPE_BLANK:
-            break;
-          case Cell.CELL_TYPE_BOOLEAN:
-            newCell.setCellValue(oldCell.getBooleanCellValue());
-            break;
-          case Cell.CELL_TYPE_FORMULA:
-            newCell.setCellFormula(oldCell.getCellFormula());
-            break;
-          case Cell.CELL_TYPE_NUMERIC:
-            newCell.setCellValue(oldCell.getNumericCellValue());
-            break;
-          case Cell.CELL_TYPE_STRING:
-            newCell.setCellValue(oldCell.getRichStringCellValue());
-            break;
+    if (moveFollowingRows) {
+      moveNextRowsDown(sheet, destinationRowNum);
+    }
+
+    if (sourceRow != null) {
+      for (int i = 0; i < sourceRow.getLastCellNum(); i++) {
+        Cell oldCell = sourceRow.getCell(i);
+        Cell newCell = newRow.createCell(i);
+
+        if (oldCell != null) {
+          newCell.setCellStyle(oldCell.getCellStyle());
+          newCell.setCellType(oldCell.getCellType());
+          switch (oldCell.getCellType()) {
+            case Cell.CELL_TYPE_BLANK:
+              break;
+            case Cell.CELL_TYPE_BOOLEAN:
+              newCell.setCellValue(oldCell.getBooleanCellValue());
+              break;
+            case Cell.CELL_TYPE_FORMULA:
+              newCell.setCellFormula(oldCell.getCellFormula());
+              break;
+            case Cell.CELL_TYPE_NUMERIC:
+              newCell.setCellValue(oldCell.getNumericCellValue());
+              break;
+            case Cell.CELL_TYPE_STRING:
+              newCell.setCellValue(oldCell.getRichStringCellValue());
+              break;
+          }
         }
       }
     }
     return newRow;
+  }
+
+  protected void moveNextRowsDown(Sheet sheet, int destinationRowNum) {
+    int currentRow = sheet.getLastRowNum();
+    while (currentRow > destinationRowNum) {
+      Row row = sheet.getRow(currentRow);
+      copyRow(row, sheet, (currentRow + 1), false);
+      currentRow--;
+    }
+  }
+
+  protected void moveNextRowsUp(Sheet sheet, int sourceRowNum) {
+    while (sourceRowNum < sheet.getLastRowNum()) {
+      Row row = sheet.getRow((sourceRowNum + 1));
+      copyRow(row, sheet, sourceRowNum, false);
+      sourceRowNum++;
+    }
   }
 
   protected void setCellValue(Row row, int col, String prefix, Long entry_id, HashMap values) {
@@ -175,6 +206,24 @@ public class StatistikCommon {
     }
     Cell cell = row.getCell(col);
     cell.setCellValue(Double.parseDouble(String.valueOf(tmp)));
+  }
+  
+  protected Row setSummenRow(Row row, List<Integer> add_rows, Map<Integer, String> mapping) {
+    Cell cell;
+    String form = "";
+    for (Map.Entry<Integer, String> entry : mapping.entrySet()) {
+      form = "";
+      for (Integer add_row : add_rows) {
+        if (form.length() > 0) {
+          form += "+";
+        }
+        form += entry.getValue() + (add_row + 1);
+      }
+      cell = row.getCell(entry.getKey());
+      cell.setCellFormula("IF(ISERROR(" + form + "),0," + form + ")");
+    }
+
+    return row;
   }
 
 }
