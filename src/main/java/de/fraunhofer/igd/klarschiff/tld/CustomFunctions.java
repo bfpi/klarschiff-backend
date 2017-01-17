@@ -119,11 +119,24 @@ public class CustomFunctions {
    */
   public static String titleWithVorgang(de.fraunhofer.igd.klarschiff.vo.Vorgang vorgang) {
     String title = title();
-    if(vorgang != null && vorgang.getId() != null) {
+    if (vorgang != null && vorgang.getId() != null) {
       title += " - #" + vorgang.getId();
     }
     return title;
-	}
+  }
+
+  /**
+   * Ermittelt ob der Statistik-Export aktiviert ist
+   *
+   * @return Titel
+   */
+  public static Boolean statistikEnabled() {
+    try {
+      return Boolean.parseBoolean(AppContext.getApplicationContext().getBean(SettingsService.class).getPropertyValue("statistic.enabled"));
+    } catch (Exception e) {
+      return false;
+    }
+  }
 
   /**
    * Ermittelt das Gebiet, auf das sich Klarschiff bezieht

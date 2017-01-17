@@ -55,7 +55,9 @@
 			<ul>
 				<sec:authorize access="hasRole('ROLE_ADMIN')">
 					<menu:item label="Administration" url="/admin/uebersicht" id="menu.admin" currentId="${menu_item}"/>
-          <menu:item label="Statistik" url="/statistik/kumulativ" id="menu.statistik" currentId="${menu_item}"/>
+          <c:if test="${fx:statistikEnabled()}">
+            <menu:item label="Statistik" url="/statistik/kumulativ" id="menu.statistik" currentId="${menu_item}"/>
+          </c:if>
 				</sec:authorize>
                 <sec:authorize access="hasRole('ROLE_INTERN') and not hasRole('ROLE_ADMIN')">	
 					<menu:item label="Benutzerübersicht" url="/benutzer" id="menu.benutzer" currentId="${menu_item}"/>
