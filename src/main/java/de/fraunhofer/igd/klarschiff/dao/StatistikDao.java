@@ -1,6 +1,7 @@
 package de.fraunhofer.igd.klarschiff.dao;
 
 import de.fraunhofer.igd.klarschiff.vo.EnumVorgangStatus;
+import de.fraunhofer.igd.klarschiff.vo.EnumVorgangTyp;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -22,7 +23,7 @@ public class StatistikDao {
    * Holt die Anzahl der 'abgeschlossenen' Vorgänge eingeschränkt auf die übergebenen Kategorie-IDS
    * im Zeitraum gruppiert nach Zuständigkeit, Kategorie und Stadtteil
    */
-  public List<Object[]> getAnzahlAbgeschlosseneVorgaengeInZeitraum(Date von, Date bis) {
+  public List<Object[]> getAnzahlAbgeschlosseneVorgaengeInZeitraum(EnumVorgangTyp typ, Date von, Date bis) {
     Calendar cVon = Calendar.getInstance();
     cVon.setTime(von);
 
@@ -40,7 +41,7 @@ public class StatistikDao {
       + "      kverl_last.datum between '" + sdf.format(cVon.getTime()) + "' and '" + sdf.format(cBis.getTime()) + "' order by vorgang, datum desc "
       + "  ) and "
       + "  (kverl.typ = 'status' and kverl.wert_neu IN ('abgeschlossen')) "
-      + "  and kvorg.status NOT IN ('geloescht') "
+      + "  and kvorg.typ = '" + typ + "' and kvorg.status NOT IN ('duplikat', 'geloescht', 'wirdNichtBearbeitet') "
       + "group by kvorg.zustaendigkeit, kk.id, kk.parent, kk.name, ksg.id, ksg.name order by kvorg.zustaendigkeit, kk.name")
       .getResultList();
   }
@@ -49,7 +50,7 @@ public class StatistikDao {
    * Holt die Anzahl der 'erzeugten' Vorgänge eingeschränkt auf die übergebenen Kategorie-IDS
    * gruppiert nach Zuständigkeit, Hauptkategorie und Stadtteil
    */
-  public List<Object[]> getAnzahlErzeugteVorgaengeInZeitraum(Date von, Date bis) {
+  public List<Object[]> getAnzahlErzeugteVorgaengeInZeitraum(EnumVorgangTyp typ, Date von, Date bis) {
     Calendar cVon = Calendar.getInstance();
     cVon.setTime(von);
 
@@ -70,7 +71,7 @@ public class StatistikDao {
       + "      kverl_last.datum between '" + sdf.format(cVon.getTime()) + "' and '" + sdf.format(cBis.getTime()) + "' order by vorgang, datum desc "
       + "  ) and "
       + "  (kverl.typ = 'erzeugt' or (kverl.typ = 'status' and kverl.wert_neu NOT IN ('gelöscht'))) "
-      + "  and kvorg.status NOT IN ('duplikat', 'geloescht', 'wirdNichtBearbeitet') "
+      + "  and kvorg.typ = '" + typ + "' and kvorg.status NOT IN ('duplikat', 'geloescht', 'wirdNichtBearbeitet') "
       + "group by kvorg.zustaendigkeit, kk.id, kk.parent, kk.name, ksg.id, ksg.name order by kvorg.zustaendigkeit, kk.name")
       .getResultList();
   }
@@ -79,7 +80,7 @@ public class StatistikDao {
    * Holt die Anzahl der 'neuen' Vorgänge eingeschränkt auf die übergebenen Hauptkategorie-IDS
    * im Zeitraum gruppiert nach Zuständigkeit, Hauptkategorie und Stadtteil
    */
-  public List<Object[]> getAnzahlNeueVorgaengeInZeitraum(Date von, Date bis) {
+  public List<Object[]> getAnzahlNeueVorgaengeInZeitraum(EnumVorgangTyp typ, Date von, Date bis) {
     Calendar cVon = Calendar.getInstance();
     cVon.setTime(von);
 
@@ -100,7 +101,7 @@ public class StatistikDao {
       + "      kverl_last.datum between '" + sdf.format(cVon.getTime()) + "' and '" + sdf.format(cBis.getTime()) + "' order by vorgang, datum desc "
       + "  ) and "
       + "  (kverl.typ = 'erzeugt' or (kverl.typ = 'status' and kverl.wert_neu NOT IN ('Duplikat', 'wird nicht bearbeitet', 'gelöscht'))) "
-      + "  and kvorg.status NOT IN ('duplikat', 'geloescht', 'wirdNichtBearbeitet') "
+      + "  and kvorg.typ = '" + typ + "' and kvorg.status NOT IN ('duplikat', 'geloescht', 'wirdNichtBearbeitet') "
       + "group by kvorg.zustaendigkeit, kk.id, kk.parent, kk.name, ksg.id, ksg.name order by kvorg.zustaendigkeit, kk.name")
       .getResultList();
   }
@@ -109,7 +110,7 @@ public class StatistikDao {
    * Holt die Anzahl der 'offenen' Vorgänge eingeschränkt auf die übergebenen Kategorie-IDS
    * gruppiert nach Zuständigkeit, Kategorie und Stadtteil
    */
-  public List<Object[]> getAnzahlOffeneVorgaengeBis(Date date) {
+  public List<Object[]> getAnzahlOffeneVorgaengeBis(EnumVorgangTyp typ, Date date) {
     Calendar c = Calendar.getInstance();
     c.setTime(date);
     // +1 Tag
@@ -125,7 +126,7 @@ public class StatistikDao {
       + "      kverl_last.datum < '" + sdf.format(c.getTime()) + "' order by vorgang, datum desc "
       + "  ) and "
       + "  (kverl.typ = 'erzeugt' or (kverl.typ = 'status' and kverl.wert_neu NOT IN ('abgeschlossen', 'Duplikat', 'wird nicht bearbeitet', 'gelöscht'))) "
-      + "  and kvorg.status NOT IN ('geloescht') "
+      + "  and kvorg.typ = '" + typ + "' and kvorg.status NOT IN ('duplikat', 'geloescht', 'wirdNichtBearbeitet') "
       + "group by kvorg.zustaendigkeit, kk.id, kk.parent, kk.name, ksg.id, ksg.name order by kvorg.zustaendigkeit, kk.name");
     return q.getResultList();
   }

@@ -26,9 +26,6 @@ import org.springframework.core.io.Resource;
 
 public class StatistikKumulativ extends StatistikCommon {
 
-  int[] hauptkategorieIds = {1, 18, 35, 54, 66, 87, 111};
-  int[] kategorieIds = {52, 53};
-
   public StatistikKumulativ(GrenzenDao grenzenDao, KategorieDao kategorieDao, StatistikDao statistikDao, SecurityService securityService, VorgangDao vorgangDao, SettingsService settingsService) {
     this.grenzenDao = grenzenDao;
     this.kategorieDao = kategorieDao;
@@ -82,29 +79,23 @@ public class StatistikKumulativ extends StatistikCommon {
     boolean next_department = true;
     int department_count = 1;
     while (next_department) {
+      List<Kategorie> kategorien = new ArrayList<Kategorie>();
       String department_name = settingsService.getPropertyValue("statistic.department." + department_count + ".name");
-      String department_categories_main = settingsService.getPropertyValue("statistic.department." + department_count + ".categories.main");
-      String department_categories_sub = settingsService.getPropertyValue("statistic.department." + department_count + ".categories.sub");
+      String categories = settingsService.getPropertyValue("statistic.department." + department_count + ".categories");
       if (department_name == null) {
         next_department = false;
         break;
       }
       department_count++;
-
-      String categories = "";
-      if (department_categories_main != null) {
-        categories = department_categories_main;
-      }
-      if (department_categories_sub != null) {
-        if (categories.length() == 0) {
-          categories = department_categories_sub;
-        } else {
-          categories += "," + department_categories_sub;
+      if (categories != null && categories.length() > 0) {
+        for (String split : categories.split(",")) {
+          Kategorie kategorie = kategorieDao.findKategorie(Long.valueOf(split));
+          
+          if(kategorie.getTyp() == cmd.getTyp() || 
+            (kategorie.getTyp() == null && kategorie.getParent() != null && kategorie.getParent().getTyp() == cmd.getTyp())) {
+            kategorien.add(kategorie);
+          }
         }
-      }
-      int categories_count = 0;
-      if (categories.length() > 0) {
-        categories_count = categories.split(",").length;
       }
 
       HashMap values = (HashMap) daten.get(department_name);
@@ -117,15 +108,15 @@ public class StatistikKumulativ extends StatistikCommon {
       cell = new_row_department_name.getCell(0);
       cell.setCellValue(department_name);
       new_row_department_name = setDefaultRowFormulas(new_row_department_name, (rowCountKategorien + 2));
-      if (categories_count > 0) {
+      if (kategorien.size() > 0) {
         cell = new_row_department_name.getCell(3);
-        cell.setCellFormula("SUM(D" + (current_row + 2) + ":D" + (current_row + 2 + categories_count) + ")");
+        cell.setCellFormula("SUM(D" + (current_row + 2) + ":D" + (current_row + 2 + kategorien.size()) + ")");
         cell = new_row_department_name.getCell(4);
-        cell.setCellFormula("SUM(E" + (current_row + 2) + ":E" + (current_row + 2 + categories_count) + ")");
+        cell.setCellFormula("SUM(E" + (current_row + 2) + ":E" + (current_row + 2 + kategorien.size()) + ")");
         cell = new_row_department_name.getCell(5);
-        cell.setCellFormula("SUM(F" + (current_row + 2) + ":F" + (current_row + 2 + categories_count) + ")");
+        cell.setCellFormula("SUM(F" + (current_row + 2) + ":F" + (current_row + 2 + kategorien.size()) + ")");
         cell = new_row_department_name.getCell(7);
-        cell.setCellFormula("SUM(H" + (current_row + 2) + ":H" + (current_row + 2 + categories_count) + ")");
+        cell.setCellFormula("SUM(H" + (current_row + 2) + ":H" + (current_row + 2 + kategorien.size()) + ")");
       } else {
         setCellMergedValue(new_row_department_name, 3, "gesamt", values);
         setCellMergedValue(new_row_department_name, 5, "abgeschlossen", values);
@@ -133,20 +124,15 @@ public class StatistikKumulativ extends StatistikCommon {
       }
       current_row++;
 
-      if (categories_count > 0) {
+      if (kategorien.size() > 0) {
         List<Long> kategorieIds = new ArrayList<Long>();
-        for (String category : categories.split(",")) {
-          if (category.length() == 0) {
-            continue;
-          }
-          Long kategorieId = Long.parseLong(category);
-          if (!kategorieIds.contains(kategorieId)) {
-            kategorieIds.add(kategorieId);
+        for (Kategorie kategorie : kategorien) {
+          if (!kategorieIds.contains(kategorie.getId())) {
+            kategorieIds.add(kategorie.getId());
           }
           Row new_row_department_category = copyRow(tmpl_row_department_kategory, sheet, current_row);
           new_row_department_category = setDefaultRowFormulas(new_row_department_category, (rowCountKategorien + 2));
 
-          Kategorie kategorie = kategorieDao.findKategorie(kategorieId);
           cell = new_row_department_category.getCell(0);
           cell.setCellValue(kategorie.getName());
 
@@ -236,16 +222,13 @@ public class StatistikKumulativ extends StatistikCommon {
   }
 
   private HashMap getData(StatistikCommand cmd) throws ParseException {
-
-    List<Long> hauptkategorieIds = new ArrayList<Long>();
-    List<Long> unterkategorieIds = new ArrayList<Long>();
+    List<Long> kategorieIds = new ArrayList<Long>();
 
     boolean next_department = true;
     int department_count = 1;
     while (next_department) {
       String department_name = settingsService.getPropertyValue("statistic.department." + department_count + ".name");
-      String department_categories_main = settingsService.getPropertyValue("statistic.department." + department_count + ".categories.main");
-      String department_categories_sub = settingsService.getPropertyValue("statistic.department." + department_count + ".categories.sub");
+      String department_categories = settingsService.getPropertyValue("statistic.department." + department_count + ".categories");
       if (department_name == null) {
         next_department = false;
         break;
@@ -253,21 +236,11 @@ public class StatistikKumulativ extends StatistikCommon {
 
       rowCountKategorien += 3;
       boolean hatKategorien = false;
-      if (department_categories_main != null && department_categories_main.length() > 0) {
-        for (String cat : department_categories_main.split(",")) {
+      if (department_categories != null && department_categories.length() > 0) {
+        for (String cat : department_categories.split(",")) {
           Long l = Long.parseLong(cat);
-          if (!hauptkategorieIds.contains(l)) {
-            hauptkategorieIds.add(l);
-            rowCountKategorien++;
-            hatKategorien = true;
-          }
-        }
-      }
-      if (department_categories_sub != null && department_categories_sub.length() > 0) {
-        for (String cat : department_categories_sub.split(",")) {
-          Long l = Long.parseLong(cat);
-          if (!unterkategorieIds.contains(l)) {
-            unterkategorieIds.add(l);
+          if (!kategorieIds.contains(l)) {
+            kategorieIds.add(l);
             rowCountKategorien++;
             hatKategorien = true;
           }
@@ -288,13 +261,13 @@ public class StatistikKumulativ extends StatistikCommon {
     cZeitraumVon.setTime(cmd.getZeitraumVon());
     cZeitraumVon.add(Calendar.DATE, -1);
 
-    List<Object[]> gesamtKategorien = statistikDao.getAnzahlErzeugteVorgaengeInZeitraum(cmd.getZeitraumVon(), cmd.getZeitraumBis());
+    List<Object[]> gesamtKategorien = statistikDao.getAnzahlErzeugteVorgaengeInZeitraum(cmd.getTyp(), cmd.getZeitraumVon(), cmd.getZeitraumBis());
     zusammenfassung = mergeResults(zusammenfassung, "gesamt", gesamtKategorien);
 
-    List<Object[]> abgeschlossenKategorien = statistikDao.getAnzahlAbgeschlosseneVorgaengeInZeitraum(cmd.getZeitraumVon(), cmd.getZeitraumBis());
+    List<Object[]> abgeschlossenKategorien = statistikDao.getAnzahlAbgeschlosseneVorgaengeInZeitraum(cmd.getTyp(), cmd.getZeitraumVon(), cmd.getZeitraumBis());
     zusammenfassung = mergeResults(zusammenfassung, "abgeschlossen", abgeschlossenKategorien);
 
-    List<Object[]> weiterhinOffenKategorien = statistikDao.getAnzahlOffeneVorgaengeBis(cmd.getZeitraumBis());
+    List<Object[]> weiterhinOffenKategorien = statistikDao.getAnzahlOffeneVorgaengeBis(cmd.getTyp(), cmd.getZeitraumBis());
     zusammenfassung = mergeResults(zusammenfassung, "weiterhinOffen", weiterhinOffenKategorien);
     
 

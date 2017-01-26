@@ -8,8 +8,10 @@ import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
 import de.fraunhofer.igd.klarschiff.service.settings.SettingsService;
 import de.fraunhofer.igd.klarschiff.statistik.StatistikKumulativ;
 import de.fraunhofer.igd.klarschiff.statistik.StatistikZeitraum;
+import de.fraunhofer.igd.klarschiff.vo.EnumVorgangTyp;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
@@ -67,6 +69,7 @@ public class StatistikController {
       cmd.setZeitraumBis(new Date());
     }
     model.addAttribute("cmd", cmd);
+    model.addAttribute("vorgangtypen", Arrays.asList(EnumVorgangTyp.values()));
 
     return "statistik/kumulativ";
   }
@@ -81,7 +84,7 @@ public class StatistikController {
         SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
         cmd.setZeitraumVon(sdf.parse(settingsService.getPropertyValue("startDatum")));
       }
-      if (cmd.getZeitraumBis() == null) {
+      if (cmd.getTyp() == null || cmd.getZeitraumBis() == null) {
         return "redirect:/statistik/kumulativ";
       }
 
@@ -123,6 +126,8 @@ public class StatistikController {
     cmd.setZeitraumBis(cal.getTime());
 
     model.addAttribute("cmd", cmd);
+    model.addAttribute("vorgangtypen", Arrays.asList(EnumVorgangTyp.values()));
+    
     return "statistik/zeitraum";
   }
 
@@ -132,7 +137,7 @@ public class StatistikController {
       cmd.setType("zeitraum");
       model.addAttribute("cmd", cmd);
 
-      if (cmd.getZeitraumVon() == null || cmd.getZeitraumBis() == null) {
+      if (cmd.getTyp() == null || cmd.getZeitraumVon() == null || cmd.getZeitraumBis() == null) {
         return "redirect:/statistik/zeitraum";
       }
 

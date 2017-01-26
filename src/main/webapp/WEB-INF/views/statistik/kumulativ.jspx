@@ -40,6 +40,17 @@
         <div class="fieldsettitle">Kumulative Statistik vom Start des Klarschiff bis zum Stichtag</div>
 
         <div>
+          <form:label path="typ">Typ</form:label>
+          <form:select path="typ" id="typ">
+            <form:option value="" label="Typ wählen" cssClass="info"/>
+            <c:forEach items="${vorgangtypen}" var="vorgangtyp">
+              <c:url value="/images/${vorgangtyp}_15.png" var="url"/>
+              <form:option value="${vorgangtyp}" label="${vorgangtyp.text}" cssStyle="background-image:url(${url});" cssClass="suffixiconsmall"/>
+            </c:forEach>
+          </form:select>
+        </div>
+
+        <div>
           <form:label path="zeitraumBis">Datum</form:label>
           <form:input path="zeitraumBis" id="zeitraumBis" cssStyle="width:80px;" cssClass="inputtext"/>
           <script>

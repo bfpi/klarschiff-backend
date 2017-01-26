@@ -40,6 +40,17 @@
         <div class="fieldsettitle">Statistik für einen Zeitraum</div>
 
         <div>
+          <form:label path="typ">Typ</form:label>
+          <form:select path="typ" id="typ">
+            <form:option value="" label="Typ wählen" cssClass="info"/>
+            <c:forEach items="${vorgangtypen}" var="vorgangtyp">
+              <c:url value="/images/${vorgangtyp}_15.png" var="url"/>
+              <form:option value="${vorgangtyp}" label="${vorgangtyp.text}" cssStyle="background-image:url(${url});" cssClass="suffixiconsmall"/>
+            </c:forEach>
+          </form:select>
+        </div>
+        
+        <div>
           <form:label path="zeitraumVon">Zeitraum</form:label>
           <form:input path="zeitraumVon" id="zeitraumVon" cssStyle="width:80px;" cssClass="inputtext"/>
           <span class="label" style="padding-left:5px; padding-right:5px;">–</span>

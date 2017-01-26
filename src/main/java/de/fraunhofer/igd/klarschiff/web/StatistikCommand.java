@@ -1,5 +1,6 @@
 package de.fraunhofer.igd.klarschiff.web;
 
+import de.fraunhofer.igd.klarschiff.vo.EnumVorgangTyp;
 import java.util.Date;
 
 /**
@@ -11,6 +12,7 @@ import java.util.Date;
 public class StatistikCommand extends Command {
 
   String type;
+  EnumVorgangTyp typ;
   Date zeitraumVon;
   Date zeitraumBis;
 
@@ -20,6 +22,14 @@ public class StatistikCommand extends Command {
 
   public void setType(String type) {
     this.type = type;
+  }
+
+  public EnumVorgangTyp getTyp() {
+    return typ;
+  }
+
+  public void setTyp(EnumVorgangTyp typ) {
+    this.typ = typ;
   }
 
   public Date getZeitraumVon() {
