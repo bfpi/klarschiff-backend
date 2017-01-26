@@ -60,6 +60,7 @@ public class StatistikZeitraum extends StatistikCommon {
     ueberschrift = ueberschrift.replace("#von#", sdf.format(c.getTime()));
     c.setTime(cmd.getZeitraumBis());
     ueberschrift = ueberschrift.replace("#bis#", sdf.format(c.getTime()));
+    ueberschrift = ueberschrift.replace("#typ#", cmd.getTyp().getText());
     ueberschrift = ueberschrift.replace("#vorgang#", vorgangDao.getLastVorgangBefore(cmd.getZeitraumBis()).getId().toString());
     cell.setCellValue(ueberschrift);
 
@@ -183,6 +184,7 @@ public class StatistikZeitraum extends StatistikCommon {
     ueberschrift = ueberschrift.replace("#von#", sdf.format(c.getTime()));
     c.setTime(cmd.getZeitraumBis());
     ueberschrift = ueberschrift.replace("#bis#", sdf.format(c.getTime()));
+    ueberschrift = ueberschrift.replace("#typ#", cmd.getTyp().getText());
     ueberschrift = ueberschrift.replace("#vorgang#", vorgangDao.getLastVorgangBefore(cmd.getZeitraumBis()).getId().toString());
     cell.setCellValue(ueberschrift);
 
