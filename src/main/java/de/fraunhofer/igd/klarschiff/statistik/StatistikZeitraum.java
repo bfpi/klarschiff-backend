@@ -3,6 +3,7 @@ package de.fraunhofer.igd.klarschiff.statistik;
 import de.fraunhofer.igd.klarschiff.dao.GrenzenDao;
 import de.fraunhofer.igd.klarschiff.dao.KategorieDao;
 import de.fraunhofer.igd.klarschiff.dao.StatistikDao;
+import de.fraunhofer.igd.klarschiff.dao.VorgangDao;
 import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
 import de.fraunhofer.igd.klarschiff.service.settings.SettingsService;
 import de.fraunhofer.igd.klarschiff.vo.Kategorie;
@@ -24,11 +25,12 @@ import org.springframework.core.io.Resource;
 
 public class StatistikZeitraum extends StatistikCommon {
 
-  public StatistikZeitraum(GrenzenDao grenzenDao, KategorieDao kategorieDao, StatistikDao statistikDao, SecurityService securityService, SettingsService settingsService) {
+  public StatistikZeitraum(GrenzenDao grenzenDao, KategorieDao kategorieDao, StatistikDao statistikDao, SecurityService securityService, VorgangDao vorgangDao, SettingsService settingsService) {
     this.grenzenDao = grenzenDao;
     this.kategorieDao = kategorieDao;
     this.statistikDao = statistikDao;
     this.securityService = securityService;
+    this.vorgangDao = vorgangDao;
     this.settingsService = settingsService;
   }
 
@@ -58,6 +60,7 @@ public class StatistikZeitraum extends StatistikCommon {
     ueberschrift = ueberschrift.replace("#von#", sdf.format(c.getTime()));
     c.setTime(cmd.getZeitraumBis());
     ueberschrift = ueberschrift.replace("#bis#", sdf.format(c.getTime()));
+    ueberschrift = ueberschrift.replace("#vorgang#", vorgangDao.getLastVorgangBefore(cmd.getZeitraumBis()).getId().toString());
     cell.setCellValue(ueberschrift);
 
     Row tmpl_row_department_begin = sheet.getRow(4);
@@ -191,6 +194,7 @@ public class StatistikZeitraum extends StatistikCommon {
     ueberschrift = ueberschrift.replace("#von#", sdf.format(c.getTime()));
     c.setTime(cmd.getZeitraumBis());
     ueberschrift = ueberschrift.replace("#bis#", sdf.format(c.getTime()));
+    ueberschrift = ueberschrift.replace("#vorgang#", vorgangDao.getLastVorgangBefore(cmd.getZeitraumBis()).getId().toString());
     cell.setCellValue(ueberschrift);
 
     Row tmpl_row_stadtteil_name = sheet.getRow(5);

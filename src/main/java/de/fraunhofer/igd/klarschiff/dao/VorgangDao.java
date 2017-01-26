@@ -36,6 +36,7 @@ import de.fraunhofer.igd.klarschiff.web.VorgangFeedCommand;
 import de.fraunhofer.igd.klarschiff.web.VorgangFeedDelegiertAnCommand;
 import de.fraunhofer.igd.klarschiff.web.VorgangSuchenCommand;
 import java.math.BigInteger;
+import java.text.SimpleDateFormat;
 import java.util.Objects;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.hibernate.SQLQuery;
@@ -1255,7 +1256,6 @@ public class VorgangDao {
     return query.getResultList(em);
   }
   
-
   /**
    * Holt den zuletzt angelegten Vorgang
    *
@@ -1265,6 +1265,25 @@ public class VorgangDao {
   public Vorgang getLastVorgang() {
     HqlQueryHelper query = (new HqlQueryHelper()).addSelectAttribute("vo")
       .addFromTables("Vorgang vo")
+      .orderBy("vo.id desc").maxResults(1);
+    return (Vorgang) query.getResultList(em).get(0);
+  }
+  
+  /**
+   * Holt den zuletzt angelegten Vorgang vor dem angegebenen Datum
+   *
+   * @param vorgang Vorgang
+   * @return Stadtteilgrenze
+   */
+  public Vorgang getLastVorgangBefore(Date datum) {
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+    Calendar cDatum = Calendar.getInstance();
+    cDatum.setTime(datum);
+    cDatum.add(Calendar.DATE, 1);
+    
+    HqlQueryHelper query = (new HqlQueryHelper()).addSelectAttribute("vo")
+      .addFromTables("Vorgang vo")
+      .addWhereConditions("vo.datum < '" + sdf.format(cDatum.getTime()) + "'")
       .orderBy("vo.id desc").maxResults(1);
     return (Vorgang) query.getResultList(em).get(0);
   }

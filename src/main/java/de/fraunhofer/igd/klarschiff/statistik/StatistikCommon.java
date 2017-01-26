@@ -69,6 +69,7 @@ public class StatistikCommon {
 
           int tmpAnzStadtteil = 0;
           String stadtteilKey = "stadtteil_" + prefix + stadtteilId;
+          System.out.println("stadtteilKey: " + stadtteilKey);
           if (zusammenfassung.containsKey(stadtteilKey)) {
             tmpAnzStadtteil = Integer.parseInt(zusammenfassung.get(stadtteilKey).toString());
           }

@@ -136,7 +136,7 @@ public class StatistikController {
         return "redirect:/statistik/zeitraum";
       }
 
-      StatistikZeitraum sz = new StatistikZeitraum(grenzenDao, kategorieDao, statistikDao, securityService, settingsService);
+      StatistikZeitraum sz = new StatistikZeitraum(grenzenDao, kategorieDao, statistikDao, securityService, vorgangDao, settingsService);
       HSSFWorkbook workbook = sz.createStatistik(cmd);
 
       response.setHeader("Content-Type", "application/ms-excel");

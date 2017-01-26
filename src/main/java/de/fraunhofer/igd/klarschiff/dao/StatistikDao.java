@@ -70,7 +70,7 @@ public class StatistikDao {
       + "      kverl_last.datum between '" + sdf.format(cVon.getTime()) + "' and '" + sdf.format(cBis.getTime()) + "' order by vorgang, datum desc "
       + "  ) and "
       + "  (kverl.typ = 'erzeugt' or (kverl.typ = 'status' and kverl.wert_neu NOT IN ('gelöscht'))) "
-      + "  and kvorg.status NOT IN ('geloescht') "
+      + "  and kvorg.status NOT IN ('duplikat', 'geloescht', 'wirdNichtBearbeitet') "
       + "group by kvorg.zustaendigkeit, kk.id, kk.parent, kk.name, ksg.id, ksg.name order by kvorg.zustaendigkeit, kk.name")
       .getResultList();
   }
@@ -125,32 +125,6 @@ public class StatistikDao {
       + "      kverl_last.datum < '" + sdf.format(c.getTime()) + "' order by vorgang, datum desc "
       + "  ) and "
       + "  (kverl.typ = 'erzeugt' or (kverl.typ = 'status' and kverl.wert_neu NOT IN ('abgeschlossen', 'Duplikat', 'wird nicht bearbeitet', 'gelöscht'))) "
-      + "  and kvorg.status NOT IN ('geloescht') "
-      + "group by kvorg.zustaendigkeit, kk.id, kk.parent, kk.name, ksg.id, ksg.name order by kvorg.zustaendigkeit, kk.name");
-    return q.getResultList();
-  }
-
-  /*
-   * Holt die Anzahl der Vorgänge eingeschränkt auf den übergebenen Status und die übergebenen Hauptkategorie-IDS
-   * gruppiert nach Zuständigkeit, Hauptkategorie und Stadtteil
-   */
-  public List<Object[]> getAnzahlVorgaengeNachStatusInZeitraum(EnumVorgangStatus status, Date von, Date bis) {
-    Calendar cVon = Calendar.getInstance();
-    cVon.setTime(von);
-
-    Calendar cBis = Calendar.getInstance();
-    cBis.setTime(bis);
-    cBis.add(Calendar.DATE, 1);
-
-    Query q = entityManager.createNativeQuery("select count(kvorg.id), kvorg.zustaendigkeit, kk.id, kk.parent, kk.name, ksg.id stadtteil, ksg.name from klarschiff_verlauf kverl "
-      + "  left join klarschiff_vorgang kvorg on kverl.vorgang = kvorg.id "
-      + "  left join klarschiff_stadtteil_grenze ksg on ST_Within(kvorg.ovi, ksg.grenze) "
-      + "  inner join klarschiff_kategorie kk on kk.id = kvorg.kategorie "
-      + "where "
-      + "  kverl.id in ( "
-      + "    select distinct on (vorgang) id from klarschiff_verlauf kverl_last where typ = 'status' and "
-      + "      datum between '" + sdf.format(cVon.getTime()) + "' and '" + sdf.format(cBis.getTime()) + "' order by kverl_last.vorgang, kverl_last.datum desc "
-      + "  ) and kverl.typ = 'status' and kverl.wert_neu = '" + status.getText() + "' "
       + "  and kvorg.status NOT IN ('geloescht') "
       + "group by kvorg.zustaendigkeit, kk.id, kk.parent, kk.name, ksg.id, ksg.name order by kvorg.zustaendigkeit, kk.name");
     return q.getResultList();
