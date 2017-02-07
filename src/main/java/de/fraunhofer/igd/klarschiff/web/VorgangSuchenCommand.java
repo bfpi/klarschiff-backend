@@ -368,7 +368,7 @@ public class VorgangSuchenCommand extends Command {
   public void setJustTimes(Boolean justTimes) {
     this.justTimes = justTimes;
   }
-  
+
   public Boolean getShowTips() {
     return showTips;
   }
