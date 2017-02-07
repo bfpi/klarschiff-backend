@@ -1249,10 +1249,17 @@ public class BackendController {
   @RequestMapping(value = "/unterkategorien", method = RequestMethod.GET)
   @ResponseBody
   public void unterkategorien(
+    @RequestParam(value = "authCode", required = false) String authCode,
     HttpServletResponse response) throws IOException {
 
     try {
-      List<Kategorie> kategorien = kategorieDao.getKategorien();
+      List<Kategorie> kategorien;
+      if (authCode != null && authCode.equals(settingsService.getPropertyValue("auth.kod_code"))) {
+        kategorien = kategorieDao.getKategorien();
+      } else {
+        kategorien = kategorieDao.getKategorien(false);
+      }
+
       sendOk(response, mapper.writeValueAsString(kategorien));
     } catch (Exception ex) {
       java.util.logging.Logger.getLogger(BackendController.class.getName()).log(Level.SEVERE, null, ex);
