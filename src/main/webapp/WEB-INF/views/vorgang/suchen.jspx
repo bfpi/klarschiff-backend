@@ -140,16 +140,21 @@
 						</tr>
  						<tr>
 							<td valign="top">
-								<sec:authorize access="hasRole('ROLE_ADMIN')">		
 									<div>
 										<form:label path="erweitertZustaendigkeit">Zuständigkeit</form:label>
 										<form:select path="erweitertZustaendigkeit">
-							            	<form:option value="" label="alle Zuständigkeiten" cssClass="info"/>
-							            	<form:option value="#mir zugewiesen#" label="mir zugewiesen"/>
-							            	<role:options roles="${allZustaendigkeiten}" role="${cmdvorgangsuchen.erweitertZustaendigkeit}"/>
+											<sec:authorize access="hasRole('ROLE_ADMIN')">
+												<form:option value="" label="alle Zuständigkeiten" cssClass="info"/>
+											</sec:authorize>
+											<form:option value="#mir zugewiesen#" label="mir zugewiesen"/>
+											<sec:authorize access="hasRole('ROLE_ADMIN')">
+												<role:options roles="${allZustaendigkeiten}" role="${cmdvorgangsuchen.erweitertZustaendigkeit}"/>
+											</sec:authorize>
+											<sec:authorize access="!hasRole('ROLE_ADMIN')">
+												<role:options roles="${currentZustaendigkeiten}" role="${cmdvorgangsuchen.erweitertZustaendigkeit}"/>
+											</sec:authorize>
 										</form:select>
 									</div>
-								</sec:authorize>
 								
 								<div> 
 									<form:label path="erweitertDelegiertAn">delegiert an</form:label>
@@ -374,11 +379,10 @@
 						            	</c:forEach>
 									</form:select>
 								</div>
-							</td>
-						</tr>
-						<tr>
-							<td colspan="2" align="right">
-								<input type="submit" value="Suchen"/>
+
+								<div style="padding-top: 20px; text-align: right;">
+									<input type="submit" value="Suchen"/>
+								</div>
 							</td>
 						</tr>
 					</table>
@@ -565,7 +569,7 @@
 					<td><img alt="gemeldet" src="${url}status_gemeldet_15.png" height="15" width="15"  title="Status: gemeldet"/></td>
 					<td style="vertical-align:top;">gemeldet</td>
 					<td width="20px"></td>
-					<td width="15"><div class="missbrauchsmeldungLegende" style="height:15px; p_adding:4px;"></div></td>
+					<td width="15"><div class="missbrauchsmeldungLegende" style="height:15px"></div></td>
 					<td style="vertical-align:top;"  title="Status: Missbrauch gemeldet">Missbrauch gemeldet</td>
 				</tr>
 				<tr>
@@ -579,14 +583,16 @@
 					<td style="vertical-align:top;"  title="archiviert">archiviert</td>
 				</tr>
 				<tr>
-					<td colspan="3"></td>
+					<td><img alt="Tipp" src="${url}tipp_15.png" height="15" width="15" title="Typ: Tipp"/></td>
+					<td style="vertical-align:top;">Tipp</td>
+					<td></td>
 					<td><img alt="in Bearbeitung" src="${url}status_inBearbeitung_15.png" height="15" width="15" title="Status: in Bearbeitung"/></td>
 					<td style="vertical-align:top;">in Bearbeitung</td>
 				</tr>
 				<tr>
 					<td colspan="3"></td>
 					<td><img alt="nicht lösbar/Duplikat" src="${url}status_nichtLoesbar_15.png" height="15" width="15"  title="Status: nicht lösbar/Duplikat"/></td>
-					<td style="vertical-align:top;">nicht lösbar / Duplikat</td>
+					<td style="vertical-align:top;">nicht lösbar bzw. Duplikat</td>
 				</tr>
 				<tr>
 					<td colspan="3"></td>

@@ -39,13 +39,13 @@
                 Telefon: +49 381 381-6221<br/>					
                 E-Mail: <a href="mailto:matthias.meisser@rostock.de">matthias.meisser@rostock.de</a><br/>
                 <br/>
-                Sebastian Schwarz<br/>
+                Sebastian Gutzeit<br/>
                 Hansestadt Rostock<br/>
                 Kataster-, Vermessungs- und Liegenschaftsamt<br/>
                 Holbeinplatz 14<br/>					
                 18069 Rostock<br/>					
                 Telefon: +49 381 381-6256<br/>					
-                E-Mail: <a href="mailto:sebastian.schwarz@rostock.de">sebastian.schwarz@rostock.de</a>
+                E-Mail: <a href="mailto:sebastian.gutzeit@rostock.de">sebastian.gutzeit@rostock.de</a>
             </div>
         </c:otherwise>
     </c:choose>

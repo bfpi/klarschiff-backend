@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 /**
  * VO für die Redaktionskriterien
  *
- * @author Sebastian Schwarz (Hansestadt Rostock)
+ * @author Sebastian Gutzeit (Hansestadt Rostock)
  */
 @SuppressWarnings("serial")
 @Entity
