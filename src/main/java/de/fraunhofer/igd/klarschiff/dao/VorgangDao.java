@@ -24,6 +24,7 @@ import de.fraunhofer.igd.klarschiff.vo.EnumVerlaufTyp;
 import de.fraunhofer.igd.klarschiff.vo.EnumVorgangStatus;
 import de.fraunhofer.igd.klarschiff.vo.EnumVorgangTyp;
 import de.fraunhofer.igd.klarschiff.vo.EnumZustaendigkeitStatus;
+import de.fraunhofer.igd.klarschiff.vo.Kategorie;
 import de.fraunhofer.igd.klarschiff.vo.Missbrauchsmeldung;
 import de.fraunhofer.igd.klarschiff.vo.StatusKommentarVorlage;
 import de.fraunhofer.igd.klarschiff.vo.Unterstuetzer;
@@ -49,6 +50,10 @@ import org.hibernate.type.StandardBasicTypes;
  */
 @Repository
 public class VorgangDao {
+  final static String CLASSIFIER_TRAIN_QUERY = "FROM Vorgang a, Vorgang b " +
+    " WHERE a.kategorie = b.kategorie AND a.version <= b.version AND " +
+    " a.zustaendigkeitStatus = 'akzeptiert' AND b.zustaendigkeitStatus = 'akzeptiert' " +
+    "GROUP BY a.id HAVING count(*) <= 10)";
 
   @PersistenceContext
   EntityManager em;
@@ -1036,7 +1041,7 @@ public class VorgangDao {
    */
   @SuppressWarnings("unchecked")
   public List<Vorgang> findVorgangForTrainClassificator(int maxResults) {
-    return em.createQuery("SELECT a FROM Vorgang a, Vorgang b WHERE a.kategorie = b.kategorie AND a.version <= b.version AND a.zustaendigkeitStatus = 'akzeptiert' AND b.zustaendigkeitStatus = 'akzeptiert' GROUP BY a.id HAVING count(*) <= 10", Vorgang.class).setMaxResults(maxResults).getResultList();
+    return em.createQuery("SELECT a " + CLASSIFIER_TRAIN_QUERY, Vorgang.class).setMaxResults(maxResults).getResultList();
   }
 
   /**

@@ -90,14 +90,12 @@ public class ClassificationService {
       instance.setDataset(ctx.getDataset());
       instances.add(instance);
     }
-    if (vorgaenge.size() < maxCountForClassifiereTrainSet) {
-      //initiale Zuständigkeit bei den Kategorien hinzufügen
-      for (Kategorie kategorie : kategorieDao.getKategorien()) {
-        for (Instance instance : featureService.createFeature(kategorie, true, ctx)) {
-          logger.debug("----Classification featureService.createFeature kategorie (" + kategorie.getName() + ")");
-          instance.setDataset(ctx.getDataset());
-          instances.add(instance);
-        }
+    //initiale Zuständigkeit bei den Kategorien hinzufügen
+    for (Kategorie kategorie : kategorieDao.findKategorienWithUntrainedVorgaengeForTrainClassificator()) {
+      for (Instance instance : featureService.createFeature(kategorie, true, ctx)) {
+        logger.debug("----Classification featureService.createFeature kategorie (" + kategorie.getName() + ")");
+        instance.setDataset(ctx.getDataset());
+        instances.add(instance);
       }
     }
     return instances;
