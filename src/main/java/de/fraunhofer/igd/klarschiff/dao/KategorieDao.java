@@ -59,4 +59,15 @@ public class KategorieDao {
 
     return entityManager.createQuery(sql.toString(), Kategorie.class).getResultList();
   }
+
+  /**
+   * Ermittelt die Kategorien, die keine Vorgänge haben, um den Zuständigkeitsfinder zu trainieren
+   *
+   * @return Kategorien
+   */
+  @SuppressWarnings("unchecked")
+  public List<Kategorie> findKategorienWithUntrainedVorgaengeForTrainClassificator() {
+    return entityManager.createQuery("SELECT k FROM Kategorie k WHERE id NOT IN ("+
+      "SELECT a.kategorie " + VorgangDao.CLASSIFIER_TRAIN_QUERY  + ")", Kategorie.class).getResultList();
+  }
 }
