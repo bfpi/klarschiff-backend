@@ -9,6 +9,7 @@ import javax.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
 
 import de.fraunhofer.igd.klarschiff.vo.StadtteilGrenze;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * Die Dao-Klasse erlaubt den Zugriff auf die Stadtteilgrenzen in der DB.
@@ -29,6 +30,28 @@ public class GrenzenDao {
   @SuppressWarnings("unchecked")
   public List<Object[]> findStadtteilGrenzen() {
     return entityManager.createQuery("SELECT o.id, o.name FROM StadtteilGrenze o ORDER BY o.name").getResultList();
+  }
+
+  /**
+   * Ermittelt alle Stadtteile mit ihren Grenzen
+   *
+   * @return Liste mit Stadtteilgrenzen
+   */
+  @SuppressWarnings("unchecked")
+  public List<StadtteilGrenze> findStadtteilGrenzenWithGrenze() {
+    return entityManager.createQuery("SELECT o FROM StadtteilGrenze o ORDER BY o.name").getResultList();
+  }
+  
+  /**
+   * Liefert das Multipolygon der angegebenen Staddteilgrenzen als WKT
+   * @param ids
+   * @return Stadtteilgrenzen als WKT
+   */
+  @SuppressWarnings("unchecked")
+  public Object getGeometrieFromStadtteilGrenzenAsWkt(String ids) {
+    String sql = "SELECT ST_asText(ST_Multi(ST_MemUnion((grenze)))) FROM klarschiff_stadtteil_grenze";
+    sql += " WHERE id IN (" + ids + ")";
+    return entityManager.createNativeQuery(sql).getSingleResult();
   }
 
   /**

@@ -2,6 +2,8 @@ package de.fraunhofer.igd.klarschiff.web;
 
 import de.fraunhofer.igd.klarschiff.dao.AuftragDao;
 import de.fraunhofer.igd.klarschiff.dao.GrenzenDao;
+import java.math.BigInteger;
+import java.security.*;
 import java.util.Date;
 import java.util.List;
 
@@ -24,6 +26,8 @@ import de.fraunhofer.igd.klarschiff.dao.KommentarDao;
 import de.fraunhofer.igd.klarschiff.dao.RedaktionEmpfaengerDao;
 import de.fraunhofer.igd.klarschiff.dao.VerlaufDao;
 import de.fraunhofer.igd.klarschiff.dao.VorgangDao;
+import de.fraunhofer.igd.klarschiff.dao.GeoRssDao;
+import de.fraunhofer.igd.klarschiff.dao.TrashmailDao;
 import de.fraunhofer.igd.klarschiff.service.classification.ClassificationService;
 import de.fraunhofer.igd.klarschiff.service.image.ImageService;
 import de.fraunhofer.igd.klarschiff.service.mail.MailService;
@@ -44,6 +48,9 @@ import de.fraunhofer.igd.klarschiff.vo.Kommentar;
 import de.fraunhofer.igd.klarschiff.vo.LobHinweiseKritik;
 import de.fraunhofer.igd.klarschiff.vo.Missbrauchsmeldung;
 import de.fraunhofer.igd.klarschiff.vo.RedaktionEmpfaenger;
+import de.fraunhofer.igd.klarschiff.vo.StadtGrenze;
+import de.fraunhofer.igd.klarschiff.vo.StadtteilGrenze;
+import de.fraunhofer.igd.klarschiff.vo.Trashmail;
 import de.fraunhofer.igd.klarschiff.vo.Unterstuetzer;
 import de.fraunhofer.igd.klarschiff.vo.Verlauf;
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
@@ -52,7 +59,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 import java.util.logging.Level;
 import org.codehaus.jackson.map.ObjectMapper;
 
@@ -87,6 +96,12 @@ public class BackendController {
 
   @Autowired
   VerlaufDao verlaufDao;
+  
+  @Autowired
+  GeoRssDao geoRssDao;
+  
+  @Autowired 
+  TrashmailDao trashmailDao;
 
   @Autowired
   ClassificationService classificationService;
@@ -165,6 +180,9 @@ public class BackendController {
       if (!isEmail(autorEmail)) {
         throw new BackendControllerException(9, "[autorEmail] nicht korrekt", "Die E-Mail-Adresse ist nicht gültig.");
       }
+      if (isTrashMail(autorEmail)) {
+        throw new BackendControllerException(10, "[autorEmail] nicht erlaubt", "Die Email-Domain ist nicht zulässig.");
+      }
       vorgang.setAutorEmail(autorEmail);
       vorgang.setHash(securityService.createHash(autorEmail + System.currentTimeMillis()));
 
@@ -179,7 +197,7 @@ public class BackendController {
       vorgangParameterUebernehmen(autorEmail, vorgang, typ, kategorie, positionWGS84, oviWkt,
         beschreibung, fotowunsch, bild, false);
 
-      if (vorgang.autorAussendienst()) {
+      if (authCode != null && authCode.equals(settingsService.getPropertyValue("auth.kod_code")) && vorgang.autorAussendienst()) {
         vorgang.setBeschreibungFreigabeStatus(EnumFreigabeStatus.extern);
       }
 
@@ -271,6 +289,9 @@ public class BackendController {
       }
       if (!isEmail(autorEmail)) {
         throw new BackendControllerException(9, "[autorEmail] nicht korrekt", "Die E-Mail-Adresse ist nicht gültig.");
+      }
+      if (isTrashMail(autorEmail)) {
+        throw new BackendControllerException(10, "[autorEmail] nicht erlaubt", "Die Email-Domain ist nicht zulässig.");
       }
 
       Vorgang vorgang = vorgangDao.findVorgang(id);
@@ -454,6 +475,11 @@ public class BackendController {
   private static boolean isEmail(String email) {
     return Assert.matches(email, "^\\S+@\\S+\\.[A-Za-z]{2,6}$");
   }
+  
+  private boolean isTrashMail(String email) {
+    String pattern = email.substring(email.lastIndexOf("@") + 1).toLowerCase();
+    return trashmailDao.findTrashmail(pattern) != null;
+  }
 
   /**
    * Prüft, ob der mitgegebene String kurz genug ist
@@ -560,6 +586,9 @@ public class BackendController {
       }
       if (!isEmail(email)) {
         throw new BackendControllerException(205, "[email] nicht korrekt", "Die E-Mail-Adresse ist nicht gültig.");
+      }
+      if (isTrashMail(email)) {
+        throw new BackendControllerException(10, "[autorEmail] nicht erlaubt", "Die Email-Domain ist nicht zulässig.");
       }
       unterstuetzer.setHash(securityService.createHash(unterstuetzer.getVorgang().getId() + email));
       if (vorgangDao.findUnterstuetzer(unterstuetzer.getHash()) != null) {
@@ -680,6 +709,9 @@ public class BackendController {
       if (!isEmail(email)) {
         throw new BackendControllerException(406, "[email] nicht korrekt", "Die E-Mail-Adresse ist nicht gültig.");
       }
+      if (isTrashMail(email)) {
+        throw new BackendControllerException(10, "[autorEmail] nicht erlaubt", "Die Email-Domain ist nicht zulässig.");
+      }
       missbrauchsmeldung.setAutorEmail(email);
       missbrauchsmeldung.setHash(securityService.createHash(missbrauchsmeldung.getVorgang().getId() + email + System.currentTimeMillis()));
 
@@ -769,7 +801,10 @@ public class BackendController {
       if (!isEmail(autorEmail)) {
         throw new BackendControllerException(5, "[autorEmail] nicht korrekt", "Die E-Mail-Adresse ist nicht gültig.");
       }
-
+      if (isTrashMail(autorEmail)) {
+        throw new BackendControllerException(10, "[autorEmail] nicht erlaubt", "Die Email-Domain ist nicht zulässig.");
+      }
+      
       if (StringUtils.isBlank(text)) {
         throw new BackendControllerException(6, "[text] fehlt", "Es fehlt ein Text für den Kommentar.");
       }
@@ -859,6 +894,9 @@ public class BackendController {
       }
       if (!isEmail(email)) {
         throw new BackendControllerException(406, "[email] nicht korrekt", "Die E-Mail-Adresse ist nicht gültig.");
+      }
+      if (isTrashMail(email)) {
+        throw new BackendControllerException(10, "[autorEmail] nicht erlaubt", "Die Email-Domain ist nicht zulässig.");
       }
       lobHinweiseKritik.setAutorEmail(email);
 
@@ -1026,7 +1064,7 @@ public class BackendController {
   }
 
   /**
-   *
+   * @param stadtteilIds IDs der ausgählten Stadtteile
    * @param oviWkt überwachte Fläche als WKT
    * @param probleme Probleme überwachen?
    * @param problemeKategorien Liste der überwachten Kategorien bei den Problemen
@@ -1037,6 +1075,7 @@ public class BackendController {
   @RequestMapping(value = "/geoRss", method = RequestMethod.POST)
   @ResponseBody
   public void geoRss(
+    @RequestParam(value = "stadtteilIds", required = false) String stadtteilIds,
     @RequestParam(value = "oviWkt", required = false) String oviWkt,
     @RequestParam(value = "probleme", required = false) Boolean probleme,
     @RequestParam(value = "problemeKategorien", required = false) String problemeKategorien,
@@ -1048,7 +1087,15 @@ public class BackendController {
       logger.debug("geoRss oviWkt: " + oviWkt);
       GeoRss geoRss = new GeoRss();
       if (StringUtils.isBlank(oviWkt)) {
-        throw new BackendControllerException(701, "[oviWkt] fehlt", "Die Ortsangaben fehlen");
+        if (StringUtils.isBlank(stadtteilIds)) {
+          throw new BackendControllerException(701, "[oviWkt], [stadtteilIds] fehlt", "Die Ortsangaben fehlen");
+        } else {
+          if (stadtteilIds.equals("-1")) {
+            oviWkt = grenzenDao.getStadtgrenze().getGrenzeWkt();
+          } else {
+            oviWkt = (String) grenzenDao.getGeometrieFromStadtteilGrenzenAsWkt(stadtteilIds);
+          }
+        }
       }
       try {
         geoRss.setOviWkt(oviWkt);
@@ -1068,7 +1115,13 @@ public class BackendController {
 
       vorgangDao.persist(geoRss);
 
-      sendOk(response, geoRss.getId() + "");
+      HashMap result = new HashMap<String, String>();
+      byte[] bytesOfId = geoRss.getId().toString().getBytes("UTF-8");
+      MessageDigest md = MessageDigest.getInstance("MD5");
+      byte[] idDigest = md.digest(bytesOfId);
+      result.put("rss_id", new BigInteger(1, idDigest).toString(16));
+      
+      sendOk(response, mapper.writeValueAsString(result));
     } catch (Exception e) {
       logger.warn(e);
       sendError(response, e);
@@ -1249,10 +1302,22 @@ public class BackendController {
   @RequestMapping(value = "/unterkategorien", method = RequestMethod.GET)
   @ResponseBody
   public void unterkategorien(
+    @RequestParam(value="extensions", required = false) boolean withKategorien,
+    @RequestParam(value = "authCode", required = false) String authCode,
     HttpServletResponse response) throws IOException {
 
     try {
-      List<Kategorie> kategorien = kategorieDao.getKategorien();
+      List<Kategorie> kategorien;
+      if (authCode != null && authCode.equals(settingsService.getPropertyValue("auth.kod_code"))) {
+        kategorien = kategorieDao.getKategorien();
+      } else {
+        if (withKategorien) {
+          kategorien = kategorieDao.getAllKategorien();
+        } else {
+          kategorien = kategorieDao.getKategorien(false);
+        }
+      }
+
       sendOk(response, mapper.writeValueAsString(kategorien));
     } catch (Exception ex) {
       java.util.logging.Logger.getLogger(BackendController.class.getName()).log(Level.SEVERE, null, ex);
@@ -1301,7 +1366,11 @@ public class BackendController {
    * @param negation
    * @param restriction_area
    * @param just_times
+   * @param authCode
    * @param response
+   * @param typ
+   * @param max_requests
+   * @param geoRssHash
    * @throws java.io.IOException
    */
   @RequestMapping(value = "/vorgaenge", method = RequestMethod.GET)
@@ -1319,107 +1388,143 @@ public class BackendController {
     @RequestParam(value = "negation", required = false) String negation,
     @RequestParam(value = "restriction_area", required = false) String restriction_area,
     @RequestParam(value = "just_times", required = false) boolean just_times,
+    @RequestParam(value = "authCode", required = false) String authCode,
+    @RequestParam(value = "typ", required = false) String typ,
+    @RequestParam(value = "max_requests", required = false) Integer max_requests,
+    @RequestParam(value = "geoRssHash", required = false) String geoRssHash,
+    @RequestParam(value = "with_foto", required = false) boolean with_foto,
     HttpServletResponse response) throws IOException {
 
     try {
       List<Vorgang> vorgaenge = new ArrayList<Vorgang>();
       List<HashMap> times = new ArrayList<HashMap>();
 
+      VorgangSuchenCommand cmd = new VorgangSuchenCommand();
+      // Suchtyp aussendienst würde nur Vorgänge mit zustaendigkeit_status = 'akzeptiert' ausgeben
+      cmd.setSuchtyp(VorgangSuchenCommand.Suchtyp.erweitert);
+      if (authCode != null && authCode.equals(settingsService.getPropertyValue("auth.kod_code"))) {
+        cmd.setShowTips(true);
+      } else {
+        cmd.setShowTips(false);
+      }
+      cmd.setErweitertArchiviert(false);
+      // Sortieren nach ID
+      cmd.setOrder(0);
+      cmd.setOrderDirection(0);
+      cmd.setUeberspringeVorgaengeMitMissbrauchsmeldungen(true);
+      cmd.setJustTimes(just_times);
+
       if (id != null) {
-        Vorgang vg = vorgangDao.findVorgang(id);
-        if(just_times) {
+        cmd.setErweitertNummer(id.toString());
+      }
+
+      if (negation != null) {
+        cmd.setNegation(negation);
+      }
+
+      if (restriction_area != null) {
+        cmd.setSuchbereich(restriction_area);
+      }
+
+      if (ids != null && ids.length() > 0) {
+        String[] idStrList = ids.split(",");
+        Long[] data = new Long[idStrList.length];
+        for (int i = 0; i < idStrList.length; i++) {
+          data[i] = Long.valueOf(idStrList[i]);
+        }
+        cmd.setVorgangAuswaehlen(data);
+      }
+
+      if (category_id != null) {
+        Kategorie kat = kategorieDao.findKategorie(category_id);
+        if (kat != null) {
+          if (kat.getParent() == null) {
+            cmd.setErweitertHauptkategorie(kat);
+          } else {
+            cmd.setErweitertKategorie(kat);
+          }
+        }
+      }
+
+      if (status != null) {
+        String[] status_list = status.split(",");
+        EnumVorgangStatus[] evs = new EnumVorgangStatus[status_list.length];
+
+        for (int i = 0; i < status_list.length; i++) {
+          evs[i] = status_list[i].isEmpty() ? null : EnumVorgangStatus.valueOf(status_list[i]);
+        }
+        cmd.setErweitertVorgangStatus(evs);
+      }
+
+      if (typ != null) {
+        String[] typen_list = typ.split(",");
+        EnumVorgangTyp[] evt = new EnumVorgangTyp[typen_list.length];
+        for (int i = 0; i < typen_list.length; i++) {
+          evt[i] = typen_list[i].isEmpty() ? null : EnumVorgangTyp.valueOf(typen_list[i]);
+        }
+        cmd.setErweitertVorgangTypen(evt);
+      }
+
+      if (date_from != null) {
+        cmd.setErweitertDatumVon(getDateFromParam(date_from));
+      }
+      if (date_to != null) {
+        cmd.setErweitertDatumBis(getDateFromParam(date_to));
+      }
+      if (updated_from != null) {
+        cmd.setAktualisiertVon(getDateFromParam(updated_from));
+      }
+      if (updated_to != null) {
+        cmd.setAktualisiertBis(getDateFromParam(updated_to));
+      }
+
+      if (agency_responsible != null) {
+        cmd.setAuftragTeam(agency_responsible);
+        cmd.setAuftragDatum(new Date());
+        cmd.setOrder(8);
+      }
+      
+      if (geoRssHash != null) {
+        GeoRss geoRss = geoRssDao.findGeoRss(geoRssHash);
+        String kategorien = "";
+        if (geoRss.getIdeenKategorien() != null) {
+          kategorien += geoRss.getIdeenKategorien();
+        }
+        if (geoRss.getProblemeKategorien() != null) {
+          kategorien += geoRss.getProblemeKategorien();
+        }
+        cmd.setErweitertHauptKategorieIds(kategorien);
+        cmd.setObservation(geoRss.getOviWkt());
+      }
+      
+      if (max_requests != null) {
+        cmd.setOrder(9);
+        cmd.setSize(max_requests);
+      } else {
+        cmd.setOrder(0);
+      }
+      
+      cmd.setOrderDirection(1);
+      
+      if (with_foto) {
+        cmd.setFotoFreigabeStatus(EnumFreigabeStatus.extern);
+      }
+
+      if (just_times) {
+        List<Object[]> vg = vorgangDao.getVorgaengeIdAndVersion(cmd);
+        for (Object[] entry : vg) {
           HashMap hm = new HashMap<String, String>();
-          hm.put("id", vg.getId());
-          hm.put("version", vg.getVersion());
+          hm.put("id", entry[0]);
+          hm.put("version", entry[1]);
           times.add(hm);
-        } else {
-          vg.setSecurityService(securityService);
-          vorgaenge.add(vg);
         }
       } else {
-        VorgangSuchenCommand cmd = new VorgangSuchenCommand();
-        // Suchtyp aussendienst würde nur Vorgänge mit zustaendigkeit_status = 'akzeptiert' ausgeben
-        cmd.setSuchtyp(VorgangSuchenCommand.Suchtyp.erweitert);
-        cmd.setErweitertArchiviert(false);
-        // Sortieren nach ID
-        cmd.setOrder(0);
-        cmd.setOrderDirection(0);
-        cmd.setUeberspringeVorgaengeMitMissbrauchsmeldungen(true);
-        cmd.setJustTimes(just_times);
-
-        if (negation != null) {
-          cmd.setNegation(negation);
-        }
-
-        if (restriction_area != null) {
-          cmd.setSuchbereich(restriction_area);
-        }
-
-        if (ids != null && ids.length() > 0) {
-          String[] idStrList = ids.split(",");
-          Long[] data = new Long[idStrList.length];
-          for (int i = 0; i < idStrList.length; i++) {
-            data[i] = Long.valueOf(idStrList[i]);
-          }
-          cmd.setVorgangAuswaehlen(data);
-        }
-
-        if (category_id != null) {
-          Kategorie kat = kategorieDao.findKategorie(category_id);
-          if (kat != null) {
-            if (kat.getParent() == null) {
-              cmd.setErweitertHauptkategorie(kat);
-            } else {
-              cmd.setErweitertKategorie(kat);
-            }
-          }
-        }
-
-        if(status != null) {
-          String[] status_list = status.split(",");
-          EnumVorgangStatus[] evs = new EnumVorgangStatus[status_list.length];
-
-          for (int i = 0; i < status_list.length; i++) {
-            evs[i] = EnumVorgangStatus.valueOf(status_list[i]);
-          }
-          cmd.setErweitertVorgangStatus(evs);
-        }
-
-        if (date_from != null) {
-          cmd.setErweitertDatumVon(getDateFromParam(date_from));
-        }
-        if (date_to != null) {
-          cmd.setErweitertDatumBis(getDateFromParam(date_to));
-        }
-        if (updated_from != null) {
-          cmd.setAktualisiertVon(getDateFromParam(updated_from));
-        }
-        if (updated_to != null) {
-          cmd.setAktualisiertBis(getDateFromParam(updated_to));
-        }
-
-        if (agency_responsible != null) {
-          cmd.setAuftragTeam(agency_responsible);
-          cmd.setAuftragDatum(new Date());
-          cmd.setOrder(8);
-        }
-
-        if (just_times) {
-          List<Object[]> vg = vorgangDao.getVorgaengeIdAndVersion(cmd);
-          for (Object[] entry : vg) {
-            HashMap hm = new HashMap<String, String>();
-            hm.put("id", entry[0]);
-            hm.put("version", entry[1]);
-            times.add(hm);
-          }
-        } else {
-          List<Object[]> vg = vorgangDao.getVorgaenge(cmd);
-          for (Object[] entry : vg) {
-            Vorgang vorgang = (Vorgang) entry[0];
-            vorgang.setUnterstuetzerCount((Integer) entry[2]);
-            vorgang.setSecurityService(securityService);
-            vorgaenge.add(vorgang);
-          }
+        List<Object[]> vg = vorgangDao.getVorgaenge(cmd);
+        for (Object[] entry : vg) {
+          Vorgang vorgang = (Vorgang) entry[0];
+          vorgang.setUnterstuetzerCount((Integer) entry[2]);
+          vorgang.setSecurityService(securityService);
+          vorgaenge.add(vorgang);
         }
       }
 
@@ -1428,6 +1533,58 @@ public class BackendController {
       } else {
         sendOk(response, mapper.writeValueAsString(vorgaenge));
       }
+    } catch (Exception ex) {
+      java.util.logging.Logger.getLogger(BackendController.class.getName()).log(Level.SEVERE, null, ex);
+      sendError(response, ex);
+    }
+  }
+
+  /**
+   * Die Methode verarbeitet den GET-Request auf der URL <code>/crenzen</code><br/>
+   * @param ids
+   * @param with_districts
+   * @param response
+   * @throws java.io.IOException
+   */
+  @RequestMapping(value = "/grenzen", method = RequestMethod.GET)
+  @ResponseBody
+  public void grenzen(
+    @RequestParam(value = "ids", required = false) String ids,
+    @RequestParam(value = "with_districts", required= false) boolean with_districts,
+    HttpServletResponse response
+  ) throws IOException {
+    try {
+      List<HashMap> grenzenHash = new ArrayList<HashMap>();
+      if (ids != null) {
+        String[] idStrList = ids.split(", ");
+        Integer[] data = new Integer[idStrList.length];
+        for (int i = 0; i < idStrList.length; i++) {
+            data[i] = Integer.valueOf(idStrList[i]);
+        }
+        for (int i = 0; i < data.length; i++) {
+          StadtteilGrenze grenze = grenzenDao.findStadtteilGrenze(data[i]);
+          HashMap hm = new HashMap<String, Object>();
+          hm.put("grenze", grenze.getGrenzeWkt());
+          grenzenHash.add(hm);
+        }
+      } else {
+        if (with_districts) {
+          List<StadtteilGrenze> grenzen = grenzenDao.findStadtteilGrenzenWithGrenze();
+          for (StadtteilGrenze entry : grenzen) {
+            HashMap hm = new HashMap<String, Object>();
+            hm.put("id", entry.getId());
+            hm.put("name", entry.getName());
+            hm.put("grenze", entry.getGrenzeWkt());
+            grenzenHash.add(hm);
+          }
+        } else {
+          StadtGrenze grenze = grenzenDao.getStadtgrenze();
+          HashMap hm = new HashMap<String, String>();
+          hm.put("grenze", grenze.getGrenzeWkt());
+          grenzenHash.add(hm);
+        }
+      }
+      sendOk(response, mapper.writeValueAsString(grenzenHash));
     } catch (Exception ex) {
       java.util.logging.Logger.getLogger(BackendController.class.getName()).log(Level.SEVERE, null, ex);
       sendError(response, ex);

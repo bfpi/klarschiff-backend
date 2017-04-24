@@ -15,7 +15,7 @@ import de.fraunhofer.igd.klarschiff.dao.LobHinweiseKritikDao;
 /**
  * Controller für Lob/Hinweise/Kritik im Adminbereich
  *
- * @author Sebastian Schwarz (Hansestadt Rostock)
+ * @author Sebastian Gutzeit (Hansestadt Rostock)
  */
 @SessionAttributes({"cmdlobhinweisekritik"})
 @RequestMapping("/admin/lobhinweisekritik")

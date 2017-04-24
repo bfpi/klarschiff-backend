@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import de.fraunhofer.igd.klarschiff.vo.EnumVorgangTyp;
 import de.fraunhofer.igd.klarschiff.vo.Kategorie;
+import org.hibernate.Session;
 
 /**
  * Die Dao-Klasse erlaubt den Zugriff auf die Kategorien in der DB.
@@ -44,7 +45,25 @@ public class KategorieDao {
   }
 
   public List<Kategorie> getKategorien() {
-    return entityManager.createQuery("SELECT o FROM Kategorie o WHERE o.parent IS NOT NULL",
-      Kategorie.class).getResultList();
+    return getKategorien(true);
+  }
+
+  public List<Kategorie> getKategorien(boolean showTipp) {
+    StringBuilder sql = new StringBuilder();
+    sql.append("SELECT o FROM Kategorie o JOIN o.parent op ");
+    sql.append("WHERE o.parent IS NOT NULL ");
+
+    if (!showTipp) {
+      sql.append("AND op.typ <> 'tipp'");
+    }
+
+    return entityManager.createQuery(sql.toString(), Kategorie.class).getResultList();
+  }
+  
+  public List<Kategorie> getAllKategorien() {
+    StringBuilder sql = new StringBuilder();
+    sql.append("SELECT o FROM Kategorie o LEFT JOIN o.parent op ");
+    sql.append("WHERE op.typ <> 'tipp' OR o.typ <> 'tipp'");
+    return entityManager.createQuery(sql.toString(), Kategorie.class).getResultList();
   }
 }

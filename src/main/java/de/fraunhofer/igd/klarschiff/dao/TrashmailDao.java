@@ -37,4 +37,10 @@ public class TrashmailDao {
   public List<Trashmail> findAllTrashmail() {
     return em.createQuery("SELECT o FROM Trashmail o ORDER BY o.pattern ASC", Trashmail.class).getResultList();
   }
+  
+  @Transactional 
+  public Trashmail findTrashmail(String pattern) {
+    List<Trashmail> list = em.createQuery("SELECT o FROM Trashmail o WHERE o.pattern = '" + pattern + "'", Trashmail.class).getResultList();
+    return list.size() > 0 ? list.get(0) : null;
+  }
 }

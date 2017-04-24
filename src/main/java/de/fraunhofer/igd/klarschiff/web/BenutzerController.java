@@ -15,7 +15,7 @@ import de.fraunhofer.igd.klarschiff.util.SqlScriptUtil;
 /**
  * Controller für die Benutzerübersicht
  *
- * @author Sebastian Schwarz (Hansestadt Rostock)
+ * @author Sebastian Gutzeit (Hansestadt Rostock)
  */
 @RequestMapping("/benutzer")
 @Controller

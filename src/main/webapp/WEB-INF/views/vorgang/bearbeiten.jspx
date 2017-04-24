@@ -524,7 +524,7 @@
                                                 <form:select path="delegiertAn" cssErrorClass="error">
                                                     <form:option value="" label="" cssClass="info"/>
                                                     <c:forEach items="${allDelegiertAn}" var="role">
-                                                            <form:option value="${role.id}" title="${role.description}"/>	
+                                                      <form:option value="${role.id}" label="${role.description}"/>
                                                     </c:forEach>
                                                 </form:select>
                                                 <![CDATA[&nbsp;]]> 

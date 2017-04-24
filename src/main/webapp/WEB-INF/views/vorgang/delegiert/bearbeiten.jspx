@@ -129,7 +129,27 @@
 					            	<form:options items="${allVorgangStatus}" itemLabel="text" htmlEscape="false"/>
 								</form:select> 
 							</div>
+              <div>
+								<table width="100%" cellpadding="0" cellspacing="0">
+									<tr>
+										<td valign="top" width="470px;">
+											<form:label path="statusKommentar" cssErrorClass="error">öffentliche Statusinformation</form:label>
+											<form:textarea path="statusKommentar" id="statusKommentar" cols="6" maxlength="${vorgangStatusKommentarTextlaengeMaximal}" cssStyle="width:350px;height:100px" onKeyUp="$('#zeichenAnzahl').html(verbleibendeZeichen(${vorgangStatusKommentarTextlaengeMaximal}, $('#statusKommentar')[0].value.length));"/>
+                      <br/>
+                      <label style="width:350px;margin-left:100px">Sie können noch <span id="zeichenAnzahl">${vorgangStatusKommentarTextlaengeMaximal}</span> Zeichen eingeben.</label>
+										</td>
+                  </tr>
+									<form:errors path="statusKommentar">
+										<tr><td><form:errors cssClass="error" cssStyle="font-size: 0.8em; padding-left: 100px" element="div" path="statusKommentar"/></td></tr>
+									</form:errors>
+								</table>
+							</div>
 							<input type="submit" value="Änderungen übernehmen" name="action"/>
+              <script type="text/javascript">
+								function verbleibendeZeichen(vorgangStatusKommentarTextlaengeMaximal, textlaengeAktuell) {
+									return vorgangStatusKommentarTextlaengeMaximal - textlaengeAktuell;
+								}
+							</script>
 						</form:form>
 					</div>
 				</div>

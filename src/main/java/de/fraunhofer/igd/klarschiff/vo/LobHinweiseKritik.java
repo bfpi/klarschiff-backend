@@ -20,7 +20,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 /**
  * VO zum Abbilden von Lob, Hinweisen oder Kritik zu einem Vorgang.
  *
- * @author Sebastian Schwarz (Hansestadt Rostock)
+ * @author Sebastian Gutzeit (Hansestadt Rostock)
  */
 @SuppressWarnings("serial")
 @Entity

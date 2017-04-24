@@ -22,7 +22,8 @@
 	<task:scheduler id="scheduler"/>
 
 	<bean class="de.fraunhofer.igd.klarschiff.service.job.JobsService" id="jobsService"
-    	p:monthsToArchivVorgaenge="${job.monthsToArchivVorgaenge}"
+       p:monthsToArchivProbleme="${job.monthsToArchivProbleme}"
+       p:monthsToArchivIdeen="${job.monthsToArchivIdeen}"
     	p:hoursToRemoveUnbestaetigtVorgang="${job.hoursToRemoveUnbestaetigtVorgang}"
     	p:hoursToRemoveUnbestaetigtUnterstuetzer="${job.hoursToRemoveUnbestaetigtUnterstuetzer}"
     	p:hoursToRemoveUnbestaetigtMissbrauchsmeldung="${job.hoursToRemoveUnbestaetigtMissbrauchsmeldung}"

@@ -24,6 +24,7 @@ import de.fraunhofer.igd.klarschiff.vo.EnumVerlaufTyp;
 import de.fraunhofer.igd.klarschiff.vo.EnumVorgangStatus;
 import de.fraunhofer.igd.klarschiff.vo.EnumVorgangTyp;
 import de.fraunhofer.igd.klarschiff.vo.EnumZustaendigkeitStatus;
+import de.fraunhofer.igd.klarschiff.vo.Kategorie;
 import de.fraunhofer.igd.klarschiff.vo.Missbrauchsmeldung;
 import de.fraunhofer.igd.klarschiff.vo.StatusKommentarVorlage;
 import de.fraunhofer.igd.klarschiff.vo.Unterstuetzer;
@@ -49,6 +50,10 @@ import org.hibernate.type.StandardBasicTypes;
  */
 @Repository
 public class VorgangDao {
+  final static String CLASSIFIER_TRAIN_QUERY = "FROM Vorgang a, Vorgang b " +
+    " WHERE a.kategorie = b.kategorie AND a.version <= b.version AND " +
+    " a.zustaendigkeitStatus = 'akzeptiert' AND b.zustaendigkeitStatus = 'akzeptiert' " +
+    "GROUP BY a.id HAVING count(*) <= 10)";
 
   @PersistenceContext
   EntityManager em;
@@ -397,9 +402,10 @@ public class VorgangDao {
           //Hauptkategorie
         } else if (cmd.getErweitertHauptkategorie() != null) {
           conds.add("vo.kategorie IN (SELECT id FROM klarschiff_kategorie WHERE parent = " + cmd.getErweitertHauptkategorie().getId() + ")");
-          //Typ
-        } else if (cmd.getErweitertVorgangTyp() != null) {
-          conds.add("vo.typ = '" + cmd.getErweitertVorgangTyp().name() + "'");
+        //Typ
+        } else if (cmd.getErweitertVorgangTypen() != null) {
+          List<EnumVorgangTyp> inVorgangTypen = Arrays.asList(cmd.getErweitertVorgangTypen());
+          conds.add("vo.typ IN ('" + StringUtils.join(inVorgangTypen, "', '") + "')");
         }
         //Status
         if(cmd.getErweitertVorgangStatus() != null) {
@@ -497,6 +503,24 @@ public class VorgangDao {
         if (cmd.getSuchbereich() != null) {
           conds.add("ST_Within(ST_Transform(vo.ovi, 4326), " + cmd.getSuchbereich() + ")");
         }
+        //Beobachtungsfläche
+        if (cmd.getObservation() != null) {
+          conds.add("ST_Within(vo.ovi, ST_GeomFromText('" + cmd.getObservation() + "', 25833))");
+        }
+        
+        //Kategorien
+        if (cmd.getErweitertHauptKategorieIds() != null) {
+          String subSelect = "SELECT k.id from klarschiff_kategorie k" +
+            " JOIN klarschiff_kategorie p ON k.parent = p.id WHERE p.id IN (" + 
+            cmd.getErweitertHauptKategorieIds() + ")";
+          conds.add("vo.kategorie IN (" + subSelect + ")");
+        }
+        
+        //Fotofreigabe-Status
+        if (cmd.getFotoFreigabeStatus() != null) {
+          conds.add("vo.foto_freigabe_status = '" + cmd.getFotoFreigabeStatus() + "'");
+        }
+        
         break;
       case schnellsuche:
         //Nummer
@@ -504,6 +528,9 @@ public class VorgangDao {
           conds.add("vo.id = " + cmd.getErweitertNummerAsLong());
         }
         break;
+    }
+    if(!cmd.getShowTips()) {
+      conds.add("vo.typ <> 'tipp'");
     }
     // Unterstützer
     sql.append(" LEFT JOIN (SELECT vorgang, COUNT(DISTINCT id) FROM klarschiff_unterstuetzer")
@@ -704,21 +731,7 @@ public class VorgangDao {
       return ((Session) em.getDelegate()).createSQLQuery(sql.toString()).list();
     }
 
-    // ORDER
-    ArrayList orderBys = new ArrayList();
-    for (String field : cmd.getOrderString().split(",")) {
-      orderBys.add(field.trim() + " " + cmd.getOrderDirectionString());
-    }
-    if (!orderBys.isEmpty()) {
-      sql.append(" ORDER BY ").append(StringUtils.join(orderBys, ", "));
-    }
-    // LIMIT
-    if (cmd.getSize() != null) {
-      sql.append(" LIMIT ").append(cmd.getSize());
-    }
-    if (cmd.getPage() != null && cmd.getSize() != null) {
-      sql.append(" OFFSET ").append((cmd.getPage() - 1) * cmd.getSize());
-    }
+    sql = addOrder(cmd, sql);
 
     return ((Session) em.getDelegate())
       .createSQLQuery(sql.toString())
@@ -727,6 +740,32 @@ public class VorgangDao {
       .addScalar("unterstuetzer", StandardBasicTypes.INTEGER)
       .addScalar("missbrauchsmeldung", StandardBasicTypes.LONG)
       .list();
+  }
+  /**
+   * Fügt zu einem StringBuilder den ORDER-Teil einer SQL-Query zur Suche von Vorgängen anhand der
+   * Parameter im <code>VorgangDelegiertSuchenCommand</code> hinzu.
+   *
+   * @param cmd Command mit den Parametern zur Suche
+   * @param sql StringBuilder an den angehängt wird
+   * @return StringBuilder an den angehängt wird mit ORDER
+  */
+  private StringBuilder addOrder(VorgangSuchenCommand cmd, StringBuilder sql) {
+      // ORDER
+      ArrayList orderBys = new ArrayList();
+      for (String field : cmd.getOrderString().split(",")) {
+          orderBys.add(field.trim() + " " + cmd.getOrderDirectionString());
+      }
+      if (!orderBys.isEmpty()) {
+          sql.append(" ORDER BY ").append(StringUtils.join(orderBys, ", "));
+      }
+      // LIMIT
+      if (cmd.getSize() != null) {
+          sql.append(" LIMIT ").append(cmd.getSize());
+      }
+      if (cmd.getPage() != null && cmd.getSize() != null) {
+          sql.append(" OFFSET ").append((cmd.getPage() - 1) * cmd.getSize());
+      }
+      return sql;
   }
 
   /**
@@ -744,7 +783,7 @@ public class VorgangDao {
     // Für Auftrag
     sql.append(" LEFT JOIN klarschiff_auftrag auftrag ON vo.id = auftrag.vorgang");
     sql = addFilter(cmd, sql);
-
+    sql = addOrder(cmd, sql);
     return ((Session) em.getDelegate()).createSQLQuery(sql.toString()).list();
   }
 
@@ -927,10 +966,11 @@ public class VorgangDao {
    * @return Ergebnisliste mit Vorgängen
    * @see de.fraunhofer.igd.klarschiff.service.job.JobsService#archivVorgaenge()
    */
-  public List<Vorgang> findNotArchivVorgang(Date versionBefor) {
-    return em.createQuery("SELECT o FROM Vorgang o WHERE o.status IN (:status) AND version <= :versionBefor AND (archiviert IS NULL OR archiviert = FALSE)", Vorgang.class)
+  public List<Vorgang> findNotArchivVorgang(EnumVorgangTyp typ, Date versionBefor) {
+    return em.createQuery("SELECT o FROM Vorgang o WHERE o.status IN (:status) AND version <= :versionBefor AND (archiviert IS NULL OR archiviert = FALSE) AND typ = :typ", Vorgang.class)
       .setParameter("status", Arrays.asList(EnumVorgangStatus.closedVorgangStatus()))
       .setParameter("versionBefor", versionBefor)
+      .setParameter("typ", typ)
       .getResultList();
   }
 
@@ -1032,7 +1072,7 @@ public class VorgangDao {
    */
   @SuppressWarnings("unchecked")
   public List<Vorgang> findVorgangForTrainClassificator(int maxResults) {
-    return em.createQuery("SELECT a FROM Vorgang a, Vorgang b WHERE a.kategorie = b.kategorie AND a.version <= b.version AND a.zustaendigkeitStatus = 'akzeptiert' AND b.zustaendigkeitStatus = 'akzeptiert' GROUP BY a.id HAVING count(*) <= 10", Vorgang.class).setMaxResults(maxResults).getResultList();
+    return em.createQuery("SELECT a " + CLASSIFIER_TRAIN_QUERY, Vorgang.class).setMaxResults(maxResults).getResultList();
   }
 
   /**

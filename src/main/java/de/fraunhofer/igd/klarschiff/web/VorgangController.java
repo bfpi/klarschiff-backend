@@ -118,7 +118,7 @@ public class VorgangController {
    * @return
    */
   @RequestMapping(value = "/vorgang/{id}/karte", method = RequestMethod.POST)
-  public String karteSubbmit(
+  public String karteSubmit(
     @PathVariable("id") Long id,
     @RequestParam(value = "oviWkt", defaultValue = "") String oviWkt,
     ModelMap model,

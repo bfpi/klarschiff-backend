@@ -16,7 +16,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 /**
  * VO für die Empfänger redaktioneller E-Mails
  *
- * @author Sebastian Schwarz (Hansestadt Rostock)
+ * @author Sebastian Gutzeit (Hansestadt Rostock)
  */
 @SuppressWarnings("serial")
 @Entity

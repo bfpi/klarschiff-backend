@@ -10,7 +10,7 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.Type;
 
 import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.PrecisionModel;
 import com.vividsolutions.jts.io.WKTReader;
 import com.vividsolutions.jts.io.WKTWriter;
@@ -35,7 +35,7 @@ public class StadtGrenze {
    * Stadtgrenze
    */
   @Type(type = "org.hibernatespatial.GeometryUserType")
-  private Polygon grenze;
+  private MultiPolygon grenze;
 
   /* --------------- transient ----------------------------*/
   @Transient
@@ -54,7 +54,7 @@ public class StadtGrenze {
    */
   @Transient
   public void setGrenzeWkt(String grenzeWkt) throws Exception {
-    grenze = (StringUtils.isBlank(grenzeWkt)) ? null : (Polygon) wktReader.read(grenzeWkt);
+    grenze = (StringUtils.isBlank(grenzeWkt)) ? null : (MultiPolygon) wktReader.read(grenzeWkt);
   }
 
   /**
@@ -76,11 +76,11 @@ public class StadtGrenze {
     this.id = id;
   }
 
-  public Polygon getGrenze() {
+  public MultiPolygon getGrenze() {
     return grenze;
   }
 
-  public void setGrenze(Polygon grenze) {
+  public void setGrenze(MultiPolygon grenze) {
     this.grenze = grenze;
   }
 }

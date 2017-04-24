@@ -16,7 +16,7 @@ import de.fraunhofer.igd.klarschiff.web.AdminLobHinweiseKritikCommand;
 /**
  * Die Dao-Klasse ermöglicht den Zugriff auf Lob, Hinweise oder Kritik zu einem Vorgang
  *
- * @author Sebastian Schwarz (Hansestadt Rostock)
+ * @author Sebastian Gutzeit (Hansestadt Rostock)
  */
 @Repository
 public class LobHinweiseKritikDao {
