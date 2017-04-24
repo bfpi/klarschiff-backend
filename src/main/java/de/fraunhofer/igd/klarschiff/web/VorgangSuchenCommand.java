@@ -2,6 +2,9 @@ package de.fraunhofer.igd.klarschiff.web;
 
 import java.util.Date;
 
+import com.vividsolutions.jts.geom.MultiPolygon;
+import de.fraunhofer.igd.klarschiff.vo.EnumFreigabeStatus;
+
 import de.fraunhofer.igd.klarschiff.vo.EnumPrioritaet;
 import de.fraunhofer.igd.klarschiff.vo.EnumVorgangStatus;
 import de.fraunhofer.igd.klarschiff.vo.EnumVorgangTyp;
@@ -46,7 +49,9 @@ public class VorgangSuchenCommand extends Command {
   // erweiterte Suche
   String erweitertFulltext;
   EnumVorgangTyp erweitertVorgangTyp;
+  EnumVorgangTyp[] erweitertVorgangTypen;
   Kategorie erweitertHauptkategorie;
+  String erweitertHauptKategorieIds;
   Kategorie erweitertKategorie;
   Date erweitertDatumVon;
   Date erweitertDatumBis;
@@ -69,6 +74,8 @@ public class VorgangSuchenCommand extends Command {
   Boolean ueberspringeVorgaengeMitMissbrauchsmeldungen;
   Boolean justTimes;
   Boolean showTips = true;
+  String observation;
+  EnumFreigabeStatus fotoFreigabeStatus;
 
   //NUR ADMIN dürfen andere Zuständigkeiten sehen
   public String getOrderString() {
@@ -91,6 +98,8 @@ public class VorgangSuchenCommand extends Command {
         return "vo.zustaendigkeit";
       case 8:
         return "auftrag.prioritaet, vo.datum";
+      case 9:
+        return "vo.version";
       default:
         return "";
     }
@@ -192,13 +201,21 @@ public class VorgangSuchenCommand extends Command {
   public void setErweitertNummer(String erweitertNummer) {
     this.erweitertNummer = erweitertNummer;
   }
-
+  
   public EnumVorgangTyp getErweitertVorgangTyp() {
     return erweitertVorgangTyp;
   }
-
+  
   public void setErweitertVorgangTyp(EnumVorgangTyp erweitertVorgangTyp) {
     this.erweitertVorgangTyp = erweitertVorgangTyp;
+  }
+
+  public EnumVorgangTyp[] getErweitertVorgangTypen() {
+    return erweitertVorgangTypen;
+  }
+
+  public void setErweitertVorgangTypen(EnumVorgangTyp[] erweitertVorgangTypen) {
+    this.erweitertVorgangTypen = erweitertVorgangTypen;
   }
 
   public Kategorie getErweitertHauptkategorie() {
@@ -208,11 +225,27 @@ public class VorgangSuchenCommand extends Command {
   public void setErweitertHauptkategorie(Kategorie erweitertHauptkategorie) {
     this.erweitertHauptkategorie = erweitertHauptkategorie;
   }
+  
+  public String getErweitertHauptKategorieIds() {
+    return erweitertHauptKategorieIds;
+  }
+  
+  public void setErweitertHauptKategorieIds(String erweitertHauptKategorieIds) {
+    this.erweitertHauptKategorieIds = erweitertHauptKategorieIds;
+  }
+  
+  public String getObservation() {
+    return observation;
+  }
 
+  public void setObservation(String observation) {
+    this.observation = observation;
+  }
+  
   public Kategorie getErweitertKategorie() {
     return erweitertKategorie;
   }
-
+  
   public void setErweitertKategorie(Kategorie erweitertKategorie) {
     this.erweitertKategorie = erweitertKategorie;
   }
@@ -375,5 +408,13 @@ public class VorgangSuchenCommand extends Command {
 
   public void setShowTips(Boolean showTips) {
     this.showTips = showTips;
+  }
+  
+  public EnumFreigabeStatus getFotoFreigabeStatus() {
+    return fotoFreigabeStatus;
+  }
+
+  public void setFotoFreigabeStatus(EnumFreigabeStatus fotoFreigabeStatus) {
+    this.fotoFreigabeStatus = fotoFreigabeStatus;
   }
 }
