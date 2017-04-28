@@ -105,6 +105,7 @@ public class VorgangErstsichtungController {
     model.put("cmd", cmd);
     model.put("mapExternName", geoService.getMapExternName());
     model.put("mapExternUrl", geoService.getMapExternUrl(vorgang));
+    model.put("vorgangCoordinates", geoService.getVorgangCoordinates(vorgang));
 
     return "vorgang/erstsichtung/zustaendigkeit";
   }
@@ -160,6 +161,7 @@ public class VorgangErstsichtungController {
         cmd.getVorgang().setZustaendigkeitFrontend(vorgangDao.findVorgang(id).getZustaendigkeitFrontend());
         model.put("mapExternName", geoService.getMapExternName());
         model.put("mapExternUrl", geoService.getMapExternUrl(cmd.getVorgang()));
+        model.put("vorgangCoordinates", geoService.getVorgangCoordinates(cmd.getVorgang()));
         return "vorgang/erstsichtung/zustaendigkeit";
       }
       cmd.getVorgang().setZustaendigkeitFrontend(securityService.getZustaendigkeit(cmd.getVorgang().getZustaendigkeit()).getL());
@@ -191,6 +193,7 @@ public class VorgangErstsichtungController {
         cmd.getVorgang().setZustaendigkeitFrontend(securityService.getZustaendigkeit(vorgangDao.findVorgang(id).getZustaendigkeit()).getL());
         model.put("mapExternName", geoService.getMapExternName());
         model.put("mapExternUrl", geoService.getMapExternUrl(cmd.getVorgang()));
+        model.put("vorgangCoordinates", geoService.getVorgangCoordinates(cmd.getVorgang()));
         return "vorgang/erstsichtung/zustaendigkeit";
       }
       cmd.getVorgang().setZustaendigkeitFrontend(securityService.getZustaendigkeit(cmd.getVorgang().getZustaendigkeit()).getL());

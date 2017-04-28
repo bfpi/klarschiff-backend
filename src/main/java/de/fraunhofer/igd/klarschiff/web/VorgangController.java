@@ -106,6 +106,7 @@ public class VorgangController {
     model.put("geoService", geoService);
     model.put("mapExternName", geoService.getMapExternName());
     model.put("mapExternUrl", geoService.getMapExternUrl(vorgang));
+    model.put("vorgangCoordinates", geoService.getVorgangCoordinates(vorgang));
     return "vorgang/karte";
   }
 
@@ -135,6 +136,7 @@ public class VorgangController {
     model.put("geoService", geoService);
     model.put("mapExternName", geoService.getMapExternName());
     model.put("mapExternUrl", geoService.getMapExternUrl(vorgang));
+    model.put("vorgangCoordinates", geoService.getVorgangCoordinates(vorgang));
     return "vorgang/karte";
   }
 

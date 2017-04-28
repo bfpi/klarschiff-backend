@@ -84,6 +84,8 @@ public class GeoService {
   String mapExternName;
   String mapExternUrl;
   String mapExternExternUrl;
+  
+  String vorgangCoordinates;
 
   String wfsVorgaengeUrl;
   String wfsVorgaengeFeatureNs;
@@ -211,13 +213,28 @@ public class GeoService {
    * Frontend). Die URL kann über die Einstellungen konfiguriert werden und kann die folgenden
    * Platzhalter beinhalten: <code>%x%</code>, <code>%y%</code> und <code>%id%</code>,
    *
-   * @param vorgang Vorgang für den die URL erzeugt werden soll
+   * @param vorgang Vorgang, für den die URL erzeugt werden soll
    * @return Url für die externe Anzeige
    * @see #mapExternExternUrl
    */
   public String getMapExternExternUrl(Vorgang vorgang) {
     Point point = transformMapProjectionToMapExternProjection(vorgang.getOvi());
     return mapExternExternUrl.replaceAll("%x%", point.getX() + "").replaceAll("%y%", point.getY() + "").replaceAll("%id%", vorgang.getId() + "");
+  }
+
+  /**
+   * Erstellung der URL zur Darstellung des Ortes eines Vorganges in einem externen System (z.B. im
+   * Frontend). Die URL kann über die Einstellungen konfiguriert werden und kann die folgenden
+   * Platzhalter beinhalten: <code>%x%</code>, <code>%y%</code> und <code>%id%</code>,
+   *
+   * @param vorgang Vorgang, für den die Koordinaten ausgegeben werden sollen
+   * @return Koordinaten
+   */
+  public String getVorgangCoordinates(Vorgang vorgang) {
+    Point point = transformMapProjectionToMapExternProjection(vorgang.getOvi());
+    String x = String.valueOf((int) point.getX());
+    String y = String.valueOf((int) point.getY());
+    return x + " " + y;
   }
 
   /**
@@ -519,6 +536,14 @@ public class GeoService {
 
   public void setMapExternExternUrl(String mapExternExternUrl) {
     this.mapExternExternUrl = mapExternExternUrl;
+  }
+
+  public String getVorgangCoordinates() {
+    return vorgangCoordinates;
+  }
+
+  public void setVorgangCoordinates(String vorgangCoordinates) {
+    this.vorgangCoordinates = vorgangCoordinates;
   }
 
   public String getWfsZufiCapabilitiesUrl() {

@@ -4,6 +4,20 @@
 /* @author Markus Kröller (Fraunhofer IGD) */
 /* @author Martin Gielow (Fraunhofer IGD) */
 
+a.mapExternLink {
+  padding: 5px;
+}
+
+div.coordinatesBlock {
+  float: right;
+}
+
+span.coordinates {
+  display: block;
+  float: right;
+  padding: 2px 0 0 5px;
+}
+
 .dev {
   background-color: #FFFFDF;
   color: #4f4f4f;

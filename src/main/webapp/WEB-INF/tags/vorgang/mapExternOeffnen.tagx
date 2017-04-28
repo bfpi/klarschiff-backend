@@ -9,14 +9,34 @@
   >
   <jsp:output omit-xml-declaration="yes" />
 
+  <!-- SCRIPTS -->
+  <script type="text/javascript">
+    function copyToClipboard(text) {
+      var textarea = document.createElement('textarea');
+      textarea.textContent = text;
+      textarea.style.position = 'fixed';
+      document.body.appendChild(textarea);
+      textarea.select();
+      try {
+          return document.execCommand('copy');
+      } catch (ex) {
+          return false;
+      } finally {
+          document.body.removeChild(textarea);
+      }
+    }
+  </script>
+
   <jsp:directive.attribute name="vorgang" type="de.fraunhofer.igd.klarschiff.vo.Vorgang" required="true" rtexprvalue="true"/>
   <jsp:directive.attribute name="isLonelyIcon" type="java.lang.Boolean" required="false" rtexprvalue="true"/>
 
   <c:set var="css_class" value="${(empty isLonelyIcon or not isLonelyIcon) ? 'mapExtern' : 'mapExternLonelyIcon'}"/>
 
   <div class="${css_class}">
-    <c:url value="/images/map.png" var="imgurl"/>
-    <a href="${mapExternUrl}" target="_blank" title="Position des Vorgangs in ${mapExternName} anzeigen" style="padding:5px;"><img src="${imgurl}" alt="${mapExternName}" class="icon"/></a>
+    <c:url value="/images/map.png" var="mapExternUrlImgUrl"/>
+    <c:url value="/images/paste.png" var="vorgangCoordinatesImgUrl"/>
+    <a href="${mapExternUrl}" target="_blank" title="Position des Vorgangs in ${mapExternName} anzeigen" class="mapExternLink"><img src="${mapExternUrlImgUrl}" alt="${mapExternName}" class="icon"/></a>
+    <div class="coordinatesBlock"><img onClick="copyToClipboard('${vorgangCoordinates}')" title="Koordinaten des Vorgangs in Zwischenablage kopieren" src="${vorgangCoordinatesImgUrl}" alt="Koordinaten des Vorgangs in Zwischenablage kopieren" class="icon"/><span class="coordinates">Koordinaten des Vorgangs: ${vorgangCoordinates}</span></div>
   </div>
 
 </jsp:root>
