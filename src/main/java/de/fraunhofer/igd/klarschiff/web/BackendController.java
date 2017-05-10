@@ -175,13 +175,13 @@ public class BackendController {
         throw new BackendControllerException(7, "[autorEmail] fehlt", "Die E-Mail-Adresse fehlt.");
       }
       if (!isShortEnough(autorEmail, 300)) {
-        throw new BackendControllerException(8, "[autorEmail] zu lang", "Die E-Mail-Adresse ist zu lang.");
+        throw new BackendControllerException(8, "[autorEmail] zu lang", "Die angegebene E-Mail-Adresse ist zu lang.");
       }
       if (!isEmail(autorEmail)) {
-        throw new BackendControllerException(9, "[autorEmail] nicht korrekt", "Die E-Mail-Adresse ist nicht gültig.");
+        throw new BackendControllerException(9, "[autorEmail] nicht korrekt", "Die angegebene E-Mail-Adresse ist nicht gültig.");
       }
       if (isTrashMail(autorEmail)) {
-        throw new BackendControllerException(10, "[autorEmail] nicht erlaubt", "Die Email-Domain ist nicht zulässig.");
+        throw new BackendControllerException(10, "[autorEmail] nicht erlaubt", "Die Domain der angegebenen E-Mail-Adresse ist nicht zulässig.");
       }
       vorgang.setAutorEmail(autorEmail);
       vorgang.setHash(securityService.createHash(autorEmail + System.currentTimeMillis()));
@@ -278,20 +278,20 @@ public class BackendController {
     try {
       if (id == null) {
         if (StringUtils.isBlank(typ)) {
-          throw new BackendControllerException(1, "[id] fehlt", "Ohne id kann kein Vorgang aktualisiert werden.");
+          throw new BackendControllerException(1, "[id] fehlt", "Ohne ID kann kein Vorgang aktualisiert werden.");
         }
       }
       if (StringUtils.isBlank(autorEmail)) {
         throw new BackendControllerException(7, "[autorEmail] fehlt", "Die E-Mail-Adresse fehlt.");
       }
       if (!isShortEnough(autorEmail, 300)) {
-        throw new BackendControllerException(8, "[autorEmail] zu lang", "Die E-Mail-Adresse ist zu lang.");
+        throw new BackendControllerException(8, "[autorEmail] zu lang", "Die angegebene E-Mail-Adresse ist zu lang.");
       }
       if (!isEmail(autorEmail)) {
-        throw new BackendControllerException(9, "[autorEmail] nicht korrekt", "Die E-Mail-Adresse ist nicht gültig.");
+        throw new BackendControllerException(9, "[autorEmail] nicht korrekt", "Die angegebene E-Mail-Adresse ist nicht gültig.");
       }
       if (isTrashMail(autorEmail)) {
-        throw new BackendControllerException(10, "[autorEmail] nicht erlaubt", "Die Email-Domain ist nicht zulässig.");
+        throw new BackendControllerException(10, "[autorEmail] nicht erlaubt", "Die Domain der angegebenen E-Mail-Adresse ist nicht zulässig.");
       }
 
       Vorgang vorgang = vorgangDao.findVorgang(id);
@@ -303,7 +303,7 @@ public class BackendController {
 
       if (prioritaet != null) {
         if ((prioritaet - 1) > EnumPrioritaet.values().length) {
-          throw new BackendControllerException(12, "[prioritaet] ungültig", "Die Priorität ist fehlerhaft und kann nicht verarbeitewt werden.");
+          throw new BackendControllerException(12, "[prioritaet] ungültig", "Die Priorität ist fehlerhaft und kann daher nicht verarbeitet werden.");
         }
 
         EnumPrioritaet ep = EnumPrioritaet.values()[prioritaet];
@@ -582,17 +582,17 @@ public class BackendController {
         throw new BackendControllerException(203, "[email] fehlt", "Die E-Mail-Adresse fehlt.");
       }
       if (!isShortEnough(email, 300)) {
-        throw new BackendControllerException(204, "[email] zu lang", "Die E-Mail-Adresse ist zu lang.");
+        throw new BackendControllerException(204, "[email] zu lang", "Die angegebene E-Mail-Adresse ist zu lang.");
       }
       if (!isEmail(email)) {
-        throw new BackendControllerException(205, "[email] nicht korrekt", "Die E-Mail-Adresse ist nicht gültig.");
+        throw new BackendControllerException(205, "[email] nicht korrekt", "Die angegebene E-Mail-Adresse ist nicht gültig.");
       }
       if (isTrashMail(email)) {
-        throw new BackendControllerException(10, "[autorEmail] nicht erlaubt", "Die Email-Domain ist nicht zulässig.");
+        throw new BackendControllerException(10, "[autorEmail] nicht erlaubt", "Die Domain der angegebenen E-Mail-Adresse ist nicht zulässig.");
       }
       unterstuetzer.setHash(securityService.createHash(unterstuetzer.getVorgang().getId() + email));
       if (vorgangDao.findUnterstuetzer(unterstuetzer.getHash()) != null) {
-        throw new BackendControllerException(206, "[email] wurde bereits für den [vorgang] verwendet", "Sie können die Meldung nicht mehrmals unterstützen.");
+        throw new BackendControllerException(206, "[email] wurde bereits für den [vorgang] verwendet", "Sie können dieselbe Meldung nicht mehrmals unterstützen.");
       }
       if (StringUtils.equalsIgnoreCase(unterstuetzer.getVorgang().getAutorEmail(), email)) {
         throw new BackendControllerException(207, "[email] der autor des [vorgang] kann keine unterstützung für den [vorgang] abgeben", "Die Unterstützungsmeldung konnte nicht abgesetzt werden, da Sie Ihre eigene Meldung nicht unterstützen dürfen.");
@@ -696,7 +696,7 @@ public class BackendController {
       }
 
       if (StringUtils.isBlank(text)) {
-        throw new BackendControllerException(403, "[text] fehlt", "Die Begründung fehlt.");
+        throw new BackendControllerException(403, "[text] fehlt", "Die Beschreibung der Missbrauchsmeldung fehlt.");
       }
       missbrauchsmeldung.setText(text);
 
@@ -704,13 +704,13 @@ public class BackendController {
         throw new BackendControllerException(404, "[email] fehlt", "Die E-Mail-Adresse fehlt.");
       }
       if (!isShortEnough(email, 300)) {
-        throw new BackendControllerException(405, "[email] zu lang", "Die E-Mail-Adresse ist zu lang.");
+        throw new BackendControllerException(405, "[email] zu lang", "Die angegebene E-Mail-Adresse ist zu lang.");
       }
       if (!isEmail(email)) {
-        throw new BackendControllerException(406, "[email] nicht korrekt", "Die E-Mail-Adresse ist nicht gültig.");
+        throw new BackendControllerException(406, "[email] nicht korrekt", "Die angegebene E-Mail-Adresse ist nicht gültig.");
       }
       if (isTrashMail(email)) {
-        throw new BackendControllerException(10, "[autorEmail] nicht erlaubt", "Die Email-Domain ist nicht zulässig.");
+        throw new BackendControllerException(10, "[autorEmail] nicht erlaubt", "Die Domain der angegebenen E-Mail-Adresse ist nicht zulässig.");
       }
       missbrauchsmeldung.setAutorEmail(email);
       missbrauchsmeldung.setHash(securityService.createHash(missbrauchsmeldung.getVorgang().getId() + email + System.currentTimeMillis()));
@@ -796,13 +796,13 @@ public class BackendController {
         throw new BackendControllerException(3, "[autorEmail] fehlt", "Die E-Mail-Adresse fehlt.");
       }
       if (!isShortEnough(autorEmail, 300)) {
-        throw new BackendControllerException(4, "[autorEmail] zu lang", "Die E-Mail-Adresse ist zu lang.");
+        throw new BackendControllerException(4, "[autorEmail] zu lang", "Die angegebene E-Mail-Adresse ist zu lang.");
       }
       if (!isEmail(autorEmail)) {
-        throw new BackendControllerException(5, "[autorEmail] nicht korrekt", "Die E-Mail-Adresse ist nicht gültig.");
+        throw new BackendControllerException(5, "[autorEmail] nicht korrekt", "Die angegebene E-Mail-Adresse ist nicht gültig.");
       }
       if (isTrashMail(autorEmail)) {
-        throw new BackendControllerException(10, "[autorEmail] nicht erlaubt", "Die Email-Domain ist nicht zulässig.");
+        throw new BackendControllerException(10, "[autorEmail] nicht erlaubt", "Die Domain der angegebenen E-Mail-Adresse ist nicht zulässig.");
       }
       
       if (StringUtils.isBlank(text)) {
@@ -890,13 +890,13 @@ public class BackendController {
         throw new BackendControllerException(404, "[email] fehlt", "Die E-Mail-Adresse fehlt.");
       }
       if (!isShortEnough(email, 300)) {
-        throw new BackendControllerException(405, "[email] zu lang", "Die E-Mail-Adresse ist zu lang.");
+        throw new BackendControllerException(405, "[email] zu lang", "Die angegebene E-Mail-Adresse ist zu lang.");
       }
       if (!isEmail(email)) {
-        throw new BackendControllerException(406, "[email] nicht korrekt", "Die E-Mail-Adresse ist nicht gültig.");
+        throw new BackendControllerException(406, "[email] nicht korrekt", "Die angegebene E-Mail-Adresse ist nicht gültig.");
       }
       if (isTrashMail(email)) {
-        throw new BackendControllerException(10, "[autorEmail] nicht erlaubt", "Die Email-Domain ist nicht zulässig.");
+        throw new BackendControllerException(10, "[autorEmail] nicht erlaubt", "Die Domain der angegebenen E-Mail-Adresse ist nicht zulässig.");
       }
       lobHinweiseKritik.setAutorEmail(email);
 
