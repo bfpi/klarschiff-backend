@@ -100,7 +100,7 @@ public class BackendController {
   @Autowired
   GeoRssDao geoRssDao;
   
-  @Autowired 
+  @Autowired
   TrashmailDao trashmailDao;
 
   @Autowired
@@ -1370,6 +1370,9 @@ public class BackendController {
    * @param response
    * @param typ
    * @param max_requests
+   * @param with_foto
+   * @param also_archived
+   * @param just_count
    * @param geoRssHash
    * @throws java.io.IOException
    */
@@ -1393,6 +1396,8 @@ public class BackendController {
     @RequestParam(value = "max_requests", required = false) Integer max_requests,
     @RequestParam(value = "geoRssHash", required = false) String geoRssHash,
     @RequestParam(value = "with_foto", required = false) boolean with_foto,
+    @RequestParam(value = "also_archived", required = false) boolean also_archived,
+    @RequestParam(value = "just_count", required = false) boolean just_count,
     HttpServletResponse response) throws IOException {
 
     try {
@@ -1407,7 +1412,10 @@ public class BackendController {
       } else {
         cmd.setShowTips(false);
       }
-      cmd.setErweitertArchiviert(false);
+
+      if (!also_archived) {
+        cmd.setErweitertArchiviert(false);
+      }
       // Sortieren nach ID
       cmd.setOrder(0);
       cmd.setOrderDirection(0);
@@ -1508,6 +1516,14 @@ public class BackendController {
       
       if (with_foto) {
         cmd.setFotoFreigabeStatus(EnumFreigabeStatus.extern);
+      }
+
+      if (just_count) {
+        HashMap hm = new HashMap<String, String>();
+        hm.put("count", vorgangDao.getVorgaengeIdAndVersion(cmd).size());
+        times.add(hm);
+        sendOk(response, mapper.writeValueAsString(times));
+        return;
       }
 
       if (just_times) {
