@@ -54,8 +54,10 @@ public class KategorieDao {
     sql.append("WHERE o.parent IS NOT NULL ");
 
     if (!showTipp) {
-      sql.append("AND op.typ <> 'tipp'");
+      sql.append("AND op.typ <> 'tipp' ");
     }
+    
+    sql.append("ORDER BY op.name, o.name");
 
     return entityManager.createQuery(sql.toString(), Kategorie.class).getResultList();
   }
@@ -63,7 +65,8 @@ public class KategorieDao {
   public List<Kategorie> getAllKategorien() {
     StringBuilder sql = new StringBuilder();
     sql.append("SELECT o FROM Kategorie o LEFT JOIN o.parent op ");
-    sql.append("WHERE op.typ <> 'tipp' OR o.typ <> 'tipp'");
+    sql.append("WHERE op.typ <> 'tipp' OR o.typ <> 'tipp' ");
+    sql.append("ORDER BY op.name, o.name");
     return entityManager.createQuery(sql.toString(), Kategorie.class).getResultList();
   }
 
