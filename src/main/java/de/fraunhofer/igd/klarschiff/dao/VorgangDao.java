@@ -508,12 +508,17 @@ public class VorgangDao {
           conds.add("ST_Within(vo.ovi, ST_GeomFromText('" + cmd.getObservation() + "', 25833))");
         }
         
-        //Kategorien
-        if (cmd.getErweitertHauptKategorieIds() != null) {
+        //Hauptkategorien
+        if (cmd.getErweitertHauptKategorieIds() != null && !cmd.getErweitertHauptKategorieIds().isEmpty()) {
           String subSelect = "SELECT k.id from klarschiff_kategorie k" +
             " JOIN klarschiff_kategorie p ON k.parent = p.id WHERE p.id IN (" + 
             cmd.getErweitertHauptKategorieIds() + ")";
           conds.add("vo.kategorie IN (" + subSelect + ")");
+        }
+        
+        //Unterkategorien
+        if (cmd.getErweitertUnterKategorieIds() != null && !cmd.getErweitertUnterKategorieIds().isEmpty()) {
+          conds.add("vo.kategorie IN (" + cmd.getErweitertUnterKategorieIds() + ")");
         }
         
         //Fotofreigabe-Status

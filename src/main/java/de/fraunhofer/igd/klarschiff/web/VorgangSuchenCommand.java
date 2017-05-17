@@ -52,6 +52,7 @@ public class VorgangSuchenCommand extends Command {
   EnumVorgangTyp[] erweitertVorgangTypen;
   Kategorie erweitertHauptkategorie;
   String erweitertHauptKategorieIds;
+  String erweitertUnterKategorieIds;
   Kategorie erweitertKategorie;
   Date erweitertDatumVon;
   Date erweitertDatumBis;
@@ -232,6 +233,14 @@ public class VorgangSuchenCommand extends Command {
   
   public void setErweitertHauptKategorieIds(String erweitertHauptKategorieIds) {
     this.erweitertHauptKategorieIds = erweitertHauptKategorieIds;
+  }
+  
+  public String getErweitertUnterKategorieIds() {
+    return erweitertUnterKategorieIds;
+  }
+  
+  public void setErweitertUnterKategorieIds(String erweitertUnterKategorieIds) {
+    this.erweitertUnterKategorieIds = erweitertUnterKategorieIds;
   }
   
   public String getObservation() {

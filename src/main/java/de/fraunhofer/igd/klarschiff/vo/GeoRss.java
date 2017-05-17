@@ -43,9 +43,14 @@ public class GeoRss {
   private boolean probleme;
 
   /**
-   * Liste der überwachten Kategorien bei den Problemen
+   * Liste der überwachten Hauptkategorien bei den Problemen
    */
-  private String problemeKategorien;
+  private String problemeHauptkategorien;
+
+  /**
+   * Liste der überwachten Unterkategorien bei den Problemen
+   */
+  private String problemeUnterkategorien;
 
   /**
    * Ideen überwachen?
@@ -53,9 +58,14 @@ public class GeoRss {
   private boolean ideen;
 
   /**
-   * Liste der überwachten Kategorien bei den Ideen
+   * Liste der überwachten Hauptkategorien bei den Ideen
    */
-  private String ideenKategorien;
+  private String ideenHauptkategorien;
+
+  /**
+   * Liste der überwachten Unterkategorien bei den Ideen
+   */
+  private String ideenUnterkategorien;
 
   /* --------------- transient ----------------------------*/
   @Transient
@@ -113,12 +123,20 @@ public class GeoRss {
     this.probleme = probleme;
   }
 
-  public String getProblemeKategorien() {
-    return problemeKategorien;
+  public String getProblemeHauptkategorien() {
+    return problemeHauptkategorien;
   }
 
-  public void setProblemeKategorien(String problemeKategorien) {
-    this.problemeKategorien = problemeKategorien;
+  public void setProblemeHauptkategorien(String problemeHauptkategorien) {
+    this.problemeHauptkategorien = problemeHauptkategorien;
+  }
+
+  public String getProblemeUnterkategorien() {
+    return problemeUnterkategorien;
+  }
+
+  public void setProblemeUnterkategorien(String problemeUnterkategorien) {
+    this.problemeUnterkategorien = problemeUnterkategorien;
   }
 
   public boolean getIdeen() {
@@ -129,11 +147,19 @@ public class GeoRss {
     this.ideen = ideen;
   }
 
-  public String getIdeenKategorien() {
-    return ideenKategorien;
+  public String getIdeenHauptkategorien() {
+    return ideenHauptkategorien;
   }
 
-  public void setIdeenKategorien(String ideenKategorien) {
-    this.ideenKategorien = ideenKategorien;
+  public void setIdeenHauptkategorien(String ideenHauptkategorien) {
+    this.ideenHauptkategorien = ideenHauptkategorien;
+  }
+
+  public String getIdeenUnterkategorien() {
+    return ideenUnterkategorien;
+  }
+
+  public void setIdeenUnterkategorien(String ideenUnterkategorien) {
+    this.ideenUnterkategorien = ideenUnterkategorien;
   }
 }

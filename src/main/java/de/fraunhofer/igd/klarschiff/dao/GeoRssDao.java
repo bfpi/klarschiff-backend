@@ -26,7 +26,7 @@ public class GeoRssDao {
   EntityManager entityManager;
   
   public GeoRss findGeoRss(String hash) {
-    String sql = "SELECT g.id, g.ovi, g.ideen, g.ideen_kategorien, g.probleme, g.probleme_kategorien FROM klarschiff_geo_rss g";
+    String sql = "SELECT g.id, g.ovi, g.ideen, g.ideen_hauptkategorien, g.ideen_unterkategorien, g.probleme, g.probleme_hauptkategorien, g.probleme_unterkategorien FROM klarschiff_geo_rss g";
     sql += " WHERE md5(cast(g.id AS varchar)) = '" + hash + "'";
     return (GeoRss) entityManager.createNativeQuery(sql, GeoRss.class).getSingleResult();
   }

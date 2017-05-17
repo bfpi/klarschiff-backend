@@ -1067,9 +1067,11 @@ public class BackendController {
    * @param stadtteilIds IDs der ausgählten Stadtteile
    * @param oviWkt überwachte Fläche als WKT
    * @param probleme Probleme überwachen?
-   * @param problemeKategorien Liste der überwachten Kategorien bei den Problemen
+   * @param problemeHauptkategorien Liste der überwachten Hauptkategorien bei den Problemen
+   * @param problemeUnterkategorien Liste der überwachten Unterkategorien bei den Problemen
    * @param ideen Ideen überwachen?
-   * @param ideenKategorien Liste der überwachten Kategorien bei den Ideen
+   * @param ideenHauptkategorien Liste der überwachten Hauptkategorien bei den Ideen
+   * @param ideenUnterkategorien Liste der überwachten Unterkategorien bei den Ideen
    * @param response
    */
   @RequestMapping(value = "/geoRss", method = RequestMethod.POST)
@@ -1078,9 +1080,11 @@ public class BackendController {
     @RequestParam(value = "stadtteilIds", required = false) String stadtteilIds,
     @RequestParam(value = "oviWkt", required = false) String oviWkt,
     @RequestParam(value = "probleme", required = false) Boolean probleme,
-    @RequestParam(value = "problemeKategorien", required = false) String problemeKategorien,
+    @RequestParam(value = "problemeHauptkategorien", required = false) String problemeHauptkategorien,
+    @RequestParam(value = "problemeUnterkategorien", required = false) String problemeUnterkategorien,
     @RequestParam(value = "ideen", required = false) Boolean ideen,
-    @RequestParam(value = "ideenKategorien", required = false) String ideenKategorien,
+    @RequestParam(value = "ideenHauptkategorien", required = false) String ideenHauptkategorien,
+    @RequestParam(value = "ideenUnterkategorien", required = false) String ideenUnterkategorien,
     HttpServletResponse response) {
 
     try {
@@ -1106,12 +1110,14 @@ public class BackendController {
         throw new BackendControllerException(703, "[probleme] fehlt");
       }
       geoRss.setProbleme(probleme);
-      geoRss.setProblemeKategorien(problemeKategorien);
+      geoRss.setProblemeHauptkategorien(problemeHauptkategorien);
+      geoRss.setProblemeUnterkategorien(problemeUnterkategorien);
       if (ideen == null) {
         throw new BackendControllerException(704, "[ideen] fehlt");
       }
       geoRss.setIdeen(ideen);
-      geoRss.setIdeenKategorien(ideenKategorien);
+      geoRss.setIdeenHauptkategorien(ideenHauptkategorien);
+      geoRss.setIdeenUnterkategorien(ideenUnterkategorien);
 
       vorgangDao.persist(geoRss);
 
@@ -1494,14 +1500,22 @@ public class BackendController {
       
       if (geoRssHash != null) {
         GeoRss geoRss = geoRssDao.findGeoRss(geoRssHash);
-        String kategorien = "";
-        if (geoRss.getIdeenKategorien() != null) {
-          kategorien += geoRss.getIdeenKategorien();
+        String hauptKategorien = "";
+        if (geoRss.getIdeenHauptkategorien() != null) {
+          hauptKategorien += geoRss.getIdeenHauptkategorien();
         }
-        if (geoRss.getProblemeKategorien() != null) {
-          kategorien += geoRss.getProblemeKategorien();
+        if (geoRss.getProblemeHauptkategorien() != null) {
+          hauptKategorien += geoRss.getProblemeHauptkategorien();
         }
-        cmd.setErweitertHauptKategorieIds(kategorien);
+        cmd.setErweitertHauptKategorieIds(hauptKategorien);
+        String unterKategorien = "";
+        if (geoRss.getIdeenUnterkategorien() != null) {
+          unterKategorien += geoRss.getIdeenUnterkategorien();
+        }
+        if (geoRss.getProblemeUnterkategorien() != null) {
+          unterKategorien += geoRss.getProblemeUnterkategorien();
+        }
+        cmd.setErweitertUnterKategorieIds(unterKategorien);
         cmd.setObservation(geoRss.getOviWkt());
       }
       
