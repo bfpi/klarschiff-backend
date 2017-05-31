@@ -239,12 +239,13 @@ public class SecurityService {
     List<User> allUsersForRole = getAllUserForRole(roleId);
 
     for (User user : allUsersForRole) {
-      if (user.getName().equals(userName)) {
+      if (StringUtils.equals(user.getName(), userName)) {
         userEmail = user.getEmail();
+        break;
       }
     }
 
-    if (userEmail != null || userEmail != "") {
+    if (userEmail != null && !userEmail.trim().isEmpty()) {
       return userEmail;
     } else {
       return null;

@@ -899,76 +899,109 @@ public class BackendController {
         throw new BackendControllerException(10, "[autorEmail] nicht erlaubt", "Die Domain der angegebenen E-Mail-Adresse ist nicht zulässig.");
       }
       lobHinweiseKritik.setAutorEmail(email);
+      
+      // aktuelle Zuständigkeit des Vorgangs bestimmen und entsprechende Variable belegen
+      String zustaendigkeit = vorg.getZustaendigkeit();
+      
+      // Variable für E-Mail-Adresse des Empfängers definieren
+      String empfaengerEmail = new String();
 
-      // aktuelle Zuständigkeit des Vorgangs bestimmen
-      String zustaendigkeit = lobHinweiseKritik.getVorgang().getZustaendigkeit();
+      // falls aktuelle Zuständigkeit existiert
+      if (zustaendigkeit != null && !zustaendigkeit.trim().isEmpty()) {
 
-      // Empfänger gefunden?
-      Boolean empfaengerGefunden = false;
-
-      // falls aktuelle Zuständigkeit des Vorgangs nicht NULL oder leer ist und gleichzeitig akzeptiert ist
-      if (zustaendigkeit != null && zustaendigkeit != "" && lobHinweiseKritik.getVorgang().getZustaendigkeitStatus() == EnumZustaendigkeitStatus.akzeptiert) {
-
-        String empfaengerEmail = new String();
-
-        // alle Nutzernamen dieser Zuständigkeit bestimmen
+        // alle Nutzernamen der aktuellen Zuständigkeit bestimmen
         List<String> allUserNamesForRole = securityService.getAllUserNamesForRole(zustaendigkeit);
 
-        // denjenigen Nutzernamen aus dieser Zuständigkeit bestimmen, der gemäß dem Verlauf die letzte Bearbeitung am Vorgang durchgeführt hat
-        String empfaenger = verlaufDao.findLastUserForVorgangAndZustaendigkeit(lobHinweiseKritik.getVorgang(), allUserNamesForRole);
+        // denjenigen Nutzernamen als Empfänger aus der aktuellen Zuständigkeit bestimmen, der gemäß dem Verlauf die letzte Bearbeitung am Vorgang durchgeführt hat
+        String empfaenger = verlaufDao.findLastUserForVorgangAndZustaendigkeit(vorg, allUserNamesForRole);
 
-        // falls dieser gefunden wurde
-        if (empfaenger != null && empfaenger != "") {
-          empfaengerGefunden = true;
+        // falls ein Empfänger gefunden wurde
+        if (empfaenger != null && !empfaenger.trim().isEmpty()) {
 
-          // String mit dessen E-Mail-Adresse belegen
-          empfaengerEmail = securityService.getUserEmailForRoleByName(empfaenger, zustaendigkeit);
+            // E-Mail-Adresse des Empfängers ermitteln und entsprechende Variable belegen
+            empfaengerEmail = securityService.getUserEmailForRoleByName(empfaenger, zustaendigkeit);
 
-          // falls der String mit dessen E-Mail-Adresse nicht NULL ist
-          if (empfaengerEmail != null && empfaengerEmail != "") {
-
-            // Empfänger-E-Mail-Adresse für Lob, Hinweise oder Kritik auf zuvor gefüllten String setzen
+            // Empfänger-E-Mail-Adresse für Lob, Hinweise oder Kritik auf E-Mail-Adresse des Empfängers setzen
             lobHinweiseKritik.setEmpfaengerEmail(empfaengerEmail);
 
             // Lob, Hinweise oder Kritik als E-Mail versenden
-            mailService.sendLobHinweiseKritikMail(lobHinweiseKritik.getVorgang(), email, empfaengerEmail, freitext);
-          }
+            mailService.sendLobHinweiseKritikMail(vorg, email, empfaengerEmail, freitext);
+          
         }
-      } // ansonsten: falls Empfänger zuvor nicht gefunden wurde und aktuelle Zuständigkeit des Vorgangs nicht NULL oder leer ist, aber eben auch nicht akzeptiert ist
-      else if (empfaengerGefunden == false && zustaendigkeit != null && zustaendigkeit != "") {
+        // ansonsten
+        else {
+            
+            // alle Empfänger redaktioneller E-Mails der aktuellen Zuständigkeit bestimmen, die zugleich auch Lob, Hinweise oder Kritik als E-Mail empfangen sollen
+            List<RedaktionEmpfaenger> allEmpfaengerLobHinweiseKritikForZustaendigkeit = redaktionEmpfaengerDao.getEmpfaengerListLobHinweiseKritikForZustaendigkeit(vorg.getZustaendigkeit());
 
-        String empfaengerEmail = new String();
-        Short zaehler = 0;
+            // falls Empfänger gefunden wurden
+            if (allEmpfaengerLobHinweiseKritikForZustaendigkeit.size() > 0 && !allEmpfaengerLobHinweiseKritikForZustaendigkeit.isEmpty()) {
+            
+                // Zählvariable definieren
+                Short zaehler = 0;
 
-        // alle Empfänger redaktioneller E-Mails dieser Zuständigkeit bestimmen, die zugleich auch Lob, Hinweise oder Kritik als E-Mail empfangen sollen
-        List<RedaktionEmpfaenger> allEmpfaengerLobHinweiseKritikForZustaendigkeit = redaktionEmpfaengerDao.getEmpfaengerListLobHinweiseKritikForZustaendigkeit(lobHinweiseKritik.getVorgang().getZustaendigkeit());
+                // Empfänger durchlaufen
+                for (RedaktionEmpfaenger empfaengerLobHinweiseKritikForZustaendigkeit : allEmpfaengerLobHinweiseKritikForZustaendigkeit) {
 
-        // falls diese gefunden wurden
-        if (allEmpfaengerLobHinweiseKritikForZustaendigkeit.size() > 0 && !allEmpfaengerLobHinweiseKritikForZustaendigkeit.isEmpty()) {
-          empfaengerGefunden = true;
+                    // falls es nur ein Empfänger ist
+                    if (allEmpfaengerLobHinweiseKritikForZustaendigkeit.size() == 1) {
 
-          // diese durchlaufen
-          for (RedaktionEmpfaenger empfaengerLobHinweiseKritikForZustaendigkeit : allEmpfaengerLobHinweiseKritikForZustaendigkeit) {
+                        // E-Mail-Adresse des Empfängers ermitteln und entsprechende Variable belegen
+                        empfaengerEmail = empfaengerLobHinweiseKritikForZustaendigkeit.getEmail();
 
-            // falls es nur einer ist
-            if (allEmpfaengerLobHinweiseKritikForZustaendigkeit.size() == 1 || zaehler == 0) {
+                        // Lob, Hinweise oder Kritik als E-Mail versenden
+                        mailService.sendLobHinweiseKritikMail(vorg, email, empfaengerEmail, freitext);
+                        
+                        // aus Empfänger-Durchlauf aussteigen
+                        break;
+                        
+                    }
+                    // ansonsten
+                    else {
+                        
+                        // E-Mail-Adresse des aktuellen Empfängers ermitteln und entsprechende Variable belegen
+                        String tempEmpfaengerEmail = empfaengerLobHinweiseKritikForZustaendigkeit.getEmail();
+                        
+                        // beim ersten Empfänger
+                        if (zaehler == 0) {
+                            
+                            // entsprechende Variable mit der aktuellen E-Mail-Adresse belegen
+                            empfaengerEmail = tempEmpfaengerEmail;
+                            
+                        }
+                        // ansonsten
+                        else {
+                            
+                            // entsprechende Variable als kommaseparierten String mit der aktuellen E-Mail-Adresse fortführen
+                            empfaengerEmail = empfaengerEmail + ", " + tempEmpfaengerEmail;
+                            
+                        }
 
-              // String mit dessen E-Mail-Adresse belegen
-              empfaengerEmail = empfaengerLobHinweiseKritikForZustaendigkeit.getEmail();
-            } // ansonsten
-            else {
+                        // Lob, Hinweise oder Kritik als E-Mail an aktuelle E-Mail-Adresse versenden
+                        mailService.sendLobHinweiseKritikMail(vorg, email, tempEmpfaengerEmail, freitext);
+                        
+                    }
+                    
+                    // Zählvariable erhöhen
+                    zaehler++;
+                }
 
-              // kommaseparierten String mit der aktuellen E-Mail-Adresse fortführen
-              empfaengerEmail = empfaengerEmail + ", " + empfaengerLobHinweiseKritikForZustaendigkeit.getEmail();
+                // Empfänger-E-Mail-Adresse für Lob, Hinweise oder Kritik auf E-Mail-Adresse(n) des/der Empfänger(s) setzen
+                lobHinweiseKritik.setEmpfaengerEmail(empfaengerEmail);
+              
             }
-            zaehler++;
+            
+        }
+
+        // falls die E-Mail-Adresse(n) des/der Empfänger(s) existiert/en
+        if (empfaengerEmail != null && !empfaengerEmail.trim().isEmpty()) {
+
+            // Empfänger-E-Mail-Adresse für Lob, Hinweise oder Kritik auf E-Mail-Adresse(n) des/der Empfänger(s) setzen
+            lobHinweiseKritik.setEmpfaengerEmail(empfaengerEmail);
 
             // Lob, Hinweise oder Kritik als E-Mail(s) versenden
-            mailService.sendLobHinweiseKritikMail(lobHinweiseKritik.getVorgang(), email, empfaengerLobHinweiseKritikForZustaendigkeit.getEmail(), freitext);
-          }
-
-          // Empfänger-E-Mail-Adresse für Lob, Hinweise oder Kritik auf in vorhergehender Schleife gefüllten String setzen
-          lobHinweiseKritik.setEmpfaengerEmail(empfaengerEmail);
+            mailService.sendLobHinweiseKritikMail(vorg, email, empfaengerEmail, freitext);
+            
         }
       }
 

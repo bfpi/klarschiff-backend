@@ -7,6 +7,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -104,10 +105,13 @@ public class VerlaufDao {
    */
   public String findLastUserForVorgangAndZustaendigkeit(Vorgang vorgang, List<String> userNames) {
     try {
+      for (int i = 0; i < userNames.size(); i++) {
+	    userNames.set(i, "'" + userNames.get(i) + "'");
+	  }
       return em.createQuery("SELECT o.nutzer FROM Verlauf o "
-        + "WHERE o.nutzer IS NOT NULL AND o.vorgang = :vorgang AND o.nutzer IN (:userNames) "
+        + "WHERE o.nutzer IS NOT NULL AND o.vorgang = :vorgang AND o.nutzer IN (" + StringUtils.join(userNames, ", ") + ") "
         + "ORDER BY o.datum DESC", String.class).setParameter("vorgang", vorgang)
-        .setParameter("userNames", userNames).setMaxResults(1).getSingleResult();
+        .setMaxResults(1).getSingleResult();
     } catch (Exception e) {
       return null;
     }
