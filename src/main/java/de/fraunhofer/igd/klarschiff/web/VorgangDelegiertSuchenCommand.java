@@ -116,6 +116,7 @@ public class VorgangDelegiertSuchenCommand extends Command {
   }
 
   public void setEinfacheSuche(EinfacheSuche einfacheSuche) {
+    setPage(1);
     this.einfacheSuche = einfacheSuche;
   }
 

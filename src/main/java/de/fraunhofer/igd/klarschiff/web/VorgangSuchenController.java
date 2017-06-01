@@ -190,18 +190,22 @@ public class VorgangSuchenController {
    * Seitenbeschreibung: Darstellung der Backend-Suchfunktionalität
    *
    * @param cmd Command
-   * @param neu optionaler Parameter, triggert Initialisierung des Commandobjektes bei neuer
-   * Suchanfrage
+   * @param neu optionaler Parameter, triggert Initialisierung des Commandobjektes bei neuer Suchanfrage
+   * @param resetPage optionaler Parameter, triggert Zurücksetzen der Paginierung
    * @param modelMap Model in der ggf. Daten für die View abgelegt werden
    * @return View, die zum Rendern des Request verwendet wird
    */
   @RequestMapping(method = RequestMethod.GET)
-  public String suchen(@ModelAttribute(value = "cmdvorgangsuchen") VorgangSuchenCommand cmd, @RequestParam(value = "neu", required = false) boolean neu, ModelMap modelMap) {
+  public String suchen(@ModelAttribute(value = "cmdvorgangsuchen") VorgangSuchenCommand cmd, @RequestParam(value = "neu", required = false) boolean neu, @RequestParam(value = "resetPage", required = false) boolean resetPage, ModelMap modelMap) {
     if (neu) {
       cmd = initCommand();
       modelMap.put("cmdvorgangsuchen", cmd);
     }
     updateKategorieInModel(modelMap, cmd);
+    
+    if (resetPage) {
+      cmd.setPage(1);
+    }
     
     if (cmd.getVorgangAuswaehlen() != null && cmd.getVorgangAuswaehlen().length > 0) {
       List<Vorgang> vorgaenge = vorgangDao.findVorgaenge(cmd.getVorgangAuswaehlen());
@@ -233,7 +237,7 @@ public class VorgangSuchenController {
     }
     //Suchen
     modelMap.addAttribute("vorgaenge", vorgaenge);
-    if (cmd.suchtyp == Suchtyp.einfach && cmd.einfacheSuche == EinfacheSuche.offene) {
+    if (cmd.suchtyp == Suchtyp.einfach && cmd.einfacheSuche != EinfacheSuche.abgeschlossene) {
       modelMap.put("missbrauchsmeldungenAbgeschlossenenVorgaenge", vorgangDao.missbrauchsmeldungenAbgeschlossenenVorgaenge());
     }
     modelMap.put("maxPages", calculateMaxPages(cmd.getSize(), vorgangDao.countVorgaenge(cmd)));

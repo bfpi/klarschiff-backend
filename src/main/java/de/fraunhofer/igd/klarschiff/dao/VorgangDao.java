@@ -43,6 +43,8 @@ import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.type.StandardBasicTypes;
 
+import de.fraunhofer.igd.klarschiff.util.LogUtil;
+
 /**
  * Die Dao-Klasse erlaubt das Verwalten der Vorgänge in der DB.
  *
@@ -324,13 +326,10 @@ public class VorgangDao {
    * @return StringBuilder an den angehängt wird mit WHERE
    */
   private StringBuilder addFilter(VorgangSuchenCommand cmd, StringBuilder sql) {
-    List<EnumVorgangStatus> unStatus = new ArrayList<EnumVorgangStatus>(Arrays.asList(EnumVorgangStatus.closedVorgangStatus()));
-
     ArrayList<String> conds = new ArrayList<String>();
     switch (cmd.getSuchtyp()) {
       case einfach:
-        unStatus.add(EnumVorgangStatus.inBearbeitung);
-         {
+        {
           List<String> zustaendigkeiten;
           if (cmd instanceof VorgangFeedCommand) {
             zustaendigkeiten = Role.toString(((VorgangFeedCommand) cmd).getZustaendigkeiten());
@@ -339,25 +338,17 @@ public class VorgangDao {
           }
           conds.add("vo.zustaendigkeit IN ('" + StringUtils.join(zustaendigkeiten, "', '") + "')");
         }
-        if(cmd.getEinfacheSuche() != VorgangSuchenCommand.EinfacheSuche.abgeschlossene) {
-          conds.add("vo.archiviert IS NULL OR NOT vo.archiviert");
-        }
+        conds.add("vo.archiviert IS NULL OR NOT vo.archiviert");
         switch (cmd.getEinfacheSuche()) {
           case offene:
-            conds.add("vo.status IN ('" + EnumVorgangStatus.offen + "', '"
-              + EnumVorgangStatus.inBearbeitung + "')");
-            conds.add("vo.typ != '" + EnumVorgangTyp.idee + "'"
-              + " OR vo.status IN ('" + StringUtils.join(unStatus, "', '") + "')"
-              + " OR un.count >= " + settingsService.getVorgangIdeeUnterstuetzer()
-              + " OR NOT vo.erstsichtung_erfolgt "
-              + " OR mi.count > 0");
+            conds.add("(vo.status IN ('" + EnumVorgangStatus.offen + "', '" + EnumVorgangStatus.inBearbeitung + "') AND vo.typ != '" + EnumVorgangTyp.idee + "')"
+              + " OR (vo.status = '" + EnumVorgangStatus.inBearbeitung + "' AND vo.typ = '" + EnumVorgangTyp.idee + "')"
+              + " OR (vo.status = '" + EnumVorgangStatus.offen + "' AND vo.typ = '" + EnumVorgangTyp.idee + "' AND un.count >= " + settingsService.getVorgangIdeeUnterstuetzer() + ")");
             break;
           case offeneIdeen:
             conds.add("vo.status IN ('" + EnumVorgangStatus.offen + "')");
-            conds.add("vo.typ = '" + EnumVorgangTyp.idee + "'"
-              + " AND (un.count < " + settingsService.getVorgangIdeeUnterstuetzer()
-              + " OR vo.id NOT IN (SELECT DISTINCT vorgang FROM klarschiff_unterstuetzer))"
-              + " AND vo.erstsichtung_erfolgt ");
+            conds.add("vo.typ = '" + EnumVorgangTyp.idee + "'");
+            conds.add("(un.count < " + settingsService.getVorgangIdeeUnterstuetzer() + " OR vo.id NOT IN (SELECT DISTINCT vorgang FROM klarschiff_unterstuetzer))");
             break;
           case abgeschlossene:
             conds.add("vo.status in ('" + StringUtils.join(EnumVorgangStatus.closedVorgangStatus(), "', '") + "')");
@@ -371,12 +362,10 @@ public class VorgangDao {
         }
         //FullText
         if (!StringUtils.isBlank(cmd.getErweitertFulltext())) {
-          if(cmd.getErweitertFulltext().trim().equals(securityService.getCurrentUser().getEmail())) {
             String text = StringEscapeUtils.escapeSql("%" + cmd.getErweitertFulltext().trim() + "%");
-            conds.add("vo.autor_email ILIKE '" + text + "'");
-          } else {
-            String text = StringEscapeUtils.escapeSql("%" + cmd.getErweitertFulltext() + "%");
             conds.add("vo.beschreibung ILIKE '" + text + "'"
+              + " OR vo.adresse ILIKE '" + text + "'"
+              + " OR vo.autor_email ILIKE '" + text + "'"
               + " OR vo.status_kommentar ILIKE '" + text + "'"
               + " OR vo.id IN (SELECT vorgang FROM klarschiff_missbrauchsmeldung "
               + "   WHERE datum_bestaetigung IS NOT NULL AND text ILIKE '" + text + "')"
@@ -385,7 +374,6 @@ public class VorgangDao {
               + " OR vo.kategorie IN (SELECT id FROM klarschiff_kategorie WHERE name ILIKE '" + text + "')"
               + " OR vo.kategorie IN (SELECT id FROM klarschiff_kategorie WHERE parent in ("
               + "SELECT id FROM klarschiff_kategorie WHERE name ILIKE '" + text + "'))");
-          }
         }
         //Nummer
         if (cmd.getErweitertNummerAsLong() != null) {
@@ -395,17 +383,15 @@ public class VorgangDao {
         if (cmd.getVorgangAuswaehlen() != null && cmd.getVorgangAuswaehlen().length > 0) {
           conds.add("vo.id in (" + StringUtils.join(cmd.getVorgangAuswaehlen(), ",") + ")");
         }
-
         //Kategorie
         if (cmd.getErweitertKategorie() != null) {
           conds.add("vo.kategorie = " + cmd.getErweitertKategorie().getId());
-          //Hauptkategorie
+        //Hauptkategorie
         } else if (cmd.getErweitertHauptkategorie() != null) {
           conds.add("vo.kategorie IN (SELECT id FROM klarschiff_kategorie WHERE parent = " + cmd.getErweitertHauptkategorie().getId() + ")");
         //Typ
-        } else if (cmd.getErweitertVorgangTypen() != null) {
-          List<EnumVorgangTyp> inVorgangTypen = Arrays.asList(cmd.getErweitertVorgangTypen());
-          conds.add("vo.typ IN ('" + StringUtils.join(inVorgangTypen, "', '") + "')");
+        } else if (cmd.getErweitertVorgangTyp() != null) {
+          conds.add("vo.typ = '" + cmd.getErweitertVorgangTyp().name() + "'");
         }
         //Status
         if(cmd.getErweitertVorgangStatus() != null) {
@@ -480,12 +466,7 @@ public class VorgangDao {
         }
         //Unterstützer
         if (cmd.getErweitertUnterstuetzerAb() != null) {
-          unStatus.add(EnumVorgangStatus.inBearbeitung);
-          conds.add("vo.typ != '" + EnumVorgangTyp.idee + "' "
-            + " OR NOT vo.erstsichtung_erfolgt "
-            + " OR vo.status IN ('" + StringUtils.join(unStatus, "', '") + "')"
-            + " OR un.count >= " + cmd.getErweitertUnterstuetzerAb()
-          );
+          conds.add("un.count >= " + cmd.getErweitertUnterstuetzerAb());
         }
         //Missbrauchsmeldungen
         if (cmd.getUeberspringeVorgaengeMitMissbrauchsmeldungen()) {
@@ -587,6 +568,7 @@ public class VorgangDao {
         if (!StringUtils.isBlank(cmd.getErweitertFulltext())) {
           String text = StringEscapeUtils.escapeSql("%" + cmd.getErweitertFulltext() + "%");
           conds.add("vo.beschreibung ILIKE '" + text + "'"
+            + " OR vo.adresse ILIKE '" + text + "'"
             + " OR vo.status_kommentar ILIKE '" + text + "'"
             + " OR vo.id IN (SELECT vorgang FROM klarschiff_kommentar "
             + "   WHERE NOT geloescht AND text ILIKE '" + text + "')"
@@ -601,10 +583,10 @@ public class VorgangDao {
         //Kategorie
         if (cmd.getErweitertKategorie() != null) {
           conds.add("vo.kategorie = " + cmd.getErweitertKategorie().getId());
-          //Hauptkategorie
+        //Hauptkategorie
         } else if (cmd.getErweitertHauptkategorie() != null) {
           conds.add("vo.kategorie IN (SELECT id FROM klarschiff_kategorie WHERE parent = " + cmd.getErweitertHauptkategorie().getId() + ")");
-          //Typ
+        //Typ
         } else if (cmd.getErweitertVorgangTyp() != null) {
           conds.add("vo.typ = '" + cmd.getErweitertVorgangTyp().name() + "'");
         }
@@ -719,7 +701,8 @@ public class VorgangDao {
       sql.append("SELECT vo.*,")
         .append(" verlauf1.datum AS aenderungsdatum,")
         .append(" COALESCE(un.count, 0) AS unterstuetzer,")
-        .append(" COALESCE(mi.count, 0) AS missbrauchsmeldung");
+        .append(" COALESCE(mi.count, 0) AS missbrauchsmeldung,")
+        .append(" CASE WHEN COALESCE(mi.count, 0) > 0 THEN 1 ELSE 0 END AS missbrauchsmeldung_vorhanden");
     }
     sql.append(" FROM klarschiff_vorgang vo");
     // Für Sortierung
@@ -744,6 +727,7 @@ public class VorgangDao {
       .addScalar("aenderungsdatum", StandardBasicTypes.DATE)
       .addScalar("unterstuetzer", StandardBasicTypes.INTEGER)
       .addScalar("missbrauchsmeldung", StandardBasicTypes.LONG)
+      .addScalar("missbrauchsmeldung_vorhanden", StandardBasicTypes.NUMERIC_BOOLEAN)
       .list();
   }
   /**
@@ -761,7 +745,7 @@ public class VorgangDao {
           orderBys.add(field.trim() + " " + cmd.getOrderDirectionString());
       }
       if (!orderBys.isEmpty()) {
-          sql.append(" ORDER BY ").append(StringUtils.join(orderBys, ", "));
+          sql.append(" ORDER BY missbrauchsmeldung_vorhanden DESC, ").append(StringUtils.join(orderBys, ", "));
       }
       // LIMIT
       if (cmd.getSize() != null) {

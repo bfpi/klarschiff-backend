@@ -65,6 +65,7 @@ public class VorgangSuchenCommand extends Command {
   EnumPrioritaet erweitertPrioritaet;
   String erweitertDelegiertAn;
   Integer erweitertStadtteilgrenze;
+  boolean resetPage;
   String erweitertNummer;
   boolean alleVorgaengeAuswaehlen;
   Long[] vorgangAuswaehlen;
@@ -146,6 +147,7 @@ public class VorgangSuchenCommand extends Command {
   }
 
   public void setEinfacheSuche(EinfacheSuche einfacheSuche) {
+    setPage(1);
     this.einfacheSuche = einfacheSuche;
   }
 
@@ -345,6 +347,14 @@ public class VorgangSuchenCommand extends Command {
 
   public void setErweitertStadtteilgrenze(Integer erweitertStadtteilgrenze) {
     this.erweitertStadtteilgrenze = erweitertStadtteilgrenze;
+  }
+
+  public boolean getResetPage() {
+    return resetPage;
+  }
+
+  public void setResetPage(boolean resetPage) {
+    this.resetPage = resetPage;
   }
 
   public boolean isAlleVorgaengeAuswaehlen() {

@@ -85,7 +85,7 @@
 				abgeschlossene Vorgänge
 			</util:button>
 			
-			<c:if test="${cmdvorgangsuchen.einfacheSuche=='offene' and missbrauchsmeldungenAbgeschlossenenVorgaenge gt 0}">
+			<c:if test="${missbrauchsmeldungenAbgeschlossenenVorgaenge gt 0}">
                 <c:url value="/images/missbrauchsmeldung.png" var="url"/>
 				<div style="padding-top:10px;font-size:10px;color:#D81922">
                     <c:if test="${missbrauchsmeldungenAbgeschlossenenVorgaenge==1}">
@@ -133,8 +133,8 @@
 						<tr>
 							<td colspan="2">
 								<div>
-									<form:label path="erweitertFulltext" title="Die folgenden Felder werden durchsucht: Hauptkategorie, Unterkategorie, Beschreibung, interne Kommentare, öffentliche Statusinformationen und Missbrauchsmeldungen.">Freitext</form:label>
-									<form:input path="erweitertFulltext" cssClass="inputtext" cssStyle="width:526px;" title="Die folgenden Felder werden durchsucht: Hauptkategorie, Unterkategorie, Beschreibung, interne Kommentare, öffentliche Statusinformationen und Missbrauchsmeldungen."/>
+									<form:label path="erweitertFulltext" title="Die folgenden Felder werden durchsucht: Autor, Adresse, Hauptkategorie, Unterkategorie, Beschreibung, interne Kommentare, öffentliche Statusinformationen und Missbrauchsmeldungen.">Freitext</form:label>
+									<form:input path="erweitertFulltext" cssClass="inputtext" cssStyle="width:526px;" title="Die folgenden Felder werden durchsucht: Autor, Adresse, Hauptkategorie, Unterkategorie, Beschreibung, interne Kommentare, öffentliche Statusinformationen und Missbrauchsmeldungen."/>
 								</div>
 							</td>
 						</tr>
@@ -379,9 +379,19 @@
 						            	</c:forEach>
 									</form:select>
 								</div>
+                                
+                                <div>
+									<form:hidden path="resetPage" id="resetPage" />
+								</div>
 
 								<div style="padding-top: 20px; text-align: right;">
-									<input type="submit" value="Suchen"/>
+									<input type="submit" value="Suchen" onclick="doSubmit()"/>
+									<script type="text/javascript">
+										function doSubmit(){
+                                            document.getElementById("resetPage").value = 'true';
+                                            return true;
+                                        }
+									</script>
 								</div>
 							</td>
 						</tr>
