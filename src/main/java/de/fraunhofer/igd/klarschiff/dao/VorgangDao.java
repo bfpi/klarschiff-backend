@@ -744,8 +744,11 @@ public class VorgangDao {
       for (String field : cmd.getOrderString().split(",")) {
           orderBys.add(field.trim() + " " + cmd.getOrderDirectionString());
       }
-      if (!orderBys.isEmpty()) {
+      if (!orderBys.isEmpty() && !cmd.getJustTimes()) {
           sql.append(" ORDER BY missbrauchsmeldung_vorhanden DESC, ").append(StringUtils.join(orderBys, ", "));
+      }
+      else if (!orderBys.isEmpty()) {
+          sql.append(" ORDER BY ").append(StringUtils.join(orderBys, ", "));
       }
       // LIMIT
       if (cmd.getSize() != null) {
