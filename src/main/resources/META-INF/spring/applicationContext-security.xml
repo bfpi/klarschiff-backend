@@ -20,6 +20,7 @@
     		login-page="/login" 
     		authentication-failure-url="/login?login_error=t"/>
         <secure:logout logout-url="/resources/j_spring_security_logout"/>
+        <secure:intercept-url pattern="/fonts/**" access="permitAll" />
         <secure:intercept-url pattern="/images/**" access="permitAll" />
         <secure:intercept-url pattern="/dokumentation/**" access="permitAll" />
         <secure:intercept-url pattern="/script/**" access="permitAll" />

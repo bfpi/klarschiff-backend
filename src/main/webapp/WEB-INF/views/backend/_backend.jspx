@@ -1,45 +1,60 @@
 <html 
-	xmlns:jsp="http://java.sun.com/JSP/Page" 
-	xmlns:c="http://java.sun.com/jsp/jstl/core" 
-	xmlns:fx="http://igd.fraunhofer.de/tags/elfunctions" 
-	xmlns:tiles="http://tiles.apache.org/tags-tiles" 
+    xmlns:jsp="http://java.sun.com/JSP/Page" 
+    xmlns:c="http://java.sun.com/jsp/jstl/core" 
+    xmlns:fx="http://igd.fraunhofer.de/tags/elfunctions" 
+    xmlns:tiles="http://tiles.apache.org/tags-tiles" 
 >  
-	
-	<jsp:output doctype-root-element="HTML" doctype-system="about:legacy-compat" />
-	
-	<jsp:directive.page contentType="text/html;charset=UTF-8" />  
-	<jsp:directive.page pageEncoding="UTF-8" /> 
+    
+    <jsp:output doctype-root-element="HTML" doctype-system="about:legacy-compat" />
+    
+    <jsp:directive.page contentType="text/html;charset=UTF-8" />  
+    <jsp:directive.page pageEncoding="UTF-8" /> 
 
-	<head>
-		<meta http-equiv="X-UA-Compatible" content="IE=Edge" />	
-		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <head>
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge" />    
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
-		<!-- Favicon -->
-		<c:url value="/favicon.ico" var="url" />
-		<LINK REL="SHORTCUT ICON" HREF="${url}"/>			
-		
-		<!-- Titel -->
-		<title>${fx:title()}</title>
-		
-		<!-- Style -->
-		<c:url value="/styles/styles_frontend-connector.css" var="url"/>
-		<link rel="stylesheet" type="text/css" href="${url}"> <!-- styles_frontend-connector.css --> </link>
-	</head>
-	
-	<body>
-    	<!-- HEADER -->
-        <c:choose>
-            <c:when test="${fx:demo()}">
-                <div id="root_style_header_demo">DEMO</div>
-            </c:when>
-            <c:otherwise>
-                <div id="root_style_header"><![CDATA[&nbsp;]]></div>
-            </c:otherwise>
-        </c:choose>
-			
-		<div id="root_style_content">
-   			<tiles:insertAttribute name="body"/>
-		</div>
-			
-	</body>
+        <!-- Favicon -->
+        <c:url value="/favicon.ico" var="url" />
+        <LINK REL="SHORTCUT ICON" HREF="${url}"/>            
+        
+        <!-- Titel -->
+        <title>${fx:title()}</title>
+        
+        <!-- Style -->
+        <c:url value="/styles/styles_frontend-connector.css" var="url"/>
+        <link rel="stylesheet" type="text/css" href="${url}"> <!-- styles_frontend-connector.css --> </link>
+    </head>
+    
+    <body>
+        <!-- HEADER -->
+        <header>
+            <div class="container">
+                <div class="column">
+                    <div id="logo_ks">&#160;</div>
+                </div>
+                <div class="column link">
+                    <a href="/">
+                        <c:choose>
+                            <c:when test="${fx:demo()}">
+                                Klarschiff
+                            </c:when>
+                            <c:otherwise>
+                                Klarschiff.HRO
+                            </c:otherwise>
+                        </c:choose>
+                    </a>
+                </div>
+                <div class="column-last">
+                    <div id="logo_hro">&#160;</div>
+                </div>
+            </div>
+        </header>
+        
+        <!-- CONTENT -->
+        <div id="content">
+            <tiles:insertAttribute name="body"/>
+        </div>
+            
+    </body>
 </html>

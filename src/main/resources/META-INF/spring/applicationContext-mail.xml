@@ -46,12 +46,12 @@
     />
 
 	<bean class="org.springframework.mail.SimpleMailMessage" id="vorgangBestaetigungMailTemplate"
-	p:from="${mail.from}" p:subject="%title% #%id%: Bestätigung">
+	p:from="${mail.from}" p:subject="%title% #%id%: Meldungsbestätigung">
 		<property name="text"><value><![CDATA[Sehr geehrte(r) Nutzer/-in von %title%,
 
-um Ihre Meldungen zu bestätigen rufen Sie bitte folgende URL auf: %baseUrlFrontend%vorgangBestaetigung/?hash=%hash%
+um Ihre Meldung zu bestätigen rufen Sie bitte folgende URL auf: %baseUrlFrontend%vorgangBestaetigung/?hash=%hash%
 
-Diese URL funktioniert für 24 Stunden und kann einmalig aufgerufen werden. Nach Ablauf dieser Frist wird Ihre Meldung automatisch gelöscht.
+Diese URL funktioniert für 24 Stunden und kann einmalig aufgerufen werden. Nach Ablauf dieser Frist wird Ihre Meldung automatisch hinfällig.
 
 Mit Ihrer Bestätigung erklären Sie sich damit einverstanden, dass wir die von Ihnen im Rahmen der Meldung selbständig gemachten Angaben (Beschreibung) sowie insbesondere das Foto redaktionell bearbeiten dürfen.
 
@@ -66,7 +66,7 @@ Ihr %title%-Team]]></value></property>
 	</bean>
 
 	<bean class="org.springframework.mail.SimpleMailMessage" id="unterstuetzungBestaetigungMailTemplate"
-	p:from="${mail.from}" p:subject="%title% #%id%: Unterstützung">
+	p:from="${mail.from}" p:subject="%title% #%id%: Bestätigung einer Unterstützung">
 		<property name="text"><value><![CDATA[Sehr geehrte(r) Nutzer/-in von %title%,
 
 um Ihre Unterstützung zu bestätigen rufen Sie bitte folgende URL auf: %baseUrlFrontend%unterstuetzerBestaetigung/?hash=%hash%
@@ -80,7 +80,7 @@ Ihr %title%-Team]]></value></property>
 	</bean>
 
 	<bean class="org.springframework.mail.SimpleMailMessage" id="missbrauchsmeldungBestaetigungMailTemplate"
-	p:from="${mail.from}" p:subject="%title% #%id%: Missbrauchsmeldung">
+	p:from="${mail.from}" p:subject="%title% #%id%: Bestätigung einer Missbrauchsmeldung">
 		<property name="text"><value><![CDATA[Sehr geehrte(r) Nutzer/-in von %title%,
 
 um Ihre Missbrauchsmeldung zu bestätigen rufen Sie bitte folgende URL auf: %baseUrlFrontend%missbrauchsmeldungBestaetigung/?hash=%hash%

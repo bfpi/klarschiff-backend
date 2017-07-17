@@ -1,52 +1,107 @@
 /* @author Sebastian Gutzeit (Hansestadt Rostock) */
 
+@font-face {
+    font-family: 'PT Sans';
+    font-style: normal;
+    font-weight: normal;
+    local: 'PT Sans';
+    src: url(../fonts/PTS55F_W.ttf);
+}
+
+@font-face {
+    font-family: 'PT Sans';
+    font-style: italic;
+    font-weight: normal;
+    local: 'PT Sans Italic';
+    src: url(../fonts/PTS56F_W.ttf);
+}
+
+@font-face {
+    font-family: 'PT Sans';
+    font-style: normal;
+    font-weight: bold;
+    local: 'PT Sans Bold';
+    src: url(../fonts/PTS75F_W.ttf);
+}
+
+@font-face {
+    font-family: 'PT Sans';
+    font-style: italic;
+    font-weight: bold;
+    local: 'PT Sans Bold Italic';
+    src: url(../fonts/PTS76F_W.ttf);
+}
+
 body {
-  margin:0 auto;
-  margin-bottom:15px;
-  background-color:#FFFFFF;
-  color:#006cb7;
-  font-family:'Verdana',sans-serif;
-  text-align:center;
-}
-
-#root_style_header {
-  height:200px;
-  width:100%;
-  margin:0 auto;
-  margin-bottom:40px;
-  background-image:url("../images/banner.png");
-  background-repeat:no-repeat;
-  background-position:center;
-}
-
-#root_style_header_demo {
-  height:65px;
-  width:1200px;
-  margin:0 auto;
-  margin-top:11px;
-  background-color:#FFCD05;
-  text-align:center;
-  font-weight:bold;
-  line-height:60px;
-  font-size:180%;
-  color:#D81920;
-  /* abgerundete Ecken */
-  -moz-border-radius: 5px; /* Mozilla */
-  -webkit-border-radius: 5px; /* Webkit */
-  -khtml-border-radius: 5px; /* KHTML */
-  border-radius: 5px; /* Opera */
-}
-
-#root_style_content {
-  width:1000px;
-  margin:0 auto;
-  margin-top:50px;
-  margin-bottom:15px;
+  margin: 0 auto;
+  color: #337ab7;
   text-align: center;
-  font-size:110%;
-  font-weight:bold;
+  font-family: 'PT Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif
 }
 
-#root_style_content .error {
-  color:#d81920;
-}        
+header {
+  padding: 10px 0;
+  height: 90px;
+  background-color: #d9edf7;
+  border-bottom: 1px solid #bce8f1;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.container {
+  width: 99%;
+  margin-right: auto;
+  margin-left: auto;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.column {
+  width: 33.33333333%;
+  float: left;
+}
+
+.column-last {
+  width: 33.33333333%;
+  float: right;
+}
+
+.link {
+  font-size: 48px;
+  font-weight: bold;
+  margin-top: 15px;
+}
+
+.link > a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.link > a:hover {
+  text-decoration: none;
+  color: #286090;
+}
+
+#logo_ks {
+  background-image: url(../images/logo_ks.png);
+  margin: 18px 0;
+  width: 48px;
+  height: 48px;
+}
+
+#logo_hro {
+  background-image: url(../images/logo_hro.png);
+  margin: 5px 15px;
+  width: 118px;
+  height: 74px;
+  float: right;
+}
+
+#content {
+  margin-top: 20px;
+  font-size: 24px;
+}
+
+.error {
+  color: #a94442;
+}
