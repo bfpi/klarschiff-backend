@@ -925,7 +925,7 @@ public class BackendController {
             lobHinweiseKritik.setEmpfaengerEmail(empfaengerEmail);
 
             // Lob, Hinweise oder Kritik als E-Mail versenden
-            mailService.sendLobHinweiseKritikMail(vorg, email, empfaengerEmail, freitext);
+            mailService.sendLobHinweiseKritikMail(vorg, email, empfaengerEmail, freitext.trim());
           
         }
         // ansonsten
@@ -950,7 +950,7 @@ public class BackendController {
                         empfaengerEmail = empfaengerLobHinweiseKritikForZustaendigkeit.getEmail();
 
                         // Lob, Hinweise oder Kritik als E-Mail versenden
-                        mailService.sendLobHinweiseKritikMail(vorg, email, empfaengerEmail, freitext);
+                        mailService.sendLobHinweiseKritikMail(vorg, email, empfaengerEmail, freitext.trim());
                         
                         // aus Empfänger-Durchlauf aussteigen
                         break;
@@ -978,7 +978,7 @@ public class BackendController {
                         }
 
                         // Lob, Hinweise oder Kritik als E-Mail an aktuelle E-Mail-Adresse versenden
-                        mailService.sendLobHinweiseKritikMail(vorg, email, tempEmpfaengerEmail, freitext);
+                        mailService.sendLobHinweiseKritikMail(vorg, email, tempEmpfaengerEmail, freitext.trim());
                         
                     }
                     
@@ -990,17 +990,6 @@ public class BackendController {
                 lobHinweiseKritik.setEmpfaengerEmail(empfaengerEmail);
               
             }
-            
-        }
-
-        // falls die E-Mail-Adresse(n) des/der Empfänger(s) existiert/en
-        if (empfaengerEmail != null && !empfaengerEmail.trim().isEmpty()) {
-
-            // Empfänger-E-Mail-Adresse für Lob, Hinweise oder Kritik auf E-Mail-Adresse(n) des/der Empfänger(s) setzen
-            lobHinweiseKritik.setEmpfaengerEmail(empfaengerEmail);
-
-            // Lob, Hinweise oder Kritik als E-Mail(s) versenden
-            mailService.sendLobHinweiseKritikMail(vorg, email, empfaengerEmail, freitext);
             
         }
       }

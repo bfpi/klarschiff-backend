@@ -135,7 +135,7 @@ public class Missbrauchsmeldung implements Serializable {
   }
 
   public void setText(String text) {
-    this.text = text;
+    this.text = text.trim();
   }
 
   public String getAutorEmail() {

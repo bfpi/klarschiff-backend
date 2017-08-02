@@ -93,7 +93,7 @@ public class LobHinweiseKritik implements Serializable {
   }
 
   public void setFreitext(String freitext) {
-    this.freitext = freitext;
+    this.freitext = freitext.trim();
   }
 
   public String getAutorEmail() {
