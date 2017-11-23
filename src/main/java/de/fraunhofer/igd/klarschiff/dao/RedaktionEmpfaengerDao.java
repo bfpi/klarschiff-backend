@@ -15,7 +15,7 @@ import de.fraunhofer.igd.klarschiff.vo.RedaktionEmpfaenger;
 /**
  * DAO zum Lesen und Aktualisieren der Empfänger von redaktionellen E-Mails mit Hilfe der DB
  *
- * @author Sebastian Gutzeit (Hansestadt Rostock)
+ * @author Sebastian Gutzeit (Hanse- und Universitätsstadt Rostock)
  */
 @Repository
 public class RedaktionEmpfaengerDao {

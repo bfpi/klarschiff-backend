@@ -6,7 +6,7 @@ package de.fraunhofer.igd.klarschiff.web;
  * <code>order</code>: die Spalte nach der sortiert wird<br/>
  * <code>orderDirection</code>: die Sortierreihenfolge (1:absteigend,default:aufsteigend)
  *
- * @author Sebastian Gutzeit (Hansestadt Rostock)
+ * @author Sebastian Gutzeit (Hanse- und Universitätsstadt Rostock)
  */
 @SuppressWarnings("serial")
 public class AdminLobHinweiseKritikCommand extends Command {

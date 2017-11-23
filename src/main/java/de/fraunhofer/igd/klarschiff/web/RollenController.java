@@ -15,7 +15,7 @@ import de.fraunhofer.igd.klarschiff.util.SqlScriptUtil;
 /**
  * Controller für die Rollenübersicht
  *
- * @author Sebastian Gutzeit (Hansestadt Rostock)
+ * @author Sebastian Gutzeit (Hanse- und Universitätsstadt Rostock)
  */
 @RequestMapping("/rollen")
 @Controller

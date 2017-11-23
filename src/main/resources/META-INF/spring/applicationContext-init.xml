@@ -67,7 +67,7 @@
 	</bean>
 	
 	<bean id="statusKommentarVorlage_01" class="de.fraunhofer.igd.klarschiff.vo.StatusKommentarVorlage" lazy-init="true" p:titel="Eigentum">
-		<property name="text"><value><![CDATA[Die Fläche befindet sich nicht im Eigentum der Hansestadt Rostock.]]></value></property>
+		<property name="text"><value><![CDATA[Die Fläche befindet sich nicht im Eigentum der Hanse- und Universitätsstadt Rostock.]]></value></property>
 	</bean>
     <bean id="statusKommentarVorlage_02" class="de.fraunhofer.igd.klarschiff.vo.StatusKommentarVorlage" lazy-init="true" p:titel="Gehölzschnitt">
 		<property name="text"><value><![CDATA[Schnitt- und Fällmaßnahmen können gemäß Bundesnaturschutzgesetz (§ 39 Abs. 5) nur vom 01. Oktober bis 28. Februar durchgeführt werden. Der Hinweis ist vorgemerkt.]]></value></property>

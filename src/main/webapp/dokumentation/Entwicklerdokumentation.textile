@@ -42,8 +42,8 @@ table(tableclass).
 | Hani Samara | Fraunhofer IGD | Backend | Userinterface, PDF-Erzeugung | hani.samara@igd-r.fraunhofer.de | 
 | Stefan Gladisch | Fraunhofer IGD | Backend | Gestaltung | stefan.gladisch@igd-r.fraunhofer.de | 
 | Martin Gielow | Fraunhofer IGD | Backend | fotomanipulation | martin.gielow@igd-r.fraunhofer.de | 
-| Dethleff Neitz | Hansestadt Rostock | | Auftraggeber, Projektleiter, Konzept | detlef.neitz@rostock.de | 
-| Sebastian Gutzeit | Hansestadt Rostock | | Konzept | (sebastian.gutzeit@rostock.de | 
+| Detlef Neitz | Hanse- und Universitätsstadt Rostock | | Auftraggeber, Projektleiter, Konzept | detlef.neitz@rostock.de | 
+| Sebastian Gutzeit | Hanse- und Universitätsstadt Rostock | | Konzept | (sebastian.gutzeit@rostock.de | 
 | Peter König | WhereGroup | Frontend | Projektleiter, Datensynchronisation | peter.koenig@wheregroup.com |
 | Christian Wygoda, Uli Rothstein, Toni Pignataro | WhereGroup | Frontend | Entwickler | christian.wygoda@wheregroup.com, ulrich.rothstein@wheregroup.com, toni.pignataro@wheregroup.com |
 
@@ -76,7 +76,7 @@ h2. Organisatorische Randbedingungen
 
 p(help). Darstellung von organsisatorischen Randbedingungen, die beim Entwurf und der Entwicklung des Backends beachtet werden mussten. 
 
-| Auftraggeber | Auftraggeber für Klarschiff war die Hansestadt Rostock. |
+| Auftraggeber | Auftraggeber für Klarschiff war die Hanse- und Universitätsstadt Rostock. |
 | Aufftragnehmer | Die Entwicklung des Frontend erfolgte bei der WhereGroup und die des Backends beim Fraunhofer IGD. |
 | Projektbudget | Für die Entwicklung wurde ein Festpreis vereinbart. | 
 | Haftung | Das Fraunhofer IGD übernimmt für das Backend keine Haftung. |

@@ -120,7 +120,7 @@ public class VorgangFeedController {
 
     //Copyright
     elem = new Element("copyright");
-    elem.addContent("Hansestadt Rostock");
+    elem.addContent("Hanse- und Universitätsstadt Rostock");
     channel.addContent(elem);
 
     //Image
@@ -312,7 +312,7 @@ public class VorgangFeedController {
 
     //Copyright
     elem = new Element("copyright");
-    elem.addContent("Hansestadt Rostock");
+    elem.addContent("Hanse- und Universitätsstadt Rostock");
     channel.addContent(elem);
 
     //Image
