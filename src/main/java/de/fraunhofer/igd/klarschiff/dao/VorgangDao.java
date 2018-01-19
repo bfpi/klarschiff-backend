@@ -1136,7 +1136,7 @@ public class VorgangDao {
       .addWhereConditions("ve.typ = :verlaufTyp").addParameter("verlaufTyp", EnumVerlaufTyp.status)
       .addWhereConditions("ve.datum >= :datum").addParameter("datum", lastChange)
       .addWhereConditions("vo.status IN (:status)").addParameter("status", Arrays.asList(EnumVorgangStatus.closedVorgangStatus()))
-      .addWhereConditions("ve.wertNeu IN ('geloest', 'nichtLoesbar')")
+      .addWhereConditions("ve.wertNeu IN ('gelöst', 'nicht lösbar')")
       .addWhereConditions("vo.autorEmail IS NOT NULL")
       .addWhereConditions("vo.autorEmail != :autorEmail").addParameter("autorEmail", "");
     return query.getResultList(em);
