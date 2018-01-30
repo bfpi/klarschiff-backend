@@ -291,6 +291,11 @@ public class Vorgang implements Serializable {
   @Column(nullable = false, columnDefinition = "boolean default false")
   Boolean fotowunsch;
 
+  /**
+   * letzter Bearbeiter des Vorgangs, für Sortierung bei Listen
+   */
+  String letzterBearbeiter;
+
   @Transient
   private static GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(), 25833);
 
@@ -760,5 +765,13 @@ public class Vorgang implements Serializable {
       return null;
     }
     return getAuftrag().getPrioritaet();
+  }
+
+  public String getLetzterBearbeiter() {
+    return letzterBearbeiter;
+  }
+
+  public void setLetzterBearbeiter(String letzterBearbeiter) {
+    this.letzterBearbeiter = letzterBearbeiter;
   }
 }

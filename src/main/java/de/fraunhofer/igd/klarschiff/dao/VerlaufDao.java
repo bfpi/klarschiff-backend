@@ -72,6 +72,9 @@ public class VerlaufDao {
       } catch (Exception e) {
       }
     }
+    if(verlauf.getNutzer() != null && verlauf.getNutzer().length() > 0) {
+      vorgang.setLetzterBearbeiter(verlauf.getNutzer());
+    }
     verlauf.setTyp(typ);
     verlauf.setWertAlt(wertAlt);
     verlauf.setWertNeu(wertNeu);

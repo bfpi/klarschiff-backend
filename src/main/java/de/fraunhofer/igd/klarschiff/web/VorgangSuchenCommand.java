@@ -102,6 +102,10 @@ public class VorgangSuchenCommand extends Command {
         return "auftrag.prioritaet, vo.datum";
       case 9:
         return "vo.version";
+      case 10:
+        return "vo.letzter_bearbeiter";
+      case 11:
+        return "vo.prioritaet_ordinal";
       default:
         return "";
     }
