@@ -157,6 +157,18 @@
 					<input type="hidden" name="action" value="informErstellerAbschluss"/>
 					<input type="submit" value="Ausführen"/>
 				</form>
+
+				<div class="subtitle">createRequestOverview</div>
+				<p class="help">
+                    Dieser Job erstellt statische Dateien als Übersicht von aktuell aktiven Vorgängen
+				</p>
+				<ul class="help">
+					<li>Ausführungszeitpunkt: täglich um 02:05 Uhr</li>
+				</ul>
+				<form method="post">
+					<input type="hidden" name="action" value="createRequestOverview"/>
+					<input type="submit" value="Ausführen"/>
+				</form>
 			</div>
 		</div>
 		<util:ddpanel name="jobServiceTest"/>

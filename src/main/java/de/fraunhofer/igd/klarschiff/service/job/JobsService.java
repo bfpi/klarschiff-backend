@@ -24,6 +24,7 @@ import de.fraunhofer.igd.klarschiff.service.cluster.ScheduledSyncInCluster;
 import de.fraunhofer.igd.klarschiff.service.mail.MailService;
 import de.fraunhofer.igd.klarschiff.service.security.Role;
 import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
+import de.fraunhofer.igd.klarschiff.service.settings.SettingsService;
 import de.fraunhofer.igd.klarschiff.vo.EnumVorgangTyp;
 import de.fraunhofer.igd.klarschiff.vo.Missbrauchsmeldung;
 import de.fraunhofer.igd.klarschiff.vo.RedaktionEmpfaenger;
@@ -60,6 +61,9 @@ public class JobsService {
 
   @Autowired
   RedaktionKriterienDao redaktionKriterienDao;
+
+  @Autowired
+  SettingsService settingsService;
 
   @Autowired
   SecurityService securityService;
@@ -333,6 +337,15 @@ public class JobsService {
     for (Vorgang vorgang : vorgaenge) {
       mailService.sendInformErstellerMailAbschluss(vorgang);
     }
+  }
+
+  /**
+   * Dieser Job erstellt statische Dateien als Übersicht von aktuell aktiven Vorgängen
+   */
+  @ScheduledSyncInCluster(cron = "0 05 02 * * *", name = "Erstellt Übersicht von aktuell aktiven Vorgängen")
+  public void createRequestOverview() {
+    RequestOverview ro = new RequestOverview();
+    ro.create(settingsService, vorgangDao);
   }
 
   /**

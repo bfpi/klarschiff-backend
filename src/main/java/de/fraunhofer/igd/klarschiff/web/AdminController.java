@@ -177,6 +177,8 @@ public class AdminController {
       jobsService.informErstellerAbschluss();
     } else if (action.equalsIgnoreCase("informRedaktionEmpfaenger")) {
       jobsService.informRedaktionEmpfaenger();
+    } else if (action.equalsIgnoreCase("createRequestOverview")) {
+      jobsService.createRequestOverview();
     }
     return "admin/test";
   }
