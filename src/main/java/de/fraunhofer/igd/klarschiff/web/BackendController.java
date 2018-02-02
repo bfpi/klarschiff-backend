@@ -1426,6 +1426,7 @@ public class BackendController {
     @RequestParam(value = "with_foto", required = false) boolean with_foto,
     @RequestParam(value = "also_archived", required = false) boolean also_archived,
     @RequestParam(value = "just_count", required = false) boolean just_count,
+    @RequestParam(value = "area_code", required = false) Integer area_code,
     HttpServletResponse response) throws IOException {
 
     try {
@@ -1541,6 +1542,10 @@ public class BackendController {
         cmd.setObservation(geoRss.getOviWkt());
       }
       
+      if(area_code != null) {
+        cmd.setErweitertStadtteilgrenze(area_code);
+      }
+
       if (max_requests != null) {
         cmd.setOrder(9);
         cmd.setSize(max_requests);
