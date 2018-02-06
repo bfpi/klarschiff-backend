@@ -67,6 +67,8 @@ public class MailService {
   String serverBaseUrlBackend;
   String serverBaseUrlFrontend;
 
+  String mailFrom;
+
   String sendAllMailsTo;
 
   String mailtoMailclientEncoding = "UTF-8";
@@ -103,10 +105,11 @@ public class MailService {
     try {
       MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mailSender.createMimeMessage(), true);
       mimeMessageHelper.setSubject(settingsService.getContextAppTitle()
-        + ": Lob, Hinweise oder Kritik von Bürger/-innen zu Vorgang " + vorgang.getId());
-      mimeMessageHelper.setFrom(absender);
+        + ": Lob, Hinweise oder Kritik von Bürger/-in zu Vorgang " + vorgang.getId());
+      mimeMessageHelper.setFrom(getMailFrom());
       mimeMessageHelper.setTo(empfaenger);
       mimeMessageHelper.setBcc(absender);
+      mimeMessageHelper.setReplyTo(absender);
       mimeMessageHelper.setText(freitext);
       jobExecutorService.runJob(new MailSenderJob(this, mimeMessageHelper.getMimeMessage()));
     } catch (Exception e) {
@@ -200,9 +203,10 @@ public class MailService {
     try {
       MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mailSender.createMimeMessage(), true);
       mimeMessageHelper.setSubject(vorgangWeiterleitenMailTemplate.getSubject());
-      mimeMessageHelper.setFrom(securityService.getCurrentUser().getEmail());
+      mimeMessageHelper.setFrom(getMailFrom());
       mimeMessageHelper.setTo(toEmail);
       mimeMessageHelper.setBcc(securityService.getCurrentUser().getEmail());
+      mimeMessageHelper.setReplyTo(securityService.getCurrentUser().getEmail());
 
       String mailText = composeVorgangWeiterleitenMail(vorgang, text, sendAutor, sendKarte, sendKommentare,
         sendLobHinweiseKritik, sendMissbrauchsmeldungen);
@@ -781,6 +785,14 @@ public class MailService {
 
   public void setMailSender(JavaMailSender mailSender) {
     this.mailSender = mailSender;
+  }
+
+  public String getMailFrom() {
+    return mailFrom;
+  }
+
+  public void setMailFrom(String mailFrom) {
+    this.mailFrom = mailFrom;
   }
 
   public String getSendAllMailsTo() {
