@@ -90,7 +90,7 @@
 								</td>
 				        <td style="text-align: center;">
 									<c:url value="/images/${vorgang.typ}_15.png" var="imageUrl"/>
-									<a href="${url}"><img alt="${vorgang.typ.text}" src="${url}" height="15" width="15"  title="Typ: ${vorgang.typ.text}"/></a>
+									<a href="${url}"><img alt="${vorgang.typ.text}" src="${imageUrl}" height="15" width="15"  title="Typ: ${vorgang.typ.text}"/></a>
 								</td>
 				        <c:choose>
                                     <c:when test="${erstellung_datum eq heute_datum}">
