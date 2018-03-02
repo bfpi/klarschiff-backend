@@ -91,7 +91,7 @@ public class VorgangSuchenCommand extends Command {
       case 3:
         return "kat_haupt.name,kat_unter.name";
       case 4:
-        return "vo.status_ordinal";
+        return "vo.status_ordinal, vo.typ";
       case 5:
         return "vo.adresse";
       case 6:
