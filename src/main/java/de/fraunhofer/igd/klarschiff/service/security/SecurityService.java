@@ -1,6 +1,8 @@
 package de.fraunhofer.igd.klarschiff.service.security;
 
 import de.fraunhofer.igd.klarschiff.dao.AussendienstKoordinatorDao;
+import de.fraunhofer.igd.klarschiff.dao.BenutzerDao;
+import de.fraunhofer.igd.klarschiff.dao.FlaechenDao;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.PrintWriter;
@@ -32,8 +34,10 @@ import org.springframework.stereotype.Service;
 
 import de.fraunhofer.igd.klarschiff.dao.VorgangDao;
 import de.fraunhofer.igd.klarschiff.util.SystemUtil;
+import de.fraunhofer.igd.klarschiff.vo.Benutzer;
 import de.fraunhofer.igd.klarschiff.vo.Kommentar;
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
+import org.joda.time.DateTime;
 
 /**
  * Die Klasse stellt einen Service bereit über den die Daten zu Benutzer und deren Rollen bzw.
@@ -49,6 +53,10 @@ public class SecurityService {
 
   static final Logger logger = Logger.getLogger(SecurityService.class);
 
+  @Autowired
+  BenutzerDao benutzerDao;
+  @Autowired
+  FlaechenDao flaechenDao;
   @Autowired
   VorgangDao vorgangDao;
   @Autowired
@@ -188,7 +196,9 @@ public class SecurityService {
   public User getUser(String login) {
     try {
       List<User> users = securityServiceLdap.getObjectListFromLdap(userSearchBase, "(&(objectclass=" + userObjectClass + ")(" + StringUtils.replace(userSearchFilter, "{0}", login) + "))", userContextMapper);
-      return users.get(0);
+      User user = users.get(0);
+      user = getBenutzerDaten(user);
+      return user;
     } catch (Exception e) {
       return null;
     }
@@ -204,7 +214,9 @@ public class SecurityService {
   public User getUserByEmail(String email) {
     try {
       List<User> users = securityServiceLdap.getObjectListFromLdap(userSearchBase, "(&(objectclass=" + userObjectClass + ")(" + StringUtils.replace(userEmailFilter, "{0}", email) + "))", userContextMapper);
-      return users.get(0);
+      User user = users.get(0);
+      user = getBenutzerDaten(user);
+      return user;
     } catch (Exception e) {
       return null;
     }
@@ -219,7 +231,7 @@ public class SecurityService {
    */
   public List<Role> getGroupsByUserEmailAndGroupMatcher(String email, String groupMatchCondition) {
     User user = getUserByEmail(email);
-    if(user == null) {
+    if (user == null) {
       return new ArrayList<Role>();
     }
     return securityServiceLdap.getObjectListFromLdap(groupSearchBase, "(&(objectclass=" + groupObjectClass + ")(" + groupMatchCondition + ")(" + StringUtils.replace(groupSearchFilter, "{0}", user.getDn()) + "))", roleContextMapper);
@@ -260,15 +272,34 @@ public class SecurityService {
   public List<User> getAllUser() {
     //alle UserLogins in den Rollen ermitteln
     List<List<String>> usersLoginList = securityServiceLdap.getObjectListFromLdap(groupSearchBase, "(objectclass=" + groupObjectClass + ")", userLoginContextMapper);
-    //Set
-    Set<String> userLoginSet = new HashSet<String>();
-    for (List<String> list : usersLoginList) {
-      userLoginSet.addAll(list);
-    }
-    //User ermitteln
-    List<User> userList = new ArrayList<User>();
-    for (Iterator<String> iter = userLoginSet.iterator(); iter.hasNext();) {
-      userList.add(getUser(iter.next()));
+    List<User> userList = getUserFromLoginList(usersLoginList);
+
+    Collections.sort(userList, new Comparator<User>() {
+      public int compare(User u1, User u2) {
+        if (u1 == null) {
+          return -1;
+        } else if (u2 == null) {
+          return 1;
+        } else {
+          return u1.getId().compareTo(u2.getId());
+        }
+      }
+    });
+
+    return userList;
+  }
+
+  /**
+   * Ermittelt alle Benutzer, die für das Backend einen Zugang haben.
+   *
+   * @return List der Benutzer und deren Benutzerdaten
+   */
+  public List<User> getAllUserWithAreas() {
+    //alle UserLogins in den Rollen ermitteln
+    List<List<String>> usersLoginList = securityServiceLdap.getObjectListFromLdap(groupSearchBase, "(objectclass=" + groupObjectClass + ")", userLoginContextMapper);
+    List<User> userList = getUserFromLoginList(usersLoginList);
+    for (User user : userList) {
+      user = getBenutzerDaten(user);
     }
 
     Collections.sort(userList, new Comparator<User>() {
@@ -758,6 +789,18 @@ public class SecurityService {
     }
     Collections.sort(teams);
     return teams;
+  }
+
+  private User getBenutzerDaten(User user) {
+    Benutzer benutzer = benutzerDao.findByBenutzername(user.getId());
+    if (benutzer == null) {
+      benutzer = new Benutzer();
+      benutzer.setBenutzername(user.getId());
+      benutzerDao.persist(benutzer);
+    }
+    user.setDbId(benutzer.getId());;
+    user.setFlaechen(benutzer.getFlaechen());
+    return user;
   }
 
   /**

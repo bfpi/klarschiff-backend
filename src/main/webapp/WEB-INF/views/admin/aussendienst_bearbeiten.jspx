@@ -10,7 +10,7 @@
     version="2.0"
 >
 
-    <c:url value="/script/aussendienst.js" var="url"/>
+    <c:url value="/script/mehrfachauswahl.js" var="url"/>
     <script src="${url}" type="text/javascript"><!-- //aussendienst --></script>
 
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
@@ -37,14 +37,14 @@
             </tbody>
           </table>
           <form:form method="POST" modelAttribute="cmd">
-            <table class="resulttable" id="aussendienst_zustaendigkeiten">
+            <table class="resulttable" id="mehrfachauswahl">
               <tr>
                 <th>zugewiesene Außendiensteinheiten-Teams</th>
                 <th>mögliche Außendiensteinheiten-Teams</th>
               </tr>
               <tr>
                 <td>
-                  <ul id="aktuellerBenutzer">
+                  <ul id="zugewiesen">
                     <c:forEach items="${benutzer.aussendienstKoordinatorZustaendigkeiten}" var="aussendienst">
                       <li>
                         <input type="hidden" name="zugewiesen[]" value="${aussendienst}" />
@@ -56,7 +56,7 @@
                   </ul>
                 </td>
                 <td>
-                  <ul id="aussendienstTeams">
+                  <ul id="verfuegbar">
                     <c:forEach items="${aussendienstTeams}" var="aussendienst">
                       <li>
                         <input type="hidden" name="moeglich[]" value="${aussendienst}" />

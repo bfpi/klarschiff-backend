@@ -18,6 +18,7 @@
       <menu:tabmenuitem label="Benutzer" url="/admin/benutzer" id="admin.benutzer" currentId="${currentId}"/>
       <menu:tabmenuitem label="Rollen" url="/admin/rollen" id="admin.rollen" currentId="${currentId}"/>
       <menu:tabmenuitem label="Außendienst" url="/admin/aussendienst" id="admin.aussendienst" currentId="${currentId}"/>
+      <menu:tabmenuitem label="Flächen" url="/admin/flaechen" id="admin.flaechen" currentId="${currentId}"/>
       <menu:tabmenuitem label="Redaktion" url="/admin/redaktion" id="admin.redaktion" currentId="${currentId}"/>
       <menu:tabmenuitem label="Lob/Hinweise/Kritik" url="/admin/lobhinweisekritik" id="admin.lobhinweisekritik" currentId="${currentId}"/>
       <menu:tabmenuitem label="Trashmail" url="/admin/trashmail" id="admin.trashmail" currentId="${currentId}"/>

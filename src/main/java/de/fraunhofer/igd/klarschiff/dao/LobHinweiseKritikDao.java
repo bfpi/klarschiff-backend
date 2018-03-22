@@ -1,5 +1,6 @@
 package de.fraunhofer.igd.klarschiff.dao;
 
+import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -12,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import de.fraunhofer.igd.klarschiff.vo.LobHinweiseKritik;
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
 import de.fraunhofer.igd.klarschiff.web.AdminLobHinweiseKritikCommand;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Die Dao-Klasse ermöglicht den Zugriff auf Lob, Hinweise oder Kritik zu einem Vorgang
@@ -23,6 +25,9 @@ public class LobHinweiseKritikDao {
 
   @PersistenceContext
   EntityManager em;
+
+  @Autowired
+  SecurityService securityService;
 
   @Transactional
   public void persist(LobHinweiseKritik lobHinweiseKritik) {
@@ -50,7 +55,7 @@ public class LobHinweiseKritikDao {
 
   @SuppressWarnings("unchecked")
   public List<LobHinweiseKritik> findLobHinweiseKritik(AdminLobHinweiseKritikCommand cmd) {
-    HqlQueryHelper query = (new HqlQueryHelper()).addSelectAttribute("o")
+    HqlQueryHelper query = (new HqlQueryHelper(securityService)).addSelectAttribute("o")
       .addFromTables("LobHinweiseKritik o");
 
     if (cmd.getPage() != null && cmd.getSize() != null) {

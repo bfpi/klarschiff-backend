@@ -12,8 +12,12 @@ import org.springframework.stereotype.Repository;
 
 import de.fraunhofer.igd.klarschiff.service.security.Role;
 import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
+import de.fraunhofer.igd.klarschiff.service.security.User;
 import de.fraunhofer.igd.klarschiff.service.settings.SettingsService;
+import de.fraunhofer.igd.klarschiff.vo.Flaeche;
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
+import java.util.ArrayList;
+import javax.persistence.Query;
 
 /**
  * Die Dao-Klasse erlaubt das Ermitteln von Daten aus der DB für die Statistik.
@@ -37,7 +41,7 @@ public class StatisticDao {
 
   @SuppressWarnings("unchecked")
   public List<Vorgang> findVorgaengeMissbrauchsmeldungen() {
-    HqlQueryHelper query = new HqlQueryHelper()
+    HqlQueryHelper query = new HqlQueryHelper(securityService)
       .addFromTables("Vorgang vo JOIN vo.missbrauchsmeldungen mi WITH mi.datumBestaetigung IS NOT NULL AND mi.datumAbarbeitung IS NULL")
       .addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert = FALSE)")
       .orderBy("vo.id");
@@ -48,7 +52,7 @@ public class StatisticDao {
 
   @SuppressWarnings("unchecked")
   public List<Vorgang> findLastVorgaenge(int maxResult) {
-    HqlQueryHelper query = new HqlQueryHelper()
+    HqlQueryHelper query = new HqlQueryHelper(securityService)
       .addFromTables("Vorgang vo")
       .addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert = FALSE)")
       .addWhereConditions("NOT (vo.typ = 'idee' AND vo.erstsichtungErfolgt = TRUE AND vo.status = 'offen' AND (SELECT count(*) FROM Unterstuetzer un WHERE un.vorgang = vo.id) < :unterstuetzer)").addParameter("unterstuetzer", settingsService.getVorgangIdeeUnterstuetzer())
@@ -61,7 +65,7 @@ public class StatisticDao {
 
   @SuppressWarnings("unchecked")
   public List<Vorgang> findVorgaengeOffenNichtAkzeptiert(Date datum) {
-    HqlQueryHelper query = (new HqlQueryHelper()).addSelectAttribute("vo")
+    HqlQueryHelper query = (new HqlQueryHelper(securityService)).addSelectAttribute("vo")
       .addFromTables("Vorgang vo")
       .addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert = FALSE)")
       .addWhereConditions("vo.status = 'offen'")
@@ -74,7 +78,7 @@ public class StatisticDao {
 
   @SuppressWarnings("unchecked")
   public List<Vorgang> findVorgaengeInbearbeitungOhneStatusKommentar(Date datum) {
-    HqlQueryHelper query = (new HqlQueryHelper()).addSelectAttribute("vo")
+    HqlQueryHelper query = (new HqlQueryHelper(securityService)).addSelectAttribute("vo")
       .addFromTables("Vorgang vo")
       .addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert = FALSE)")
       .addWhereConditions("vo.status = 'inBearbeitung'")
@@ -87,7 +91,7 @@ public class StatisticDao {
 
   @SuppressWarnings("unchecked")
   public List<Vorgang> findVorgaengeIdeeOffenOhneUnterstuetzung(Date datum) {
-    HqlQueryHelper query = (new HqlQueryHelper()).addSelectAttribute("vo")
+    HqlQueryHelper query = (new HqlQueryHelper(securityService)).addSelectAttribute("vo")
       .addFromTables("Vorgang vo JOIN vo.verlauf ve")
       .addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert = FALSE)")
       .addWhereConditions("vo.typ = 'idee'")
@@ -103,7 +107,7 @@ public class StatisticDao {
 
   @SuppressWarnings("unchecked")
   public List<Vorgang> findVorgaengeNichtLoesbarOhneStatuskommentar() {
-    HqlQueryHelper query = (new HqlQueryHelper()).addSelectAttribute("vo")
+    HqlQueryHelper query = (new HqlQueryHelper(securityService)).addSelectAttribute("vo")
       .addFromTables("Vorgang vo")
       .addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert = FALSE)")
       .addWhereConditions("vo.status = 'nichtLoesbar'")
@@ -115,7 +119,7 @@ public class StatisticDao {
 
   @SuppressWarnings("unchecked")
   public List<Vorgang> findVorgaengeNichtMehrOffenNichtAkzeptiert() {
-    HqlQueryHelper query = (new HqlQueryHelper()).addSelectAttribute("vo")
+    HqlQueryHelper query = (new HqlQueryHelper(securityService)).addSelectAttribute("vo")
       .addFromTables("Vorgang vo")
       .addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert = FALSE)")
       .addWhereConditions("vo.status NOT IN ('gemeldet','offen')")
@@ -127,7 +131,7 @@ public class StatisticDao {
 
   @SuppressWarnings("unchecked")
   public List<Vorgang> findVorgaengeOhneRedaktionelleFreigaben() {
-    HqlQueryHelper query = (new HqlQueryHelper()).addSelectAttribute("vo")
+    HqlQueryHelper query = (new HqlQueryHelper(securityService)).addSelectAttribute("vo")
       .addFromTables("Vorgang vo")
       .addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert = FALSE)")
       .addWhereConditions("vo.status IN ('offen', 'inBearbeitung', 'nichtLoesbar', 'geloest')")
@@ -140,7 +144,7 @@ public class StatisticDao {
 
   @SuppressWarnings("unchecked")
   public List<Object[]> getStatusVerteilung(boolean onlyCurrentZustaendigkeitDelegiertAn) {
-    HqlQueryHelper query = new HqlQueryHelper()
+    HqlQueryHelper query = new HqlQueryHelper(securityService)
       .addFromTables("Vorgang vo")
       .addSelectAttribute("vo.status")
       .addSelectAttribute("COUNT(vo.id)")

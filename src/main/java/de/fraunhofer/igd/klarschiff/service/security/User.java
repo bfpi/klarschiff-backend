@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 
 import de.fraunhofer.igd.klarschiff.context.AppContext;
+import de.fraunhofer.igd.klarschiff.vo.Flaeche;
 
 /**
  * Bean zum Abbilden der Daten eines Benutzers aus dem LDAP. die Bean enthält zusätzlich weitere
@@ -19,6 +20,9 @@ public class User {
   String name;
   String email;
   String dn;
+
+  private Integer dbId;
+  private List<Flaeche> flaechen = new ArrayList<Flaeche>();
 
   /**
    * Ermittelt die Zuständigkeiten des Benutzers.
@@ -131,5 +135,21 @@ public class User {
 
   public void setDn(String dn) {
     this.dn = dn;
+  }
+
+  public Integer getDbId() {
+    return dbId;
+  }
+
+  public void setDbId(Integer dbId) {
+    this.dbId = dbId;
+  }
+
+  public List<Flaeche> getFlaechen() {
+    return flaechen;
+  }
+
+  public void setFlaechen(List<Flaeche> flaechen) {
+    this.flaechen = flaechen;
   }
 }
