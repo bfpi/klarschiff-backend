@@ -1330,7 +1330,7 @@ public class VorgangDao {
 
   private ArrayList<String> addFlaechenFilter(ArrayList<String> conds) {
     User user = securityService.getCurrentUser();
-    if (user.getFlaechen().size() > 0) {
+    if (user != null && user.getFlaechen().size() > 0) {
       Query tmp = em.createNativeQuery("SELECT ST_AsText(ST_Union(flaeche)) FROM klarschiff_flaeche WHERE id in (SELECT flaeche_id FROM klarschiff_benutzer_flaeche where benutzer_id = :user_id)");
       tmp.setParameter("user_id", user.getDbId());
       String mp = (String) tmp.getSingleResult();
