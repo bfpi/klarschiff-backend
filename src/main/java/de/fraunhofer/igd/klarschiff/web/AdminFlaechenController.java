@@ -54,8 +54,7 @@ public class AdminFlaechenController {
   /**
    * Die Methode verarbeitet den GET-Request auf der URL
    * <code>/flaechen/{login}/bearbeiten</code><br/>
-   * Seitenbeschreibung: Formular zur Bearbeiten der Berechtigungen zum Zuweisen von
-   * Flaechen-Teams
+   * Seitenbeschreibung: Formular zur Bearbeiten der Berechtigungen zum Zuweisen von Flaechen-Teams
    *
    * @param login User-Login
    * @param model Model in dem ggf. Daten für die View abgelegt werden
@@ -100,10 +99,12 @@ public class AdminFlaechenController {
 
     String[] zugewiesen = request.getParameterValues("zugewiesen[]");
     List<Flaeche> tmpList = new ArrayList<Flaeche>();
-    for (String tmp : zugewiesen) {
-      Flaeche f = flaechenDao.findByKurzname(tmp);
-      if(f != null) {
-        tmpList.add(f);
+    if (zugewiesen != null) {
+      for (String tmp : zugewiesen) {
+        Flaeche f = flaechenDao.findByKurzname(tmp);
+        if (f != null) {
+          tmpList.add(f);
+        }
       }
     }
     benutzer.setFlaechen(tmpList);
