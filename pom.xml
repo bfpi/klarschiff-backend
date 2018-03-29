@@ -568,6 +568,12 @@
     <artifactId>jackson-mapper-asl</artifactId>
     <version>1.9.13</version>
    </dependency>
+    <dependency>
+      <groupId>com.drewnoakes</groupId>
+      <artifactId>metadata-extractor</artifactId>
+      <version>2.11.0</version>
+      <type>jar</type>
+    </dependency>
   </dependencies>
 
   <build>

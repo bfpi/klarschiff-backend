@@ -18,12 +18,19 @@ import de.fraunhofer.igd.klarschiff.service.settings.SettingsService;
 import com.sun.imageio.plugins.jpeg.JPEGImageWriter;
 
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
+import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.UUID;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import com.drew.imaging.ImageMetadataReader;
+import com.drew.metadata.Directory;
+import com.drew.metadata.Metadata;
+import com.drew.metadata.exif.ExifIFD0Directory;
 
 /**
  * Der Service dient zur Manipulation von Bildern, wie z.B. das Skalieren oder das Ausschwärzen von
@@ -67,6 +74,53 @@ public class ImageService {
    * @throws Exception
    */
   public void setImageForVorgang(byte[] image, Vorgang vorgang) throws Exception {
+    InputStream inStream = new ByteArrayInputStream(image);
+    BufferedImage originalImage = ImageIO.read(inStream);
+    BufferedImage rotatedImage = null;
+
+    try {
+      File tempfile = File.createTempFile("imageService", null, new File(System.getProperty("java.io.tmpdir")));
+      FileUtils.writeByteArrayToFile(tempfile, image);
+
+      Metadata metadata = ImageMetadataReader.readMetadata(tempfile);
+      for (Directory directory : metadata.getDirectories()) {
+        if (directory.containsTag(ExifIFD0Directory.TAG_ORIENTATION)) {
+          switch (directory.getInt(ExifIFD0Directory.TAG_ORIENTATION)) {
+            case 1:
+              break;  // top left
+            case 2:
+              break;  // top right
+            case 3:
+              rotatedImage = rotateImage(originalImage, 180);
+              break;  // bottom right
+            case 4:
+              rotatedImage = rotateImage(originalImage, 180);
+              break;  // bottom left
+            case 5:
+              rotatedImage = rotateImage(originalImage, 90);
+              break;  // left top
+            case 6:
+              rotatedImage = rotateImage(originalImage, 90);
+              break;  // right top
+            case 7:
+              rotatedImage = rotateImage(originalImage, 270);
+              break;  // right bottom
+            case 8:
+              rotatedImage = rotateImage(originalImage, 270);
+              break;  // left bottom
+            default:
+              break;  // Unknown
+          }
+        }
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    if (rotatedImage != null) {
+      ByteArrayOutputStream baos = new ByteArrayOutputStream();
+      ImageIO.write(rotatedImage, "jpg", baos);
+      image = baos.toByteArray();
+    }
     vorgang.setFotoGross(generateFilenameAndWriteFile(
       scaleImage(image, fotoGrossWidth, fotoGrossHeight, scaleTyp),
       vorgang, vorgang.getFotoGross(), "gross"));
@@ -146,18 +200,21 @@ public class ImageService {
   public void rotateImageForVorgang(Vorgang vorgang) {
     try {
       BufferedImage oldImage = imageFromVorgang(vorgang);
-      BufferedImage newImage = new BufferedImage(oldImage.getHeight(), oldImage.getWidth(), oldImage.getType());
-
-      Graphics2D graphics2D = (Graphics2D) newImage.getGraphics();
-      graphics2D.rotate(Math.toRadians(90), newImage.getWidth() / 2, newImage.getHeight() / 2);
-      graphics2D.translate((newImage.getWidth() - oldImage.getWidth()) / 2, (newImage.getHeight() - oldImage.getHeight()) / 2);
-      graphics2D.drawImage(oldImage, 0, 0, oldImage.getWidth(), oldImage.getHeight(), null);
-
+      BufferedImage newImage = rotateImage(oldImage, 90);
       setImageForVorgang(imageToByteArray(newImage), vorgang);
-
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
+  }
+
+  private BufferedImage rotateImage(BufferedImage oldImage, double degrees) {
+    BufferedImage newImage = new BufferedImage(oldImage.getHeight(), oldImage.getWidth(), oldImage.getType());
+
+    Graphics2D graphics2D = (Graphics2D) newImage.getGraphics();
+    graphics2D.rotate(Math.toRadians(degrees), newImage.getWidth() / 2, newImage.getHeight() / 2);
+    graphics2D.translate((newImage.getWidth() - oldImage.getWidth()) / 2, (newImage.getHeight() - oldImage.getHeight()) / 2);
+    graphics2D.drawImage(oldImage, 0, 0, oldImage.getWidth(), oldImage.getHeight(), null);
+    return newImage;
   }
 
   /**
