@@ -986,6 +986,45 @@ div#md .md-button { font-family:Verdana, sans-serif; }
 }
 
 /* ######################### Statistic ######################### */
+table.statistic {
+  width: 100%;
+}
+
+table.statistic tr td {
+  width: 30%;
+  vertical-align: top;
+}
+
+table.statistic tr td.space {
+  width: 10%;
+}
+
+table.vorgaenge tr td {
+  width: auto;
+}
+
+table.vorgaenge tr td.icon {
+  text-align: center;
+  width: 14px;
+}
+
+table.vorgaenge tr td a span.unterstuetzer_count {
+  color: #000000;
+  padding: 2px 4px;
+}
+
+table.vorgaenge tr td a span.unterstuetzer_count.yellow {
+  background-color: #ffcc66;
+}
+
+table.vorgaenge tr td a span.unterstuetzer_count.green {
+  background-color: #009900;
+}
+
+div.fieldset.white {
+  background-color: #ffffff;
+}
+
 div.statistic_blocktitle {
   font-size: 12px;
   font-weight: bold;
@@ -996,15 +1035,6 @@ div.statistic_blocktitle {
 div.statistic_fieldset_header {
   height: 16px;
   line-height: 16px;
-}
-
-div#statistic_fieldset_missbrauch{
-  width: 90%;
-  margin-bottom: 10px;
-}
-
-div#statistic_fieldset_hinweise {
-  width: 90%;
 }
 
 span.statistic_important {

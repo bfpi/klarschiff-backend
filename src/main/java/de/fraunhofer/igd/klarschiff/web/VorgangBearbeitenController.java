@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import de.fraunhofer.igd.klarschiff.dao.KategorieDao;
 import de.fraunhofer.igd.klarschiff.dao.KommentarDao;
 import de.fraunhofer.igd.klarschiff.dao.LobHinweiseKritikDao;
+import de.fraunhofer.igd.klarschiff.dao.VerlaufDao;
 import de.fraunhofer.igd.klarschiff.dao.VorgangDao;
 import de.fraunhofer.igd.klarschiff.service.classification.ClassificationService;
 import de.fraunhofer.igd.klarschiff.service.security.Role;
@@ -40,6 +41,7 @@ import de.fraunhofer.igd.klarschiff.vo.Auftrag;
 import de.fraunhofer.igd.klarschiff.vo.EnumAuftragStatus;
 import de.fraunhofer.igd.klarschiff.vo.EnumFreigabeStatus;
 import de.fraunhofer.igd.klarschiff.vo.EnumPrioritaet;
+import de.fraunhofer.igd.klarschiff.vo.EnumVerlaufTyp;
 import de.fraunhofer.igd.klarschiff.vo.EnumVorgangStatus;
 import de.fraunhofer.igd.klarschiff.vo.EnumVorgangTyp;
 import de.fraunhofer.igd.klarschiff.vo.EnumZustaendigkeitStatus;
@@ -69,6 +71,9 @@ public class VorgangBearbeitenController {
 
   @Autowired
   KategorieDao kategorieDao;
+
+  @Autowired
+  VerlaufDao verlaufDao;
 
   @Autowired
   LobHinweiseKritikDao lobHinweiseKritikDao;
@@ -332,11 +337,11 @@ public class VorgangBearbeitenController {
       + vorgangStatusKommentarTextlaengeMaximal().toString() + " Zeichen.");
 
     if (!isEmpty(cmd, "vorgang.auftrag.team")) {
-        assertNotEmpty(cmd, result, Assert.EvaluateOn.ever, "vorgang.auftrag.datum", "Es muss in jedem Fall ein Datum ausgewählt werden!");
+      assertNotEmpty(cmd, result, Assert.EvaluateOn.ever, "vorgang.auftrag.datum", "Es muss in jedem Fall ein Datum ausgewählt werden!");
     }
 
     if (!isEmpty(cmd, "vorgang.auftrag.datum")) {
-        assertNotEmpty(cmd, result, Assert.EvaluateOn.ever, "vorgang.auftrag.team", "Es muss in jedem Fall ein Team ausgewählt werden!");
+      assertNotEmpty(cmd, result, Assert.EvaluateOn.ever, "vorgang.auftrag.team", "Es muss in jedem Fall ein Team ausgewählt werden!");
     }
 
     if (result.hasErrors()) {
@@ -378,7 +383,7 @@ public class VorgangBearbeitenController {
         return "vorgang/bearbeiten";
       }
 
-      if(vorg.getStatus() != newStatus) {
+      if (vorg.getStatus() != newStatus) {
         cmd.getVorgang().setStatusDatum(new Date());
       }
       vorgangDao.merge(cmd.getVorgang());
@@ -410,6 +415,9 @@ public class VorgangBearbeitenController {
         kommentar.setAnzBearbeitet(0);
         kommentar.setDatum(new Date());
         kommentarDao.persist(kommentar);
+        Verlauf verlauf = verlaufDao.addVerlaufToVorgang(kommentar.getVorgang(), EnumVerlaufTyp.kommentar,
+          "", cmd.getKommentar());
+        verlaufDao.merge(verlauf);
         cmd.setKommentar(null);
       }
     } else if (action.equals("kommentarSave")) {
@@ -463,13 +471,13 @@ public class VorgangBearbeitenController {
 
   private void setZustaendigkeitFrontend(VorgangBearbeitenCommand cmd) {
     String zustaendigkeit = "";
-    if(cmd.getVorgang().getZustaendigkeit() != null && !cmd.getVorgang().getZustaendigkeit().isEmpty()) {
+    if (cmd.getVorgang().getZustaendigkeit() != null && !cmd.getVorgang().getZustaendigkeit().isEmpty()) {
       zustaendigkeit = securityService.getZustaendigkeit(cmd.getVorgang().getZustaendigkeit()).getL();
     }
     if (cmd.getVorgang().getDelegiertAn() != null && !cmd.getVorgang().getDelegiertAn().isEmpty()) {
       Role r = securityService.getZustaendigkeit(cmd.getVorgang().getDelegiertAn());
-      if(r != null) {
-        zustaendigkeit += " (" + r.getL()+ ")";
+      if (r != null) {
+        zustaendigkeit += " (" + r.getL() + ")";
       }
     }
     cmd.getVorgang().setZustaendigkeitFrontend(zustaendigkeit);

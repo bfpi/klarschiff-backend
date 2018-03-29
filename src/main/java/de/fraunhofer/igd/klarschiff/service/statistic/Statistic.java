@@ -11,8 +11,10 @@ import de.fraunhofer.igd.klarschiff.vo.Vorgang;
  */
 public class Statistic {
 
+  List<Vorgang> neuesteVorgaenge;
+  List<Vorgang> eigeneVorgaenge;
+  List<Vorgang> ehemaligeVorgaenge;
   List<Vorgang> vorgaengeMissbrauchsmeldungen;
-  List<Vorgang> lastVorgaenge;
   List<Vorgang> vorgaengeOffenNichtAkzeptiert;
   List<Vorgang> vorgaengeInbearbeitungOhneStatusKommentar;
   List<Vorgang> vorgaengeIdeeOffenOhneUnterstuetzung;
@@ -30,12 +32,28 @@ public class Statistic {
     this.vorgaengeMissbrauchsmeldungen = vorgaengeMissbrauchsmeldungen;
   }
 
-  public List<Vorgang> getLastVorgaenge() {
-    return lastVorgaenge;
+  public List<Vorgang> getNeuesteVorgaenge() {
+    return neuesteVorgaenge;
   }
 
-  public void setLastVorgaenge(List<Vorgang> lastVorgaenge) {
-    this.lastVorgaenge = lastVorgaenge;
+  public void setNeuesteVorgaenge(List<Vorgang> neuesteVorgaenge) {
+    this.neuesteVorgaenge = neuesteVorgaenge;
+  }
+
+  public List<Vorgang> getEigeneVorgaenge() {
+    return eigeneVorgaenge;
+  }
+
+  public void setEigeneVorgaenge(List<Vorgang> eigeneVorgaenge) {
+    this.eigeneVorgaenge = eigeneVorgaenge;
+  }
+
+  public List<Vorgang> getEhemaligeVorgaenge() {
+    return ehemaligeVorgaenge;
+  }
+
+  public void setEhemaligeVorgaenge(List<Vorgang> ehemaligeVorgaenge) {
+    this.ehemaligeVorgaenge = ehemaligeVorgaenge;
   }
 
   public List<Vorgang> getVorgaengeOffenNichtAkzeptiert() {

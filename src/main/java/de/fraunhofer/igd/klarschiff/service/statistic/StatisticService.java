@@ -36,11 +36,18 @@ public class StatisticService {
     // aktive Vorgänge mit Missbrauchsmeldungen
     statistic.setVorgaengeMissbrauchsmeldungen(statisticDao.findVorgaengeMissbrauchsmeldungen());
 
-    // neueste aktive Vorgänge
-    statistic.setLastVorgaenge(statisticDao.findLastVorgaenge(5));
+    // Neueste Vorgänge
+    statistic.setNeuesteVorgaenge(statisticDao.findNeuesteVorgaenge(10));
+
+    // Eigene Vorgänge
+    Date datum = DateUtils.addDays(jetzt, -7);
+    statistic.setEigeneVorgaenge(statisticDao.findEigeneVorgaenge(100, datum));
+
+    // Ehemalige Vorgänge
+    statistic.setEhemaligeVorgaenge(statisticDao.findEhemaligeVorgaenge(10));
 
     // Vorgänge mit dem Status 'offen', die seit einem bestimmten Datum zugewiesen sind, bisher aber nicht akzeptiert wurden
-    Date datum = DateUtils.addDays(jetzt, -3);
+    datum = DateUtils.addDays(jetzt, -3);
     statistic.setVorgaengeOffenNichtAkzeptiert(statisticDao.findVorgaengeOffenNichtAkzeptiert(datum));
 
     // Vorgänge mit dem Status 'in Bearbeitung', die seit einem bestimmten Datum nicht mehr verändert wurden, bisher aber keine öffentliche Statusinformation aufweisen

@@ -1,5 +1,6 @@
 package de.fraunhofer.igd.klarschiff.web;
 
+import de.fraunhofer.igd.klarschiff.service.settings.SettingsService;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,9 @@ public class HomeController {
   @Autowired
   StatisticService statisticService;
 
+  @Autowired
+  SettingsService settingsService;
+
   /**
    * Die Methode verarbeitet den GET-Request auf der URL <code>/</code><br/>
    * Seitenbeschreibung: Die Klarschiff Backend Homepage mit Statistiken zu aktuellen Vorgängen
@@ -31,6 +35,7 @@ public class HomeController {
   @RequestMapping(value = "/")
   public String index(ModelMap modelMap, HttpServletRequest request) {
     modelMap.addAttribute("statistic", statisticService.getStatistic());
+    modelMap.addAttribute("SettingsVorgangIdeeUnterstuetzer", settingsService.getVorgangIdeeUnterstuetzer());
     return "index";
   }
 }

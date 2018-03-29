@@ -41,4 +41,8 @@ public enum EnumVerlaufTyp implements EnumText {
   public String getText() {
     return name();
   }
+
+  public static EnumVerlaufTyp[] relevantBeiLetztenAktivitaeten() {
+    return new EnumVerlaufTyp[]{foto, lobHinweiseKritik, kommentar, unterstuetzerBestaetigung, beschreibung, typ, kategorie, adresse, flurstueckseigentum};
+  }
 }

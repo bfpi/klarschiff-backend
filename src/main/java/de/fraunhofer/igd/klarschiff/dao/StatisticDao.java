@@ -14,9 +14,12 @@ import de.fraunhofer.igd.klarschiff.service.security.Role;
 import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
 import de.fraunhofer.igd.klarschiff.service.security.User;
 import de.fraunhofer.igd.klarschiff.service.settings.SettingsService;
+import de.fraunhofer.igd.klarschiff.vo.EnumVerlaufTyp;
 import de.fraunhofer.igd.klarschiff.vo.Flaeche;
+import de.fraunhofer.igd.klarschiff.vo.Verlauf;
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
 import java.util.ArrayList;
+import java.util.Arrays;
 import javax.persistence.Query;
 
 /**
@@ -45,19 +48,6 @@ public class StatisticDao {
       .addFromTables("Vorgang vo JOIN vo.missbrauchsmeldungen mi WITH mi.datumBestaetigung IS NOT NULL AND mi.datumAbarbeitung IS NULL")
       .addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert = FALSE)")
       .orderBy("vo.id");
-    vorgangDao.addGroupByVorgang(query, true);
-    processZustaendigkeitDelegiertAn(query);
-    return query.getResultList(entityManager);
-  }
-
-  @SuppressWarnings("unchecked")
-  public List<Vorgang> findLastVorgaenge(int maxResult) {
-    HqlQueryHelper query = new HqlQueryHelper(securityService)
-      .addFromTables("Vorgang vo")
-      .addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert = FALSE)")
-      .addWhereConditions("NOT (vo.typ = 'idee' AND vo.erstsichtungErfolgt = TRUE AND vo.status = 'offen' AND (SELECT count(*) FROM Unterstuetzer un WHERE un.vorgang = vo.id) < :unterstuetzer)").addParameter("unterstuetzer", settingsService.getVorgangIdeeUnterstuetzer())
-      .orderBy("vo.datum DESC");
-    query.maxResults(maxResult);
     vorgangDao.addGroupByVorgang(query, true);
     processZustaendigkeitDelegiertAn(query);
     return query.getResultList(entityManager);
@@ -172,5 +162,47 @@ public class StatisticDao {
     } else if (!CollectionUtils.isEmpty(delegiertAn)) {
       query.addWhereConditions("vo.delegiertAn IN (:delegiertAn)").addParameter("delegiertAn", Role.toString(delegiertAn));
     }
+  }
+
+  @SuppressWarnings("unchecked")
+  public List<Vorgang> findNeuesteVorgaenge(int maxResult) {
+    HqlQueryHelper query = (new HqlQueryHelper(securityService)).addSelectAttribute("vo")
+      .addFromTables("Vorgang vo")
+      .addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert = FALSE)")
+      .addWhereConditions("vo.status IN ('offen', 'inBearbeitung', 'nichtLoesbar', 'geloest')")
+      .orderBy("vo.prioritaetOrdinal DESC, vo.delegiertAn ASC, vo.zustaendigkeitStatus DESC, vo.erstsichtungErfolgt ASC, vo.id DESC");
+    processZustaendigkeitDelegiertAn(query);
+    query.maxResults(maxResult);
+    return query.getResultList(entityManager);
+  }
+
+  @SuppressWarnings("unchecked")
+  public List<Vorgang> findEigeneVorgaenge(int maxResult, Date datum) {
+    HqlQueryHelper query = (new HqlQueryHelper(securityService)).addSelectAttribute("vo")
+      .addFromTables("Verlauf ve JOIN ve.vorgang vo")
+      .addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert = FALSE)")
+      .addWhereConditions("ve.datum >= :datum").addParameter("datum", datum)
+      .addWhereConditions("ve.typ IN (:typen)").addParameter("typen", Arrays.asList(EnumVerlaufTyp.relevantBeiLetztenAktivitaeten()))
+      .addWhereConditions("vo.status IN ('offen', 'inBearbeitung', 'nichtLoesbar', 'geloest')")
+      .orderBy("vo.prioritaetOrdinal DESC, vo.delegiertAn ASC, vo.zustaendigkeitStatus DESC, vo.erstsichtungErfolgt ASC, vo.id DESC");
+    query.distinctEnable = true;
+    return query.getResultList(entityManager);
+  }
+
+  @SuppressWarnings("unchecked")
+  public List<Vorgang> findEhemaligeVorgaenge(int maxResult) {
+    List<Role> zustaendigkeiten = securityService.getCurrentZustaendigkeiten(true);
+    if (CollectionUtils.isEmpty(zustaendigkeiten)) {
+      return new ArrayList<Vorgang>();
+    }
+    HqlQueryHelper query = (new HqlQueryHelper(securityService)).addSelectAttribute("vo")
+      .addFromTables("Vorgang vo")
+      .addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert = FALSE)")
+      .addWhereConditions("vo.initialeAkzeptierteZustaendigkeit IN (:zustaendigkeit)").addParameter("zustaendigkeit", Role.toString(zustaendigkeiten))
+      .addWhereConditions("vo.zustaendigkeit != vo.initialeAkzeptierteZustaendigkeit")
+      .orderBy("vo.zustaendigkeitStatus desc, vo.id asc");
+    processZustaendigkeitDelegiertAn(query);
+    query.maxResults(maxResult);
+    return query.getResultList(entityManager);
   }
 }

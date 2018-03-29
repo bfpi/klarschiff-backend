@@ -25,10 +25,12 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import de.fraunhofer.igd.klarschiff.dao.KommentarDao;
 import de.fraunhofer.igd.klarschiff.dao.LobHinweiseKritikDao;
+import de.fraunhofer.igd.klarschiff.dao.VerlaufDao;
 import de.fraunhofer.igd.klarschiff.dao.VorgangDao;
 import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
 import de.fraunhofer.igd.klarschiff.service.settings.SettingsService;
 import de.fraunhofer.igd.klarschiff.tld.CustomFunctions;
+import de.fraunhofer.igd.klarschiff.vo.EnumVerlaufTyp;
 import de.fraunhofer.igd.klarschiff.vo.EnumVorgangStatus;
 import de.fraunhofer.igd.klarschiff.vo.Kommentar;
 import de.fraunhofer.igd.klarschiff.vo.StatusKommentarVorlage;
@@ -53,6 +55,9 @@ public class VorgangDelegiertBearbeitenController {
 
   @Autowired
   KommentarDao kommentarDao;
+
+  @Autowired
+  VerlaufDao verlaufDao;
 
   @Autowired
   LobHinweiseKritikDao lobHinweiseKritikDao;
@@ -239,6 +244,9 @@ public class VorgangDelegiertBearbeitenController {
         kommentar.setAnzBearbeitet(0);
         kommentar.setDatum(new Date());
         kommentarDao.persist(kommentar);
+        Verlauf verlauf = verlaufDao.addVerlaufToVorgang(cmd.getVorgang(), EnumVerlaufTyp.kommentar,
+          "", cmd.getKommentar());
+        verlaufDao.merge(verlauf);
         cmd.setKommentar(null);
       }
     } else if (action.equals("kommentarSave")) {

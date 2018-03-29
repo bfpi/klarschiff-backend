@@ -40,6 +40,8 @@ import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
 import de.fraunhofer.igd.klarschiff.service.security.User;
 import de.fraunhofer.igd.klarschiff.service.settings.PropertyPlaceholderConfigurer;
 import de.fraunhofer.igd.klarschiff.service.settings.SettingsService;
+import java.util.Arrays;
+import java.util.Collections;
 import javax.persistence.Column;
 import javax.persistence.OneToOne;
 import org.codehaus.jackson.annotate.JsonIgnore;
@@ -204,6 +206,12 @@ public class Vorgang implements Serializable {
   String zustaendigkeit;
 
   /**
+   * Zuständigkeit (Id der Rolle) für den Vorgang
+   */
+  @JsonIgnore
+  String initialeAkzeptierteZustaendigkeit;
+
+  /**
    * Status der Zuständigkeit
    */
   @Enumerated(EnumType.STRING)
@@ -242,6 +250,10 @@ public class Vorgang implements Serializable {
   @JsonIgnore
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "vorgang")
   private List<Verlauf> verlauf = new ArrayList<Verlauf>();
+
+  @JsonIgnore
+  @Transient
+  private Verlauf letzterAktivitaetenVerlauf;
 
   /**
    * Kategorie
@@ -553,6 +565,24 @@ public class Vorgang implements Serializable {
     return this.verlauf;
   }
 
+  public Verlauf getLetzterAktivitaetenVerlauf() {
+    if (letzterAktivitaetenVerlauf != null) {
+      return letzterAktivitaetenVerlauf;
+    }
+    if (this.verlauf.isEmpty()) {
+      return null;
+    }
+    List<Verlauf> liste = this.verlauf;
+    Collections.reverse(liste);
+    for (Verlauf ver : liste) {
+      if (Arrays.asList(EnumVerlaufTyp.relevantBeiLetztenAktivitaeten()).contains(ver.getTyp())) {
+        letzterAktivitaetenVerlauf = ver;
+        break;
+      }
+    }
+    return letzterAktivitaetenVerlauf;
+  }
+
   public void setVerlauf(List<Verlauf> verlauf) {
     this.verlauf = verlauf;
   }
@@ -590,6 +620,14 @@ public class Vorgang implements Serializable {
 
   public void setZustaendigkeit(String zustaendigkeit) {
     this.zustaendigkeit = zustaendigkeit;
+  }
+
+  public String getInitialeAkzeptierteZustaendigkeit() {
+    return initialeAkzeptierteZustaendigkeit;
+  }
+
+  public void setInitialeAkzeptierteZustaendigkeit(String initialeAkzeptierteZustaendigkeit) {
+    this.initialeAkzeptierteZustaendigkeit = initialeAkzeptierteZustaendigkeit;
   }
 
   public String getZustaendigkeitFrontend() {

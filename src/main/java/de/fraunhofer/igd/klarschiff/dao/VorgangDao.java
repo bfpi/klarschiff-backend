@@ -104,13 +104,11 @@ public class VorgangDao {
       checkForUpdate((Vorgang) o);
     }
     em.merge(o);
-    em.flush();
   }
 
   @Transactional
   public void remove(Object o) {
     em.remove(o);
-    em.flush();
   }
 
   /**
@@ -144,9 +142,15 @@ public class VorgangDao {
         if (vorgang.getZustaendigkeitStatus() == EnumZustaendigkeitStatus.akzeptiert) {
           verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.zustaendigkeitAkzeptiert,
             vorgangOld.getZustaendigkeitStatus().getText(), vorgang.getZustaendigkeitStatus().getText());
+          if(vorgang.getInitialeAkzeptierteZustaendigkeit() == null || vorgang.getInitialeAkzeptierteZustaendigkeit().isEmpty()) {
+            vorgang.setInitialeAkzeptierteZustaendigkeit(vorgang.getZustaendigkeit());
+          }
         }
       }
       if (vorgangOld.getZustaendigkeitStatus() != vorgang.getZustaendigkeitStatus()) {
+        if(vorgang.getInitialeAkzeptierteZustaendigkeit() == null || vorgang.getInitialeAkzeptierteZustaendigkeit().isEmpty()) {
+            vorgang.setInitialeAkzeptierteZustaendigkeit(vorgang.getZustaendigkeit());
+          }
         verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.zustaendigkeitAkzeptiert,
           vorgangOld.getZustaendigkeitStatus().getText(), vorgang.getZustaendigkeitStatus().getText());
       }

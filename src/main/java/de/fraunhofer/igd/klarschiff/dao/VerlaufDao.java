@@ -40,6 +40,11 @@ public class VerlaufDao {
     em.persist(verlauf);
   }
 
+  @Transactional
+  public void merge(Verlauf verlauf) {
+    em.merge(verlauf);
+  }
+
   public Verlauf addVerlaufToVorgang(Vorgang vorgang, EnumVerlaufTyp typ, String wertAlt, String wertNeu) {
     return addVerlaufToVorgang(vorgang, typ, wertAlt, wertNeu, null);
   }

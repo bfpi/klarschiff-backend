@@ -197,6 +197,7 @@ public class VorgangController {
     } else if (action.equals("upload") && !foto.isEmpty()) {
       try {
         imageService.setImageForVorgang(foto.getBytes(), vorgang);
+        verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.foto, null, null);
       } catch (Exception e) {
       }
     } else if (action.equals("fotowunsch")) {
