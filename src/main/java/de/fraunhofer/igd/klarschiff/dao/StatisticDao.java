@@ -186,6 +186,7 @@ public class StatisticDao {
       .addWhereConditions("vo.status IN ('offen', 'inBearbeitung', 'nichtLoesbar', 'geloest')")
       .orderBy("vo.prioritaetOrdinal DESC, vo.delegiertAn ASC, vo.zustaendigkeitStatus DESC, vo.erstsichtungErfolgt ASC, vo.id DESC");
     query.distinctEnable = true;
+    query.maxResults(maxResult);
     return query.getResultList(entityManager);
   }
 

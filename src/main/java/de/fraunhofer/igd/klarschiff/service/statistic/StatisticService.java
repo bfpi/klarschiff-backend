@@ -41,7 +41,7 @@ public class StatisticService {
 
     // Eigene Vorgänge
     Date datum = DateUtils.addDays(jetzt, -7);
-    statistic.setEigeneVorgaenge(statisticDao.findEigeneVorgaenge(100, datum));
+    statistic.setEigeneVorgaenge(statisticDao.findEigeneVorgaenge(10, datum));
 
     // Ehemalige Vorgänge
     statistic.setEhemaligeVorgaenge(statisticDao.findEhemaligeVorgaenge(10));
