@@ -2,16 +2,13 @@ package de.fraunhofer.igd.klarschiff.dao;
 
 import java.util.Date;
 import java.util.List;
-
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-
 import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
 import de.fraunhofer.igd.klarschiff.service.security.User;
 import de.fraunhofer.igd.klarschiff.vo.EnumVerlaufTyp;
@@ -35,16 +32,35 @@ public class VerlaufDao {
   @Autowired
   VorgangDao vorgangDao;
 
+  /**
+   * Das Objekt wird in der DB gespeichert.
+   *
+   * @param verlauf Das zu speichernde Objekt
+   */
   @Transactional
   public void persist(Verlauf verlauf) {
     em.persist(verlauf);
   }
 
+  /**
+   * Das Objekt wird in der DB gespeichert.
+   *
+   * @param verlauf Das zu speichernde Objekt
+   */
   @Transactional
   public void merge(Verlauf verlauf) {
     em.merge(verlauf);
   }
 
+  /**
+   * Fügt zu einem Vorgang neue Verlaufswerte hinzu, ohne diese in der DB zu speichern.
+   *
+   * @param vorgang Vorgang zu dem die Verlaufswerte hinzugefügt werden sollen
+   * @param typ Typ des Verlaufs
+   * @param wertAlt Alter Wert
+   * @param wertNeu Neuer Wert
+   * @return Verlaufswerte
+   */
   public Verlauf addVerlaufToVorgang(Vorgang vorgang, EnumVerlaufTyp typ, String wertAlt, String wertNeu) {
     return addVerlaufToVorgang(vorgang, typ, wertAlt, wertNeu, null);
   }
@@ -77,7 +93,7 @@ public class VerlaufDao {
       } catch (Exception e) {
       }
     }
-    if(verlauf.getNutzer() != null && verlauf.getNutzer().length() > 0) {
+    if (verlauf.getNutzer() != null && verlauf.getNutzer().length() > 0) {
       vorgang.setLetzterBearbeiter(verlauf.getNutzer());
     }
     verlauf.setTyp(typ);
@@ -87,6 +103,14 @@ public class VerlaufDao {
     return verlauf;
   }
 
+  /**
+   * Liefert die Verlaufswerte des übergebenen Vorgangs.
+   *
+   * @param vorgang Vorgang zu dem die Verlaufswerte angezeigt werden sollen
+   * @param page Seite
+   * @param size Anzahl pro Seite
+   * @return Verlaufswerte
+   */
   @Transactional
   public List<Verlauf> findVerlaufForVorgang(Vorgang vorgang, Integer page, Integer size) {
     TypedQuery<Verlauf> query = em.createQuery("SELECT o FROM Verlauf o "
@@ -114,8 +138,8 @@ public class VerlaufDao {
   public String findLastUserForVorgangAndZustaendigkeit(Vorgang vorgang, List<String> userNames) {
     try {
       for (int i = 0; i < userNames.size(); i++) {
-	    userNames.set(i, "'" + userNames.get(i) + "'");
-	  }
+        userNames.set(i, "'" + userNames.get(i) + "'");
+      }
       return em.createQuery("SELECT o.nutzer FROM Verlauf o "
         + "WHERE o.nutzer IS NOT NULL AND o.vorgang = :vorgang AND o.nutzer IN (" + StringUtils.join(userNames, ", ") + ") "
         + "ORDER BY o.datum DESC", String.class).setParameter("vorgang", vorgang)
@@ -125,12 +149,24 @@ public class VerlaufDao {
     }
   }
 
+  /**
+   * Holt die Anzahl der vorhandenen Verlaufswerte an einem Vorgang
+   *
+   * @param vorgang Vorgang deren Verlaufswerte gezählt werden sollen
+   * @return Anzahl
+   */
   public long countVerlauf(Vorgang vorgang) {
     return em.createQuery("SELECT count(o) FROM Verlauf o WHERE o.vorgang = :vorgang", Long.class)
       .setParameter("vorgang", vorgang).getSingleResult();
   }
 
-  public Date getAktuellstesErstsichtungsdatumZuVorgang(Vorgang vorgang) {
+  /**
+   * Holt das Datum, wann die Zuständigkeit des Vorgangs das letzte mal akzeptiert wurde.
+   *
+   * @param vorgang Vorgang deren Verlaufswerte gezählt werden sollen
+   * @return Datum des letzten Akzeptierens des Vorgangs
+   */
+  public Date getAktuellstesAkzeptierenDerZustaendigkeitZuVorgang(Vorgang vorgang) {
     return em.createQuery("SELECT MAX(o.datum) FROM Verlauf o "
       + "WHERE typ = 'zustaendigkeitAkzeptiert' AND o.vorgang = :vorgang", Date.class)
       .setParameter("vorgang", vorgang).getSingleResult();

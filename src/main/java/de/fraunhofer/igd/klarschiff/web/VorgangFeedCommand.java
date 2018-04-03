@@ -1,9 +1,13 @@
 package de.fraunhofer.igd.klarschiff.web;
 
 import java.util.List;
-
 import de.fraunhofer.igd.klarschiff.service.security.Role;
 
+/**
+ * Command für den RSS-Feed im Backend <br>
+ *
+ * @author Stefan Audersch (Fraunhofer IGD)
+ */
 @SuppressWarnings("serial")
 public class VorgangFeedCommand extends VorgangSuchenCommand {
 

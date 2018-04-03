@@ -3,14 +3,11 @@ package de.fraunhofer.igd.klarschiff.web;
 import static de.fraunhofer.igd.klarschiff.web.Assert.assertMaxLength;
 import static de.fraunhofer.igd.klarschiff.web.Assert.assertNotEmpty;
 import static de.fraunhofer.igd.klarschiff.web.Assert.isEmpty;
-
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-
 import javax.persistence.Transient;
 import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
@@ -26,7 +23,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
-
 import de.fraunhofer.igd.klarschiff.dao.KategorieDao;
 import de.fraunhofer.igd.klarschiff.dao.KommentarDao;
 import de.fraunhofer.igd.klarschiff.dao.LobHinweiseKritikDao;
@@ -90,6 +86,8 @@ public class VorgangBearbeitenController {
   /**
    * Liefert (in Systemkonfiguration festgelegte) Anzahl an Unterstützungen, die benötigt werden
    * damit Idee Relevanz erlangt (z.B. in der Vorgangssuche automatisch erscheint).
+   *
+   * @return Notwendige Anzahl an Unterstützungen
    */
   @ModelAttribute("vorgangIdeenUnterstuetzer")
   public Long vorgangIdeenUnterstuetzer() {
@@ -99,6 +97,8 @@ public class VorgangBearbeitenController {
   /**
    * Liefert (in Systemkonfiguration festgelegte) maximale Zeichenanzahl für Statuskommentare zu
    * Vorgängen
+   *
+   * @return maximale Zeichenanzahl
    */
   @ModelAttribute("vorgangStatusKommentarTextlaengeMaximal")
   public Integer vorgangStatusKommentarTextlaengeMaximal() {
@@ -107,6 +107,8 @@ public class VorgangBearbeitenController {
 
   /**
    * Liefert alle vorhandenen Zuständigkeiten des aktuellen Benutzers
+   *
+   * @return Liste vorhandener Zuständigkeiten
    */
   @ModelAttribute("currentZustaendigkeiten")
   public List<Role> currentZustaendigkeiten() {
@@ -115,6 +117,8 @@ public class VorgangBearbeitenController {
 
   /**
    * Liefert alle im System vorhandenen Zuständigkeiten
+   *
+   * @return alle vorhandenen Zuständigkeiten
    */
   @ModelAttribute("allZustaendigkeiten")
   public List<Role> allZustaendigkeiten() {
@@ -123,6 +127,8 @@ public class VorgangBearbeitenController {
 
   /**
    * Liefert alle im System vorhandenen Rollen zum Delegieren
+   *
+   * @return alle vorhandenen Delegationen
    */
   @ModelAttribute("allDelegiertAn")
   public List<Role> allDelegiertAn() {
@@ -131,6 +137,8 @@ public class VorgangBearbeitenController {
 
   /**
    * Liefert alle möglichen Ausprägungen für Vorgangs-Status-Typen
+   *
+   * @return mögliche Status-Ausprägungen
    */
   @ModelAttribute("allVorgangStatus")
   public EnumVorgangStatus[] allVorgangStatus() {
@@ -142,6 +150,8 @@ public class VorgangBearbeitenController {
 
   /**
    * Liefert alle möglichen Ausprägungen für Vorgangs-Status-Typen (mit offenen!)
+   *
+   * @return mögliche Status-Ausprägungen
    */
   @ModelAttribute("allVorgangStatusMitOffenen")
   public EnumVorgangStatus[] allVorgangStatusMitOffenen() {
@@ -153,6 +163,8 @@ public class VorgangBearbeitenController {
 
   /**
    * Liefert alle möglichen Ausprägungen für Vorgangstypen
+   *
+   * @return mögliche Typ-Ausprägungen
    */
   @ModelAttribute("vorgangtypen")
   public Collection<EnumVorgangTyp> populateEnumVorgangTypen() {
@@ -161,6 +173,8 @@ public class VorgangBearbeitenController {
 
   /**
    * Liefert alle möglichen Ausprägungen für Prioritätsbezeichner
+   *
+   * @return mögliche Prioritäten
    */
   @ModelAttribute("allPrioritaet")
   public Collection<EnumPrioritaet> allPrioritaet() {
@@ -169,6 +183,8 @@ public class VorgangBearbeitenController {
 
   /**
    * Liefert alle Statuskommentarvorlagen
+   *
+   * @return Liste der StatusKommentarVorlage
    */
   @ModelAttribute("allStatusKommentarVorlage")
   public List<StatusKommentarVorlage> allStatusKommentarVorlage() {
@@ -177,6 +193,8 @@ public class VorgangBearbeitenController {
 
   /**
    * Liefert alle Aussendienst-Teams für den aktuellen Koordinator
+   *
+   * @return Liste der Ausßendienst-Teams
    */
   @ModelAttribute("koordinatorAussendienstTeams")
   public List<String> koordinatorAussendienstTeams() {
@@ -248,7 +266,7 @@ public class VorgangBearbeitenController {
   }
 
   /**
-   * Die Methode verarbeitet den GET-Request auf der URL <code>/vorgang/{id}/bearbeiten</code><br/>
+   * Die Methode verarbeitet den GET-Request auf der URL <code>/vorgang/{id}/bearbeiten</code><br>
    * Seitenbeschreibung: Formular zur Vorgangsbearbeitung oder Hinweis auf noch nicht aktivierte
    * Bearbeitbarkeit falls Vorgang noch im Status <code>gemeldet</code>
    *
@@ -275,7 +293,7 @@ public class VorgangBearbeitenController {
    * Ermittelt Vorgang mit übergebener ID aus Backend-Datenbank
    *
    * @param id Vorgangs-ID
-   * @return
+   * @return Vorgang
    */
   @Transient
   private Vorgang getVorgang(Long id) {
@@ -285,7 +303,7 @@ public class VorgangBearbeitenController {
   }
 
   /**
-   * Die Methode verarbeitet den POST-Request auf der URL <code>/vorgang/{id}/bearbeiten</code><br/>
+   * Die Methode verarbeitet den POST-Request auf der URL <code>/vorgang/{id}/bearbeiten</code><br>
    * Funktionsbeschreibung: Die Wahl des <code>action</code> Parameters erlaubt folgende
    * Funktionalitäten:
    * <ul>
@@ -469,6 +487,11 @@ public class VorgangBearbeitenController {
     return "vorgang/bearbeiten";
   }
 
+  /**
+   * Setzt die Zuständigkeit auf den Übergebenen Wert
+   *
+   * @param cmd Command
+   */
   private void setZustaendigkeitFrontend(VorgangBearbeitenCommand cmd) {
     String zustaendigkeit = "";
     if (cmd.getVorgang().getZustaendigkeit() != null && !cmd.getVorgang().getZustaendigkeit().isEmpty()) {

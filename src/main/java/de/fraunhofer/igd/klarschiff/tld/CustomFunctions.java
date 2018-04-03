@@ -5,12 +5,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.commonsregex.RegexUtils;
 import org.commonsregex.replacer.RegexReplacer;
-
 import de.fraunhofer.igd.klarschiff.context.AppContext;
 import de.fraunhofer.igd.klarschiff.dao.VorgangDao;
 import de.fraunhofer.igd.klarschiff.service.cluster.ClusterUtil;
@@ -119,7 +117,7 @@ public class CustomFunctions {
    */
   public static String titleWithVorgang(de.fraunhofer.igd.klarschiff.vo.Vorgang vorgang) {
     String title = title();
-    if(vorgang != null && vorgang.getId() != null) {
+    if (vorgang != null && vorgang.getId() != null) {
       title += " - #" + vorgang.getId();
     }
     return title;
@@ -279,7 +277,7 @@ public class CustomFunctions {
    * <code><span class=\"codecomment\">--...</span></code>"
    *
    * @param sqlScript
-   * @return
+   * @return umformatierter String
    */
   public static String plsqlCommentHtmlFormater(String sqlScript) {
 
@@ -291,9 +289,5 @@ public class CustomFunctions {
       }
     });
     return sqlScript;
-  }
-
-  public static void main(String[] args) {
-    System.out.println(plsqlCommentHtmlFormater("Hallo --comment1\n--comment2\ncode\n"));
   }
 }

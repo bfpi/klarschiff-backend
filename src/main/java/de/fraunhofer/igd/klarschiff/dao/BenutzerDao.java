@@ -40,6 +40,12 @@ public class BenutzerDao {
     em.flush();
   }
 
+  /**
+   * Holt den Nenutzer anhand des Benutzernamens
+   *
+   * @param benutzername Der Benutzername der zu suchenden Person.
+   * @return Benutzer
+   */
   @Transactional
   public Benutzer findByBenutzername(String benutzername) {
     if (benutzername == null) {
@@ -47,32 +53,9 @@ public class BenutzerDao {
     }
     List<Benutzer> list = em.createQuery("select b from Benutzer b where b.benutzername like :benutzername", Benutzer.class)
       .setParameter("benutzername", benutzername).getResultList();
-    if(list.isEmpty()) {
+    if (list.isEmpty()) {
       return null;
     }
     return list.get(0);
   }
-  
-  
-  
-  /*
-  @Transactional
-  public int resetAussendienstByLogin(String login) {
-    if (login == null) {
-      return 0;
-    }
-    return em.createNativeQuery("delete from klarschiff_aussendienst_koordinator ak where ak.koordinator=:login", String.class).setParameter("login", login).executeUpdate();
-  }
-
-  public boolean setTeamsForLogin(String login, String[] teams) {
-    if (teams != null) {
-      for (String team : teams) {
-        AussendienstKoordinator ak = new AussendienstKoordinator();
-        ak.setKoordinator(login);
-        ak.setAussendienst(team);
-        em.merge(ak);
-      }
-    }
-    return true;
-  }*/
 }

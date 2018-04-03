@@ -1,7 +1,6 @@
 package de.fraunhofer.igd.klarschiff.service.statistic;
 
 import java.util.List;
-
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
 
 /**

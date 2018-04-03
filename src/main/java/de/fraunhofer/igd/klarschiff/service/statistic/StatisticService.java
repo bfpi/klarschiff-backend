@@ -2,11 +2,9 @@ package de.fraunhofer.igd.klarschiff.service.statistic;
 
 import java.util.ArrayList;
 import java.util.Date;
-
 import org.apache.commons.lang.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import de.fraunhofer.igd.klarschiff.dao.StatisticDao;
 import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
 

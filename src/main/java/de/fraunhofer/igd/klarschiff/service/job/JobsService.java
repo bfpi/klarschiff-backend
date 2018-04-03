@@ -5,16 +5,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
-
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import org.joda.time.*;
-
 import de.fraunhofer.igd.klarschiff.dao.ClusterDao;
 import de.fraunhofer.igd.klarschiff.dao.RedaktionEmpfaengerDao;
 import de.fraunhofer.igd.klarschiff.dao.RedaktionKriterienDao;
@@ -137,6 +134,13 @@ public class JobsService {
     archivVorgaengeByTyp(monthsToArchivIdeen, EnumVorgangTyp.idee);
   }
 
+  /**
+   * Archiviert alle Vorgänge eines Typs, die abgeschlossen sind und seit einem bestimmten Zeitraum
+   * nicht mehr bearbeitet wurden.
+   *
+   * @param months Zeitraum
+   * @param typ Typ
+   */
   private void archivVorgaengeByTyp(int months, EnumVorgangTyp typ) {
     Date dateP = DateUtils.addMonths(new Date(), -months);
     for (Vorgang vorgang : vorgangDao.findNotArchivVorgang(typ, dateP)) {

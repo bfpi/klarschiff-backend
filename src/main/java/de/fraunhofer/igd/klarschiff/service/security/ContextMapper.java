@@ -35,6 +35,8 @@ public class ContextMapper<T> implements IContextMapper<T> {
 
   /**
    * Funktion zum Mappen der Daten aus dem LDAP auf die Bean.
+   * @param ctx Context
+   * @return T
    */
   @Override
   public T mapFromContext(Object ctx) {

@@ -4,9 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import javax.naming.directory.Attribute;
-
 import org.apache.log4j.Logger;
 import org.springframework.ldap.core.DirContextAdapter;
 
@@ -35,6 +33,9 @@ public class UserLoginContextMapper implements IContextMapper<List<String>> {
 
   /**
    * Mappt das anfrageergebnis auf eine Liste von Strings
+   *
+   * @param ctx Context
+   * @return Liste von User-Logins
    */
   @Override
   public List<String> mapFromContext(Object ctx) {

@@ -9,16 +9,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
 import javax.servlet.http.HttpServletRequest;
-
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
-
 import de.fraunhofer.igd.klarschiff.context.AppContext;
 import de.fraunhofer.igd.klarschiff.service.settings.SettingsService;
 
@@ -39,7 +36,7 @@ public class FehlerController {
   List<String> ignoredRequestPathRegexForErrorLog = new ArrayList<String>();
 
   /**
-   * Die Methode verarbeitet den GET-Request auf der URL <code>/uncaughtException</code><br/>
+   * Die Methode verarbeitet den GET-Request auf der URL <code>/uncaughtException</code><br>
    * Seitenbeschreibung: Eine Fehlerseite
    *
    * @param model Model in dem ggf. Daten für die View abgelegt werden
@@ -52,7 +49,7 @@ public class FehlerController {
   }
 
   /**
-   * Die Methode verarbeitet den GET-Request auf der URL <code>/resourceNotFound</code><br/>
+   * Die Methode verarbeitet den GET-Request auf der URL <code>/resourceNotFound</code><br>
    * Seitenbeschreibung: Eine Fehlerseite
    *
    * @param model Model in dem ggf. Daten für die View abgelegt werden
@@ -65,7 +62,7 @@ public class FehlerController {
   }
 
   /**
-   * Die Methode verarbeitet den GET-Request auf der URL <code>/dataAccessFailure</code><br/>
+   * Die Methode verarbeitet den GET-Request auf der URL <code>/dataAccessFailure</code><br>
    * Seitenbeschreibung: Eine Fehlerseite
    *
    * @param model Model in dem ggf. Daten für die View abgelegt werden
@@ -237,7 +234,8 @@ public class FehlerController {
    *
    * @param str
    * @param strs
-   * @return
+   * @return <code>true</code> - String enthält mindestens einen aus der Liste übergebenen String;
+   * <code>false</code> - String enthält keinen der String aus der übergebenen Liste
    */
   private boolean contains(String str, List<String> strs) {
     if (str == null || strs == null) {
@@ -257,7 +255,8 @@ public class FehlerController {
    *
    * @param str
    * @param regex
-   * @return
+   * @return <code>true</code> - String enthält mindestens einen aus der Liste übergebenen Regex;
+   * <code>false</code> - String enthält keinen der Regex aus der übergebenen Liste
    */
   private boolean containsRegex(String str, List<String> regex) {
     if (str == null || regex == null) {

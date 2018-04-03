@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -23,11 +22,9 @@ import javax.persistence.Transient;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.Type;
 import org.springframework.format.annotation.DateTimeFormat;
-
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.PrecisionModel;
@@ -496,6 +493,11 @@ public class Vorgang implements Serializable {
     calculateTrust();
   }
 
+  /**
+   * Prüft ob der Author des Vorgangs ein Interner Benutzer ist.
+   *
+   * @return <code>true</code> - Author-Email entspricht dem Konfigurierten Regex aus den Settings.
+   */
   public Boolean autorIntern() {
     if (this.autorEmail == null) {
       return false;
@@ -511,6 +513,9 @@ public class Vorgang implements Serializable {
     this.trust = trust;
   }
 
+  /**
+   * Berechnet das Trust-Level des Vorgangs und
+   */
   private void calculateTrust() {
     int tmp = 0;
     if (checkTrustConditions("one")) {
@@ -522,6 +527,12 @@ public class Vorgang implements Serializable {
     setTrust(tmp);
   }
 
+  /**
+   * Prüfung, ob es sich beim Author um eine vertrauenswürdige Person handelt
+   *
+   * @param key
+   * @return <code>true</code> - Author-Email entspricht dem Konfigurierten Regex aus den Settings.
+   */
   private boolean checkTrustConditions(String key) {
     String pre = "trust.level." + key + ".";
     return this.autorEmail.matches(settingsService.getPropertyValue(pre + "mail_match"))
@@ -530,6 +541,11 @@ public class Vorgang implements Serializable {
         settingsService.getPropertyValue(pre + "ldap_match")).size() > 0);
   }
 
+  /**
+   * Prüft ob der Author des Vorgangs ein Außendienst-Mitarbeiter ist.
+   *
+   * @return <code>true</code> - Author-Email entspricht E-Mail an einem vorhandenen User.
+   */
   public Boolean autorAussendienst() {
     if (securityService == null || !autorIntern()) {
       return false;
@@ -565,6 +581,11 @@ public class Vorgang implements Serializable {
     return this.verlauf;
   }
 
+  /**
+   * Holte den letzten Relevanten Verlaufs-Eintrag für die Liste der letzten Aktivitäten.
+   *
+   * @return Verlaufs-Eintrag
+   */
   public Verlauf getLetzterAktivitaetenVerlauf() {
     if (letzterAktivitaetenVerlauf != null) {
       return letzterAktivitaetenVerlauf;

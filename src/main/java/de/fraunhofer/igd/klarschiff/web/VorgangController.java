@@ -1,7 +1,6 @@
 package de.fraunhofer.igd.klarschiff.web;
 
 import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -10,7 +9,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-
 import de.fraunhofer.igd.klarschiff.dao.KommentarDao;
 import de.fraunhofer.igd.klarschiff.dao.VerlaufDao;
 import de.fraunhofer.igd.klarschiff.dao.VorgangDao;
@@ -22,7 +20,6 @@ import de.fraunhofer.igd.klarschiff.vo.EnumFreigabeStatus;
 import de.fraunhofer.igd.klarschiff.vo.EnumVerlaufTyp;
 import de.fraunhofer.igd.klarschiff.vo.Verlauf;
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
-import org.springframework.security.core.codec.Base64;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 /**
@@ -55,7 +52,7 @@ public class VorgangController {
   FeatureService featureService;
 
   /**
-   * Die Methode verarbeitet den GET-Request auf der URL <code>/vorgang/{id}/uebersicht</code><br/>
+   * Die Methode verarbeitet den GET-Request auf der URL <code>/vorgang/{id}/uebersicht</code><br>
    * Seitenbeschreibung: Übersichtsseite für den aktuellen Vorgang
    *
    * @param id Vorgangs-ID
@@ -91,7 +88,7 @@ public class VorgangController {
   }
 
   /**
-   * Die Methode verarbeitet den GET-Request auf der URL <code>/vorgang/{id}/karte</code><br/>
+   * Die Methode verarbeitet den GET-Request auf der URL <code>/vorgang/{id}/karte</code><br>
    * Seitenbeschreibung: Kartenansicht für den aktuellen Vorgang
    *
    * @param id Vorgangs-ID
@@ -112,11 +109,12 @@ public class VorgangController {
 
   /**
    *
-   * @param id
-   * @param oviWkt
-   * @param model
-   * @param request
-   * @return
+   * @param id Vorgangs-ID
+   * @param oviWkt Position als WKT
+   * @param model Model in dem ggf. Daten für die View abgelegt werden
+   * @param request Request
+   * @return View, die zum Rendern des Request verwendet wird
+   * @throws java.lang.Exception
    */
   @RequestMapping(value = "/vorgang/{id}/karte", method = RequestMethod.POST)
   public String karteSubmit(
@@ -141,7 +139,7 @@ public class VorgangController {
   }
 
   /**
-   * Die Methode verarbeitet den GET-Request auf der URL <code>/vorgang/{id}/foto</code><br/>
+   * Die Methode verarbeitet den GET-Request auf der URL <code>/vorgang/{id}/foto</code><br>
    * Seitenbeschreibung: Fotoansicht für den aktuellen Vorgang
    *
    * @param id Vorgangs-ID
@@ -157,7 +155,7 @@ public class VorgangController {
   }
 
   /**
-   * Die Methode verarbeitet den POST-Request auf der URL <code>/vorgang/{id}/foto</code><br/>
+   * Die Methode verarbeitet den POST-Request auf der URL <code>/vorgang/{id}/foto</code><br>
    * Funktionsbeschreibung: Dient in Abhängigkeit vom <code>action</code> Parameter der Annahme der
    * Fotodrehung (<code>action=fotoRotate</code>), der Fotobearbeitung
    * (<code>action=fotoSave</code>), der Freigabestatusänderung
@@ -165,9 +163,16 @@ public class VorgangController {
    * (<code>action=fotowunsch</code>).
    *
    * @param id Vorgangs-ID
+   * @param action Aktion der Foto-Bearbeitung
+   * @param censorRectangleString Zensur-Rechteck
+   * @param censoringWidth Zensur-Breite
+   * @param censoringHeight Zensur-Höhe
+   * @param foto Foto
    * @param model Model in dem ggf. Daten für die View abgelegt werden
    * @param request Request
+   * @param command Command
    * @return View, die zum Rendern des Request verwendet wird
+   * @throws java.lang.Exception
    */
   @RequestMapping(value = "/vorgang/{id}/foto", method = RequestMethod.POST)
   public String foto(
@@ -210,7 +215,7 @@ public class VorgangController {
   }
 
   /**
-   * Die Methode verarbeitet den GET-Request auf der URL <code>/vorgang/{id}/verlauf</code><br/>
+   * Die Methode verarbeitet den GET-Request auf der URL <code>/vorgang/{id}/verlauf</code><br>
    * Seitenbeschreibung: Verlaufsansicht für den aktuellen Vorgang
    *
    * @param id Vorgangs-ID

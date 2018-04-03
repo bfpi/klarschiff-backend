@@ -1,7 +1,6 @@
 package de.fraunhofer.igd.klarschiff.service.geo;
 
 import org.apache.log4j.Logger;
-
 import de.fraunhofer.igd.klarschiff.util.ClassPathResourceUtil;
 import de.fraunhofer.igd.klarschiff.vo.StadtGrenze;
 import de.fraunhofer.igd.klarschiff.vo.StadtteilGrenze;

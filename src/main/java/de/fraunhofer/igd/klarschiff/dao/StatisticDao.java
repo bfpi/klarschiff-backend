@@ -2,25 +2,18 @@ package de.fraunhofer.igd.klarschiff.dao;
 
 import java.util.Date;
 import java.util.List;
-
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-
 import de.fraunhofer.igd.klarschiff.service.security.Role;
 import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
-import de.fraunhofer.igd.klarschiff.service.security.User;
 import de.fraunhofer.igd.klarschiff.service.settings.SettingsService;
 import de.fraunhofer.igd.klarschiff.vo.EnumVerlaufTyp;
-import de.fraunhofer.igd.klarschiff.vo.Flaeche;
-import de.fraunhofer.igd.klarschiff.vo.Verlauf;
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
 import java.util.ArrayList;
 import java.util.Arrays;
-import javax.persistence.Query;
 
 /**
  * Die Dao-Klasse erlaubt das Ermitteln von Daten aus der DB für die Statistik.
@@ -42,6 +35,12 @@ public class StatisticDao {
   @Autowired
   SettingsService settingsService;
 
+  /**
+   * Gibt eine Liste mit offenen Vorgängen zurück, zu denen mindestens eine Missbrauchsmeldung
+   * vorhanden ist.
+   *
+   * @return Liste der Vorgänge
+   */
   @SuppressWarnings("unchecked")
   public List<Vorgang> findVorgaengeMissbrauchsmeldungen() {
     HqlQueryHelper query = new HqlQueryHelper(securityService)
@@ -53,6 +52,12 @@ public class StatisticDao {
     return query.getResultList(entityManager);
   }
 
+  /**
+   * Gibt eine Liste mit offenen Vorgängen zurück, deren Zuständigkeit noch nicht akzeptiert wurde.
+   *
+   * @param datum Datum der letzten Bearbeitung
+   * @return Liste der Vorgänge
+   */
   @SuppressWarnings("unchecked")
   public List<Vorgang> findVorgaengeOffenNichtAkzeptiert(Date datum) {
     HqlQueryHelper query = (new HqlQueryHelper(securityService)).addSelectAttribute("vo")
@@ -66,6 +71,13 @@ public class StatisticDao {
     return query.getResultList(entityManager);
   }
 
+  /**
+   * Gibt eine Liste mit Vorgängen im Status 'in Bearbeitung' zurück, die keine öffentliche
+   * Statusinformation haben.
+   *
+   * @param datum Datum der letzten Bearbeitung
+   * @return Liste der Vorgänge
+   */
   @SuppressWarnings("unchecked")
   public List<Vorgang> findVorgaengeInbearbeitungOhneStatusKommentar(Date datum) {
     HqlQueryHelper query = (new HqlQueryHelper(securityService)).addSelectAttribute("vo")
@@ -79,6 +91,13 @@ public class StatisticDao {
     return query.getResultList(entityManager);
   }
 
+  /**
+   * Gibt eine Liste mit offenen Vorgängen zurück, bei denen die anzahl der notwendigen Unterstützer
+   * noch nicht erreicht wurde.
+   *
+   * @param datum Datum der letzten Bearbeitung
+   * @return Liste der Vorgänge
+   */
   @SuppressWarnings("unchecked")
   public List<Vorgang> findVorgaengeIdeeOffenOhneUnterstuetzung(Date datum) {
     HqlQueryHelper query = (new HqlQueryHelper(securityService)).addSelectAttribute("vo")
@@ -95,6 +114,12 @@ public class StatisticDao {
     return query.getResultList(entityManager);
   }
 
+  /**
+   * Gibt eine Liste mit nicht Lösbaren Vorgängen zurück, die keine öffentliche Statusinformation
+   * haben.
+   *
+   * @return Liste der Vorgänge
+   */
   @SuppressWarnings("unchecked")
   public List<Vorgang> findVorgaengeNichtLoesbarOhneStatuskommentar() {
     HqlQueryHelper query = (new HqlQueryHelper(securityService)).addSelectAttribute("vo")
@@ -107,6 +132,12 @@ public class StatisticDao {
     return query.getResultList(entityManager);
   }
 
+  /**
+   * Gibt eine Liste mit Vorgängen im Status 'in Bearbeitung' zurück, deren Zuständigkeit aber noch
+   * nicht akzeptiert wurde.
+   *
+   * @return Liste der Vorgänge
+   */
   @SuppressWarnings("unchecked")
   public List<Vorgang> findVorgaengeNichtMehrOffenNichtAkzeptiert() {
     HqlQueryHelper query = (new HqlQueryHelper(securityService)).addSelectAttribute("vo")
@@ -119,6 +150,12 @@ public class StatisticDao {
     return query.getResultList(entityManager);
   }
 
+  /**
+   * Gibt eine Liste mit Vorgängen zurück, deren Beschreibung und/oder Foto nicht für die
+   * öffentlichkeit Freigegeben wurden.
+   *
+   * @return Liste der Vorgänge
+   */
   @SuppressWarnings("unchecked")
   public List<Vorgang> findVorgaengeOhneRedaktionelleFreigaben() {
     HqlQueryHelper query = (new HqlQueryHelper(securityService)).addSelectAttribute("vo")
@@ -132,6 +169,13 @@ public class StatisticDao {
     return query.getResultList(entityManager);
   }
 
+  /**
+   * Gibt eine Übersicht die Status-Verteilung von offenen Vorgängen zurück.
+   *
+   * @param onlyCurrentZustaendigkeitDelegiertAn Nur die eigene Zuständigkeit oder Vorgänge die an
+   * den aktuellen Nutzer übergeben wurden berücksichtigen.
+   * @return Liste der Vorgänge
+   */
   @SuppressWarnings("unchecked")
   public List<Object[]> getStatusVerteilung(boolean onlyCurrentZustaendigkeitDelegiertAn) {
     HqlQueryHelper query = new HqlQueryHelper(securityService)
@@ -148,6 +192,12 @@ public class StatisticDao {
     return query.getResultList(entityManager);
   }
 
+  /**
+   * Fügt an die Query die Bedingungen hinzu, dass nur die eigene Zuständigkeit oder Vorgänge die an
+   * den aktuellen Nutzer übergeben wurden berücksichtigt werden.
+   *
+   * @param query Query an die die Bedingungen hinzugefügt werden sollen.
+   */
   public void processZustaendigkeitDelegiertAn(HqlQueryHelper query) {
     List<Role> zustaendigkeiten = securityService.getCurrentZustaendigkeiten(true);
     List<Role> delegiertAn = securityService.getCurrentDelegiertAn();
@@ -164,6 +214,12 @@ public class StatisticDao {
     }
   }
 
+  /**
+   * Gibt eine Liste mit Vorgängen zurück, die als Letztes angelegt wurden.
+   *
+   * @param maxResult Maximale Anzahl der Vorgänge
+   * @return Liste der Vorgänge
+   */
   @SuppressWarnings("unchecked")
   public List<Vorgang> findNeuesteVorgaenge(int maxResult) {
     HqlQueryHelper query = (new HqlQueryHelper(securityService)).addSelectAttribute("vo")
@@ -176,6 +232,13 @@ public class StatisticDao {
     return query.getResultList(entityManager);
   }
 
+  /**
+   * Gibt eine Liste mit Vorgängen des aktuellen Nutzers zurück, an denen Änderungen vorgenommen
+   * wurden.
+   *
+   * @param maxResult Maximale Anzahl der Vorgänge
+   * @return Liste der Vorgänge
+   */
   @SuppressWarnings("unchecked")
   public List<Vorgang> findEigeneVorgaenge(int maxResult, Date datum) {
     HqlQueryHelper query = (new HqlQueryHelper(securityService)).addSelectAttribute("vo")
@@ -190,6 +253,13 @@ public class StatisticDao {
     return query.getResultList(entityManager);
   }
 
+  /**
+   * Gibt eine Liste mit Vorgängen, die die aktuelle Rolle als erstes akzeptiert hatte, die aber
+   * inzwischen an andere Rollen überwiesen wurden.
+   *
+   * @param maxResult Maximale Anzahl der Vorgänge
+   * @return Liste der Vorgänge
+   */
   @SuppressWarnings("unchecked")
   public List<Vorgang> findEhemaligeVorgaenge(int maxResult) {
     List<Role> zustaendigkeiten = securityService.getCurrentZustaendigkeiten(true);

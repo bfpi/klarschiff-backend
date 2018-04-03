@@ -2,7 +2,6 @@ package de.fraunhofer.igd.klarschiff.context;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -18,10 +17,17 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class ApplicationContextProvider implements ApplicationContextAware {
 
+  /**
+   * @param ctx ApplicationContext
+   */
+  @Override
   public void setApplicationContext(ApplicationContext ctx) throws BeansException {
     AppContext.setApplicationContext(ctx);
   }
 
+  /**
+   * @param entityManager EntityManager
+   */
   @PersistenceContext
   public void setEntityManager(EntityManager entityManager) throws BeansException {
     AppContext.setEntityManager(entityManager);

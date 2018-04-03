@@ -1,15 +1,12 @@
 package de.fraunhofer.igd.klarschiff.service.geo;
 
 import static de.fraunhofer.igd.klarschiff.util.NumberUtil.min;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
 import javax.annotation.PostConstruct;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -31,13 +28,11 @@ import org.opengis.referencing.operation.TransformException;
 import org.opengis.referencing.ReferenceIdentifier;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import com.vividsolutions.jts.algorithm.distance.DistanceToPoint;
 import com.vividsolutions.jts.algorithm.distance.PointPairDistance;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
-
 import de.fraunhofer.igd.klarschiff.service.classification.Attribute;
 import de.fraunhofer.igd.klarschiff.service.settings.SettingsService;
 import de.fraunhofer.igd.klarschiff.util.LogUtil;
@@ -72,19 +67,19 @@ public class GeoService {
   String mapResolutions;
   String mapUnits;
   Integer mapOviMargin;
-  
+
   String mapLayersOneType;
   String mapLayersOneParams;
   String mapLayersTwoType;
   String mapLayersTwoParams;
   String mapLayersPoiType;
   String mapLayersPoiParams;
-  
+
   String mapExternProjection;
   String mapExternName;
   String mapExternUrl;
   String mapExternExternUrl;
-  
+
   String vorgangCoordinates;
 
   String wfsVorgaengeUrl;
@@ -177,11 +172,7 @@ public class GeoService {
   private Point transformMapProjectionToMapExternProjection(Point point) {
     try {
       return de.bfpi.tools.GeoTools.transformPosition(point, mapProjection, mapExternProjection);
-    } catch (FactoryException ex) {
-      throw new RuntimeException(ex);
-    } catch (MismatchedDimensionException ex) {
-      throw new RuntimeException(ex);
-    } catch (TransformException ex) {
+    } catch (FactoryException | MismatchedDimensionException | TransformException ex) {
       throw new RuntimeException(ex);
     }
   }

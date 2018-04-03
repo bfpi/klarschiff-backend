@@ -6,16 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.SessionAttributes;
-
 import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
 import de.fraunhofer.igd.klarschiff.service.security.User;
 import de.fraunhofer.igd.klarschiff.vo.Benutzer;
 import de.fraunhofer.igd.klarschiff.vo.Flaeche;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,7 +36,7 @@ public class AdminFlaechenController {
   BenutzerDao benutzerDao;
 
   /**
-   * Die Methode verarbeitet den GET-Request auf der URL <code>/admin/flaechen</code><br/>
+   * Die Methode verarbeitet den GET-Request auf der URL <code>/admin/flaechen</code><br>
    * Seitenbeschreibung: Übersichtsseite zur Flächenverwaltung
    *
    * @param model Model in dem ggf. Daten für die View abgelegt werden
@@ -53,7 +50,7 @@ public class AdminFlaechenController {
 
   /**
    * Die Methode verarbeitet den GET-Request auf der URL
-   * <code>/flaechen/{login}/bearbeiten</code><br/>
+   * <code>/flaechen/{login}/bearbeiten</code><br>
    * Seitenbeschreibung: Formular zur Bearbeiten der Berechtigungen zum Zuweisen von Flaechen-Teams
    *
    * @param login User-Login
@@ -82,10 +79,10 @@ public class AdminFlaechenController {
 
   /**
    * Die Methode verarbeitet den POST-Request auf der URL
-   * <code>/flaechen/{login}/bearbeiten</code><br/>
+   * <code>/flaechen/{login}/bearbeiten</code><br>
    * Seitenbeschreibung: Ändert die Berechtigungen zum Zuweisen von Flaechen-Teams
    *
-   * @param login
+   * @param login User-Login
    * @param model Model in dem ggf. Daten für die View abgelegt werden
    * @param request Request
    * @return View, die zum Rendern des Request verwendet wird
@@ -113,6 +110,13 @@ public class AdminFlaechenController {
     return renderListe(model, request);
   }
 
+  /**
+   * Die Methode Rendert die View für die Requests
+   *
+   * @param model Model in dem ggf. Daten für die View abgelegt werden
+   * @param request Request
+   * @return View, die zum Rendern des Request verwendet wird
+   */
   private String renderListe(Model model, HttpServletRequest request) {
     model.addAttribute("benutzer", securityService.getAllUserWithAreas());
     return "admin/flaechen";

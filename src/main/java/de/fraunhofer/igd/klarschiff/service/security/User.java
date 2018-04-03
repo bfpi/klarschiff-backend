@@ -3,7 +3,6 @@ package de.fraunhofer.igd.klarschiff.service.security;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
 import de.fraunhofer.igd.klarschiff.context.AppContext;
 import de.fraunhofer.igd.klarschiff.vo.Flaeche;
 
@@ -78,6 +77,12 @@ public class User {
     return AppContext.getApplicationContext().getBean(SecurityService.class).isUserKoordinator(id);
   }
 
+  /**
+   * Namen der übergebenen User als Liste wieder zurückgeben.
+   *
+   * @param users Liste von User
+   * @return Liste der Namen
+   */
   public static List<String> toString(Collection<User> users) {
     List<String> _users = new ArrayList<String>();
     for (User user : users) {

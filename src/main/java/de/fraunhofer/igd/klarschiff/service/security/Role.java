@@ -3,9 +3,7 @@ package de.fraunhofer.igd.klarschiff.service.security;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
 import de.fraunhofer.igd.klarschiff.context.AppContext;
-
 import org.apache.commons.lang.StringUtils;
 
 /**
@@ -21,6 +19,12 @@ public class Role {
   String dn;
   String l;
 
+  /**
+   * IDs der übergebenen Rollen als Liste wieder zurückgeben.
+   *
+   * @param roles Liste von Rollen
+   * @return Liste der IDs
+   */
   public static List<String> toString(Collection<Role> roles) {
     List<String> _roles = new ArrayList<String>();
     for (Role role : roles) {
@@ -29,6 +33,13 @@ public class Role {
     return _roles;
   }
 
+  /**
+   * Vergleich ob es sich um die übergebene Rolle handelt
+   *
+   * @param o Rolle mit der Verglcihen werden soll
+   * @return <code>true</code> - bei der übergebenen Rolle handelt es sich um die aktuelle Rolle;
+   * <code>false</code> - die Übergebene Rolle ist nicht die aktuelle Rolle
+   */
   @Override
   public boolean equals(Object o) {
     if (o != null && o instanceof Role) {

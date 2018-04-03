@@ -4,14 +4,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-
 import javax.annotation.PostConstruct;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import weka.classifiers.bayes.NaiveBayesUpdateable;
 import weka.classifiers.Evaluation;
 import weka.core.Instance;
@@ -169,14 +166,14 @@ public class ClassificationService {
     logger.debug("Instance:(" + instance.toString() + ")");
 
     double[] distribution = cModel.distributionForInstance(instance);
-    
+
     //Map erzeugen
     List<ClassificationResultEntry> classificationResult = new ArrayList<ClassificationResultEntry>();
     for (int i = 0; i < distribution.length; i++) //classificationResult.add(new ClassificationResultEntry(ctx.getClassAttribute().value(i), distribution[i]));
     {
       classificationResult.add(new ClassificationResultEntry(newData.classAttribute().value(i), distribution[i]));
     }
-    
+
     //prüfen, ob alle Wichtungen gleich sind
     boolean allWeightsEqual = true;
     double firstWeight = classificationResult.get(0).getWeight();
@@ -205,8 +202,7 @@ public class ClassificationService {
       for (String zustaendigkeit : zustaendigkeiten) {
         classificationResult.add(0, new ClassificationResultEntry(zustaendigkeit, firstWeight));
       }
-    }
-    //falls nein: Liste sortieren
+    } //falls nein: Liste sortieren
     else {
       Collections.sort(classificationResult, new Comparator<ClassificationResultEntry>() {
         public int compare(ClassificationResultEntry o1, ClassificationResultEntry o2) {

@@ -3,7 +3,6 @@ package de.fraunhofer.igd.klarschiff.vo.extra;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
-
 import de.fraunhofer.igd.klarschiff.vo.EnumText;
 
 /**

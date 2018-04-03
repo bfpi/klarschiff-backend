@@ -2,9 +2,7 @@ package de.fraunhofer.igd.klarschiff.vo;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,10 +11,14 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.OrderBy;
 import javax.persistence.TableGenerator;
-import org.codehaus.jackson.annotate.JsonIgnore;
 
+/**
+ * VO zum Abbilden eines Benutzers
+ *
+ * @author Robert Voß (BFPI GmbH)
+ *
+ */
 @SuppressWarnings("serial")
 @Entity
 public class Benutzer implements Serializable {

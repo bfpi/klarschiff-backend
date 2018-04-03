@@ -1,12 +1,9 @@
 package de.fraunhofer.igd.klarschiff.web;
 
 import static de.fraunhofer.igd.klarschiff.web.Assert.assertNotEmpty;
-
 import java.util.Date;
 import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.lang.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
-
 import de.fraunhofer.igd.klarschiff.dao.VorgangDao;
 import de.fraunhofer.igd.klarschiff.service.classification.ClassificationService;
 import de.fraunhofer.igd.klarschiff.service.geo.GeoService;
@@ -83,8 +79,7 @@ public class VorgangErstsichtungController {
   }
 
   /**
-   * Die Methode verarbeitet den GET-Request auf der URL
-   * <code>/vorgang/{id}/erstsichtung</code><br/>
+   * Die Methode verarbeitet den GET-Request auf der URL <code>/vorgang/{id}/erstsichtung</code><br>
    * Seitenbeschreibung: Darstellung des Erstsichtungsformulars mit Vorgangsdetails, Kartenposition
    * und Foto
    *
@@ -112,9 +107,9 @@ public class VorgangErstsichtungController {
 
   /**
    * Die Methode verarbeitet den POST-Request auf der URL
-   * <code>/vorgang/{id}/erstsichtung</code><br/>
+   * <code>/vorgang/{id}/erstsichtung</code><br>
    * Funktionsbeschreibung:
-   * <br/>In Abhängigkeit vom <code>action</code> Parameter sind folgende Funktionalitäten möglich:
+   * <br>In Abhängigkeit vom <code>action</code> Parameter sind folgende Funktionalitäten möglich:
    * <ul>
    * <li>Zuständigkeit zuweisen (<code>zuweisen</code>)</li>
    * <li>Zuständigkeit neu zuweisen (<code>neu zuweisen</code>)</li>
@@ -209,7 +204,7 @@ public class VorgangErstsichtungController {
         cmd.getVorgang().setStatusDatum(new Date());
       }
       cmd.getVorgang().setBeschreibungFreigabeStatus(EnumFreigabeStatus.extern);
-      if(cmd.getVorgang().getFotoExists()) {
+      if (cmd.getVorgang().getFotoExists()) {
         cmd.getVorgang().setFotoFreigabeStatus(EnumFreigabeStatus.extern);
       }
 

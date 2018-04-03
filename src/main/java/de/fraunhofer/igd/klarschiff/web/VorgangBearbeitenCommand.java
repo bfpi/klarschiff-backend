@@ -3,7 +3,7 @@ package de.fraunhofer.igd.klarschiff.web;
 import de.fraunhofer.igd.klarschiff.vo.Kategorie;
 
 /**
- * Command für das Vorgangbearbeiten im Backend <br />
+ * Command für das Vorgangbearbeiten im Backend<br>
  * Beinhaltet ein Vorgangs-Objekt, Kategorie, Kommentar sowie die akutelle Seitenzahl und die
  * Seitengröße.
  *

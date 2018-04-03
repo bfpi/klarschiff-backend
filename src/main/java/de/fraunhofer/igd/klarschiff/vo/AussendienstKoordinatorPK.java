@@ -4,7 +4,7 @@ import java.io.Serializable;
 import javax.persistence.Embeddable;
 
 /**
- * Primary-Key-Klasse, da die Tabelle 2 PKs hat. <br/>
+ * Primary-Key-Klasse, da die Tabelle 2 PKs hat.
  *
  * @author Robert Voß (BFPI GmbH)
  */

@@ -3,7 +3,7 @@ package de.fraunhofer.igd.klarschiff.web;
 import java.util.Date;
 
 /**
- * Command für die Auftragslisten im Backend <br />
+ * Command für die Auftragslisten im Backend <br>
  *
  * @author Robert Voß (BFPI GmbH)
  */

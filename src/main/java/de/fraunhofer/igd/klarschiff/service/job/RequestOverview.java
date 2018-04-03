@@ -20,6 +20,12 @@ public class RequestOverview {
 
   private static final Logger logger = Logger.getLogger(JobsService.class);
 
+  /**
+   * Die Klasse erzeugt die Liste der Vorgänge als Statische Dateien für das Frontend.
+   *
+   * @param settingsService SettingsService
+   * @param vorgangDao VorgangDao
+   */
   public void create(SettingsService settingsService, VorgangDao vorgangDao) {
     try {
       String resourcesPath = settingsService.getPropertyValue("resources.overview.path");

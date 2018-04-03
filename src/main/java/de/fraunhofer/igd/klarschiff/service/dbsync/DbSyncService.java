@@ -1,11 +1,9 @@
 package de.fraunhofer.igd.klarschiff.service.dbsync;
 
 import java.util.Properties;
-
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-
 import org.apache.commons.lang.text.StrSubstitutor;
 import org.apache.log4j.Logger;
 import org.hibernate.FlushMode;
@@ -14,7 +12,6 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import de.fraunhofer.igd.klarschiff.service.settings.SettingsService;
 import de.fraunhofer.igd.klarschiff.util.ClassPathResourceUtil;
 import de.fraunhofer.igd.klarschiff.util.LogUtil;

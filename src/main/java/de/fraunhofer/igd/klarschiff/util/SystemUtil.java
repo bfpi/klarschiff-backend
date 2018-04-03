@@ -1,7 +1,15 @@
 package de.fraunhofer.igd.klarschiff.util;
 
+/**
+ * Die Klasse bieten Funktionen zum auslesen von System-Variablen.
+ *
+ * @author Stefan Audersch (Fraunhofer IGD)
+ */
 public class SystemUtil {
 
+  /**
+   * Auslesen und ausgeben von System-Variablen.
+   */
   public static void printlnSystemVariables() {
 
     System.out.println("-- system environment --");

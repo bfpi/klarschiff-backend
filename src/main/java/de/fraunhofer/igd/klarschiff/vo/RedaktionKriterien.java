@@ -1,7 +1,6 @@
 package de.fraunhofer.igd.klarschiff.vo;
 
 import java.io.Serializable;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -38,8 +37,8 @@ public class RedaktionKriterien implements Serializable {
   private Short tageOffenNichtAkzeptiert;
 
   /**
-   * Tage, die Vorgänge mit dem Status 'in Bearbeitung', die bisher keine öffentliche Statusinformation
-   * aufweisen, unverändert geblieben sein sollen
+   * Tage, die Vorgänge mit dem Status 'in Bearbeitung', die bisher keine öffentliche
+   * Statusinformation aufweisen, unverändert geblieben sein sollen
    */
   @NotNull
   private Short tageInbearbeitungOhneStatusKommentar;
@@ -52,8 +51,8 @@ public class RedaktionKriterien implements Serializable {
   private Short tageIdeeOffenOhneUnterstuetzung;
 
   /**
-   * Vorgänge ausweisen mit dem Status 'nicht lösbar', die bisher keine öffentliche Statusinformation
-   * aufweisen?
+   * Vorgänge ausweisen mit dem Status 'nicht lösbar', die bisher keine öffentliche
+   * Statusinformation aufweisen?
    */
   @NotNull
   private Boolean nichtLoesbarOhneStatuskommentar;

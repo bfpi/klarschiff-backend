@@ -1,15 +1,9 @@
 package de.fraunhofer.igd.klarschiff.dao;
 
-import java.util.Date;
 import java.util.List;
-
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-
-import org.apache.commons.lang.time.DateUtils;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
-
 import de.fraunhofer.igd.klarschiff.vo.RedaktionKriterien;
 
 /**
@@ -24,7 +18,9 @@ public class RedaktionKriterienDao {
   EntityManager em;
 
   /**
-   * gibt eine Liste mit den in der DB gelisteten Empfängern von redaktionellen E-Mails zurück
+   * Gibt eine Liste mit den in der DB gelisteten Empfängern von redaktionellen E-Mails zurück
+   *
+   * @return Liste der Empfänger
    */
   @SuppressWarnings("unchecked")
   public List<RedaktionKriterien> getKriterienList() {

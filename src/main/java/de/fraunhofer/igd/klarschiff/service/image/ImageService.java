@@ -6,17 +6,13 @@ import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-
 import javax.imageio.ImageIO;
 import javax.imageio.plugins.jpeg.JPEGImageWriteParam;
-
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
 import de.fraunhofer.igd.klarschiff.service.settings.SettingsService;
 import com.sun.imageio.plugins.jpeg.JPEGImageWriter;
-
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
 import java.io.File;
 import java.io.InputStream;
@@ -26,7 +22,6 @@ import java.util.UUID;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import com.drew.imaging.ImageMetadataReader;
 import com.drew.metadata.Directory;
 import com.drew.metadata.Metadata;
@@ -159,6 +154,14 @@ public class ImageService {
     return filename;
   }
 
+  /**
+   * Setzt das Bild für einen Vorgang. Dabei wird das Bild in drei Größen abgelegt (Gross, Normal,
+   * Thumb). Die Bilder werden entsprechend skaliert.
+   *
+   * @param vorgang Vorgang von dem die Bilddaten geholt werden sollen
+   * @return Bilddaten als BufferedImage
+   * @throws java.io.IOException
+   */
   public BufferedImage imageFromVorgang(Vorgang vorgang) throws IOException {
     InputStream inStream = Files.newInputStream(Paths.get(getPath(), vorgang.getFotoGross()));
     return ImageIO.read(inStream);
@@ -197,6 +200,11 @@ public class ImageService {
     }
   }
 
+  /**
+   * Rotiert das Bild um 90 Grad im Uhrzeigersinn und legt es im Dateisystem wieder ab.
+   *
+   * @param vorgang Vorgang, bei dem das Bild gedreht werden sollen
+   */
   public void rotateImageForVorgang(Vorgang vorgang) {
     try {
       BufferedImage oldImage = imageFromVorgang(vorgang);
@@ -207,6 +215,13 @@ public class ImageService {
     }
   }
 
+  /**
+   * Rotiert das Bild übergebene Bild um die Grad, die ebenfalls übergeben werden.
+   *
+   * @param oldImage Original-Bilddaten als BufferedImage
+   * @param degrees Grad um die das Bild gedreht werden soll
+   * @return Gedrehtes Bild als BufferedImage
+   */
   private BufferedImage rotateImage(BufferedImage oldImage, double degrees) {
     BufferedImage newImage = new BufferedImage(oldImage.getHeight(), oldImage.getWidth(), oldImage.getType());
 

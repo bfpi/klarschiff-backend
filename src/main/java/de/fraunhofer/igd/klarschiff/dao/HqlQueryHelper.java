@@ -1,6 +1,5 @@
 package de.fraunhofer.igd.klarschiff.dao;
 
-import com.vividsolutions.jts.geom.MultiPolygon;
 import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
 import de.fraunhofer.igd.klarschiff.service.security.User;
 import java.util.ArrayList;
@@ -11,13 +10,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
-
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -122,6 +118,7 @@ public class HqlQueryHelper {
   /**
    * Erzeugt eine gültige HQL-Anfrage
    *
+   * @param entityManager EntityManager
    * @return HQL-Anfrage
    */
   public String getHqlQuery(EntityManager entityManager) {

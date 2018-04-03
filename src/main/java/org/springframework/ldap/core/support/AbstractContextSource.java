@@ -18,14 +18,11 @@ package org.springframework.ldap.core.support;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Properties;
-
 import javax.naming.Context;
 import javax.naming.NamingException;
 import javax.naming.directory.DirContext;
-
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -34,7 +31,6 @@ import org.springframework.ldap.core.AuthenticationSource;
 import org.springframework.ldap.core.ContextSource;
 import org.springframework.ldap.core.DistinguishedName;
 import org.springframework.ldap.support.LdapUtils;
-
 import de.fraunhofer.igd.klarschiff.service.settings.PropertyPlaceholderConfigurer;
 
 /**

@@ -3,10 +3,8 @@ package de.fraunhofer.igd.klarschiff.web;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.log4j.Logger;
@@ -20,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
-
 import de.fraunhofer.igd.klarschiff.dao.GrenzenDao;
 import de.fraunhofer.igd.klarschiff.dao.KategorieDao;
 import de.fraunhofer.igd.klarschiff.dao.VorgangDao;
@@ -29,9 +26,6 @@ import de.fraunhofer.igd.klarschiff.service.poi.PoiService;
 import de.fraunhofer.igd.klarschiff.vo.EnumPrioritaet;
 import de.fraunhofer.igd.klarschiff.vo.EnumVorgangStatus;
 import de.fraunhofer.igd.klarschiff.vo.EnumVorgangTyp;
-import de.fraunhofer.igd.klarschiff.vo.Vorgang;
-import de.fraunhofer.igd.klarschiff.web.VorgangDelegiertSuchenCommand.EinfacheSuche;
-import de.fraunhofer.igd.klarschiff.web.VorgangDelegiertSuchenCommand.Suchtyp;
 
 /**
  * Controller für die Vorgangsuche für Externe (Delegierte)
@@ -62,6 +56,8 @@ public class VorgangDelegiertSuchenController {
 
   /**
    * Liefert alle möglichen Ausprägungen für Vorgangs-Status-Typen
+   *
+   * @return mögliche Status-Ausprägungen
    */
   @ModelAttribute("allVorgangStatus")
   public EnumVorgangStatus[] allVorgangStatus() {
@@ -71,6 +67,8 @@ public class VorgangDelegiertSuchenController {
   /**
    * Liefert alle Ausprägungen für Vorgangs-Status-Typen, die auch für Externe (Delegiert)
    * vorgesehen sind
+   *
+   * @return mögliche Status-Ausprägungen
    */
   @ModelAttribute("allDelegiertVorgangStatus")
   public EnumVorgangStatus[] allDelegiertVorgangStatus() {
@@ -79,6 +77,8 @@ public class VorgangDelegiertSuchenController {
 
   /**
    * Liefert alle möglichen Ausprägungen für Vorgangstypen
+   *
+   * @return mögliche Typ-Ausprägungen
    */
   @ModelAttribute("vorgangtypen")
   public Collection<EnumVorgangTyp> populateEnumVorgangTypen() {
@@ -87,6 +87,8 @@ public class VorgangDelegiertSuchenController {
 
   /**
    * Liefert alle möglichen Ausprägungen für Prioritätsbezeichner
+   *
+   * @return mögliche Prioritäten
    */
   @ModelAttribute("allPrioritaeten")
   public Collection<EnumPrioritaet> allPrioritaeten() {
@@ -111,6 +113,8 @@ public class VorgangDelegiertSuchenController {
   /**
    * Initialisiert <code>VorgangSuchenCommand</code>-Objekt mit Standardwerten zur Benutzung als
    * ModelAttribute für Suchoperation
+   *
+   * @return Command
    */
   @ModelAttribute("cmdvorgangdelegiertsuchen")
   public VorgangDelegiertSuchenCommand initCommand() {
@@ -143,7 +147,7 @@ public class VorgangDelegiertSuchenController {
   }
 
   /**
-   * Die Methode verarbeitet den GET-Request auf der URL <code>/vorgang/delegiert/suchen</code><br/>
+   * Die Methode verarbeitet den GET-Request auf der URL <code>/vorgang/delegiert/suchen</code><br>
    * Seitenbeschreibung: Darstellung der Backend-Suchfunktionalität
    *
    * @param cmd Command
@@ -168,7 +172,7 @@ public class VorgangDelegiertSuchenController {
 
   /**
    * Die Methode verarbeitet den GET-Request auf der URL
-   * <code>/vorgang/delegiert/suchen/karte</code><br/>
+   * <code>/vorgang/delegiert/suchen/karte</code><br>
    * Seitenbeschreibung: Kartenandarstellung für die Ergebnisse der aktuellen Suchanfrage
    *
    * @param cmd Command
@@ -193,11 +197,13 @@ public class VorgangDelegiertSuchenController {
 
   /**
    * Die Methode verarbeitet den GET-Request auf der URL
-   * <code>/vorgang/delegiert/suchen/vorgaenge.xls</code><br/>
+   * <code>/vorgang/delegiert/suchen/vorgaenge.xls</code><br>
    * Funktionsbeschreibung: Erzeugt Excel-Datei mit dem Inhalt der aktuellen Suchergebnisse und
    * liefert diese als Download mit <code>Content-Type:"application/ms-excel"</code> aus
    *
    * @param cmd Command
+   * @param request Request
+   * @param response Response in das das Ergebnis direkt geschrieben wird
    */
   @RequestMapping(value = "/vorgaenge.xls", method = RequestMethod.GET)
   @ResponseBody

@@ -3,14 +3,9 @@ package de.fraunhofer.igd.klarschiff.web;
 import static de.fraunhofer.igd.klarschiff.web.Assert.assertEmail;
 import static de.fraunhofer.igd.klarschiff.web.Assert.assertMaxLength;
 import static de.fraunhofer.igd.klarschiff.web.Assert.assertNotEmpty;
-
-import java.io.OutputStream;
-
 import java.net.URLEncoder;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
-
 import de.fraunhofer.igd.klarschiff.dao.VorgangDao;
 import de.fraunhofer.igd.klarschiff.service.mail.MailService;
 import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
@@ -50,7 +44,7 @@ public class VorgangEmailController {
   MailService mailService;
 
   /**
-   * Die Methode verarbeitet den GET-Request auf der URL <code>/vorgang/{id}/email</code><br/>
+   * Die Methode verarbeitet den GET-Request auf der URL <code>/vorgang/{id}/email</code><br>
    * Seitenbeschreibung: Formular zum Versenden einer Übersicht des aktuellen Vorganges per E-Mail.
    * Die Eingabe des Empfängers, eines Freitext sowie die Auswahl, welche Vorgangselemente (Autor,
    * Karte, Bild, Kommentare, Missbrauchsmeldungen) angefügt werden sollen, sind möglich.
@@ -67,7 +61,7 @@ public class VorgangEmailController {
 
   /**
    * Die Methode verarbeitet den GET-Request auf der URL
-   * <code>/vorgang/delegiert/{id}/email</code><br/>
+   * <code>/vorgang/delegiert/{id}/email</code><br>
    * Seitenbeschreibung: Formular zum Versenden einer Übersicht des aktuellen Vorganges per E-Mail
    * für Externe (Delegierte). Die Eingabe des Empfängers, eines Freitext sowie die Auswahl, welche
    * Vorgangselemente (Karte, Bild, Kommentare) angefügt werden sollen, sind möglich. Autor und
@@ -112,7 +106,7 @@ public class VorgangEmailController {
 
   /**
    * Die Methode verarbeitet den POST-Request auf der URL
-   * <code>/vorgang/delegiert/{id}/email</code><br/>
+   * <code>/vorgang/delegiert/{id}/email</code><br>
    * Funktionsbeschreibung: Führt E-Mail-Versand nach Prüfung durch. Liefert Bestätigungsseite oder
    * weist auf Fehler hin.
    *
@@ -135,7 +129,7 @@ public class VorgangEmailController {
 
   /**
    * Die Methode verarbeitet den POST-Request auf der URL
-   * <code>/vorgang/delegiert/{id}/email</code><br/>
+   * <code>/vorgang/delegiert/{id}/email</code><br>
    * Funktionsbeschreibung: Führt E-Mail-Versand nach Prüfung für Externe (Delegierte) durch.
    * Liefert Bestätigungsseite oder weist auf Fehler hin.
    *
@@ -192,12 +186,14 @@ public class VorgangEmailController {
   }
 
   /**
-   * Die Methode verarbeitet den Request auf der URL <code>/vorgang/{id}/emailDirect</code><br/>
+   * Die Methode verarbeitet den Request auf der URL <code>/vorgang/{id}/emailDirect</code><br>
    * Funktionsbeschreibung: erlaubt das Versenden der Vorgangsübersichts-E-Mail mit Hilfe eines
    * lokalen Mailclients via <code>mailto:</code>.
    *
    * @param id Vorgangs-ID
+   * @param browser
    * @param response HttpServletResponse
+   * @throws java.lang.Exception
    */
   @RequestMapping(value = "/vorgang/{id}/emailDirect", method = RequestMethod.GET, params = {"browser"})
   @ResponseBody
@@ -209,12 +205,14 @@ public class VorgangEmailController {
   }
 
   /**
-   * Die Methode verarbeitet den Request auf der URL <code>/vorgang/{id}/emailDirect</code><br/>
+   * Die Methode verarbeitet den Request auf der URL <code>/vorgang/{id}/emailDirect</code><br>
    * Funktionsbeschreibung: erlaubt das Versenden der Vorgangsübersichts-E-Mail mit Hilfe eines
    * lokalen Mailclients via <code>mailto:</code> für Externe (Delegierte).
    *
    * @param id Vorgangs-ID
+   * @param browser
    * @param response HttpServletResponse
+   * @throws java.lang.Exception
    */
   @RequestMapping(value = "/vorgang/delegiert/{id}/emailDirect", method = RequestMethod.GET, params = {"browser"})
   @ResponseBody
@@ -229,9 +227,10 @@ public class VorgangEmailController {
    * Methode erzeugt den Link zum Versand einer Email mit dem lokalen Mailclient.
    *
    * @param id Vorgangs-ID
+   * @param browser
    * @param response HttpServletResponse
-   * @param onlyurl erstellt nur die mailto-URL oder eine Seite mit entsprechendem JavaScript
    * @param delegiert E-Mailverand für delgierte? (kein Autor und keine Missbrauchsmedlungen)
+   * @throws java.lang.Exception
    */
   public void emailDirect(Long id, String browser, HttpServletResponse response, boolean delegiert) throws Exception {
     // Vorgang ermitteln

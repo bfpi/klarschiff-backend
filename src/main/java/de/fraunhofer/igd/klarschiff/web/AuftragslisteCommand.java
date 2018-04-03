@@ -4,7 +4,7 @@ import de.fraunhofer.igd.klarschiff.vo.EnumAuftragStatus;
 import java.util.Date;
 
 /**
- * Command für die Auftragslisten im Backend <br />
+ * Command für die Auftragslisten im Backend <br>
  *
  * @author Robert Voß (BFPI GmbH)
  */

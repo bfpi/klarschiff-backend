@@ -16,9 +16,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-
 import javax.annotation.PostConstruct;
-
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecuteResultHandler;
 import org.apache.commons.exec.DefaultExecutor;
@@ -31,13 +29,11 @@ import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-
 import de.fraunhofer.igd.klarschiff.dao.VorgangDao;
 import de.fraunhofer.igd.klarschiff.util.SystemUtil;
 import de.fraunhofer.igd.klarschiff.vo.Benutzer;
 import de.fraunhofer.igd.klarschiff.vo.Kommentar;
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
-import org.joda.time.DateTime;
 
 /**
  * Die Klasse stellt einen Service bereit über den die Daten zu Benutzer und deren Rollen bzw.
@@ -125,7 +121,7 @@ public class SecurityService {
       return false;
     }
     List<Role> role = securityServiceLdap.getObjectListFromLdap(groupSearchBase, "(&(objectclass=" + groupObjectClass + ")(" + StringUtils.replace(groupSearchFilter, "{0}", user.getDn()) + ")(" + groupRoleAttribute + "=" + groupAdmin + "))", roleContextMapper);
-    return (role.size() == 0) ? false : true;
+    return !(role.isEmpty());
   }
 
   /**
@@ -154,7 +150,7 @@ public class SecurityService {
       return false;
     }
     List<Role> role = securityServiceLdap.getObjectListFromLdap(groupSearchBase, "(&(objectclass=" + groupObjectClass + ")(" + StringUtils.replace(groupSearchFilter, "{0}", user.getDn()) + ")(" + groupRoleAttribute + "=" + groupDispatcher + "))", roleContextMapper);
-    return (role.size() == 0) ? false : true;
+    return !(role.isEmpty());
   }
 
   /**
@@ -169,7 +165,7 @@ public class SecurityService {
       return false;
     }
     List<Role> role = securityServiceLdap.getObjectListFromLdap(groupSearchBase, "(&(objectclass=" + groupObjectClass + ")(" + StringUtils.replace(groupSearchFilter, "{0}", user.getDn()) + ")(" + groupRoleAttribute + "=" + groupKoordinator + "))", roleContextMapper);
-    return (role.size() == 0) ? false : true;
+    return !(role.isEmpty());
   }
 
   /**

@@ -3,8 +3,6 @@ package de.fraunhofer.igd.klarschiff.vo;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.Column;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -22,10 +20,8 @@ import javax.persistence.TableGenerator;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
-
 import de.fraunhofer.igd.klarschiff.context.AppContext;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
@@ -94,7 +90,7 @@ public class Kategorie implements Serializable {
   /**
    * Gibt den Namen der Kategorie als "escaped HTML" zurück.
    *
-   * @return
+   * @return escaped HTML
    */
   @Transient
   public String getNameEscapeHtml() {

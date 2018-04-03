@@ -5,16 +5,13 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-
 import de.fraunhofer.igd.klarschiff.context.AppContext;
 import de.fraunhofer.igd.klarschiff.service.classification.ClassificationService;
 import de.fraunhofer.igd.klarschiff.service.security.Role;
@@ -25,7 +22,6 @@ import de.fraunhofer.igd.klarschiff.vo.EnumVerlaufTyp;
 import de.fraunhofer.igd.klarschiff.vo.EnumVorgangStatus;
 import de.fraunhofer.igd.klarschiff.vo.EnumVorgangTyp;
 import de.fraunhofer.igd.klarschiff.vo.EnumZustaendigkeitStatus;
-import de.fraunhofer.igd.klarschiff.vo.Kategorie;
 import de.fraunhofer.igd.klarschiff.vo.Missbrauchsmeldung;
 import de.fraunhofer.igd.klarschiff.vo.StatusKommentarVorlage;
 import de.fraunhofer.igd.klarschiff.vo.Unterstuetzer;
@@ -37,14 +33,11 @@ import de.fraunhofer.igd.klarschiff.web.VorgangFeedCommand;
 import de.fraunhofer.igd.klarschiff.web.VorgangFeedDelegiertAnCommand;
 import de.fraunhofer.igd.klarschiff.web.VorgangSuchenCommand;
 import java.math.BigInteger;
-import java.util.HashMap;
 import java.util.Objects;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.type.StandardBasicTypes;
-
-import de.fraunhofer.igd.klarschiff.util.LogUtil;
 import javax.persistence.Query;
 
 /**
@@ -86,6 +79,11 @@ public class VorgangDao {
     em.persist(o);
   }
 
+  /**
+   * Das Objekt wird in der DB gespeichert.
+   *
+   * @param o Das zu speichernde Objekt
+   */
   public void merge(Object o) {
     merge(o, true);
   }
@@ -106,6 +104,11 @@ public class VorgangDao {
     em.merge(o);
   }
 
+  /**
+   * Das Objekt wird aus der DB entfernt.
+   *
+   * @param o Das zu speichernde Objekt
+   */
   @Transactional
   public void remove(Object o) {
     em.remove(o);
@@ -142,15 +145,15 @@ public class VorgangDao {
         if (vorgang.getZustaendigkeitStatus() == EnumZustaendigkeitStatus.akzeptiert) {
           verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.zustaendigkeitAkzeptiert,
             vorgangOld.getZustaendigkeitStatus().getText(), vorgang.getZustaendigkeitStatus().getText());
-          if(vorgang.getInitialeAkzeptierteZustaendigkeit() == null || vorgang.getInitialeAkzeptierteZustaendigkeit().isEmpty()) {
+          if (vorgang.getInitialeAkzeptierteZustaendigkeit() == null || vorgang.getInitialeAkzeptierteZustaendigkeit().isEmpty()) {
             vorgang.setInitialeAkzeptierteZustaendigkeit(vorgang.getZustaendigkeit());
           }
         }
       }
       if (vorgangOld.getZustaendigkeitStatus() != vorgang.getZustaendigkeitStatus()) {
-        if(vorgang.getInitialeAkzeptierteZustaendigkeit() == null || vorgang.getInitialeAkzeptierteZustaendigkeit().isEmpty()) {
-            vorgang.setInitialeAkzeptierteZustaendigkeit(vorgang.getZustaendigkeit());
-          }
+        if (vorgang.getInitialeAkzeptierteZustaendigkeit() == null || vorgang.getInitialeAkzeptierteZustaendigkeit().isEmpty()) {
+          vorgang.setInitialeAkzeptierteZustaendigkeit(vorgang.getZustaendigkeit());
+        }
         verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.zustaendigkeitAkzeptiert,
           vorgangOld.getZustaendigkeitStatus().getText(), vorgang.getZustaendigkeitStatus().getText());
       }
@@ -220,6 +223,12 @@ public class VorgangDao {
     }
   }
 
+  /**
+   * Holt den Vorgang anhand der ID
+   *
+   * @param id ID des Vorgangs
+   * @return Vorgang
+   */
   @Transactional
   public Vorgang findVorgang(Long id) {
     if (id == null) {
@@ -228,6 +237,12 @@ public class VorgangDao {
     return em.find(Vorgang.class, id);
   }
 
+  /**
+   * Holt die Vorgänge anhand der übergebenen ID's
+   *
+   * @param ids Liste der IDs der Vorgänge
+   * @return Liste der Vorgänge
+   */
   @Transactional
   public List<Vorgang> findVorgaenge(Long[] ids) {
     if (ids == null) {
@@ -237,6 +252,12 @@ public class VorgangDao {
       .setParameter("ids", Arrays.asList(ids)).getResultList();
   }
 
+  /**
+   * Holt den Vorgang anhand des Hashs
+   *
+   * @param hash Hash des Vorgangs
+   * @return Vorgang
+   */
   @Transactional
   public Vorgang findVorgangByHash(String hash) {
     if (hash == null) {
@@ -246,6 +267,12 @@ public class VorgangDao {
       .setParameter("hash", hash).getSingleResult();
   }
 
+  /**
+   * Holt den Unterstützer anhand des Hashs
+   *
+   * @param hash Hash des Unterstützers
+   * @return Unterstuetzer
+   */
   @Transactional
   public Unterstuetzer findUnterstuetzer(String hash) {
     if (hash == null) {
@@ -260,6 +287,12 @@ public class VorgangDao {
     }
   }
 
+  /**
+   * Holt die Anzahl der vorhandenen Unterstützer an einem Vorgang
+   *
+   * @param vorgang Vorgang deren Unterstützer gezählt werden sollen
+   * @return Anzahl
+   */
   @Transactional
   public Long countUnterstuetzerByVorgang(Vorgang vorgang) {
     return em.createQuery("select count(o) from Unterstuetzer o "
@@ -267,6 +300,12 @@ public class VorgangDao {
       .setParameter("vorgang", vorgang).getSingleResult();
   }
 
+  /**
+   * Holt die Missbrauchsmeldung anhand der ID
+   *
+   * @param id ID der Missbrauchsmeldung
+   * @return Missbrauchsmeldung
+   */
   @Transactional
   public Missbrauchsmeldung findMissbrauchsmeldung(Long id) {
     if (id == null) {
@@ -275,6 +314,12 @@ public class VorgangDao {
     return em.find(Missbrauchsmeldung.class, id);
   }
 
+  /**
+   * Holt die Missbrauchsmeldung anhand des Hashs
+   *
+   * @param hash Hash der Missbrauchsmeldung
+   * @return Missbrauchsmeldung
+   */
   @Transactional
   public Missbrauchsmeldung findMissbrauchsmeldung(String hash) {
     if (hash == null) {
@@ -290,6 +335,12 @@ public class VorgangDao {
     }
   }
 
+  /**
+   * Holt die Anzahl der offenen Missbrauchsmeldung an einem Vorgang
+   *
+   * @param vorgang Vorgang deren Missbrauchsmeldung gezählt werden sollen
+   * @return Anzahl
+   */
   @Transactional
   public Long countOpenMissbrauchsmeldungByVorgang(Vorgang vorgang) {
     return em.createQuery("select count(o) from Missbrauchsmeldung o "
@@ -297,17 +348,35 @@ public class VorgangDao {
       Long.class).setParameter("vorgang", vorgang).getSingleResult();
   }
 
+  /**
+   * Holt alle Vorgänge
+   *
+   * @return Liste der Vorgänge
+   */
   @Transactional
   public List<Vorgang> listVorgang() {
     return em.createQuery("select o from Vorgang o", Vorgang.class).getResultList();
   }
 
+  /**
+   * Holt alle Vorgänge eingeschränkt nach Anfang und Anzahl
+   *
+   * @param firstResult Offset der Vorgänge
+   * @param maxResults Anzahl der Vorgänge
+   * @return Liste der Vorgänge
+   */
   @Transactional
   public List<Vorgang> listVorgang(int firstResult, int maxResults) {
     return em.createQuery("select o from Vorgang o", Vorgang.class).setFirstResult(firstResult)
       .setMaxResults(maxResults).getResultList();
   }
 
+  /**
+   * Holt alle Missbrauchsmeldungen an einem Vorgang
+   *
+   * @param vorgang Vorgang deren Missbrauchsmeldungen geholt werden sollen
+   * @return Liste der Missbrauchsmeldungen
+   */
   @Transactional
   public List<Missbrauchsmeldung> listMissbrauchsmeldung(Vorgang vorgang) {
     List<Missbrauchsmeldung> missbrauchsmeldungen
@@ -320,6 +389,11 @@ public class VorgangDao {
     return missbrauchsmeldungen;
   }
 
+  /**
+   * Holt die Anzahl der vorhandenen Vorgänge
+   *
+   * @return Anzahl
+   */
   public long countVorgang() {
     return em.createQuery("select count(o) from Vorgang o", Long.class).getSingleResult();
   }
@@ -1332,6 +1406,13 @@ public class VorgangDao {
     return query.getResultList(em);
   }
 
+  /**
+   * Ermittelt alle Vorgänge, die auf Grund von Kommunikationsfehlern im System keine Einträge in
+   * den Datenfeldern 'zustaendigkeit' und/oder 'zustaendigkeit_status' aufweisen.
+   *
+   * @param conds Bedingungen
+   * @return Liste mit Bedingungen
+   */
   private ArrayList<String> addFlaechenFilter(ArrayList<String> conds) {
     User user = securityService.getCurrentUser();
     if (user != null && user.getFlaechen().size() > 0) {

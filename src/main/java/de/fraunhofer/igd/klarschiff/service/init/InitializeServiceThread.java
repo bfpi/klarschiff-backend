@@ -3,7 +3,6 @@ package de.fraunhofer.igd.klarschiff.service.init;
 import java.io.File;
 import java.util.List;
 import java.util.UUID;
-
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
@@ -17,7 +16,6 @@ import org.hibernate.criterion.Example;
 import org.hibernate.impl.SessionImpl;
 import org.hibernate.metadata.ClassMetadata;
 import org.springframework.dao.DataAccessException;
-
 import de.fraunhofer.igd.klarschiff.service.cluster.ClusterUtil;
 import de.fraunhofer.igd.klarschiff.util.LogUtil;
 import de.fraunhofer.igd.klarschiff.vo.EnumText;
@@ -57,19 +55,20 @@ public class InitializeServiceThread extends Thread {
   }
 
   /**
-   * Methode zum Ausführen des Thread. Hierbei werden die folgenden Schritte vorgenommen:<br/>
+   * Methode zum Ausführen des Thread. Hierbei werden die folgenden Schritte vorgenommen:<br>
    * - Arbeitsverzeichnis für ApacheDS wird gesetzt und Inhalt des Verzeichnis wird ggf.
-   * gelöscht.<br/>
-   * - Der Thread wartet eine definierte Zeit, bis andere Komponenten geladen wurden.<br/>
+   * gelöscht.<br>
+   * - Der Thread wartet eine definierte Zeit, bis andere Komponenten geladen wurden.<br>
    * - Die Werte für die Enums werden, wenn sie noch nicht vorhanden sind, in der DB
-   * gespeichert.<br/>
+   * gespeichert.<br>
    * - Es wird mit der Anfrage <code>SELECT COUNT(*) FROM Kategorie</code> geprüft, ob bereits Werte
-   * in der DB gespeichert sind.<br/>
-   * - Die Objekte aus der <code>initObjectList</code> werden in der DB gespeichert.<br/>
+   * in der DB gespeichert sind.<br>
+   * - Die Objekte aus der <code>initObjectList</code> werden in der DB gespeichert.<br>
    * - Das SQL-Script mit den Trigger und Triggerfunktionen zur Synchronisation der Frontend- und
    * BackendDB wird ausgeführt.
    */
   @SuppressWarnings({"static-access"})
+  @Override
   public void run() {
     setApacheDSWorkDir();
     try {

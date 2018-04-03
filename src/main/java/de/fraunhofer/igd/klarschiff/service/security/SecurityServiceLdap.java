@@ -28,6 +28,7 @@ public class SecurityServiceLdap {
    * Ermittelt anhand eines gegebenen Path und eines Filters Daten vom LDAP. die Daten werden mit
    * hilfe eines Mappers auf eine Bean gemappt.
    *
+   * @param <T>
    * @param path Path
    * @param filter Suchfilter
    * @param contextMapper Mapper zum Abbilden der Daten auf eine Bean

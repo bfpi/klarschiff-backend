@@ -1,7 +1,6 @@
 package de.fraunhofer.igd.klarschiff.service.settings;
 
 import java.util.Properties;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.core.io.DefaultResourceLoader;

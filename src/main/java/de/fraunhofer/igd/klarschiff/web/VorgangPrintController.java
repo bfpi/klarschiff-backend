@@ -1,14 +1,12 @@
 package de.fraunhofer.igd.klarschiff.web;
 
 import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-
 import de.fraunhofer.igd.klarschiff.dao.KommentarDao;
 import de.fraunhofer.igd.klarschiff.dao.LobHinweiseKritikDao;
 import de.fraunhofer.igd.klarschiff.dao.VorgangDao;
@@ -36,11 +34,12 @@ public class VorgangPrintController {
   GeoService geoService;
 
   /**
-   * Die Methode verarbeitet den GET-Request auf der URL <code>/vorgang/{id}/print</code><br/>
+   * Die Methode verarbeitet den GET-Request auf der URL <code>/vorgang/{id}/print</code><br>
    * Seitenbeschreibung: Druckoptimierte Vorgangsübersicht
    *
    * @param id Vorgangs-ID
    * @param model Model in der ggf. Daten für die View abgelegt werden
+   * @param request Request
    * @return View, die zum Rendern des Request verwendet wird
    */
   @RequestMapping(value = "/vorgang/{id}/print", method = RequestMethod.GET)
@@ -50,11 +49,12 @@ public class VorgangPrintController {
 
   /**
    * Die Methode verarbeitet den GET-Request auf der URL
-   * <code>/vorgang/delegiert/{id}/print</code><br/>
+   * <code>/vorgang/delegiert/{id}/print</code><br>
    * Seitenbeschreibung: Druckoptimierte Übersicht für delegierte Vorgänge
    *
    * @param id Vorgangs-ID
    * @param model Model in der ggf. Daten für die View abgelegt werden
+   * @param request Request
    * @return View, die zum Rendern des Request verwendet wird
    */
   @RequestMapping(value = "/vorgang/delegiert/{id}/print", method = RequestMethod.GET)
@@ -71,7 +71,7 @@ public class VorgangPrintController {
    * @param request Request
    * @param delegiert true für Anzeige für Externe (verhindert z.B. Anfügen von
    * Missbrauchsmeldungen)
-   * @return
+   * @return View für druckoptimierte Anzeige, die zum Rendern des Request verwendet wird
    */
   public String print(Long id, ModelMap model, HttpServletRequest request, boolean delegiert) {
     Vorgang vorgang = vorgangDao.findVorgang(id);

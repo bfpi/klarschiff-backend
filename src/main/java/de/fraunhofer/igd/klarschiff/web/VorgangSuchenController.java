@@ -3,10 +3,8 @@ package de.fraunhofer.igd.klarschiff.web;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
@@ -21,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
-
 import de.fraunhofer.igd.klarschiff.dao.GrenzenDao;
 import de.fraunhofer.igd.klarschiff.dao.KategorieDao;
 import de.fraunhofer.igd.klarschiff.dao.VorgangDao;
@@ -39,7 +36,6 @@ import de.fraunhofer.igd.klarschiff.vo.EnumVorgangTyp;
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
 import de.fraunhofer.igd.klarschiff.web.VorgangSuchenCommand.EinfacheSuche;
 import de.fraunhofer.igd.klarschiff.web.VorgangSuchenCommand.Suchtyp;
-import java.util.Map;
 
 /**
  * Controller für die Vorgangsuche
@@ -76,6 +72,8 @@ public class VorgangSuchenController {
 
   /**
    * Liefert alle im System vorhandenen Zuständigkeiten
+   *
+   * @return alle vorhandenen Zuständigkeiten
    */
   @ModelAttribute("allZustaendigkeiten")
   public List<Role> allZustaendigkeiten() {
@@ -84,6 +82,8 @@ public class VorgangSuchenController {
 
   /**
    * Liefert Zuständigkeiten des Nutzers
+   *
+   * @return aktuelle Zuständigkeiten
    */
   @ModelAttribute("currentZustaendigkeiten")
   public List<Role> currentZustaendigkeiten() {
@@ -92,6 +92,8 @@ public class VorgangSuchenController {
 
   /**
    * Liefert alle im System vorhandenen Rollen zum Delegieren
+   *
+   * @return alle vorhandenen Delegationen
    */
   @ModelAttribute("allDelegiertAn")
   public List<Role> allDelegiertAn() {
@@ -100,6 +102,8 @@ public class VorgangSuchenController {
 
   /**
    * Liefert alle möglichen Ausprägungen für Vorgangs-Status-Typen
+   *
+   * @return mögliche Status-Ausprägungen
    */
   @ModelAttribute("allVorgangStatus")
   public EnumVorgangStatus[] allVorgangStatus() {
@@ -108,6 +112,8 @@ public class VorgangSuchenController {
 
   /**
    * Liefert alle möglichen Ausprägungen für Vorgangs-Status-Typen im Außendienst
+   *
+   * @return mögliche Außendienst-Status-Ausprägungen
    */
   @ModelAttribute("allVorgangStatusAussendienst")
   public EnumVorgangStatus[] allVorgangStatusAussendienst() {
@@ -116,6 +122,8 @@ public class VorgangSuchenController {
 
   /**
    * Liefert alle möglichen Ausprägungen für Vorgangstypen
+   *
+   * @return mögliche Typ-Ausprägungen
    */
   @ModelAttribute("vorgangtypen")
   public Collection<EnumVorgangTyp> populateEnumVorgangTypen() {
@@ -124,6 +132,8 @@ public class VorgangSuchenController {
 
   /**
    * Liefert alle möglichen Ausprägungen für Prioritätsbezeichner
+   *
+   * @return mögliche Prioritäten
    */
   @ModelAttribute("allPrioritaeten")
   public Collection<EnumPrioritaet> allPrioritaeten() {
@@ -133,6 +143,8 @@ public class VorgangSuchenController {
   /**
    * Liefert (in Systemkonfiguration festgelegte) Anzahl an Unterstützungen, die benötigt werden
    * damit Idee Relevanz erlangt (z.B. in der Vorgangssuche automatisch erscheint).
+   *
+   * @return Notwendige Anzahl an Unterstützungen
    */
   @ModelAttribute("vorgangIdeenUnterstuetzer")
   public Long vorgangIdeenUnterstuetzer() {
@@ -152,6 +164,8 @@ public class VorgangSuchenController {
   /**
    * Initialisiert <code>VorgangSuchenCommand</code>-Objekt mit Standardwerten zur Benutzung als
    * ModelAttribute für Suchoperation
+   *
+   * @return Command
    */
   @ModelAttribute("cmdvorgangsuchen")
   public VorgangSuchenCommand initCommand() {
@@ -186,11 +200,12 @@ public class VorgangSuchenController {
   }
 
   /**
-   * Die Methode verarbeitet den GET-Request auf der URL <code>/vorgang/suchen</code><br/>
+   * Die Methode verarbeitet den GET-Request auf der URL <code>/vorgang/suchen</code><br>
    * Seitenbeschreibung: Darstellung der Backend-Suchfunktionalität
    *
    * @param cmd Command
-   * @param neu optionaler Parameter, triggert Initialisierung des Commandobjektes bei neuer Suchanfrage
+   * @param neu optionaler Parameter, triggert Initialisierung des Commandobjektes bei neuer
+   * Suchanfrage
    * @param resetPage optionaler Parameter, triggert Zurücksetzen der Paginierung
    * @param modelMap Model in der ggf. Daten für die View abgelegt werden
    * @return View, die zum Rendern des Request verwendet wird
@@ -202,11 +217,11 @@ public class VorgangSuchenController {
       modelMap.put("cmdvorgangsuchen", cmd);
     }
     updateKategorieInModel(modelMap, cmd);
-    
+
     if (resetPage) {
       cmd.setPage(1);
     }
-    
+
     if (cmd.getVorgangAuswaehlen() != null && cmd.getVorgangAuswaehlen().length > 0) {
       List<Vorgang> vorgaenge = vorgangDao.findVorgaenge(cmd.getVorgangAuswaehlen());
       for (Vorgang vorgang : vorgaenge) {
@@ -218,8 +233,8 @@ public class VorgangSuchenController {
           auftrag = vorgang.getAuftrag();
         }
         if ((!StringUtils.equals("Team wählen", cmd.getAuftragTeam()) && cmd.getAuftragDatum() != null) || ((StringUtils.equals("Team wählen", cmd.getAuftragTeam()) || cmd.getAuftragTeam() == null || StringUtils.equals("", cmd.getAuftragTeam())) && cmd.getAuftragDatum() == null)) {
-            auftrag.setTeam(cmd.getAuftragTeam());
-            auftrag.setDatum(cmd.getAuftragDatum());
+          auftrag.setTeam(cmd.getAuftragTeam());
+          auftrag.setDatum(cmd.getAuftragDatum());
         }
         auftrag.setPrioritaet(null);
         auftrag.setStatus(EnumAuftragStatus.nicht_abgehakt);
@@ -231,7 +246,7 @@ public class VorgangSuchenController {
       cmd.setAuftragDatum(null);
     }
     List<Object[]> vorgaenge = vorgangDao.getVorgaenge(cmd);
-    if(cmd.suchtyp == Suchtyp.schnellsuche && vorgaenge.size() == 1) {
+    if (cmd.suchtyp == Suchtyp.schnellsuche && vorgaenge.size() == 1) {
       Object[] v = vorgaenge.get(0);
       return "redirect:/vorgang/" + ((Vorgang) v[0]).getId() + "/uebersicht";
     }
@@ -255,7 +270,7 @@ public class VorgangSuchenController {
   }
 
   /**
-   * Die Methode verarbeitet den GET-Request auf der URL <code>/vorgang/suchen/karte</code><br/>
+   * Die Methode verarbeitet den GET-Request auf der URL <code>/vorgang/suchen/karte</code><br>
    * Seitenbeschreibung: Kartenandarstellung für die Ergebnisse der aktuellen Suchanfrage
    *
    * @param cmd Command
@@ -280,11 +295,13 @@ public class VorgangSuchenController {
 
   /**
    * Die Methode verarbeitet den GET-Request auf der URL
-   * <code>/vorgang/suchen/vorgaenge.xls</code><br/>
+   * <code>/vorgang/suchen/vorgaenge.xls</code><br>
    * Funktionsbeschreibung: Erzeugt Excel-Datei mit dem Inhalt der aktuellen Suchergebnisse und
    * liefert diese als Download mit <code>Content-Type:"application/ms-excel"</code> aus
    *
    * @param cmd Command
+   * @param request Request
+   * @param response Response in das das Ergebnis direkt geschrieben wird
    */
   @RequestMapping(value = "/vorgaenge.xls", method = RequestMethod.GET)
   @ResponseBody

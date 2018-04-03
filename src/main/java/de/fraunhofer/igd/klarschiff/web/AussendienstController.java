@@ -6,7 +6,6 @@ import de.fraunhofer.igd.klarschiff.service.geo.GeoService;
 import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
 import de.fraunhofer.igd.klarschiff.vo.Auftrag;
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,7 +43,7 @@ public class AussendienstController {
   SecurityService securityService;
 
   /**
-   * Die Methode verarbeitet den GET-Request auf der URL <code>/aussendienst</code><br/>
+   * Die Methode verarbeitet den GET-Request auf der URL <code>/aussendienst</code><br>
    *
    * @param model Model in dem ggf. Daten für die View abgelegt werden
    * @param request Request
@@ -57,10 +56,10 @@ public class AussendienstController {
   }
 
   /**
-   * Die Methode verarbeitet den Request auf der URL <code>/aussendienst/{team}</code><br/>
+   * Die Methode verarbeitet den Request auf der URL <code>/aussendienst/{team}</code><br>
    *
-   * @param cmd
-   * @param team
+   * @param cmd Command
+   * @param team Außendienst-Team
    * @param model Model in dem ggf. Daten für die View abgelegt werden
    * @param request Request
    * @return View, die zum Rendern des Request verwendet wird
@@ -95,10 +94,10 @@ public class AussendienstController {
 
   /**
    * Die Methode verarbeitet den Request auf der URL
-   * <code>/aussendienst/{team}/update_sorting</code><br/>
+   * <code>/aussendienst/{team}/update_sorting</code><br>
    *
-   * @param cmd
-   * @param team
+   * @param cmd Command
+   * @param team Außendienst-Team
    * @param model Model in dem ggf. Daten für die View abgelegt werden
    * @param request Request
    * @return View, die zum Rendern des Request verwendet wird
@@ -131,10 +130,10 @@ public class AussendienstController {
 
   /**
    * Die Methode verarbeitet den Request auf der URL
-   * <code>/aussendienst/{team}/update_sorting</code><br/>
+   * <code>/aussendienst/{team}/update_sorting</code><br>
    *
-   * @param cmd
-   * @param team
+   * @param cmd Command
+   * @param team Außendienst-Team
    * @param model Model in dem ggf. Daten für die View abgelegt werden
    * @param request Request
    * @return View, die zum Rendern des Request verwendet wird
@@ -153,11 +152,11 @@ public class AussendienstController {
 
   /**
    * Die Methode verarbeitet den Request auf der URL
-   * <code>/aussendienst/{team}/entfernen/{auftrag_id}</code><br/>
+   * <code>/aussendienst/{team}/entfernen/{auftrag_id}</code><br>
    *
-   * @param cmd
-   * @param team
-   * @param auftrag_id
+   * @param cmd Command
+   * @param team Außendienst-Team
+   * @param auftrag_id Auftrag-ID
    * @param model Model in dem ggf. Daten für die View abgelegt werden
    * @param request Request
    * @return View, die zum Rendern des Request verwendet wird

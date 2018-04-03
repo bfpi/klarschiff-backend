@@ -2,14 +2,11 @@ package de.fraunhofer.igd.klarschiff.service.init;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import de.fraunhofer.igd.klarschiff.service.dbsync.DbSyncService;
 import de.fraunhofer.igd.klarschiff.util.SqlScriptUtil;
 

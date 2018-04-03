@@ -3,9 +3,7 @@ package de.fraunhofer.igd.klarschiff.service.mail;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-
 import javax.servlet.ServletContext;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
@@ -13,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
-
 import de.fraunhofer.igd.klarschiff.dao.KommentarDao;
 import de.fraunhofer.igd.klarschiff.dao.LobHinweiseKritikDao;
 import de.fraunhofer.igd.klarschiff.dao.VerlaufDao;
@@ -508,8 +505,8 @@ public class MailService {
    * die in der E-Mail dargestellt werden sollen.
    * @param vorgaengeIdeeOffenOhneUnterstuetzung Liste der Vorgänge zu Redaktionskriterium 3, die in
    * der E-Mail dargestellt werden sollen.
-   * @param vorgaengeNichtLoesbarOhneStatuskommentar Liste der Vorgänge zu
-   * Redaktionskriterium 4, die in der E-Mail dargestellt werden sollen.
+   * @param vorgaengeNichtLoesbarOhneStatuskommentar Liste der Vorgänge zu Redaktionskriterium 4,
+   * die in der E-Mail dargestellt werden sollen.
    * @param vorgaengeNichtMehrOffenNichtAkzeptiert Liste der Vorgänge zu Redaktionskriterium 5, die
    * in der E-Mail dargestellt werden sollen.
    * @param vorgaengeOhneRedaktionelleFreigaben Liste der Vorgänge zu Redaktionskriterium 6, die in
@@ -628,9 +625,9 @@ public class MailService {
         str.append(String.format("%1$-9s", vorgang.getId()))
           .append(String.format("%1$-27s", vorgang.getZustaendigkeit()))
           .append(String.format("%1$-18s", vorgangDao.countUnterstuetzerByVorgang(vorgang)))
-          .append(formatter.format(verlaufDao.getAktuellstesErstsichtungsdatumZuVorgang(vorgang)))
+          .append(formatter.format(verlaufDao.getAktuellstesAkzeptierenDerZustaendigkeitZuVorgang(vorgang)))
           .append(" (vor ")
-          .append((jetzt.getTime() - verlaufDao.getAktuellstesErstsichtungsdatumZuVorgang(vorgang).getTime()) / (24 * 60 * 60 * 1000))
+          .append((jetzt.getTime() - verlaufDao.getAktuellstesAkzeptierenDerZustaendigkeitZuVorgang(vorgang).getTime()) / (24 * 60 * 60 * 1000))
           .append(" Tagen)\n");
       }
 

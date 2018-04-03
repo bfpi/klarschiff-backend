@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Die Dao-Klasse erlaubt die Verwaltung der Außendienst-Koordinatoren in der DB.
+ * Die Dao-Klasse erlaubt den Zugriff auf die Flächen in der DB.
  *
  * @author Robert Voß (BFPI GmbH)
  */
@@ -17,7 +17,12 @@ public class FlaechenDao {
 
   @PersistenceContext
   EntityManager em;
-  
+
+  /**
+   * Gibt eine Liste aller vorhandenen Flächen zurück.
+   * 
+   * @return Liste der Flächen
+   */
   public List<Flaeche> getAllFlaechen() {
     StringBuilder sql = new StringBuilder();
     sql.append("SELECT f FROM Flaeche f ");
@@ -25,6 +30,12 @@ public class FlaechenDao {
     return em.createQuery(sql.toString(), Flaeche.class).getResultList();
   }
 
+  /**
+   * Gibt die Fläche mit dem übergebenen Kurznamen zurück.
+   * 
+   * @param kurzname Kurzname der Fläche
+   * @return Fläche
+   */
   @Transactional
   public Flaeche findByKurzname(String kurzname) {
     if (kurzname == null) {
@@ -32,39 +43,9 @@ public class FlaechenDao {
     }
     List<Flaeche> list = em.createQuery("select f from Flaeche f where f.kurzname like :kurzname", Flaeche.class)
       .setParameter("kurzname", kurzname).getResultList();
-    if(list.isEmpty()) {
+    if (list.isEmpty()) {
       return null;
     }
     return list.get(0);
   }
-
-  /*
-  @Transactional
-  public List<String> findFlaechenByLogin(String login) {
-    if (login == null) {
-      return null;
-    }
-    return em.createQuery("select aussendienst from AussendienstKoordinator ak where ak.koordinator=:login order by aussendienst", String.class).setParameter("login", login).getResultList();
-  }
-
-  @Transactional
-  public int resetAussendienstByLogin(String login) {
-    if (login == null) {
-      return 0;
-    }
-    return em.createNativeQuery("delete from klarschiff_aussendienst_koordinator ak where ak.koordinator=:login", String.class).setParameter("login", login).executeUpdate();
-  }
-
-  public boolean setTeamsForLogin(String login, String[] teams) {
-    if (teams != null) {
-      for (String team : teams) {
-        AussendienstKoordinator ak = new AussendienstKoordinator();
-        ak.setKoordinator(login);
-        ak.setAussendienst(team);
-        em.merge(ak);
-      }
-    }
-    return true;
-  }*/
-
 }

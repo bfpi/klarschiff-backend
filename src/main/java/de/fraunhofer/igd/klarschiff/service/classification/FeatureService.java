@@ -5,12 +5,10 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.log4j.Logger;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import weka.core.FastVector;
 import weka.core.Instance;
 import de.fraunhofer.igd.klarschiff.dao.KategorieDao;
@@ -134,8 +132,8 @@ public class FeatureService {
   /**
    * Ermittelt für einen Vorgang die Features für den Klassifikator. Featurewerte, die nicht
    * änderbar sind und für den Vorgang bereits gespeichert wurden, werden nicht neu berechnet,
-   * sondern aus der DB gelesen. Nach der Berechnung der Features werden nicht änderbare Features
-   * in der DB gespeichert.
+   * sondern aus der DB gelesen. Nach der Berechnung der Features werden nicht änderbare Features in
+   * der DB gespeichert.
    *
    * @param vorgang Vorgang, für den die Features berechnet werden sollen
    * @param inclClassAttribute Soll der Wert der aktuellen Zuständigkeit ebenfalls mit in die
@@ -224,9 +222,9 @@ public class FeatureService {
 
   /**
    * Erzeugt eine Liste von Features nur auf Basis der Kategorie. Der Klassifikator wird bis zu
-   * einer bestimmten Trainingsmenge zusätzlich mit initialen Zuständigkeiten, die für die
-   * einzelnen Kategorien definiert werden können, trainiert. Die Erzeugung der Features für
-   * dieses Trainingsset erfolgt auf Basis dieser Funktion.
+   * einer bestimmten Trainingsmenge zusätzlich mit initialen Zuständigkeiten, die für die einzelnen
+   * Kategorien definiert werden können, trainiert. Die Erzeugung der Features für dieses
+   * Trainingsset erfolgt auf Basis dieser Funktion.
    *
    * @param kategorie Kategorie, für die die Features ermittelt werden sollen
    * @param inclClassAttribute Soll die Zuständigkeit mit in die Features aufgenommen werden?
