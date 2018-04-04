@@ -172,7 +172,7 @@ public class GeoService {
   private Point transformMapProjectionToMapExternProjection(Point point) {
     try {
       return de.bfpi.tools.GeoTools.transformPosition(point, mapProjection, mapExternProjection);
-    } catch (FactoryException | MismatchedDimensionException | TransformException ex) {
+    } catch (Exception ex) {
       throw new RuntimeException(ex);
     }
   }
