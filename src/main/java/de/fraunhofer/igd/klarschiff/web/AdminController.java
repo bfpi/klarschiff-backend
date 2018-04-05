@@ -163,6 +163,8 @@ public class AdminController {
       jobsService.removeUnbestaetigtUnterstuetzer();
     } else if (action.equalsIgnoreCase("removeUnbestaetigtMissbrauchsmeldung")) {
       jobsService.removeUnbestaetigtMissbrauchsmeldung();
+    } else if (action.equalsIgnoreCase("removeUnbestaetigtFoto")) {
+      jobsService.removeUnbestaetigtFoto();
     } else if (action.equalsIgnoreCase("reBuildClassifier")) {
       jobsService.reBuildClassifier();
     } else if (action.equalsIgnoreCase("informExtern")) {

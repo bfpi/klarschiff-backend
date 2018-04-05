@@ -39,6 +39,7 @@ import de.fraunhofer.igd.klarschiff.vo.EnumVerlaufTyp;
 import de.fraunhofer.igd.klarschiff.vo.EnumVorgangStatus;
 import de.fraunhofer.igd.klarschiff.vo.EnumVorgangTyp;
 import de.fraunhofer.igd.klarschiff.vo.EnumZustaendigkeitStatus;
+import de.fraunhofer.igd.klarschiff.vo.Foto;
 import de.fraunhofer.igd.klarschiff.vo.GeoRss;
 import de.fraunhofer.igd.klarschiff.vo.Kategorie;
 import de.fraunhofer.igd.klarschiff.vo.Kommentar;
@@ -1656,6 +1657,135 @@ public class BackendController {
     } catch (Exception ex) {
       java.util.logging.Logger.getLogger(BackendController.class.getName()).log(Level.SEVERE, null, ex);
       sendError(response, ex);
+    }
+  }
+
+  /**
+   * Die Methode verarbeitet den POST-Request auf der URL <code>/service/foto</code><br>
+   * Beschreibung: erstellt ein neues Foto für einen Vorgang
+   *
+   * @param vorgang Vorgang
+   * @param bild Foto des Vorgangs
+   * @param email E-Mail-Adresse des Erstellers
+   * @param resultHashOnSubmit <code>true</code> - gibt den Hash zum Bestätigen als Ergebnis zurück
+   * @param resultObjectOnSubmit <code>true</code> - gibt den neuen Vorgangs als Ergebnis zurück
+   * @param response Response in das das Ergebnis direkt geschrieben wird
+   */
+  @RequestMapping(value = "/foto", method = RequestMethod.POST)
+  @ResponseBody
+  public void foto(
+    @RequestParam(value = "vorgang", required = false) Long vorgang,
+    @RequestParam(value = "email", required = false) String email,
+    @RequestParam(value = "bild", required = false) String bild,
+    @RequestParam(value = "resultHashOnSubmit", required = false) Boolean resultHashOnSubmit,
+    @RequestParam(value = "resultObjectOnSubmit", required = false) Boolean resultObjectOnSubmit,
+    HttpServletResponse response) {
+
+    if (resultHashOnSubmit == null) {
+      resultHashOnSubmit = false;
+    }
+    if (resultObjectOnSubmit == null) {
+      resultObjectOnSubmit = false;
+    }
+    try {
+      Foto foto = new Foto();
+      if (vorgang == null) {
+        throw new BackendControllerException(401, "[vorgang] fehlt", "Das Foto ist keiner Meldung zugeordnet.");
+      }
+      Vorgang vorg = vorgangDao.findVorgang(vorgang);
+      if (vorg == null) {
+        throw new BackendControllerException(200, "[vorgang] ungültig", "Es konnte kein Vorgang mit der übergebenen ID gefunden werden.");
+      }
+      foto.setVorgang(vorg);
+      if (foto.getVorgang() == null) {
+        throw new BackendControllerException(402, "[vorgang] nicht korrekt", "Das Foto ist keiner Meldung zugeordnet.");
+      }
+      if (StringUtils.isBlank(bild)) {
+        throw new BackendControllerException(403, "[bild] fehlt", "Es wurde kein Foto hochgeladen.");
+      }
+      if (StringUtils.isBlank(email)) {
+        throw new BackendControllerException(404, "[email] fehlt", "Die E-Mail-Adresse fehlt.");
+      }
+      if (!isShortEnough(email, 300)) {
+        throw new BackendControllerException(405, "[email] zu lang", "Die angegebene E-Mail-Adresse ist zu lang.");
+      }
+      if (!isEmail(email)) {
+        throw new BackendControllerException(406, "[email] nicht korrekt", "Die angegebene E-Mail-Adresse ist nicht gültig.");
+      }
+      if (isTrashMail(email)) {
+        throw new BackendControllerException(10, "[autorEmail] nicht erlaubt", "Die Domain der angegebenen E-Mail-Adresse ist nicht zulässig.");
+      }
+
+      foto.setAutorEmail(email);
+      foto.setHash(securityService.createHash(foto.getVorgang().getId() + email + System.currentTimeMillis()));
+
+      foto.setDatum(new Date());
+
+      vorgangDao.persist(foto);
+      try {
+        imageService.setImageForFoto(Base64.decode(bild.getBytes()), foto);
+      } catch (Exception e) {
+        e.printStackTrace();
+        throw new BackendControllerException(11, "[bild] nicht korrekt", "Das Bild ist fehlerhaft und kann nicht verarbeitet werden.", e);
+      }
+      vorgangDao.merge(foto);
+
+      mailService.sendFotoBestaetigungMail(foto, email, vorgang);
+
+      if (resultHashOnSubmit) {
+        sendOk(response, foto.getHash());
+      } else if (resultObjectOnSubmit) {
+        sendOk(response, mapper.writeValueAsString(foto));
+      } else {
+        sendOk(response);
+      }
+    } catch (Exception e) {
+      logger.warn(e);
+      sendError(response, e);
+    }
+  }
+
+  /**
+   * Die Methode verarbeitet den POST-Request auf der URL <code>/service/fotoBestaetigung</code><br>
+   * Beschreibung: Vorgang bestätigen
+   *
+   * @param hash Hash zum Bestätigen
+   * @return View die angezeigt werden soll
+   */
+  @RequestMapping(value = "/fotoBestaetigung")
+  public String fotoBestaetigung(@RequestParam(value = "hash", required = false) String hash) {
+
+    try {
+      if (StringUtils.isBlank(hash)) {
+        throw new BackendControllerException(501, "[hash] fehlt");
+      }
+      Foto foto = vorgangDao.findFoto(hash);
+      if (foto == null) {
+        throw new BackendControllerException(502, "[hash] nicht korrekt");
+      }
+
+      if (foto.getDatumBestaetigung() != null) {
+        throw new BackendControllerException(503, "Missbrauchsmeldung wurde bereits bestätigt");
+      }
+
+      foto.setDatumBestaetigung(new Date());
+
+      verlaufDao.addVerlaufToVorgang(foto.getVorgang(), EnumVerlaufTyp.fotoBestaetigung, null, null);
+      vorgangDao.merge(foto);
+
+      Vorgang vorgang = foto.getVorgang();
+      vorgang.setFotoGross(foto.getFotoGross());
+      vorgang.setFotoNormal(foto.getFotoNormal());
+      vorgang.setFotoThumb(foto.getFotoThumb());
+      vorgang.setFotoFreigabeStatus(EnumFreigabeStatus.intern);
+      vorgang.setFotowunsch(false);
+      vorgangDao.merge(vorgang);
+
+      return "backend/bestaetigungOk";
+
+    } catch (Exception e) {
+      logger.warn(e);
+      return "backend/bestaetigungFehler";
     }
   }
 

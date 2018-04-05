@@ -30,6 +30,7 @@
     	p:vorgangBestaetigungMailTemplate-ref="vorgangBestaetigungMailTemplate"
     	p:unterstuetzungBestaetigungMailTemplate-ref="unterstuetzungBestaetigungMailTemplate"
     	p:missbrauchsmeldungBestaetigungMailTemplate-ref="missbrauchsmeldungBestaetigungMailTemplate"
+    	p:fotoBestaetigungMailTemplate-ref="fotoBestaetigungMailTemplate"
     	p:vorgangWeiterleitenMailTemplate-ref="vorgangWeiterleitenMailTemplate"
     	p:informDispatcherMailTemplate-ref="informDispatcherMailTemplate"
     	p:informExternMailTemplate-ref="informExternMailTemplate"
@@ -87,6 +88,20 @@ um Ihre Missbrauchsmeldung zu bestätigen rufen Sie bitte folgende URL auf: %bas
   
 Diese URL funktioniert für 24 Stunden und kann einmalig aufgerufen werden. Nach Ablauf dieser Frist wird Ihre Missbrauchsmeldung automatisch hinfällig.
   
+Vielen Dank und mit freundlichen Grüßen
+
+
+Ihr %title%-Team]]></value></property>
+	</bean>
+
+	<bean class="org.springframework.mail.SimpleMailMessage" id="fotoBestaetigungMailTemplate"
+	p:from="${mail.from}" p:subject="%title% #%id%: Bestätigung eines Fotos">
+		<property name="text"><value><![CDATA[Sehr geehrte(r) Nutzer/-in von %title%,
+
+um Ihr Foto zu bestätigen rufen Sie bitte folgende URL auf: %baseUrlFrontend%fotoBestaetigung/?hash=%hash%
+
+Diese URL funktioniert für 24 Stunden und kann einmalig aufgerufen werden. Nach Ablauf dieser Frist wird Ihr Foto automatisch hinfällig.
+
 Vielen Dank und mit freundlichen Grüßen
 
 

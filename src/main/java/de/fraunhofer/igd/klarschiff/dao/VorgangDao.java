@@ -22,6 +22,7 @@ import de.fraunhofer.igd.klarschiff.vo.EnumVerlaufTyp;
 import de.fraunhofer.igd.klarschiff.vo.EnumVorgangStatus;
 import de.fraunhofer.igd.klarschiff.vo.EnumVorgangTyp;
 import de.fraunhofer.igd.klarschiff.vo.EnumZustaendigkeitStatus;
+import de.fraunhofer.igd.klarschiff.vo.Foto;
 import de.fraunhofer.igd.klarschiff.vo.Missbrauchsmeldung;
 import de.fraunhofer.igd.klarschiff.vo.StatusKommentarVorlage;
 import de.fraunhofer.igd.klarschiff.vo.Unterstuetzer;
@@ -327,6 +328,27 @@ public class VorgangDao {
     }
     List<Missbrauchsmeldung> list = em.createQuery("select o from Missbrauchsmeldung o "
       + "where o.hash = :hash", Missbrauchsmeldung.class).setParameter("hash", hash)
+      .setMaxResults(1).getResultList();
+    if (list.isEmpty()) {
+      return null;
+    } else {
+      return list.get(0);
+    }
+  }
+
+  /**
+   * Holt das Foto anhand des Hashs
+   *
+   * @param hash Hash des Fotos
+   * @return Foto
+   */
+  @Transactional
+  public Foto findFoto(String hash) {
+    if (hash == null) {
+      return null;
+    }
+    List<Foto> list = em.createQuery("select o from Foto o "
+      + "where o.hash = :hash", Foto.class).setParameter("hash", hash)
       .setMaxResults(1).getResultList();
     if (list.isEmpty()) {
       return null;
@@ -1088,6 +1110,21 @@ public class VorgangDao {
    */
   public List<Missbrauchsmeldung> findUnbestaetigtMissbrauchsmeldung(Date datumBefor) {
     return em.createQuery("SELECT o FROM Missbrauchsmeldung o WHERE o.datumBestaetigung IS NULL AND datum <= :datumBefor", Missbrauchsmeldung.class)
+      .setParameter("datumBefor", datumBefor)
+      .getResultList();
+  }
+
+  /**
+   * Ermittelt alle Fotos, die eingegangen sind, aber nach einem bestimmten Zeitraum
+   * noch nicht bestätigt wurden.
+   *
+   * @param datumBefor Zeitpunkt, bis zu dem die Fotos hätten bestätigt werden müssen
+   * @return Ergebnisliste mit Fotos
+   * @see
+   * de.fraunhofer.igd.klarschiff.service.job.JobsService#removeUnbestaetigtFoto()
+   */
+  public List<Foto> findUnbestaetigtFoto(Date datumBefor) {
+    return em.createQuery("SELECT o FROM Foto o WHERE o.datumBestaetigung IS NULL AND datum <= :datumBefor", Foto.class)
       .setParameter("datumBefor", datumBefor)
       .getResultList();
   }

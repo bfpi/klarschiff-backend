@@ -19,6 +19,7 @@ import de.fraunhofer.igd.klarschiff.service.geo.GeoService;
 import de.fraunhofer.igd.klarschiff.service.job.JobExecutorService;
 import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
 import de.fraunhofer.igd.klarschiff.service.settings.SettingsService;
+import de.fraunhofer.igd.klarschiff.vo.Foto;
 import de.fraunhofer.igd.klarschiff.vo.Kommentar;
 import de.fraunhofer.igd.klarschiff.vo.LobHinweiseKritik;
 import de.fraunhofer.igd.klarschiff.vo.Missbrauchsmeldung;
@@ -71,6 +72,7 @@ public class MailService {
   SimpleMailMessage vorgangBestaetigungMailTemplate;
   SimpleMailMessage unterstuetzungBestaetigungMailTemplate;
   SimpleMailMessage missbrauchsmeldungBestaetigungMailTemplate;
+  SimpleMailMessage fotoBestaetigungMailTemplate;
   SimpleMailMessage vorgangWeiterleitenMailTemplate;
   SimpleMailMessage informDispatcherMailTemplate;
   SimpleMailMessage informExternMailTemplate;
@@ -172,6 +174,27 @@ public class MailService {
     mailText = mailText.replaceAll("%id%", vorgang.toString());
     mailText = mailText.replaceAll("%baseUrlFrontend%", getServerBaseUrlFrontend());
     mailText = mailText.replaceAll("%hash%", missbrauchsmeldung.getHash());
+    msg.setText(mailText);
+    jobExecutorService.runJob(new MailSenderJob(this, msg));
+  }
+
+  /**
+   * Erstellt und versendet eine E-Mail zur Bestätigung eines neuen Fotos
+   *
+   * @param foto Foto, zu der die E-Mail versendet werden soll
+   * @param email E-Mail-Adresse, an die die E-Mail versendet werden soll
+   * @param vorgang Vorgang-Id
+   */
+  public void sendFotoBestaetigungMail(Foto foto, String email, Long vorgang) {
+    SimpleMailMessage msg = new SimpleMailMessage(fotoBestaetigungMailTemplate);
+    msg.setTo(email);
+    msg.setSubject(msg.getSubject().replaceAll("%id%", vorgang.toString()).replaceAll("%title%",
+      settingsService.getContextAppTitle()));
+    String mailText = msg.getText();
+    mailText = mailText.replaceAll("%title%", settingsService.getContextAppTitle());
+    mailText = mailText.replaceAll("%id%", vorgang.toString());
+    mailText = mailText.replaceAll("%baseUrlFrontend%", getServerBaseUrlFrontend());
+    mailText = mailText.replaceAll("%hash%", foto.getHash());
     msg.setText(mailText);
     jobExecutorService.runJob(new MailSenderJob(this, msg));
   }
@@ -810,6 +833,14 @@ public class MailService {
 
   public void setMissbrauchsmeldungBestaetigungMailTemplate(SimpleMailMessage missbrauchsmeldungBestaetigungMailTemplate) {
     this.missbrauchsmeldungBestaetigungMailTemplate = missbrauchsmeldungBestaetigungMailTemplate;
+  }
+
+  public SimpleMailMessage getFotoBestaetigungMailTemplate() {
+    return fotoBestaetigungMailTemplate;
+  }
+
+  public void setFotoBestaetigungMailTemplate(SimpleMailMessage fotoBestaetigungMailTemplate) {
+    this.fotoBestaetigungMailTemplate = fotoBestaetigungMailTemplate;
   }
 
   public SimpleMailMessage getVorgangWeiterleitenMailTemplate() {

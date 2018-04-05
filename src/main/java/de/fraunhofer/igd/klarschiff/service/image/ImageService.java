@@ -26,6 +26,7 @@ import com.drew.imaging.ImageMetadataReader;
 import com.drew.metadata.Directory;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.exif.ExifIFD0Directory;
+import de.fraunhofer.igd.klarschiff.vo.Foto;
 
 /**
  * Der Service dient zur Manipulation von Bildern, wie z.B. das Skalieren oder das Ausschwärzen von
@@ -61,14 +62,36 @@ public class ImageService {
   ScaleTyp scaleTyp = ScaleTyp.max;
 
   /**
-   * Setzt das Bild für einen Vorgang. Dabei wird das Bild in drei Größen abgelegt (Gross, Normal,
-   * Thumb). Die Bilder werden entsprechend skaliert.
+   * Setzt das Bild für einen Vorgang.
    *
    * @param image Bild als ByteArray
    * @param vorgang Vorgang in dem die Bilddaten gesetzt werden sollen
    * @throws Exception
    */
   public void setImageForVorgang(byte[] image, Vorgang vorgang) throws Exception {
+    setImageForVorgangOrFoto(image, vorgang, null);
+  }
+
+  /**
+   * Setzt das Bild für eine Foto.
+   *
+   * @param image Bild als ByteArray
+   * @param foto Foto in dem die Bilddaten gesetzt werden sollen
+   * @throws Exception
+   */
+  public void setImageForFoto(byte[] image, Foto foto) throws Exception {
+    setImageForVorgangOrFoto(image, null, foto);
+  }
+
+  /**
+   * Setzt das Bild für einen Vorgang oder ein Foto. Dabei wird das Bild in drei Größen abgelegt
+   * (Gross, Normal, Thumb). Die Bilder werden entsprechend skaliert.
+   *
+   * @param image Bild als ByteArray
+   * @param vorgang Vorgang in dem die Bilddaten gesetzt werden sollen
+   * @throws Exception
+   */
+  public void setImageForVorgangOrFoto(byte[] image, Vorgang vorgang, Foto foto) throws Exception {
     InputStream inStream = new ByteArrayInputStream(image);
     BufferedImage originalImage = ImageIO.read(inStream);
     BufferedImage rotatedImage = null;
@@ -116,15 +139,59 @@ public class ImageService {
       ImageIO.write(rotatedImage, "jpg", baos);
       image = baos.toByteArray();
     }
-    vorgang.setFotoGross(generateFilenameAndWriteFile(
-      scaleImage(image, fotoGrossWidth, fotoGrossHeight, scaleTyp),
-      vorgang, vorgang.getFotoGross(), "gross"));
-    vorgang.setFotoNormal(generateFilenameAndWriteFile(
-      scaleImage(image, fotoNormalWidth, fotoNormalHeight, scaleTyp),
-      vorgang, vorgang.getFotoNormal(), "normal"));
-    vorgang.setFotoThumb(generateFilenameAndWriteFile(
-      scaleImage(image, fotoThumbWidth, fotoThumbHeight, scaleTyp),
-      vorgang, vorgang.getFotoThumb(), "thumb"));
+    if (vorgang != null) {
+      vorgang.setFotoGross(generateFilenameAndWriteFileForVorgang(
+        scaleImage(image, fotoGrossWidth, fotoGrossHeight, scaleTyp),
+        vorgang, vorgang.getFotoGross(), "gross"));
+      vorgang.setFotoNormal(generateFilenameAndWriteFileForVorgang(
+        scaleImage(image, fotoNormalWidth, fotoNormalHeight, scaleTyp),
+        vorgang, vorgang.getFotoNormal(), "normal"));
+      vorgang.setFotoThumb(generateFilenameAndWriteFileForVorgang(
+        scaleImage(image, fotoThumbWidth, fotoThumbHeight, scaleTyp),
+        vorgang, vorgang.getFotoThumb(), "thumb"));
+    }
+    if (foto != null && foto.getVorgang() != null) {
+      foto.setFotoGross(generateFilenameAndWriteFileForFoto(
+        scaleImage(image, fotoGrossWidth, fotoGrossHeight, scaleTyp),
+        foto, foto.getFotoGross(), "gross"));
+      foto.setFotoNormal(generateFilenameAndWriteFileForFoto(
+        scaleImage(image, fotoNormalWidth, fotoNormalHeight, scaleTyp),
+        foto, foto.getFotoNormal(), "normal"));
+      foto.setFotoThumb(generateFilenameAndWriteFileForFoto(
+        scaleImage(image, fotoThumbWidth, fotoThumbHeight, scaleTyp),
+        foto, foto.getFotoThumb(), "thumb"));
+    }
+  }
+
+  /**
+   * Speichert das in <code>image</code> übergebene Bild im Dateisystem.
+   *
+   * @param image Bilddaten
+   * @param vorgang Vorgang
+   * @param prevFilename Dateiname, darf leer sein
+   * @param middlePart Zum Erzeugen eines neuen Dateinamens
+   * @return neuer oder übergebener Dateiname
+   * @throws IOException
+   */
+  public String generateFilenameAndWriteFileForVorgang(byte[] image, Vorgang vorgang,
+    String prevFilename, String middlePart) throws IOException {
+    return generateFilenameAndWriteFileWithPrefix(image, vorgang.getId().toString(), prevFilename, middlePart);
+  }
+
+  /**
+   * Speichert das in <code>image</code> übergebene Bild im Dateisystem.
+   *
+   * @param image Bilddaten
+   * @param foto Foto
+   * @param prevFilename Dateiname, darf leer sein
+   * @param middlePart Zum Erzeugen eines neuen Dateinamens
+   * @return neuer oder übergebener Dateiname
+   * @throws IOException
+   */
+  public String generateFilenameAndWriteFileForFoto(byte[] image, Foto foto,
+    String prevFilename, String middlePart) throws IOException {
+    return generateFilenameAndWriteFileWithPrefix(image,
+      foto.getVorgang().getId().toString() + "_" + foto.getId(), prevFilename, middlePart);
   }
 
   /**
@@ -134,18 +201,18 @@ public class ImageService {
    * generiert und zurück gegeben.
    *
    * @param image Bilddaten
-   * @param vorgang Vorgang
+   * @param prefix Prefix für Dateiname
    * @param prevFilename Dateiname, darf leer sein
    * @param middlePart Zum Erzeugen eines neuen Dateinamens
    * @return neuer oder übergebener Dateiname
    * @throws IOException
    */
-  public String generateFilenameAndWriteFile(byte[] image, Vorgang vorgang,
+  public String generateFilenameAndWriteFileWithPrefix(byte[] image, String prefix,
     String prevFilename, String middlePart) throws IOException {
     String filename;
     if (prevFilename == null) {
       filename = StringUtils.join(new String[]{"ks",
-        vorgang.getId().toString(), middlePart, UUID.randomUUID().toString()
+        prefix, middlePart, UUID.randomUUID().toString()
       }, "_") + ".jpg";
     } else {
       filename = prevFilename;
