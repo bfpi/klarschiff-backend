@@ -88,9 +88,9 @@ public class AdminController {
    */
   @RequestMapping(value = "/rollen", method = RequestMethod.GET)
   public String rollen(Model model, HttpServletRequest request) {
-    model.addAttribute("rollenIntern", securityService.getAllZustaendigkeiten(true));
-    model.addAttribute("rollenExtern", securityService.getAllDelegiertAn());
-    model.addAttribute("rollenAussendienst", securityService.getAllAussendienstTeams());
+    model.addAttribute("rollenIntern", securityService.getAllGroupsForRole(securityService.getGroupIntern(), true));
+    model.addAttribute("rollenExtern", securityService.getAllGroupsForRole(securityService.getGroupExtern(), false));
+    model.addAttribute("rollenAussendienst", securityService.getAllGroupsForRole(securityService.getGroupAussendienst(), false));
     return "admin/rollen";
   }
 

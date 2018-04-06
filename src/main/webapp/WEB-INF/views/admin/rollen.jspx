@@ -38,7 +38,7 @@
 						<tr class="${(rowCounter.count%2==0)? 'odd' : 'even'}">
 							<td>${role.id}</td>
 							<td>${role.description}</td>
-                            <td><ul><c:forEach items="${role.usersRole}" var="user"><li><span>${user.getName()} (${user.getId()})</span></li></c:forEach></ul></td>
+                            <td><ul><c:forEach items="${role.user}" var="user"><li><span>${user}</span></li></c:forEach></ul></td>
 						</tr>
 					</c:forEach>
 				</tbody>
@@ -60,7 +60,7 @@
 						<tr class="${(rowCounter.count%2==0)? 'odd' : 'even'}">
 							<td>${role.id}</td>
 							<td>${role.description}</td>
-                            <td><ul><c:forEach items="${role.usersRole}" var="user"><li><span>${user.getName()} (${user.getId()})</span></li></c:forEach></ul></td>
+                            <td><ul><c:forEach items="${role.user}" var="user"><li><span>${user}</span></li></c:forEach></ul></td>
 						</tr>
 					</c:forEach>
 				</tbody>
@@ -82,7 +82,7 @@
 						<tr class="${(rowCounter.count%2==0)? 'odd' : 'even'}">
 							<td>${role.id}</td>
 							<td>${role.description}</td>
-                            <td><ul><c:forEach items="${role.usersRole}" var="user"><li><span>${user.getName()} (${user.getId()})</span></li></c:forEach></ul></td>
+                            <td><ul><c:forEach items="${role.user}" var="user"><li><span>${user}</span></li></c:forEach></ul></td>
 						</tr>
 					</c:forEach>
 				</tbody>

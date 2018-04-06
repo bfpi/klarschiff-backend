@@ -1,12 +1,10 @@
 package de.fraunhofer.igd.klarschiff.service.security;
 
 import java.util.List;
-
 import org.apache.log4j.Logger;
 import org.springframework.ldap.core.DistinguishedName;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.stereotype.Service;
-
 import com.googlecode.ehcache.annotations.Cacheable;
 import com.googlecode.ehcache.annotations.KeyGenerator;
 import com.googlecode.ehcache.annotations.Property;
@@ -45,13 +43,11 @@ public class SecurityServiceLdap {
     )
   )
   public <T> List<T> getObjectListFromLdap(String path, String filter, IContextMapper<T> contextMapper) {
-
     if (path == null) {
       return ldapTemplate.search(DistinguishedName.EMPTY_PATH, filter, contextMapper);
     }
     return ldapTemplate.search(path, filter, contextMapper);
   }
-
 
   /* --------------- GET + SET ----------------------------*/
   public LdapTemplate getLdapTemplate() {

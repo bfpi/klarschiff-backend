@@ -19,6 +19,7 @@ public class User {
   String name;
   String email;
   String dn;
+  List<String> group = new ArrayList<String>();
 
   private Integer dbId;
   private List<Flaeche> flaechen = new ArrayList<Flaeche>();
@@ -29,7 +30,11 @@ public class User {
    * @return Zuständigkeiten des Benutzers
    */
   public List<Role> getZustaendigkeiten() {
-    return AppContext.getApplicationContext().getBean(SecurityService.class).getZustaendigkeiten(id, true);
+    SecurityService service = AppContext.getApplicationContext().getBean(SecurityService.class);
+    if (group.size() > 0) {
+      return getRoles(service.groupIntern);
+    }
+    return service.getZustaendigkeiten(id, true);
   }
 
   /**
@@ -38,7 +43,11 @@ public class User {
    * @return DelgiertAn-Rollen des Benutzers
    */
   public List<Role> getDelegiertAn() {
-    return AppContext.getApplicationContext().getBean(SecurityService.class).getDelegiertAn(id);
+    SecurityService service = AppContext.getApplicationContext().getBean(SecurityService.class);
+    if (group.size() > 0) {
+      return getRoles(service.groupExtern);
+    }
+    return service.getDelegiertAn(id);
   }
 
   /**
@@ -47,7 +56,11 @@ public class User {
    * @return <code>true</code> - externe Nutzer
    */
   public boolean getUserExtern() {
-    return AppContext.getApplicationContext().getBean(SecurityService.class).isUserExtern(id);
+    SecurityService service = AppContext.getApplicationContext().getBean(SecurityService.class);
+    if (group.size() > 0) {
+      return isInRole(service.groupExtern);
+    }
+    return service.isUserExtern(id);
   }
 
   /**
@@ -56,7 +69,11 @@ public class User {
    * @return <code>true</code> - interne Nutzer
    */
   public boolean getUserIntern() {
-    return AppContext.getApplicationContext().getBean(SecurityService.class).isUserIntern(id);
+    SecurityService service = AppContext.getApplicationContext().getBean(SecurityService.class);
+    if (group.size() > 0) {
+      return isInRole(service.groupIntern);
+    }
+    return service.isUserIntern(id);
   }
 
   /**
@@ -65,7 +82,11 @@ public class User {
    * @return <code>true</code> - Admins
    */
   public boolean getUserAdmin() {
-    return AppContext.getApplicationContext().getBean(SecurityService.class).isUserAdmin(id);
+    SecurityService service = AppContext.getApplicationContext().getBean(SecurityService.class);
+    if (group.size() > 0) {
+      return isInRole(service.groupAdmin);
+    }
+    return service.isUserAdmin(id);
   }
 
   /**
@@ -74,7 +95,11 @@ public class User {
    * @return <code>true</code> - Admins
    */
   public boolean getUserKoordinator() {
-    return AppContext.getApplicationContext().getBean(SecurityService.class).isUserKoordinator(id);
+    SecurityService service = AppContext.getApplicationContext().getBean(SecurityService.class);
+    if (group.size() > 0) {
+      return isInRole(service.groupKoordinator);
+    }
+    return service.isUserKoordinator(id);
   }
 
   /**
@@ -106,7 +131,52 @@ public class User {
    * @return Zuständigkeiten des Benutzers
    */
   public List<String> getAussendienstTeams() {
-    return AppContext.getApplicationContext().getBean(SecurityService.class).getAussendienstTeam(id);
+    SecurityService service = AppContext.getApplicationContext().getBean(SecurityService.class);
+    if (group.size() > 0) {
+      return getRoleStrings(service.groupAussendienst);
+    }
+    return service.getAussendienstTeam(id);
+  }
+
+  private boolean isInRole(String role) {
+    SecurityService service = AppContext.getApplicationContext().getBean(SecurityService.class);
+    List<Role> roles = service.getGroupsForRole(role);
+    for (String g : group) {
+      for (Role r : roles) {
+        if (g.equals(r.getId())) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  private List<Role> getRoles(String role) {
+    SecurityService service = AppContext.getApplicationContext().getBean(SecurityService.class);
+    List<Role> roles = service.getGroupsForRole(role);
+    List<Role> ret = new ArrayList<Role>();
+    for (String g : group) {
+      for (Role r : roles) {
+        if (g.equals(r.getId())) {
+          ret.add(r);
+        }
+      }
+    }
+    return ret;
+  }
+
+  private List<String> getRoleStrings(String role) {
+    SecurityService service = AppContext.getApplicationContext().getBean(SecurityService.class);
+    List<Role> roles = service.getGroupsForRole(role);
+    List<String> ret = new ArrayList<String>();
+    for (String g : group) {
+      for (Role r : roles) {
+        if (g.equals(r.getId())) {
+          ret.add(g);
+        }
+      }
+    }
+    return ret;
   }
 
   /* --------------- GET + SET ----------------------------*/
@@ -156,5 +226,13 @@ public class User {
 
   public void setFlaechen(List<Flaeche> flaechen) {
     this.flaechen = flaechen;
+  }
+
+  public List<String> getGroup() {
+    return group;
+  }
+
+  public void setGroup(List<String> group) {
+    this.group = group;
   }
 }

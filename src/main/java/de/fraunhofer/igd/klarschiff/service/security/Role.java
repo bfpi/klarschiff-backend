@@ -18,6 +18,7 @@ public class Role {
   String description;
   String dn;
   String l;
+  List<String> user = new ArrayList<String>();
 
   /**
    * IDs der übergebenen Rollen als Liste wieder zurückgeben.
@@ -90,4 +91,13 @@ public class Role {
   public void setL(String l) {
     this.l = l;
   }
+
+  public List<String> getUser() {
+    return user;
+  }
+
+  public void setUser(List<String> user) {
+    this.user = user;
+  }
+
 }
