@@ -331,7 +331,7 @@ public class SecurityService {
    */
   public List<Role> getAllGroupsForRole(String roleId, boolean inclDispatcher) {
     String dispatcherFilter = inclDispatcher ? "" : "(!(" + groupObjectId + "=" + groupDispatcher + "))";
-    return loadNamesOfUsersFromRoles(securityServiceLdap.getObjectListFromLdap(groupSearchBase, "(&(objectclass=" + groupObjectClass + ")(" + groupRoleAttribute + "=" + roleId + ")" + dispatcherFilter + ")", roleContextMapper));
+    return securityServiceLdap.getRoleListFromLdapAndReloadNames(groupSearchBase, "(&(objectclass=" + groupObjectClass + ")(" + groupRoleAttribute + "=" + roleId + ")" + dispatcherFilter + ")", userSearchFilter, userSearchBase, userContextMapper, roleContextMapper);
   }
 
   public List<User> getUserFromLoginList(List<List<String>> usersLoginList) {
@@ -826,32 +826,6 @@ public class SecurityService {
       }
     });
     return users;
-  }
-
-  private List<Role> loadNamesOfUsersFromRoles(List<Role> roles) {
-    ArrayList conditionList = new ArrayList<String>();
-    for (Role role : roles) {
-      for (String user : role.getUser()) {
-        conditionList.add("(" + StringUtils.replace(userSearchFilter, "{0}", user) + ")");
-      }
-    }
-    String condition = conditionList.size() > 1 ? "(|" + String.join("", conditionList) + ")" : conditionList.get(0).toString();
-    List<User> ldapUsers = securityServiceLdap.getObjectListFromLdap(userSearchBase, condition, userContextMapper);
-
-    for (Role role : roles) {
-      List<String> newUser = new ArrayList<String>();
-      for (String user : role.getUser()) {
-        for (User ldapUser : ldapUsers) {
-          if(user.equals(ldapUser.getId())) {
-            newUser.add(ldapUser.getName() + " (" + ldapUser.getId() + ")");
-            break;
-          }
-        }
-      }
-      role.setUser(newUser);
-    }
-
-    return roles;
   }
 
   /**
