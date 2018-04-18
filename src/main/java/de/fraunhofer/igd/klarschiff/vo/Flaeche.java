@@ -42,7 +42,7 @@ public class Flaeche implements Serializable {
   @Type(type = "org.hibernatespatial.GeometryUserType")
   private MultiPolygon flaeche;
 
-  @ManyToMany
+  @ManyToMany(mappedBy = "flaechen")
   private List<Benutzer> benutzer = new ArrayList<Benutzer>();
 
   public Integer getId() {

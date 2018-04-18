@@ -3,7 +3,6 @@ package de.fraunhofer.igd.klarschiff.vo;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -38,7 +37,7 @@ public class Benutzer implements Serializable {
    */
   private String benutzername;
 
-  @ManyToMany(cascade = CascadeType.ALL)
+  @ManyToMany()
   @JoinTable(
     name = "benutzer_flaeche",
     joinColumns = {
