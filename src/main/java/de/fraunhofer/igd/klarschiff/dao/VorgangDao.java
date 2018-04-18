@@ -826,7 +826,12 @@ public class VorgangDao {
 
     sql = addOrder(cmd, sql);
 
-    return ((Session) em.getDelegate())
+    Session sess = ((Session) em.getDelegate());
+    if(!sess.isOpen()) {
+      sess = sess.getSessionFactory().openSession();
+    }
+
+    return sess
       .createSQLQuery(sql.toString())
       .addEntity("vo", Vorgang.class)
       .addScalar("aenderungsdatum", StandardBasicTypes.DATE)
