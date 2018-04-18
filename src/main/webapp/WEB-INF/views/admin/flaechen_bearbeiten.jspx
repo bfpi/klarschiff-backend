@@ -27,11 +27,11 @@
   <!-- CONTENT -->
   <div id="root_style_content">
     <div class="fieldset">
-      <div class="fieldsettitle">Verknüpfungen zwischen Außendienst-Koordinatoren und Außendiensteinheiten-Teams</div>
+      <div class="fieldsettitle">Verknüpfungen zwischen Benutzer und Flächen</div>
       <table class="resulttable">
         <tbody>
           <tr>
-            <th>Außendienst-Koordinator (Login)</th>
+            <th>Benutzer (Login)</th>
             <td>${benutzer.name} (${benutzer.id})</td>
           </tr>
         </tbody>
