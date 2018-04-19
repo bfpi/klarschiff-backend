@@ -636,6 +636,7 @@
           </execution>
         </executions>
         <configuration>
+          <complianceLevel>1.7</complianceLevel>
           <outxml>true</outxml>
           <aspectLibraries>
             <aspectLibrary>
