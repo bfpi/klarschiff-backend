@@ -23,7 +23,6 @@
       <menu:tabmenuitem label="Lob/Hinweise/Kritik" url="/admin/lobhinweisekritik" id="admin.lobhinweisekritik" currentId="${currentId}"/>
       <menu:tabmenuitem label="Trashmail" url="/admin/trashmail" id="admin.trashmail" currentId="${currentId}"/>
       <menu:tabmenuitem label="Status" url="/admin/status" id="admin.status" currentId="${currentId}"/>
-      <menu:tabmenuitem label="Datenbank" url="/admin/datenbank" id="admin.datenbank" currentId="${currentId}"/>
       <menu:tabmenuitem label="Zertifikate" url="/admin/zertifikate" id="admin.zertifikate" currentId="${currentId}"/>
       <menu:tabmenuitem label="Test" url="/admin/test" id="admin.test" currentId="${currentId}"/>
     </menu:tabmenu>

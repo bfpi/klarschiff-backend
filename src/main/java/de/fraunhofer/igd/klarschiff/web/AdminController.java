@@ -184,42 +184,6 @@ public class AdminController {
   }
 
   /**
-   * Die Methode verarbeitet den GET-Request auf der URL <code>/admin/datenbank</code><br>
-   * Seitenbeschreibung: Darstellung der Datenbankfunktionen im Adminbereich
-   *
-   * @param model Model in dem ggf. Daten für die View abgelegt werden
-   * @param request Request
-   * @return View, die zum Rendern des Request verwendet wird
-   */
-  @RequestMapping(value = "/datenbank", method = RequestMethod.GET)
-  public String datenbank(Model model, HttpServletRequest request) {
-    return "admin/datenbank";
-  }
-
-  /**
-   * Die Methode verarbeitet den POST-Request auf der URL <code>/admin/datenbank</code><br>
-   * Seitenbeschreibung: Ausführung einer Datenbankfunktion im Adminbereich
-   *
-   * @param model Model in dem ggf. Daten für die View abgelegt werden
-   * @param action Id zum identifizieren der auszuführenden Datenbankfunktion
-   * @param request Request
-   * @return View, die zum Rendern des Request verwendet wird
-   */
-  @RequestMapping(value = "/datenbank", method = RequestMethod.POST)
-  public String datenbankPost(Model model, @RequestParam(value = "action", required = true) String action, HttpServletRequest request) {
-    if (action.equalsIgnoreCase("executeSqlScriptFrontendDb")) {
-      dbSyncService.executeSqlScriptFrontendDb(SqlScriptUtil.State.error);
-    } else if (action.equalsIgnoreCase("viewSqlScriptFrontendDb")) {
-      model.addAttribute("sqlScriptFrontendDb", dbSyncService.getSqlScriptFrontendDb());
-    } else if (action.equalsIgnoreCase("executeSqlScriptDbLink")) {
-      dbSyncService.executeSqlScriptDbLink(SqlScriptUtil.State.error);
-    } else if (action.equalsIgnoreCase("viewSqlScriptDbLink")) {
-      model.addAttribute("sqlScriptDbLink", dbSyncService.getSqlScriptDbLink());
-    }
-    return "admin/datenbank";
-  }
-
-  /**
    * Die Methode verarbeitet den GET-Request auf der URL <code>/admin/zertifikate</code><br>
    * Seitenbeschreibung: Zertifikate werden in die aktuelle Java-Runtime-Umgebung installiert
    *

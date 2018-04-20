@@ -86,12 +86,6 @@ public class InitializeServiceThread extends Thread {
       session.setFlushMode(FlushMode.COMMIT);
 
       try {
-        //sqlScriptFrontendDb ausführen
-        initializeService.getDbSyncService().executeSqlScriptFrontendDb(initializeService.getExecuteSqlScriptFrontendDb());
-
-        //sqlScriptDbLink ausführen
-        initializeService.getDbSyncService().executeSqlScriptDbLink(session, initializeService.getExecuteSqlScriptDbLink());
-
         transaction = session.beginTransaction();
         //Tabellen mit initialen Daten füllen
         LogUtil.info("Initiale Daten werden überprüft und ggf. in die DB geschrieben ...");

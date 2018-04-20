@@ -34,15 +34,6 @@ public class SettingsService {
     return PropertyPlaceholderConfigurer.getPropertyValue(name);
   }
 
-  /**
-   * Ermittelt das Verwendet Profil
-   *
-   * @return Profil
-   */
-  public String getProfile() {
-    return PropertyPlaceholderConfigurer.getProfile();
-  }
-
   /* --------------- GET + SET ----------------------------*/
   public String getVersion() {
     return version;

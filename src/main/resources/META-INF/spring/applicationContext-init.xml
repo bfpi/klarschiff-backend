@@ -18,8 +18,6 @@
 
 	<bean class="de.fraunhofer.igd.klarschiff.service.init.InitializeService" id="initializeService" 
 		p:enable="true" 
-		p:executeSqlScriptFrontendDb="${init.sqlscript.frontenddb}"
-		p:executeSqlScriptDbLink="${init.sqlscript.dblink}"
 	>
 			
 		<property name="initObjectList">
