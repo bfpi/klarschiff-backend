@@ -259,17 +259,17 @@ Konfigurationen zur Anzeige von Karten im Backend
   - `auth.kod_code`:
     - Authorisierungsschlüssel für die erweiterte Kommunikation zwischen Klarschiff-CitySDK und Backend
   - `auth.internal_author_match`:
-    - Regex zur Identifizierung von Internen Benutzern via Author-Email
+    - Regex zur Identifizierung von internen Benutzern via Author-Email
 
 #### Bereich 'trust.'
   - `trust.level.one.mail_match`:
-    - Regex zur Identifizierung von Vertrauenswürdigen Erstellern via Author-Email
+    - Regex zur Identifizierung von vertrauenswürdigen Erstellern via Author-Email
   - `trust.level.one.ldap_match`:
-    - Filter zum Identifizierung von Vertrauenswürdigen Erstellern vir LDAP-Gruppen-Zugehörigkeit
+    - Filter zum Identifizierung von vertrauenswürdigen Erstellern via LDAP-Gruppen-Zugehörigkeit
   - `trust.level.two.mail_match`:
-    - Regex zur Identifizierung von Vertrauenswürdigen Erstellern via Author-Email
+    - Regex zur Identifizierung von vertrauenswürdigen Erstellern via Author-Email
   - `trust.level.two.ldap_match`:
-    - Filter zum Identifizierung von Vertrauenswürdigen Erstellern vir LDAP-Gruppen-Zugehörigkeit
+    - Filter zum Identifizierung von vertrauenswürdigen Erstellern via LDAP-Gruppen-Zugehörigkeit
 
 
 ### URL-Umleitung und Direkt-Links
