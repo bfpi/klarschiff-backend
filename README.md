@@ -217,7 +217,7 @@ Konfigurationen zur Anzeige von Karten im Backend
   - `ldap.groupRoleAttribute`:
     - Attribut, in dem bei den Gruppen die Rolle intern oder extern gesetzt ist
   - `ldap.groupSearchFilter`:
-    - Filter, in denen bei den Gruppen nach Benutzern gesucht wird
+    - Attribut, in dem bei den Gruppen nach Benutzern gesucht wird
   - `ldap.groupObjectId`:
     - Attribut mit der ID für die Gruppe
   - `ldap.userAttributesMapping`:
