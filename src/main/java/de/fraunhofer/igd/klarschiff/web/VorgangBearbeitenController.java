@@ -471,6 +471,10 @@ public class VorgangBearbeitenController {
       auftrag.setStatus(EnumAuftragStatus.nicht_abgehakt);
       auftrag.setVorgang(cmd.getVorgang());
       vorgangDao.merge(auftrag.getVorgang());
+
+      Vorgang vorgang = getVorgang(id);
+      vorgang.setVersion(new Date());
+      vorgangDao.merge(vorgang);
     } else if (action.equals("setzen")) {
       vorgangDao.merge(cmd.getVorgang());
     } else if (action.equals("zur&uuml;cksetzen")) {
