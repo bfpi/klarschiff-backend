@@ -619,6 +619,27 @@
 				</div>
 				<util:ddpanel name="prioritaet"/>
 
+        <c:if test="${cmd.vorgang.kategorie.d3 != null}">
+          <!-- D3-Akte -->
+          <div class="fieldset" id="d3panel">
+            <div class="fieldsettitle closepanel" id="d3tab"><div style="width:100%; height:15px;">d.3</div></div>
+            <div id="d3content">
+              <c:if test="${d3action == 'open'}">
+                <c:set var="form_url" value="/vorgang/${cmd.vorgang.id}/d3open"/>
+              </c:if>
+              <c:if test="${d3action == 'create'}">
+                <c:set var="form_url" value="${d3createLink}"/>
+              </c:if>
+              <form:form method="GET" action="${form_url}" target="_blank">
+                <div class="label">
+                  <input type="submit" value="d.3-Akte" name="action"/>
+                </div>
+              </form:form>
+            </div>
+          </div>
+          <util:ddpanel name="d3"/>
+        </c:if>
+
 				<!-- Archiv -->
 				<c:if test="${cmd.vorgang.status!='gemeldet' and cmd.vorgang.status!='offen' and cmd.vorgang.status!='inBearbeitung'}">
 					<div class="fieldset" id="archivpanel">

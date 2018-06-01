@@ -108,4 +108,6 @@
         p:contextAppArea="${context.app.area}"
         p:contextAppDemo="${context.app.demo}"
 		/>
+
+	<bean class="de.bfpi.tools.D3Tools" id="d3Tools" />
 </beans>

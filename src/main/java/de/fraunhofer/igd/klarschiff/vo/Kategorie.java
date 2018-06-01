@@ -23,6 +23,7 @@ import javax.validation.constraints.Size;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import de.fraunhofer.igd.klarschiff.context.AppContext;
+import javax.persistence.OneToOne;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
@@ -86,6 +87,12 @@ public class Kategorie implements Serializable {
   @NotNull
   @Column(columnDefinition = "boolean default false")
   private boolean geloescht = false;
+
+  /**
+   * D3-Akte
+   */
+  @OneToOne
+  private D3 d3;
 
   /**
    * Gibt den Namen der Kategorie als "escaped HTML" zurück.
@@ -163,6 +170,22 @@ public class Kategorie implements Serializable {
 
   public void setTyp(EnumVorgangTyp typ) {
     this.typ = typ;
+  }
+
+  public boolean isGeloescht() {
+    return geloescht;
+  }
+
+  public void setGeloescht(boolean geloescht) {
+    this.geloescht = geloescht;
+  }
+
+  public D3 getD3() {
+    return d3;
+  }
+
+  public void setD3(D3 d3) {
+    this.d3 = d3;
   }
 
   public List<String> getInitialZustaendigkeiten() {

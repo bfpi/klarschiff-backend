@@ -833,4 +833,19 @@ public class Vorgang implements Serializable {
   public void setLetzterBearbeiter(String letzterBearbeiter) {
     this.letzterBearbeiter = letzterBearbeiter;
   }
+
+  public String getD3CheckExistenceUrl() {
+    String ret = settingsService.getPropertyValue("d3.request.akte.check_existence");
+    ret = ret.replace("%vorgang_id%", getId().toString());
+    return ret;
+  }
+
+  public String getD3ShowUrl() {
+    String ret = settingsService.getPropertyValue("d3.request.akte.show");
+    ret = ret.replace("%vorgang_id%", getId().toString());
+    if (getKategorie().getD3() != null) {
+      ret = ret.replace("%d3_dcc%", getKategorie().getD3().getDcc());
+    }
+    return ret;
+  }
 }

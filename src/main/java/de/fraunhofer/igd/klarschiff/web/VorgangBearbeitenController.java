@@ -1,5 +1,6 @@
 package de.fraunhofer.igd.klarschiff.web;
 
+import de.bfpi.tools.D3Tools;
 import static de.fraunhofer.igd.klarschiff.web.Assert.assertMaxLength;
 import static de.fraunhofer.igd.klarschiff.web.Assert.assertNotEmpty;
 import static de.fraunhofer.igd.klarschiff.web.Assert.isEmpty;
@@ -46,7 +47,23 @@ import de.fraunhofer.igd.klarschiff.vo.StatusKommentarVorlage;
 import de.fraunhofer.igd.klarschiff.vo.Verlauf;
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
 import de.fraunhofer.igd.klarschiff.vo.VorgangHistoryClasses;
+import java.io.BufferedOutputStream;
+import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.util.Date;
+import javax.servlet.http.HttpServletResponse;
+import org.apache.commons.io.IOUtils;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.converter.ResourceHttpMessageConverter;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * Controller für die Vorgangsbearbeitung
@@ -82,6 +99,9 @@ public class VorgangBearbeitenController {
 
   @Autowired
   SettingsService settingsService;
+
+  @Autowired
+  D3Tools d3tools;
 
   /**
    * Liefert (in Systemkonfiguration festgelegte) Anzahl an Unterstützungen, die benötigt werden
@@ -286,7 +306,44 @@ public class VorgangBearbeitenController {
     updateLobHinweiseKritikInModel(model, cmd);
     updateZustaendigkeitStatusInModel(model, cmd);
 
+    if (cmd.getVorgang().getKategorie().getD3() != null) {
+      if (d3tools.documentExists(cmd.getVorgang())) {
+        model.put("d3action", "open");
+      } else {
+        model.put("d3action", "create");
+        model.put("d3createLink", d3tools.getCreateLink(cmd.getVorgang()));
+      }
+    }
+
     return (cmd.getVorgang().getStatus() == EnumVorgangStatus.gemeldet) ? "vorgang/bearbeitenDisabled" : "vorgang/bearbeiten";
+  }
+
+  /**
+   * Die Methode verarbeitet den GET-Request auf der URL <code>/vorgang/{id}/d3open</code><br>
+   * Seitenbeschreibung: Es wird eine Datei des Namens D3-ID (D3-ID).d3l erzeugt und ausgeliefert.
+   * Diese Datei soll dann geöffnet werden, sodass sich der lokale d.3-Desktop-Client bei genau der
+   * Akte öffnet.
+   *
+   * @param id Vorgangs-ID
+   * @param model Model in dem ggf. Daten für die View abgelegt werden
+   * @param request Request
+   * @param response Response
+   * @throws java.io.IOException
+   */
+  @RequestMapping(value = "/vorgang/{id}/d3open", method = RequestMethod.GET)
+  @ResponseBody
+  public void d3open(@PathVariable("id") Long id, ModelMap model, HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+    Vorgang vorgang = getVorgang(id);
+    String documentId = d3tools.getDocumentId(vorgang);
+
+    String filename = documentId + " (" + documentId + ").d3l";
+
+    String initialString = "idlist\r\n" + documentId + "\r\n\r\n";
+    InputStream targetStream = new ByteArrayInputStream(initialString.getBytes());
+    IOUtils.copy(targetStream, response.getOutputStream());
+    response.setHeader("Content-Disposition", "attachment; filename=\"" + filename + "\"");
+    response.flushBuffer();
   }
 
   /**
