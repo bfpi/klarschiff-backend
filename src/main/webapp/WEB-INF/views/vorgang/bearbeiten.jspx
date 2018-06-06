@@ -625,7 +625,7 @@
             <div class="fieldsettitle closepanel" id="d3tab"><div style="width:100%; height:15px;">d.3</div></div>
             <div id="d3content">
               <c:if test="${d3action == 'open'}">
-                <c:set var="form_url" value="/vorgang/${cmd.vorgang.id}/d3open"/>
+                <c:set var="form_url" value="${pageContext.request.contextPath}/vorgang/${cmd.vorgang.id}/d3open"/>
               </c:if>
               <c:if test="${d3action == 'create'}">
                 <c:set var="form_url" value="${d3createLink}"/>
