@@ -1,15 +1,9 @@
 package de.fraunhofer.igd.klarschiff.dao;
 
-import java.util.Date;
 import java.util.List;
-
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-
-import org.apache.commons.lang.time.DateUtils;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
-
 import de.fraunhofer.igd.klarschiff.vo.RedaktionEmpfaenger;
 
 /**
@@ -24,8 +18,10 @@ public class RedaktionEmpfaengerDao {
   EntityManager em;
 
   /**
-   * gibt eine Liste mit den in der Datenbank gelisteten Empfängern von redaktionellen E-Mails
+   * Gibt eine Liste mit den in der Datenbank gelisteten Empfängern von redaktionellen E-Mails
    * zurück
+   *
+   * @return Liste der Empfänger
    */
   @SuppressWarnings("unchecked")
   public List<RedaktionEmpfaenger> getEmpfaengerList() {
@@ -33,8 +29,11 @@ public class RedaktionEmpfaengerDao {
   }
 
   /**
-   * gibt eine Liste mit den in der Datenbank gelisteten Empfängern von E-Mails mit Lob, Kritik und
+   * Gibt eine Liste mit den in der Datenbank gelisteten Empfängern von E-Mails mit Lob, Kritik und
    * Hinweisen für eine Zuständigkeit zurück
+   *
+   * @param zustaendigkeit Zuständigkeit deren Empfänger gesucht werden sollen
+   * @return Liste der Empfänger
    */
   @SuppressWarnings("unchecked")
   public List<RedaktionEmpfaenger> getEmpfaengerListLobHinweiseKritikForZustaendigkeit(String zustaendigkeit) {

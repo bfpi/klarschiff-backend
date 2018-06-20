@@ -17,20 +17,11 @@
 
 
 	<bean class="de.fraunhofer.igd.klarschiff.service.dbsync.DbSyncService" id="dbSyncService" 
-		p:sqlScriptDbLinkFile="META-INF/sql/sqlScript.DbLink.sql"
-		p:sqlScriptFrontendDbFile="META-INF/sql/sqlScript.FrontendDb.sql"
- 		p:frontendDbHost="${database.frontend.host}"
-		p:frontendDbPort="${database.frontend.port}"
-		p:frontendDbSchema="${database.frontend.schema}"
-		p:frontendDbDbName="${database.frontend.dbname}"
-		p:frontendDbUsername="${database.frontend.username}"
-		p:frontendDbPassword="${database.frontend.password}"
  		p:backendDbHost="${database.host}"
 		p:backendDbPort="${database.port}"
 		p:backendDbSchema="${database.schema}"
 		p:backendDbDbName="${database.dbname}"
 		p:backendDbUsername="${database.username}"
 		p:backendDbPassword="${database.password}"
-		p:frontendDbImageUrl="${image.url}"
 	/>
 </beans>

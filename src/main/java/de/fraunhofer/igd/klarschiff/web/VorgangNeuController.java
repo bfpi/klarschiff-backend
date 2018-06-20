@@ -2,13 +2,10 @@ package de.fraunhofer.igd.klarschiff.web;
 
 import de.fraunhofer.igd.klarschiff.dao.GrenzenDao;
 import static de.fraunhofer.igd.klarschiff.web.Assert.addErrorMessage;
-
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
-
 import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +16,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.SessionAttributes;
-
 import de.fraunhofer.igd.klarschiff.dao.KategorieDao;
 import de.fraunhofer.igd.klarschiff.dao.VorgangDao;
 import de.fraunhofer.igd.klarschiff.service.classification.ClassificationService;
@@ -72,6 +68,8 @@ public class VorgangNeuController {
 
   /**
    * Liefert alle möglichen Ausprägungen für Vorgangstypen
+   *
+   * @return mögliche Typ-Ausprägungen
    */
   @ModelAttribute("vorgangtypen")
   public Collection<EnumVorgangTyp> populateEnumVorgangTypen() {
@@ -104,7 +102,7 @@ public class VorgangNeuController {
   }
 
   /**
-   * Die Methode verarbeitet den GET-Request auf der URL <code>/vorgangneu</code><br/>
+   * Die Methode verarbeitet den GET-Request auf der URL <code>/vorgangneu</code><br>
    * Seitenbeschreibung: Darstellung des Formulars zur Vorgangerstellung im Backend
    *
    * @param model Model in der ggf. Daten für die View abgelegt werden
@@ -121,7 +119,7 @@ public class VorgangNeuController {
   }
 
   /**
-   * Die Methode verarbeitet den POST-Request auf der URL <code>/vorgangneu</code><br/>
+   * Die Methode verarbeitet den POST-Request auf der URL <code>/vorgangneu</code><br>
    * Funktionsbeschreibung: Absenden des im Backend ausgefüllten Vorgangerstellungsformulars
    *
    * @param cmd Command

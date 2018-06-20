@@ -2,18 +2,16 @@ package de.fraunhofer.igd.klarschiff.web;
 
 import de.fraunhofer.igd.klarschiff.dao.GrenzenDao;
 import static de.fraunhofer.igd.klarschiff.web.Assert.*;
-
 import org.apache.commons.lang.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
-
 import de.fraunhofer.igd.klarschiff.dao.KategorieDao;
 import de.fraunhofer.igd.klarschiff.service.settings.SettingsService;
 import de.fraunhofer.igd.klarschiff.vo.Kategorie;
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
 
 /**
- * Command für die Erstellung von Vorgängen im Backend. <br />
+ * Command für die Erstellung von Vorgängen im Backend. <br>
  * Beinhaltet Vorgangobjekt, Vorgangkategorie, Foto und Fotonamen
  *
  * @author Stefan Audersch (Fraunhofer IGD)
@@ -33,15 +31,15 @@ public class VorgangNeuCommand extends Command {
 
   /**
    * Methode zur Prüfung eines neuen Vorganges auf Vollständigkeit benötigter Attribute sowie
-   * Validität der E-Mail-Adresse<br/>
-   * Prüft auf Vorhandensein von: <b>Typ, Hauptkategorie, Unterkategorie, Position,
-   * E-Mail-Adresse und Beschreibung</b> sowie auf Gültigkeit der übergebenen
-   * <b>E-Mail-Adresse</b>.<br/>
+   * Validität der E-Mail-Adresse<br>
+   * Prüft auf Vorhandensein von: <b>Typ, Hauptkategorie, Unterkategorie, Position, E-Mail-Adresse
+   * und Beschreibung</b> sowie auf Gültigkeit der übergebenen
+   * <b>E-Mail-Adresse</b>.<br>
    *
    * @param result Bindingresult mit den Fehlermeldungen
-   * @param kategorieDao
-   * @param grenzenDao
-   * @param settingsService
+   * @param kategorieDao KategorieDao
+   * @param grenzenDao GrenzenDao
+   * @param settingsService SettingsService
    */
   public void validate(BindingResult result, KategorieDao kategorieDao, GrenzenDao grenzenDao, SettingsService settingsService) {
     if (StringUtils.equals("Bitte beschreiben Sie Ihre Meldung genauer.", vorgang.getBeschreibung())) {

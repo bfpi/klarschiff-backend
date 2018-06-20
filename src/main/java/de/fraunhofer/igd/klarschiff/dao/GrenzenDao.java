@@ -2,14 +2,10 @@ package de.fraunhofer.igd.klarschiff.dao;
 
 import de.fraunhofer.igd.klarschiff.vo.StadtGrenze;
 import java.util.List;
-
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-
 import org.springframework.stereotype.Repository;
-
 import de.fraunhofer.igd.klarschiff.vo.StadtteilGrenze;
-import org.apache.commons.lang.StringUtils;
 
 /**
  * Die Dao-Klasse erlaubt den Zugriff auf die Stadtteilgrenzen in der DB.
@@ -41,9 +37,10 @@ public class GrenzenDao {
   public List<StadtteilGrenze> findStadtteilGrenzenWithGrenze() {
     return entityManager.createQuery("SELECT o FROM StadtteilGrenze o ORDER BY o.name").getResultList();
   }
-  
+
   /**
    * Liefert das Multipolygon der angegebenen Staddteilgrenzen als WKT
+   *
    * @param ids
    * @return Stadtteilgrenzen als WKT
    */
@@ -55,9 +52,9 @@ public class GrenzenDao {
   }
 
   /**
-   * Holt die Stadtteilgrenze anhand der id
+   * Holt die Stadtteilgrenze anhand der ID
    *
-   * @param id Id der Stadtteilgrenze
+   * @param id ID der Stadtteilgrenze
    * @return Stadtteilgrenze
    */
   public StadtteilGrenze findStadtteilGrenze(Integer id) {

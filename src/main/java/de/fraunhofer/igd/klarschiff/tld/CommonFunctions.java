@@ -3,9 +3,7 @@ package de.fraunhofer.igd.klarschiff.tld;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.WordUtils;
 
 /**
  * Die Klasse stellt die Implementierung für allgemeine EL-Funktionen bereit.

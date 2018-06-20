@@ -1,5 +1,7 @@
 package de.fraunhofer.igd.klarschiff.dao;
 
+import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
+import de.fraunhofer.igd.klarschiff.service.security.User;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -8,10 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
-
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,6 +41,12 @@ public class HqlQueryHelper {
   Integer firstResult = null;
   Integer maxResults = null;
   String whereConditionsOperation = "AND";
+
+  SecurityService securityService;
+
+  HqlQueryHelper(SecurityService securityService) {
+    this.securityService = securityService;
+  }
 
   public HqlQueryHelper addSelectAttribute(String attribute) {
     selectAttributes.add(attribute);
@@ -112,9 +118,10 @@ public class HqlQueryHelper {
   /**
    * Erzeugt eine gültige HQL-Anfrage
    *
+   * @param entityManager EntityManager
    * @return HQL-Anfrage
    */
-  public String getHqlQuery() {
+  public String getHqlQuery(EntityManager entityManager) {
     if (selectAttributes.size() < 1) {
       throw new RuntimeException("Es sind keine Attributte für die Projektion angegeben");
     }
@@ -148,6 +155,17 @@ public class HqlQueryHelper {
     //WHERE
     if (!whereConditions.isEmpty()) {
       str.append(" WHERE ");
+
+      User user = securityService.getCurrentUser();
+      if (str.indexOf("Vorgang vo") != -1 && user.getFlaechen().size() > 0) {
+        Query tmp = entityManager.createNativeQuery("SELECT ST_AsText(ST_Union(flaeche)) FROM klarschiff_flaeche WHERE id in (SELECT flaeche_id FROM klarschiff_benutzer_flaeche where benutzer_id = :user_id)");
+        tmp.setParameter("user_id", user.getDbId());
+        String mp = (String) tmp.getSingleResult();
+
+        whereConditions.add("st_within(ST_GeomFromText(ST_AsText(vo.ovi)), ST_GeomFromText(:flaechen)) = true");
+        addParameter("flaechen", mp);
+      }
+
       for (Iterator<String> iter = whereConditions.iterator(); iter.hasNext();) {
         str.append(iter.next());
         if (iter.hasNext()) {
@@ -202,7 +220,7 @@ public class HqlQueryHelper {
    */
   @Transactional
   public Object getSingleResult(EntityManager entityManager) {
-    Query query = entityManager.createQuery(getHqlQuery());
+    Query query = entityManager.createQuery(getHqlQuery(entityManager));
     for (Entry<String, Object> entry : getParameterMap().entrySet()) {
       query.setParameter(entry.getKey(), entry.getValue());
     }
@@ -220,7 +238,7 @@ public class HqlQueryHelper {
    */
   @Transactional
   public List getResultList(EntityManager entityManager) {
-    Query query = entityManager.createQuery(getHqlQuery());
+    Query query = entityManager.createQuery(getHqlQuery(entityManager));
     for (Entry<String, Object> entry : getParameterMap().entrySet()) {
       query.setParameter(entry.getKey(), entry.getValue());
     }

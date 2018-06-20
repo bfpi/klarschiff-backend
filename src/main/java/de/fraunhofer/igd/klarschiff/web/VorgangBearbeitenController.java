@@ -1,16 +1,14 @@
 package de.fraunhofer.igd.klarschiff.web;
 
+import de.bfpi.tools.D3Tools;
 import static de.fraunhofer.igd.klarschiff.web.Assert.assertMaxLength;
 import static de.fraunhofer.igd.klarschiff.web.Assert.assertNotEmpty;
 import static de.fraunhofer.igd.klarschiff.web.Assert.isEmpty;
-
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-
 import javax.persistence.Transient;
 import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
@@ -26,10 +24,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
-
 import de.fraunhofer.igd.klarschiff.dao.KategorieDao;
 import de.fraunhofer.igd.klarschiff.dao.KommentarDao;
 import de.fraunhofer.igd.klarschiff.dao.LobHinweiseKritikDao;
+import de.fraunhofer.igd.klarschiff.dao.VerlaufDao;
 import de.fraunhofer.igd.klarschiff.dao.VorgangDao;
 import de.fraunhofer.igd.klarschiff.service.classification.ClassificationService;
 import de.fraunhofer.igd.klarschiff.service.security.Role;
@@ -40,6 +38,7 @@ import de.fraunhofer.igd.klarschiff.vo.Auftrag;
 import de.fraunhofer.igd.klarschiff.vo.EnumAuftragStatus;
 import de.fraunhofer.igd.klarschiff.vo.EnumFreigabeStatus;
 import de.fraunhofer.igd.klarschiff.vo.EnumPrioritaet;
+import de.fraunhofer.igd.klarschiff.vo.EnumVerlaufTyp;
 import de.fraunhofer.igd.klarschiff.vo.EnumVorgangStatus;
 import de.fraunhofer.igd.klarschiff.vo.EnumVorgangTyp;
 import de.fraunhofer.igd.klarschiff.vo.EnumZustaendigkeitStatus;
@@ -48,7 +47,23 @@ import de.fraunhofer.igd.klarschiff.vo.StatusKommentarVorlage;
 import de.fraunhofer.igd.klarschiff.vo.Verlauf;
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
 import de.fraunhofer.igd.klarschiff.vo.VorgangHistoryClasses;
+import java.io.BufferedOutputStream;
+import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.util.Date;
+import javax.servlet.http.HttpServletResponse;
+import org.apache.commons.io.IOUtils;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.converter.ResourceHttpMessageConverter;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * Controller für die Vorgangsbearbeitung
@@ -71,6 +86,9 @@ public class VorgangBearbeitenController {
   KategorieDao kategorieDao;
 
   @Autowired
+  VerlaufDao verlaufDao;
+
+  @Autowired
   LobHinweiseKritikDao lobHinweiseKritikDao;
 
   @Autowired
@@ -82,9 +100,14 @@ public class VorgangBearbeitenController {
   @Autowired
   SettingsService settingsService;
 
+  @Autowired
+  D3Tools d3tools;
+
   /**
    * Liefert (in Systemkonfiguration festgelegte) Anzahl an Unterstützungen, die benötigt werden
    * damit Idee Relevanz erlangt (z.B. in der Vorgangssuche automatisch erscheint).
+   *
+   * @return Notwendige Anzahl an Unterstützungen
    */
   @ModelAttribute("vorgangIdeenUnterstuetzer")
   public Long vorgangIdeenUnterstuetzer() {
@@ -94,6 +117,8 @@ public class VorgangBearbeitenController {
   /**
    * Liefert (in Systemkonfiguration festgelegte) maximale Zeichenanzahl für Statuskommentare zu
    * Vorgängen
+   *
+   * @return maximale Zeichenanzahl
    */
   @ModelAttribute("vorgangStatusKommentarTextlaengeMaximal")
   public Integer vorgangStatusKommentarTextlaengeMaximal() {
@@ -102,6 +127,8 @@ public class VorgangBearbeitenController {
 
   /**
    * Liefert alle vorhandenen Zuständigkeiten des aktuellen Benutzers
+   *
+   * @return Liste vorhandener Zuständigkeiten
    */
   @ModelAttribute("currentZustaendigkeiten")
   public List<Role> currentZustaendigkeiten() {
@@ -110,6 +137,8 @@ public class VorgangBearbeitenController {
 
   /**
    * Liefert alle im System vorhandenen Zuständigkeiten
+   *
+   * @return alle vorhandenen Zuständigkeiten
    */
   @ModelAttribute("allZustaendigkeiten")
   public List<Role> allZustaendigkeiten() {
@@ -118,6 +147,8 @@ public class VorgangBearbeitenController {
 
   /**
    * Liefert alle im System vorhandenen Rollen zum Delegieren
+   *
+   * @return alle vorhandenen Delegationen
    */
   @ModelAttribute("allDelegiertAn")
   public List<Role> allDelegiertAn() {
@@ -126,6 +157,8 @@ public class VorgangBearbeitenController {
 
   /**
    * Liefert alle möglichen Ausprägungen für Vorgangs-Status-Typen
+   *
+   * @return mögliche Status-Ausprägungen
    */
   @ModelAttribute("allVorgangStatus")
   public EnumVorgangStatus[] allVorgangStatus() {
@@ -137,6 +170,8 @@ public class VorgangBearbeitenController {
 
   /**
    * Liefert alle möglichen Ausprägungen für Vorgangs-Status-Typen (mit offenen!)
+   *
+   * @return mögliche Status-Ausprägungen
    */
   @ModelAttribute("allVorgangStatusMitOffenen")
   public EnumVorgangStatus[] allVorgangStatusMitOffenen() {
@@ -148,6 +183,8 @@ public class VorgangBearbeitenController {
 
   /**
    * Liefert alle möglichen Ausprägungen für Vorgangstypen
+   *
+   * @return mögliche Typ-Ausprägungen
    */
   @ModelAttribute("vorgangtypen")
   public Collection<EnumVorgangTyp> populateEnumVorgangTypen() {
@@ -156,6 +193,8 @@ public class VorgangBearbeitenController {
 
   /**
    * Liefert alle möglichen Ausprägungen für Prioritätsbezeichner
+   *
+   * @return mögliche Prioritäten
    */
   @ModelAttribute("allPrioritaet")
   public Collection<EnumPrioritaet> allPrioritaet() {
@@ -164,6 +203,8 @@ public class VorgangBearbeitenController {
 
   /**
    * Liefert alle Statuskommentarvorlagen
+   *
+   * @return Liste der StatusKommentarVorlage
    */
   @ModelAttribute("allStatusKommentarVorlage")
   public List<StatusKommentarVorlage> allStatusKommentarVorlage() {
@@ -172,6 +213,8 @@ public class VorgangBearbeitenController {
 
   /**
    * Liefert alle Aussendienst-Teams für den aktuellen Koordinator
+   *
+   * @return Liste der Ausßendienst-Teams
    */
   @ModelAttribute("koordinatorAussendienstTeams")
   public List<String> koordinatorAussendienstTeams() {
@@ -243,7 +286,7 @@ public class VorgangBearbeitenController {
   }
 
   /**
-   * Die Methode verarbeitet den GET-Request auf der URL <code>/vorgang/{id}/bearbeiten</code><br/>
+   * Die Methode verarbeitet den GET-Request auf der URL <code>/vorgang/{id}/bearbeiten</code><br>
    * Seitenbeschreibung: Formular zur Vorgangsbearbeitung oder Hinweis auf noch nicht aktivierte
    * Bearbeitbarkeit falls Vorgang noch im Status <code>gemeldet</code>
    *
@@ -263,14 +306,51 @@ public class VorgangBearbeitenController {
     updateLobHinweiseKritikInModel(model, cmd);
     updateZustaendigkeitStatusInModel(model, cmd);
 
+    if (cmd.getVorgang().getKategorie().getD3() != null) {
+      if (d3tools.documentExists(cmd.getVorgang())) {
+        model.put("d3action", "open");
+      } else {
+        model.put("d3action", "create");
+        model.put("d3createLink", d3tools.getCreateLink(cmd.getVorgang()));
+      }
+    }
+
     return (cmd.getVorgang().getStatus() == EnumVorgangStatus.gemeldet) ? "vorgang/bearbeitenDisabled" : "vorgang/bearbeiten";
+  }
+
+  /**
+   * Die Methode verarbeitet den GET-Request auf der URL <code>/vorgang/{id}/d3open</code><br>
+   * Seitenbeschreibung: Es wird eine Datei des Namens D3-ID (D3-ID).d3l erzeugt und ausgeliefert.
+   * Diese Datei soll dann geöffnet werden, sodass sich der lokale d.3-Desktop-Client bei genau der
+   * Akte öffnet.
+   *
+   * @param id Vorgangs-ID
+   * @param model Model in dem ggf. Daten für die View abgelegt werden
+   * @param request Request
+   * @param response Response
+   * @throws java.io.IOException
+   */
+  @RequestMapping(value = "/vorgang/{id}/d3open", method = RequestMethod.GET)
+  @ResponseBody
+  public void d3open(@PathVariable("id") Long id, ModelMap model, HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+    Vorgang vorgang = getVorgang(id);
+    String documentId = d3tools.getDocumentId(vorgang);
+
+    String filename = documentId + " (" + documentId + ").d3l";
+
+    String initialString = "idlist\r\n" + documentId + "\r\n\r\n";
+    InputStream targetStream = new ByteArrayInputStream(initialString.getBytes());
+    IOUtils.copy(targetStream, response.getOutputStream());
+    response.setHeader("Content-Disposition", "attachment; filename=\"" + filename + "\"");
+    response.flushBuffer();
   }
 
   /**
    * Ermittelt Vorgang mit übergebener ID aus Backend-Datenbank
    *
    * @param id Vorgangs-ID
-   * @return
+   * @return Vorgang
    */
   @Transient
   private Vorgang getVorgang(Long id) {
@@ -280,7 +360,7 @@ public class VorgangBearbeitenController {
   }
 
   /**
-   * Die Methode verarbeitet den POST-Request auf der URL <code>/vorgang/{id}/bearbeiten</code><br/>
+   * Die Methode verarbeitet den POST-Request auf der URL <code>/vorgang/{id}/bearbeiten</code><br>
    * Funktionsbeschreibung: Die Wahl des <code>action</code> Parameters erlaubt folgende
    * Funktionalitäten:
    * <ul>
@@ -332,11 +412,11 @@ public class VorgangBearbeitenController {
       + vorgangStatusKommentarTextlaengeMaximal().toString() + " Zeichen.");
 
     if (!isEmpty(cmd, "vorgang.auftrag.team")) {
-        assertNotEmpty(cmd, result, Assert.EvaluateOn.ever, "vorgang.auftrag.datum", "Es muss in jedem Fall ein Datum ausgewählt werden!");
+      assertNotEmpty(cmd, result, Assert.EvaluateOn.ever, "vorgang.auftrag.datum", "Es muss in jedem Fall ein Datum ausgewählt werden!");
     }
 
     if (!isEmpty(cmd, "vorgang.auftrag.datum")) {
-        assertNotEmpty(cmd, result, Assert.EvaluateOn.ever, "vorgang.auftrag.team", "Es muss in jedem Fall ein Team ausgewählt werden!");
+      assertNotEmpty(cmd, result, Assert.EvaluateOn.ever, "vorgang.auftrag.team", "Es muss in jedem Fall ein Team ausgewählt werden!");
     }
 
     if (result.hasErrors()) {
@@ -378,7 +458,7 @@ public class VorgangBearbeitenController {
         return "vorgang/bearbeiten";
       }
 
-      if(vorg.getStatus() != newStatus) {
+      if (vorg.getStatus() != newStatus) {
         cmd.getVorgang().setStatusDatum(new Date());
       }
       vorgangDao.merge(cmd.getVorgang());
@@ -410,6 +490,9 @@ public class VorgangBearbeitenController {
         kommentar.setAnzBearbeitet(0);
         kommentar.setDatum(new Date());
         kommentarDao.persist(kommentar);
+        Verlauf verlauf = verlaufDao.addVerlaufToVorgang(kommentar.getVorgang(), EnumVerlaufTyp.kommentar,
+          "", cmd.getKommentar());
+        verlaufDao.merge(verlauf);
         cmd.setKommentar(null);
       }
     } else if (action.equals("kommentarSave")) {
@@ -445,6 +528,10 @@ public class VorgangBearbeitenController {
       auftrag.setStatus(EnumAuftragStatus.nicht_abgehakt);
       auftrag.setVorgang(cmd.getVorgang());
       vorgangDao.merge(auftrag.getVorgang());
+
+      Vorgang vorgang = getVorgang(id);
+      vorgang.setVersion(new Date());
+      vorgangDao.merge(vorgang);
     } else if (action.equals("setzen")) {
       vorgangDao.merge(cmd.getVorgang());
     } else if (action.equals("zur&uuml;cksetzen")) {
@@ -461,15 +548,20 @@ public class VorgangBearbeitenController {
     return "vorgang/bearbeiten";
   }
 
+  /**
+   * Setzt die Zuständigkeit auf den Übergebenen Wert
+   *
+   * @param cmd Command
+   */
   private void setZustaendigkeitFrontend(VorgangBearbeitenCommand cmd) {
     String zustaendigkeit = "";
-    if(cmd.getVorgang().getZustaendigkeit() != null && !cmd.getVorgang().getZustaendigkeit().isEmpty()) {
+    if (cmd.getVorgang().getZustaendigkeit() != null && !cmd.getVorgang().getZustaendigkeit().isEmpty()) {
       zustaendigkeit = securityService.getZustaendigkeit(cmd.getVorgang().getZustaendigkeit()).getL();
     }
     if (cmd.getVorgang().getDelegiertAn() != null && !cmd.getVorgang().getDelegiertAn().isEmpty()) {
       Role r = securityService.getZustaendigkeit(cmd.getVorgang().getDelegiertAn());
-      if(r != null) {
-        zustaendigkeit += " (" + r.getL()+ ")";
+      if (r != null) {
+        zustaendigkeit += " (" + r.getL() + ")";
       }
     }
     cmd.getVorgang().setZustaendigkeitFrontend(zustaendigkeit);

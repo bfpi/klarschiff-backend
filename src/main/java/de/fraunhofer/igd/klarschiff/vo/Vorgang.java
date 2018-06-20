@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -23,11 +22,9 @@ import javax.persistence.Transient;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.Type;
 import org.springframework.format.annotation.DateTimeFormat;
-
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.PrecisionModel;
@@ -40,6 +37,8 @@ import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
 import de.fraunhofer.igd.klarschiff.service.security.User;
 import de.fraunhofer.igd.klarschiff.service.settings.PropertyPlaceholderConfigurer;
 import de.fraunhofer.igd.klarschiff.service.settings.SettingsService;
+import java.util.Arrays;
+import java.util.Collections;
 import javax.persistence.Column;
 import javax.persistence.OneToOne;
 import org.codehaus.jackson.annotate.JsonIgnore;
@@ -204,6 +203,12 @@ public class Vorgang implements Serializable {
   String zustaendigkeit;
 
   /**
+   * Zuständigkeit (Id der Rolle) für den Vorgang
+   */
+  @JsonIgnore
+  String initialeAkzeptierteZustaendigkeit;
+
+  /**
    * Status der Zuständigkeit
    */
   @Enumerated(EnumType.STRING)
@@ -242,6 +247,10 @@ public class Vorgang implements Serializable {
   @JsonIgnore
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "vorgang")
   private List<Verlauf> verlauf = new ArrayList<Verlauf>();
+
+  @JsonIgnore
+  @Transient
+  private Verlauf letzterAktivitaetenVerlauf;
 
   /**
    * Kategorie
@@ -290,6 +299,11 @@ public class Vorgang implements Serializable {
    */
   @Column(nullable = false, columnDefinition = "boolean default false")
   Boolean fotowunsch;
+
+  /**
+   * letzter Bearbeiter des Vorgangs, für Sortierung bei Listen
+   */
+  String letzterBearbeiter;
 
   @Transient
   private static GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(), 25833);
@@ -479,6 +493,11 @@ public class Vorgang implements Serializable {
     calculateTrust();
   }
 
+  /**
+   * Prüft ob der Author des Vorgangs ein Interner Benutzer ist.
+   *
+   * @return <code>true</code> - Author-Email entspricht dem Konfigurierten Regex aus den Settings.
+   */
   public Boolean autorIntern() {
     if (this.autorEmail == null) {
       return false;
@@ -494,6 +513,9 @@ public class Vorgang implements Serializable {
     this.trust = trust;
   }
 
+  /**
+   * Berechnet das Trust-Level des Vorgangs und
+   */
   private void calculateTrust() {
     int tmp = 0;
     if (checkTrustConditions("one")) {
@@ -505,6 +527,12 @@ public class Vorgang implements Serializable {
     setTrust(tmp);
   }
 
+  /**
+   * Prüfung, ob es sich beim Author um eine vertrauenswürdige Person handelt
+   *
+   * @param key
+   * @return <code>true</code> - Author-Email entspricht dem Konfigurierten Regex aus den Settings.
+   */
   private boolean checkTrustConditions(String key) {
     String pre = "trust.level." + key + ".";
     return this.autorEmail.matches(settingsService.getPropertyValue(pre + "mail_match"))
@@ -513,6 +541,11 @@ public class Vorgang implements Serializable {
         settingsService.getPropertyValue(pre + "ldap_match")).size() > 0);
   }
 
+  /**
+   * Prüft ob der Author des Vorgangs ein Außendienst-Mitarbeiter ist.
+   *
+   * @return <code>true</code> - Author-Email entspricht E-Mail an einem vorhandenen User.
+   */
   public Boolean autorAussendienst() {
     if (securityService == null || !autorIntern()) {
       return false;
@@ -546,6 +579,29 @@ public class Vorgang implements Serializable {
 
   public List<Verlauf> getVerlauf() {
     return this.verlauf;
+  }
+
+  /**
+   * Holte den letzten Relevanten Verlaufs-Eintrag für die Liste der letzten Aktivitäten.
+   *
+   * @return Verlaufs-Eintrag
+   */
+  public Verlauf getLetzterAktivitaetenVerlauf() {
+    if (letzterAktivitaetenVerlauf != null) {
+      return letzterAktivitaetenVerlauf;
+    }
+    if (this.verlauf.isEmpty()) {
+      return null;
+    }
+    List<Verlauf> liste = this.verlauf;
+    Collections.reverse(liste);
+    for (Verlauf ver : liste) {
+      if (Arrays.asList(EnumVerlaufTyp.relevantBeiLetztenAktivitaeten()).contains(ver.getTyp())) {
+        letzterAktivitaetenVerlauf = ver;
+        break;
+      }
+    }
+    return letzterAktivitaetenVerlauf;
   }
 
   public void setVerlauf(List<Verlauf> verlauf) {
@@ -585,6 +641,14 @@ public class Vorgang implements Serializable {
 
   public void setZustaendigkeit(String zustaendigkeit) {
     this.zustaendigkeit = zustaendigkeit;
+  }
+
+  public String getInitialeAkzeptierteZustaendigkeit() {
+    return initialeAkzeptierteZustaendigkeit;
+  }
+
+  public void setInitialeAkzeptierteZustaendigkeit(String initialeAkzeptierteZustaendigkeit) {
+    this.initialeAkzeptierteZustaendigkeit = initialeAkzeptierteZustaendigkeit;
   }
 
   public String getZustaendigkeitFrontend() {
@@ -760,5 +824,28 @@ public class Vorgang implements Serializable {
       return null;
     }
     return getAuftrag().getPrioritaet();
+  }
+
+  public String getLetzterBearbeiter() {
+    return letzterBearbeiter;
+  }
+
+  public void setLetzterBearbeiter(String letzterBearbeiter) {
+    this.letzterBearbeiter = letzterBearbeiter;
+  }
+
+  public String getD3CheckExistenceUrl() {
+    String ret = settingsService.getPropertyValue("d3.request.akte.check_existence");
+    ret = ret.replace("%vorgang_id%", getId().toString());
+    return ret;
+  }
+
+  public String getD3ShowUrl() {
+    String ret = settingsService.getPropertyValue("d3.request.akte.show");
+    ret = ret.replace("%vorgang_id%", getId().toString());
+    if (getKategorie().getD3() != null) {
+      ret = ret.replace("%d3_dcc%", getKategorie().getD3().getDcc());
+    }
+    return ret;
   }
 }

@@ -6,24 +6,27 @@ import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-
 import javax.imageio.ImageIO;
 import javax.imageio.plugins.jpeg.JPEGImageWriteParam;
-
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
 import de.fraunhofer.igd.klarschiff.service.settings.SettingsService;
 import com.sun.imageio.plugins.jpeg.JPEGImageWriter;
-
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
+import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.UUID;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import com.drew.imaging.ImageMetadataReader;
+import com.drew.metadata.Directory;
+import com.drew.metadata.Metadata;
+import com.drew.metadata.exif.ExifIFD0Directory;
+import de.fraunhofer.igd.klarschiff.vo.Foto;
 
 /**
  * Der Service dient zur Manipulation von Bildern, wie z.B. das Skalieren oder das Ausschwärzen von
@@ -59,23 +62,136 @@ public class ImageService {
   ScaleTyp scaleTyp = ScaleTyp.max;
 
   /**
-   * Setzt das Bild für einen Vorgang. Dabei wird das Bild in drei Größen abgelegt (Gross, Normal,
-   * Thumb). Die Bilder werden entsprechend skaliert.
+   * Setzt das Bild für einen Vorgang.
    *
    * @param image Bild als ByteArray
    * @param vorgang Vorgang in dem die Bilddaten gesetzt werden sollen
    * @throws Exception
    */
   public void setImageForVorgang(byte[] image, Vorgang vorgang) throws Exception {
-    vorgang.setFotoGross(generateFilenameAndWriteFile(
-      scaleImage(image, fotoGrossWidth, fotoGrossHeight, scaleTyp),
-      vorgang, vorgang.getFotoGross(), "gross"));
-    vorgang.setFotoNormal(generateFilenameAndWriteFile(
-      scaleImage(image, fotoNormalWidth, fotoNormalHeight, scaleTyp),
-      vorgang, vorgang.getFotoNormal(), "normal"));
-    vorgang.setFotoThumb(generateFilenameAndWriteFile(
-      scaleImage(image, fotoThumbWidth, fotoThumbHeight, scaleTyp),
-      vorgang, vorgang.getFotoThumb(), "thumb"));
+    setImageForVorgangOrFoto(image, vorgang, null);
+  }
+
+  /**
+   * Setzt das Bild für eine Foto.
+   *
+   * @param image Bild als ByteArray
+   * @param foto Foto in dem die Bilddaten gesetzt werden sollen
+   * @throws Exception
+   */
+  public void setImageForFoto(byte[] image, Foto foto) throws Exception {
+    setImageForVorgangOrFoto(image, null, foto);
+  }
+
+  /**
+   * Setzt das Bild für einen Vorgang oder ein Foto. Dabei wird das Bild in drei Größen abgelegt
+   * (Gross, Normal, Thumb). Die Bilder werden entsprechend skaliert.
+   *
+   * @param image Bild als ByteArray
+   * @param vorgang Vorgang in dem die Bilddaten gesetzt werden sollen
+   * @throws Exception
+   */
+  public void setImageForVorgangOrFoto(byte[] image, Vorgang vorgang, Foto foto) throws Exception {
+    InputStream inStream = new ByteArrayInputStream(image);
+    BufferedImage originalImage = ImageIO.read(inStream);
+    BufferedImage rotatedImage = null;
+
+    try {
+      File tempfile = File.createTempFile("imageService", null, new File(System.getProperty("java.io.tmpdir")));
+      FileUtils.writeByteArrayToFile(tempfile, image);
+
+      Metadata metadata = ImageMetadataReader.readMetadata(tempfile);
+      for (Directory directory : metadata.getDirectories()) {
+        if (directory.containsTag(ExifIFD0Directory.TAG_ORIENTATION)) {
+          switch (directory.getInt(ExifIFD0Directory.TAG_ORIENTATION)) {
+            case 1:
+              break;  // top left
+            case 2:
+              break;  // top right
+            case 3:
+              rotatedImage = rotateImage(originalImage, 180);
+              break;  // bottom right
+            case 4:
+              rotatedImage = rotateImage(originalImage, 180);
+              break;  // bottom left
+            case 5:
+              rotatedImage = rotateImage(originalImage, 90);
+              break;  // left top
+            case 6:
+              rotatedImage = rotateImage(originalImage, 90);
+              break;  // right top
+            case 7:
+              rotatedImage = rotateImage(originalImage, 270);
+              break;  // right bottom
+            case 8:
+              rotatedImage = rotateImage(originalImage, 270);
+              break;  // left bottom
+            default:
+              break;  // Unknown
+          }
+        }
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    if (rotatedImage != null) {
+      ByteArrayOutputStream baos = new ByteArrayOutputStream();
+      ImageIO.write(rotatedImage, "jpg", baos);
+      image = baos.toByteArray();
+    }
+    if (vorgang != null) {
+      vorgang.setFotoGross(generateFilenameAndWriteFileForVorgang(
+        scaleImage(image, fotoGrossWidth, fotoGrossHeight, scaleTyp),
+        vorgang, vorgang.getFotoGross(), "gross"));
+      vorgang.setFotoNormal(generateFilenameAndWriteFileForVorgang(
+        scaleImage(image, fotoNormalWidth, fotoNormalHeight, scaleTyp),
+        vorgang, vorgang.getFotoNormal(), "normal"));
+      vorgang.setFotoThumb(generateFilenameAndWriteFileForVorgang(
+        scaleImage(image, fotoThumbWidth, fotoThumbHeight, scaleTyp),
+        vorgang, vorgang.getFotoThumb(), "thumb"));
+    }
+    if (foto != null && foto.getVorgang() != null) {
+      foto.setFotoGross(generateFilenameAndWriteFileForFoto(
+        scaleImage(image, fotoGrossWidth, fotoGrossHeight, scaleTyp),
+        foto, foto.getFotoGross(), "gross"));
+      foto.setFotoNormal(generateFilenameAndWriteFileForFoto(
+        scaleImage(image, fotoNormalWidth, fotoNormalHeight, scaleTyp),
+        foto, foto.getFotoNormal(), "normal"));
+      foto.setFotoThumb(generateFilenameAndWriteFileForFoto(
+        scaleImage(image, fotoThumbWidth, fotoThumbHeight, scaleTyp),
+        foto, foto.getFotoThumb(), "thumb"));
+    }
+  }
+
+  /**
+   * Speichert das in <code>image</code> übergebene Bild im Dateisystem.
+   *
+   * @param image Bilddaten
+   * @param vorgang Vorgang
+   * @param prevFilename Dateiname, darf leer sein
+   * @param middlePart Zum Erzeugen eines neuen Dateinamens
+   * @return neuer oder übergebener Dateiname
+   * @throws IOException
+   */
+  public String generateFilenameAndWriteFileForVorgang(byte[] image, Vorgang vorgang,
+    String prevFilename, String middlePart) throws IOException {
+    return generateFilenameAndWriteFileWithPrefix(image, vorgang.getId().toString(), prevFilename, middlePart);
+  }
+
+  /**
+   * Speichert das in <code>image</code> übergebene Bild im Dateisystem.
+   *
+   * @param image Bilddaten
+   * @param foto Foto
+   * @param prevFilename Dateiname, darf leer sein
+   * @param middlePart Zum Erzeugen eines neuen Dateinamens
+   * @return neuer oder übergebener Dateiname
+   * @throws IOException
+   */
+  public String generateFilenameAndWriteFileForFoto(byte[] image, Foto foto,
+    String prevFilename, String middlePart) throws IOException {
+    return generateFilenameAndWriteFileWithPrefix(image,
+      foto.getVorgang().getId().toString() + "_" + foto.getId(), prevFilename, middlePart);
   }
 
   /**
@@ -85,18 +201,18 @@ public class ImageService {
    * generiert und zurück gegeben.
    *
    * @param image Bilddaten
-   * @param vorgang Vorgang
+   * @param prefix Prefix für Dateiname
    * @param prevFilename Dateiname, darf leer sein
    * @param middlePart Zum Erzeugen eines neuen Dateinamens
    * @return neuer oder übergebener Dateiname
    * @throws IOException
    */
-  public String generateFilenameAndWriteFile(byte[] image, Vorgang vorgang,
+  public String generateFilenameAndWriteFileWithPrefix(byte[] image, String prefix,
     String prevFilename, String middlePart) throws IOException {
     String filename;
     if (prevFilename == null) {
       filename = StringUtils.join(new String[]{"ks",
-        vorgang.getId().toString(), middlePart, UUID.randomUUID().toString()
+        prefix, middlePart, UUID.randomUUID().toString()
       }, "_") + ".jpg";
     } else {
       filename = prevFilename;
@@ -105,6 +221,14 @@ public class ImageService {
     return filename;
   }
 
+  /**
+   * Setzt das Bild für einen Vorgang. Dabei wird das Bild in drei Größen abgelegt (Gross, Normal,
+   * Thumb). Die Bilder werden entsprechend skaliert.
+   *
+   * @param vorgang Vorgang von dem die Bilddaten geholt werden sollen
+   * @return Bilddaten als BufferedImage
+   * @throws java.io.IOException
+   */
   public BufferedImage imageFromVorgang(Vorgang vorgang) throws IOException {
     InputStream inStream = Files.newInputStream(Paths.get(getPath(), vorgang.getFotoGross()));
     return ImageIO.read(inStream);
@@ -143,21 +267,36 @@ public class ImageService {
     }
   }
 
+  /**
+   * Rotiert das Bild um 90 Grad im Uhrzeigersinn und legt es im Dateisystem wieder ab.
+   *
+   * @param vorgang Vorgang, bei dem das Bild gedreht werden sollen
+   */
   public void rotateImageForVorgang(Vorgang vorgang) {
     try {
       BufferedImage oldImage = imageFromVorgang(vorgang);
-      BufferedImage newImage = new BufferedImage(oldImage.getHeight(), oldImage.getWidth(), oldImage.getType());
-
-      Graphics2D graphics2D = (Graphics2D) newImage.getGraphics();
-      graphics2D.rotate(Math.toRadians(90), newImage.getWidth() / 2, newImage.getHeight() / 2);
-      graphics2D.translate((newImage.getWidth() - oldImage.getWidth()) / 2, (newImage.getHeight() - oldImage.getHeight()) / 2);
-      graphics2D.drawImage(oldImage, 0, 0, oldImage.getWidth(), oldImage.getHeight(), null);
-
+      BufferedImage newImage = rotateImage(oldImage, 90);
       setImageForVorgang(imageToByteArray(newImage), vorgang);
-
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
+  }
+
+  /**
+   * Rotiert das Bild übergebene Bild um die Grad, die ebenfalls übergeben werden.
+   *
+   * @param oldImage Original-Bilddaten als BufferedImage
+   * @param degrees Grad um die das Bild gedreht werden soll
+   * @return Gedrehtes Bild als BufferedImage
+   */
+  private BufferedImage rotateImage(BufferedImage oldImage, double degrees) {
+    BufferedImage newImage = new BufferedImage(oldImage.getHeight(), oldImage.getWidth(), oldImage.getType());
+
+    Graphics2D graphics2D = (Graphics2D) newImage.getGraphics();
+    graphics2D.rotate(Math.toRadians(degrees), newImage.getWidth() / 2, newImage.getHeight() / 2);
+    graphics2D.translate((newImage.getWidth() - oldImage.getWidth()) / 2, (newImage.getHeight() - oldImage.getHeight()) / 2);
+    graphics2D.drawImage(oldImage, 0, 0, oldImage.getWidth(), oldImage.getHeight(), null);
+    return newImage;
   }
 
   /**

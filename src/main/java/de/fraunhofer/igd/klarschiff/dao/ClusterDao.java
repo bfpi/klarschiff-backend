@@ -62,6 +62,7 @@ public class ClusterDao {
 
   /**
    * Gibt eine Liste mit den in der DB gelisteten Servern zurück.
+   * @return Liste
    */
   @SuppressWarnings("unchecked")
   public List<Server> getAliveServerList() {

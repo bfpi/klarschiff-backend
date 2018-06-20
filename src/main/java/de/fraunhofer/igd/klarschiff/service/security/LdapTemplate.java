@@ -6,7 +6,6 @@ import javax.naming.NamingEnumeration;
 import javax.naming.PartialResultException;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.SearchControls;
-
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
@@ -43,11 +42,22 @@ public class LdapTemplate extends org.springframework.ldap.core.LdapTemplate {
     this.ignorePartialResultException = ignore;
   }
 
+  @Override
   public void setIgnoreNameNotFoundException(boolean ignore) {
     super.setIgnoreNameNotFoundException(ignore);
     this.ignoreNameNotFoundException = ignore;
   }
 
+  /**
+   * Erstellen Sie ein Such-Objekte und führt die Suche aus.
+   *
+   * @param base Search-Base
+   * @param filter Filter
+   * @param controls SearchControls
+   * @param handler CallbackHandler
+   * @param processor ContextProcessor
+   */
+  @Override
   public void search(final String base, final String filter, final SearchControls controls,
     NameClassPairCallbackHandler handler, DirContextProcessor processor) {
 
@@ -59,6 +69,14 @@ public class LdapTemplate extends org.springframework.ldap.core.LdapTemplate {
     search(se, handler, processor);
   }
 
+  /**
+   * Führt die Suche aus.
+   *
+   * @param se SearchExecutor
+   * @param handler CallbackHandler
+   * @param processor ContextProcessor
+   */
+  @Override
   public void search(SearchExecutor se, NameClassPairCallbackHandler handler, DirContextProcessor processor) {
     logger.debug("\n########################################################################## LdapTemplate.search() ###############################################################################################");
     DirContext ctx = null;
@@ -162,8 +180,14 @@ public class LdapTemplate extends org.springframework.ldap.core.LdapTemplate {
     }
   }
 
+  /**
+   * Close the supplied DirContext if it is not null. Swallow any exceptions, as this is only for
+   * cleanup.
+   *
+   * @param ctx the context to close.
+   * @param results the NamingEnumeration zo close.
+   */
   private void closeContextAndNamingEnumeration(DirContext ctx, NamingEnumeration results) {
-
     closeNamingEnumeration(results);
     closeContext(ctx);
   }
@@ -202,7 +226,6 @@ public class LdapTemplate extends org.springframework.ldap.core.LdapTemplate {
 }
 
 class LdapSearchExecutor implements SearchExecutor {
-
   public String base;
   public String filter;
   public SearchControls controls;

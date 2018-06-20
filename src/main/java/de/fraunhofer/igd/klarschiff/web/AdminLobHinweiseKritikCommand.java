@@ -1,9 +1,9 @@
 package de.fraunhofer.igd.klarschiff.web;
 
 /**
- * Command für Lob/Hinweise/Kritik im Adminbereich <code>page</code>: die aktuelle Seitenzahl<br/>
- * <code>size</code>: die konfigurierte Anzahl von Einträgen pro Seite<br/>
- * <code>order</code>: die Spalte nach der sortiert wird<br/>
+ * Command für Lob/Hinweise/Kritik im Adminbereich <code>page</code>: die aktuelle Seitenzahl<br>
+ * <code>size</code>: die konfigurierte Anzahl von Einträgen pro Seite<br>
+ * <code>order</code>: die Spalte nach der sortiert wird<br>
  * <code>orderDirection</code>: die Sortierreihenfolge (1:absteigend,default:aufsteigend)
  *
  * @author Sebastian Gutzeit (Hanse- und Universitätsstadt Rostock)

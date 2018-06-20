@@ -1,7 +1,7 @@
 package de.fraunhofer.igd.klarschiff.web;
 
 /**
- * Command für die Erstsichtung im Backend <br />
+ * Command für die Erstsichtung im Backend <br>
  * Beinhaltet lediglich ein Vorgangs-Objekt.
  *
  * @author Stefan Audersch (Fraunhofer IGD)

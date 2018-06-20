@@ -27,5 +27,6 @@
     	p:hoursToRemoveUnbestaetigtVorgang="${job.hoursToRemoveUnbestaetigtVorgang}"
     	p:hoursToRemoveUnbestaetigtUnterstuetzer="${job.hoursToRemoveUnbestaetigtUnterstuetzer}"
     	p:hoursToRemoveUnbestaetigtMissbrauchsmeldung="${job.hoursToRemoveUnbestaetigtMissbrauchsmeldung}"
+      p:hoursToRemoveUnbestaetigtFoto="${job.hoursToRemoveUnbestaetigtFoto}"
 	/>
 </beans>

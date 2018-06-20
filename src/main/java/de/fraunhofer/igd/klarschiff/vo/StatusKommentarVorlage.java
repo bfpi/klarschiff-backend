@@ -6,7 +6,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.validation.constraints.Size;
-
 import org.apache.commons.lang.StringUtils;
 
 /**
@@ -40,6 +39,8 @@ public class StatusKommentarVorlage {
   /**
    * Lesen des Titels der Vorlagen für den Statuskommentar. titel mit einer Länge über 20 Zeichen
    * werden abgeschnitten und mit "..." beendet.
+   *
+   * @return ggf. gekürzter Titel
    */
   @Transient
   public String getTitelAbbreviate() {

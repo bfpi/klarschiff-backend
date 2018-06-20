@@ -2,9 +2,7 @@ package de.fraunhofer.igd.klarschiff.service.cluster;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
-
 import org.springframework.scheduling.support.MethodInvokingRunnable;
-
 import de.fraunhofer.igd.klarschiff.dao.JobDao;
 import de.fraunhofer.igd.klarschiff.vo.JobRun;
 
@@ -24,6 +22,10 @@ public class MethodInvokingSyncInClusterRunnable extends MethodInvokingRunnable 
   /**
    * Führt einen Job aus und registiret diesen über die DB, wenn dieser noch nicht von einem anderen
    * Server im Cluster ausgeführt wurde.
+   *
+   * @return Job, der ausgeführt wurde
+   * @throws java.lang.reflect.InvocationTargetException
+   * @throws java.lang.IllegalAccessException
    */
   @Override
   public Object invoke() throws InvocationTargetException, IllegalAccessException {

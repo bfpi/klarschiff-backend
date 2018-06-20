@@ -1,6 +1,8 @@
 package de.fraunhofer.igd.klarschiff.service.security;
 
 import de.fraunhofer.igd.klarschiff.dao.AussendienstKoordinatorDao;
+import de.fraunhofer.igd.klarschiff.dao.BenutzerDao;
+import de.fraunhofer.igd.klarschiff.dao.FlaechenDao;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.PrintWriter;
@@ -14,9 +16,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-
 import javax.annotation.PostConstruct;
-
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecuteResultHandler;
 import org.apache.commons.exec.DefaultExecutor;
@@ -29,11 +29,12 @@ import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-
 import de.fraunhofer.igd.klarschiff.dao.VorgangDao;
 import de.fraunhofer.igd.klarschiff.util.SystemUtil;
+import de.fraunhofer.igd.klarschiff.vo.Benutzer;
 import de.fraunhofer.igd.klarschiff.vo.Kommentar;
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
+import java.util.HashMap;
 
 /**
  * Die Klasse stellt einen Service bereit über den die Daten zu Benutzer und deren Rollen bzw.
@@ -49,6 +50,10 @@ public class SecurityService {
 
   static final Logger logger = Logger.getLogger(SecurityService.class);
 
+  @Autowired
+  BenutzerDao benutzerDao;
+  @Autowired
+  FlaechenDao flaechenDao;
   @Autowired
   VorgangDao vorgangDao;
   @Autowired
@@ -86,8 +91,8 @@ public class SecurityService {
    */
   @PostConstruct
   public void init() {
-    userContextMapper = new ContextMapper<User>(User.class, userAttributesMapping, root);
-    roleContextMapper = new ContextMapper<Role>(Role.class, roleAttributesMapping, root);
+    userContextMapper = new ContextMapper<User>(User.class, userAttributesMapping, root, this);
+    roleContextMapper = new ContextMapper<Role>(Role.class, roleAttributesMapping, root, this);
     userLoginContextMapper = new UserLoginContextMapper(groupSearchFilter);
   }
 
@@ -117,7 +122,7 @@ public class SecurityService {
       return false;
     }
     List<Role> role = securityServiceLdap.getObjectListFromLdap(groupSearchBase, "(&(objectclass=" + groupObjectClass + ")(" + StringUtils.replace(groupSearchFilter, "{0}", user.getDn()) + ")(" + groupRoleAttribute + "=" + groupAdmin + "))", roleContextMapper);
-    return (role.size() == 0) ? false : true;
+    return !(role.isEmpty());
   }
 
   /**
@@ -146,7 +151,7 @@ public class SecurityService {
       return false;
     }
     List<Role> role = securityServiceLdap.getObjectListFromLdap(groupSearchBase, "(&(objectclass=" + groupObjectClass + ")(" + StringUtils.replace(groupSearchFilter, "{0}", user.getDn()) + ")(" + groupRoleAttribute + "=" + groupDispatcher + "))", roleContextMapper);
-    return (role.size() == 0) ? false : true;
+    return !(role.isEmpty());
   }
 
   /**
@@ -161,7 +166,7 @@ public class SecurityService {
       return false;
     }
     List<Role> role = securityServiceLdap.getObjectListFromLdap(groupSearchBase, "(&(objectclass=" + groupObjectClass + ")(" + StringUtils.replace(groupSearchFilter, "{0}", user.getDn()) + ")(" + groupRoleAttribute + "=" + groupKoordinator + "))", roleContextMapper);
-    return (role.size() == 0) ? false : true;
+    return !(role.isEmpty());
   }
 
   /**
@@ -188,7 +193,9 @@ public class SecurityService {
   public User getUser(String login) {
     try {
       List<User> users = securityServiceLdap.getObjectListFromLdap(userSearchBase, "(&(objectclass=" + userObjectClass + ")(" + StringUtils.replace(userSearchFilter, "{0}", login) + "))", userContextMapper);
-      return users.get(0);
+      User user = users.get(0);
+      user = getBenutzerDaten(user);
+      return user;
     } catch (Exception e) {
       return null;
     }
@@ -204,7 +211,9 @@ public class SecurityService {
   public User getUserByEmail(String email) {
     try {
       List<User> users = securityServiceLdap.getObjectListFromLdap(userSearchBase, "(&(objectclass=" + userObjectClass + ")(" + StringUtils.replace(userEmailFilter, "{0}", email) + "))", userContextMapper);
-      return users.get(0);
+      User user = users.get(0);
+      user = getBenutzerDaten(user);
+      return user;
     } catch (Exception e) {
       return null;
     }
@@ -219,7 +228,7 @@ public class SecurityService {
    */
   public List<Role> getGroupsByUserEmailAndGroupMatcher(String email, String groupMatchCondition) {
     User user = getUserByEmail(email);
-    if(user == null) {
+    if (user == null) {
       return new ArrayList<Role>();
     }
     return securityServiceLdap.getObjectListFromLdap(groupSearchBase, "(&(objectclass=" + groupObjectClass + ")(" + groupMatchCondition + ")(" + StringUtils.replace(groupSearchFilter, "{0}", user.getDn()) + "))", roleContextMapper);
@@ -258,32 +267,35 @@ public class SecurityService {
    * @return List der Benutzer und deren Benutzerdaten
    */
   public List<User> getAllUser() {
+    List<Role> roles = securityServiceLdap.getObjectListFromLdap(groupSearchBase, "(objectclass=" + groupObjectClass + ")", roleContextMapper);
+    List<User> users = securityServiceLdap.getObjectListFromLdap(userSearchBase, getGroupConditions(roles), userContextMapper);
+    return sortedUsers(users);
+  }
+
+  /**
+   * Ermittelt alle Benutzer, die für das Backend einen Zugang haben.
+   *
+   * @param roleName
+   * @return List der Benutzer und deren Benutzerdaten
+   */
+  public List<Role> getGroupsForRole(String roleName) {
+    List<Role> roles = securityServiceLdap.getObjectListFromLdap(groupSearchBase, "(&(objectclass=" + groupObjectClass + ")(" + groupRoleAttribute + "=" + roleName + "))", roleContextMapper);
+    return roles;
+  }
+
+  /**
+   * Ermittelt alle Benutzer, die für das Backend einen Zugang haben.
+   *
+   * @return List der Benutzer und deren Benutzerdaten
+   */
+  public List<User> getAllUserWithAreas() {
     //alle UserLogins in den Rollen ermitteln
-    List<List<String>> usersLoginList = securityServiceLdap.getObjectListFromLdap(groupSearchBase, "(objectclass=" + groupObjectClass + ")", userLoginContextMapper);
-    //Set
-    Set<String> userLoginSet = new HashSet<String>();
-    for (List<String> list : usersLoginList) {
-      userLoginSet.addAll(list);
-    }
-    //User ermitteln
-    List<User> userList = new ArrayList<User>();
-    for (Iterator<String> iter = userLoginSet.iterator(); iter.hasNext();) {
-      userList.add(getUser(iter.next()));
+    List<User> userList = getAllUser();
+    for (User user : userList) {
+      user = getBenutzerDaten(user);
     }
 
-    Collections.sort(userList, new Comparator<User>() {
-      public int compare(User u1, User u2) {
-        if (u1 == null) {
-          return -1;
-        } else if (u2 == null) {
-          return 1;
-        } else {
-          return u1.getId().compareTo(u2.getId());
-        }
-      }
-    });
-
-    return userList;
+    return sortedUsers(userList);
   }
 
   /**
@@ -293,8 +305,10 @@ public class SecurityService {
    * @return Liste von Benutzern
    */
   public List<User> getAllUserForGroup(String groupId) {
-    //alle UserLogins in den Gruppen ermitteln
-    return getUserFromLoginList(securityServiceLdap.getObjectListFromLdap(groupSearchBase, "(&(objectclass=" + groupObjectClass + ")(" + groupRoleAttribute + "=" + groupKoordinator + "))", userLoginContextMapper));
+    List<Role> roles = securityServiceLdap.getObjectListFromLdap(groupSearchBase, "(&(objectclass=" + groupObjectClass + ")(" + groupRoleAttribute + "=" + groupId + "))", roleContextMapper);
+    List<User> users = securityServiceLdap.getObjectListFromLdap(userSearchBase, getGroupConditions(roles), userContextMapper);
+    return sortedUsers(users);
+
   }
 
   /**
@@ -306,6 +320,18 @@ public class SecurityService {
   public List<User> getAllUserForRole(String roleId) {
     //alle UserLogins in den Rollen ermitteln
     return getUserFromLoginList(securityServiceLdap.getObjectListFromLdap(groupSearchBase, "(&(objectclass=" + groupObjectClass + ")(" + groupObjectId + "=" + roleId + "))", userLoginContextMapper));
+  }
+
+  /**
+   * Ermittelt alle Gruppen für eine gegebene Rolle.
+   *
+   * @param roleId Rolle, für die die Benutzer ermittelt werden sollen
+   * @param inclDispatcher Boolean
+   * @return Liste von Gruppen
+   */
+  public List<Role> getAllGroupsForRole(String roleId, boolean inclDispatcher) {
+    String dispatcherFilter = inclDispatcher ? "" : "(!(" + groupObjectId + "=" + groupDispatcher + "))";
+    return securityServiceLdap.getRoleListFromLdapAndReloadNames(groupSearchBase, "(&(objectclass=" + groupObjectClass + ")(" + groupRoleAttribute + "=" + roleId + ")" + dispatcherFilter + ")", userSearchFilter, userSearchBase, userContextMapper, roleContextMapper);
   }
 
   public List<User> getUserFromLoginList(List<List<String>> usersLoginList) {
@@ -576,7 +602,7 @@ public class SecurityService {
     if (user == null) {
       return false;
     }
-    List<Role> role = securityServiceLdap.getObjectListFromLdap(groupSearchBase, "(&(objectclass=" + groupObjectClass + ")(" + StringUtils.replace(groupSearchFilter, "{0}", user.getDn()) + ")(" + groupRoleAttribute + "=" + groupExtern + "))", roleContextMapper);
+    List<Role> role = securityServiceLdap.getObjectListFromLdap(groupSearchBase, "(&(objectclass=" + groupObjectClass + ")(" + groupRoleAttribute + "=" + groupExtern + ")(" + StringUtils.replace(groupSearchFilter, "{0}", user.getDn()) + "))", roleContextMapper);
     return (role.size() == 0) ? false : true;
   }
 
@@ -603,7 +629,7 @@ public class SecurityService {
     if (user == null) {
       return false;
     }
-    List<Role> role = securityServiceLdap.getObjectListFromLdap(groupSearchBase, "(&(objectclass=" + groupObjectClass + ")(" + StringUtils.replace(groupSearchFilter, "{0}", user.getDn()) + ")(" + groupRoleAttribute + "=" + groupIntern + "))", roleContextMapper);
+    List<Role> role = securityServiceLdap.getObjectListFromLdap(groupSearchBase, "(&(objectclass=" + groupObjectClass + ")(" + groupRoleAttribute + "=" + groupIntern + ")(" + StringUtils.replace(groupSearchFilter, "{0}", user.getDn()) + "))", roleContextMapper);
     return (role.size() == 0) ? false : true;
   }
 
@@ -760,6 +786,48 @@ public class SecurityService {
     return teams;
   }
 
+  private User getBenutzerDaten(User user) {
+    Benutzer benutzer = benutzerDao.findByBenutzername(user.getId());
+    if (benutzer == null) {
+      benutzer = new Benutzer();
+      benutzer.setBenutzername(user.getId());
+      benutzerDao.persist(benutzer);
+    }
+    user.setDbId(benutzer.getId());;
+    user.setFlaechen(benutzer.getFlaechen());
+    return user;
+  }
+
+  private String getGroupConditions(List<Role> roles) {
+    ArrayList conditionList = new ArrayList<String>();
+    for (Role role : roles) {
+      conditionList.add("(GROUPMEMBERSHIP=" + role.getDn() + ")");
+    }
+    return conditionList.size() > 1 ? "(|" + String.join("", conditionList) + ")" : conditionList.get(0).toString();
+  }
+
+  private List<User> sortedUsers(List<User> users) {
+    HashMap<String, User> hm = new HashMap<String, User>();
+    for (User user : users) {
+      if (!hm.containsKey(user.getId())) {
+        hm.put(user.getId(), user);
+      }
+    }
+    users = new ArrayList<User>(hm.values());
+    Collections.sort(users, new Comparator<User>() {
+      public int compare(User u1, User u2) {
+        if (u1 == null) {
+          return -1;
+        } else if (u2 == null) {
+          return 1;
+        } else {
+          return u1.getId().compareTo(u2.getId());
+        }
+      }
+    });
+    return users;
+  }
+
   /**
    * Ermittelt alle AussendienstTeams eines Koordinators
    *
@@ -880,6 +948,14 @@ public class SecurityService {
 
   public void setGroupAdmin(String groupAdmin) {
     this.groupAdmin = groupAdmin;
+  }
+
+  public String getGroupAussendienst() {
+    return groupAussendienst;
+  }
+
+  public void setGroupAussendienst(String groupAussendienst) {
+    this.groupAussendienst = groupAussendienst;
   }
 
   public String getGroupKoordinator() {

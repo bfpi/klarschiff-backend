@@ -14,6 +14,7 @@ public enum EnumVerlaufTyp implements EnumText {
   fotoFreigabeStatus,
   foto,
   fotowunsch,
+  fotoBestaetigung,
   typ,
   kategorie,
   status,
@@ -40,5 +41,9 @@ public enum EnumVerlaufTyp implements EnumText {
   @Override
   public String getText() {
     return name();
+  }
+
+  public static EnumVerlaufTyp[] relevantBeiLetztenAktivitaeten() {
+    return new EnumVerlaufTyp[]{foto, lobHinweiseKritik, kommentar, unterstuetzerBestaetigung, beschreibung, typ, kategorie, adresse, flurstueckseigentum};
   }
 }

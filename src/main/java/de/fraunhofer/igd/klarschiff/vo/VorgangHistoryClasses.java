@@ -3,7 +3,6 @@ package de.fraunhofer.igd.klarschiff.vo;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
-
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;

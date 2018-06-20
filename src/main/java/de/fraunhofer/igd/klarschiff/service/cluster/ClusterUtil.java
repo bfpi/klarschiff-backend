@@ -2,10 +2,8 @@ package de.fraunhofer.igd.klarschiff.service.cluster;
 
 import java.net.InetAddress;
 import java.util.Set;
-
 import javax.management.MBeanServerFactory;
 import javax.management.ObjectName;
-
 import org.apache.commons.lang.StringUtils;
 
 /**

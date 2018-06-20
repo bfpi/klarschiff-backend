@@ -1,12 +1,9 @@
 package de.fraunhofer.igd.klarschiff.web;
 
 import static de.fraunhofer.igd.klarschiff.web.Assert.assertMaxLength;
-
 import java.util.List;
-
 import javax.persistence.Transient;
 import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
@@ -22,13 +19,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
-
 import de.fraunhofer.igd.klarschiff.dao.KommentarDao;
 import de.fraunhofer.igd.klarschiff.dao.LobHinweiseKritikDao;
+import de.fraunhofer.igd.klarschiff.dao.VerlaufDao;
 import de.fraunhofer.igd.klarschiff.dao.VorgangDao;
 import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
 import de.fraunhofer.igd.klarschiff.service.settings.SettingsService;
 import de.fraunhofer.igd.klarschiff.tld.CustomFunctions;
+import de.fraunhofer.igd.klarschiff.vo.EnumVerlaufTyp;
 import de.fraunhofer.igd.klarschiff.vo.EnumVorgangStatus;
 import de.fraunhofer.igd.klarschiff.vo.Kommentar;
 import de.fraunhofer.igd.klarschiff.vo.StatusKommentarVorlage;
@@ -55,6 +53,9 @@ public class VorgangDelegiertBearbeitenController {
   KommentarDao kommentarDao;
 
   @Autowired
+  VerlaufDao verlaufDao;
+
+  @Autowired
   LobHinweiseKritikDao lobHinweiseKritikDao;
 
   @Autowired
@@ -71,6 +72,8 @@ public class VorgangDelegiertBearbeitenController {
   /**
    * Liefert (in Systemkonfiguration festgelegte) maximale Zeichenanzahl für Statuskommentare zu
    * Vorgängen
+   *
+   * @return maximale Zeichenanzahl
    */
   @ModelAttribute("vorgangStatusKommentarTextlaengeMaximal")
   public Integer vorgangStatusKommentarTextlaengeMaximal() {
@@ -79,6 +82,8 @@ public class VorgangDelegiertBearbeitenController {
 
   /**
    * Liefert alle möglichen Ausprägungen für Vorgangs-Status-Typen
+   *
+   * @return mögliche Status-Ausprägungen
    */
   @ModelAttribute("allVorgangStatus")
   public EnumVorgangStatus[] allVorgangStatus() {
@@ -89,6 +94,8 @@ public class VorgangDelegiertBearbeitenController {
 
   /**
    * Liefert alle Statuskommentarvorlagen
+   *
+   * @return Statuskommentarvorlagen
    */
   @ModelAttribute("allStatusKommentarVorlage")
   public List<StatusKommentarVorlage> allStatusKommentarVorlage() {
@@ -127,7 +134,7 @@ public class VorgangDelegiertBearbeitenController {
   }
 
   /**
-   * Die Methode verarbeitet den GET-Request auf der URL <code>/vorgang/{id}/bearbeiten</code><br/>
+   * Die Methode verarbeitet den GET-Request auf der URL <code>/vorgang/{id}/bearbeiten</code><br>
    * Seitenbeschreibung: Formular zur Vorgangsbearbeitung oder Hinweis auf noch nicht aktivierte
    * Bearbeitbarkeit falls Vorgang noch im Status <code>gemeldet</code>
    *
@@ -152,7 +159,7 @@ public class VorgangDelegiertBearbeitenController {
    * Ermittelt Vorgang mit übergebener ID aus Backend-Datenbank
    *
    * @param id Vorgangs-ID
-   * @return
+   * @return Vorgang
    */
   @Transient
   private Vorgang getVorgang(Long id) {
@@ -163,9 +170,9 @@ public class VorgangDelegiertBearbeitenController {
 
   /**
    * Die Methode verarbeitet den POST-Request auf der URL
-   * <code>/vorgang/delegiert/{id}/bearbeiten</code><br/>
+   * <code>/vorgang/delegiert/{id}/bearbeiten</code><br>
    * Funktionsbeschreibung:
-   * <br/>Die Wahl des <code>action</code> Parameters erlaubt folgende Funktionalitäten:
+   * <br>Die Wahl des <code>action</code> Parameters erlaubt folgende Funktionalitäten:
    * <ul>
    * <li><code>&Auml;nderungen &uuml;bernehmen</code></li>
    * <li><code>zur&uuml;ckweisen</code></li>
@@ -221,7 +228,7 @@ public class VorgangDelegiertBearbeitenController {
         return "vorgang/bearbeiten";
       }
 
-      if(vorg.getStatus() != newStatus) {
+      if (vorg.getStatus() != newStatus) {
         cmd.getVorgang().setStatusDatum(new Date());
       }
       vorgangDao.merge(cmd.getVorgang());
@@ -239,6 +246,9 @@ public class VorgangDelegiertBearbeitenController {
         kommentar.setAnzBearbeitet(0);
         kommentar.setDatum(new Date());
         kommentarDao.persist(kommentar);
+        Verlauf verlauf = verlaufDao.addVerlaufToVorgang(cmd.getVorgang(), EnumVerlaufTyp.kommentar,
+          "", cmd.getKommentar());
+        verlaufDao.merge(verlauf);
         cmd.setKommentar(null);
       }
     } else if (action.equals("kommentarSave")) {

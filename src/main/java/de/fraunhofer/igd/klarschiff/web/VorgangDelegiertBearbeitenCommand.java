@@ -1,8 +1,7 @@
 package de.fraunhofer.igd.klarschiff.web;
 
 /**
- * Command für das Vorgangbearbeiten im Backend durch Externe (Delegierte)
- * <br />
+ * Command für das Vorgangbearbeiten im Backend durch Externe (Delegierte)<br>
  * Beinhaltet ein Vorgangs-Objekt, Kommentar sowie die akutelle Seitenzahl und die Seitengröße.
  *
  * @author Stefan Audersch (Fraunhofer IGD)

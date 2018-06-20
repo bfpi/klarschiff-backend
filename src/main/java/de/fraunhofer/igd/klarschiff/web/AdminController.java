@@ -1,14 +1,12 @@
 package de.fraunhofer.igd.klarschiff.web;
 
 import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-
 import de.fraunhofer.igd.klarschiff.dao.ClusterDao;
 import de.fraunhofer.igd.klarschiff.dao.JobDao;
 import de.fraunhofer.igd.klarschiff.dao.RedaktionEmpfaengerDao;
@@ -54,7 +52,7 @@ public class AdminController {
   GeoService geoService;
 
   /**
-   * Die Methode verarbeitet den GET-Request auf der URL <code>/admin/uebersicht</code><br/>
+   * Die Methode verarbeitet den GET-Request auf der URL <code>/admin/uebersicht</code><br>
    * Seitenbeschreibung: Übersichtsseite zum Adminbereich
    *
    * @param model Model in dem ggf. Daten für die View abgelegt werden
@@ -67,7 +65,7 @@ public class AdminController {
   }
 
   /**
-   * Die Methode verarbeitet den GET-Request auf der URL <code>/admin/benutzer</code><br/>
+   * Die Methode verarbeitet den GET-Request auf der URL <code>/admin/benutzer</code><br>
    * Seitenbeschreibung: Übersicht über die Benutzer im Adminbereich
    *
    * @param model Model in dem ggf. Daten für die View abgelegt werden
@@ -81,7 +79,7 @@ public class AdminController {
   }
 
   /**
-   * Die Methode verarbeitet den GET-Request auf der URL <code>/admin/rollen</code><br/>
+   * Die Methode verarbeitet den GET-Request auf der URL <code>/admin/rollen</code><br>
    * Seitenbeschreibung: Übersicht über die Rollen im Adminbereich
    *
    * @param model Model in dem ggf. Daten für die View abgelegt werden
@@ -90,14 +88,14 @@ public class AdminController {
    */
   @RequestMapping(value = "/rollen", method = RequestMethod.GET)
   public String rollen(Model model, HttpServletRequest request) {
-    model.addAttribute("rollenIntern", securityService.getAllZustaendigkeiten(true));
-    model.addAttribute("rollenExtern", securityService.getAllDelegiertAn());
-    model.addAttribute("rollenAussendienst", securityService.getAllAussendienstTeams());
+    model.addAttribute("rollenIntern", securityService.getAllGroupsForRole(securityService.getGroupIntern(), true));
+    model.addAttribute("rollenExtern", securityService.getAllGroupsForRole(securityService.getGroupExtern(), false));
+    model.addAttribute("rollenAussendienst", securityService.getAllGroupsForRole(securityService.getGroupAussendienst(), false));
     return "admin/rollen";
   }
 
   /**
-   * Die Methode verarbeitet den GET-Request auf der URL <code>/admin/redaktion</code><br/>
+   * Die Methode verarbeitet den GET-Request auf der URL <code>/admin/redaktion</code><br>
    * Seitenbeschreibung: Übersicht über die Redaktion im Adminbereich
    *
    * @param model Model in dem ggf. Daten für die View abgelegt werden
@@ -112,7 +110,7 @@ public class AdminController {
   }
 
   /**
-   * Die Methode verarbeitet den GET-Request auf der URL <code>/admin/status</code><br/>
+   * Die Methode verarbeitet den GET-Request auf der URL <code>/admin/status</code><br>
    * Seitenbeschreibung: Übersicht zum Status des Servers im Adminbereich
    *
    * @param model Model in dem ggf. Daten für die View abgelegt werden
@@ -133,7 +131,7 @@ public class AdminController {
   }
 
   /**
-   * Die Methode verarbeitet den GET-Request auf der URL <code>/admin/test</code><br/>
+   * Die Methode verarbeitet den GET-Request auf der URL <code>/admin/test</code><br>
    * Seitenbeschreibung: Testfunktionen für die Jobs und die Schnittstelle für das Frontend im
    * Adminbereich
    *
@@ -147,7 +145,7 @@ public class AdminController {
   }
 
   /**
-   * Die Methode verarbeitet den POST-Request auf der URL <code>/admin/test</code><br/>
+   * Die Methode verarbeitet den POST-Request auf der URL <code>/admin/test</code><br>
    * Seitenbeschreibung: Ausführen von Jobs im Adminbereich
    *
    * @param model Model in dem ggf. Daten für die View abgelegt werden
@@ -165,6 +163,8 @@ public class AdminController {
       jobsService.removeUnbestaetigtUnterstuetzer();
     } else if (action.equalsIgnoreCase("removeUnbestaetigtMissbrauchsmeldung")) {
       jobsService.removeUnbestaetigtMissbrauchsmeldung();
+    } else if (action.equalsIgnoreCase("removeUnbestaetigtFoto")) {
+      jobsService.removeUnbestaetigtFoto();
     } else if (action.equalsIgnoreCase("reBuildClassifier")) {
       jobsService.reBuildClassifier();
     } else if (action.equalsIgnoreCase("informExtern")) {
@@ -177,52 +177,35 @@ public class AdminController {
       jobsService.informErstellerAbschluss();
     } else if (action.equalsIgnoreCase("informRedaktionEmpfaenger")) {
       jobsService.informRedaktionEmpfaenger();
+    } else if (action.equalsIgnoreCase("createRequestOverview")) {
+      jobsService.createRequestOverview();
     }
     return "admin/test";
   }
 
   /**
-   * Die Methode verarbeitet den GET-Request auf der URL <code>/admin/datenbank</code><br/>
-   * Seitenbeschreibung: Darstellung der Datenbankfunktionen im Adminbereich
+   * Die Methode verarbeitet den GET-Request auf der URL <code>/admin/zertifikate</code><br>
+   * Seitenbeschreibung: Zertifikate werden in die aktuelle Java-Runtime-Umgebung installiert
    *
    * @param model Model in dem ggf. Daten für die View abgelegt werden
    * @param request Request
    * @return View, die zum Rendern des Request verwendet wird
    */
-  @RequestMapping(value = "/datenbank", method = RequestMethod.GET)
-  public String datenbank(Model model, HttpServletRequest request) {
-    return "admin/datenbank";
-  }
-
-  /**
-   * Die Methode verarbeitet den POST-Request auf der URL <code>/admin/datenbank</code><br/>
-   * Seitenbeschreibung: Ausführung einer Datenbankfunktion im Adminbereich
-   *
-   * @param model Model in dem ggf. Daten für die View abgelegt werden
-   * @param action Id zum identifizieren der auszuführenden Datenbankfunktion
-   * @param request Request
-   * @return View, die zum Rendern des Request verwendet wird
-   */
-  @RequestMapping(value = "/datenbank", method = RequestMethod.POST)
-  public String datenbankPost(Model model, @RequestParam(value = "action", required = true) String action, HttpServletRequest request) {
-    if (action.equalsIgnoreCase("executeSqlScriptFrontendDb")) {
-      dbSyncService.executeSqlScriptFrontendDb(SqlScriptUtil.State.error);
-    } else if (action.equalsIgnoreCase("viewSqlScriptFrontendDb")) {
-      model.addAttribute("sqlScriptFrontendDb", dbSyncService.getSqlScriptFrontendDb());
-    } else if (action.equalsIgnoreCase("executeSqlScriptDbLink")) {
-      dbSyncService.executeSqlScriptDbLink(SqlScriptUtil.State.error);
-    } else if (action.equalsIgnoreCase("viewSqlScriptDbLink")) {
-      model.addAttribute("sqlScriptDbLink", dbSyncService.getSqlScriptDbLink());
-    }
-    return "admin/datenbank";
-  }
-
   @RequestMapping(value = "/zertifikate", method = RequestMethod.GET)
   public String zertifikate(Model model, HttpServletRequest request) {
 
     return "admin/zertifikate";
   }
 
+  /**
+   * Die Methode verarbeitet den POST-Request auf der URL <code>/admin/zertifikate</code><br>
+   * Seitenbeschreibung: Zertifikate werden in die aktuelle Java-Runtime-Umgebung installiert
+   *
+   * @param model Model in dem ggf. Daten für die View abgelegt werden
+   * @param storepass Passwort
+   * @param request Request
+   * @return View, die zum Rendern des Request verwendet wird
+   */
   @RequestMapping(value = "/zertifikate", method = RequestMethod.POST)
   public String zertifikatePost(Model model, @RequestParam(value = "storepass", required = false) String storepass, HttpServletRequest request) {
     model.addAttribute("result", securityService.installCertificates(storepass));

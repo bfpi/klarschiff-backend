@@ -3,8 +3,6 @@ package de.fraunhofer.igd.klarschiff.vo;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.Column;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -22,11 +20,10 @@ import javax.persistence.TableGenerator;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
-
 import de.fraunhofer.igd.klarschiff.context.AppContext;
+import javax.persistence.OneToOne;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
@@ -92,9 +89,15 @@ public class Kategorie implements Serializable {
   private boolean geloescht = false;
 
   /**
+   * D3-Akte
+   */
+  @OneToOne
+  private D3 d3;
+
+  /**
    * Gibt den Namen der Kategorie als "escaped HTML" zurück.
    *
-   * @return
+   * @return escaped HTML
    */
   @Transient
   public String getNameEscapeHtml() {
@@ -167,6 +170,22 @@ public class Kategorie implements Serializable {
 
   public void setTyp(EnumVorgangTyp typ) {
     this.typ = typ;
+  }
+
+  public boolean isGeloescht() {
+    return geloescht;
+  }
+
+  public void setGeloescht(boolean geloescht) {
+    this.geloescht = geloescht;
+  }
+
+  public D3 getD3() {
+    return d3;
+  }
+
+  public void setD3(D3 d3) {
+    this.d3 = d3;
   }
 
   public List<String> getInitialZustaendigkeiten() {

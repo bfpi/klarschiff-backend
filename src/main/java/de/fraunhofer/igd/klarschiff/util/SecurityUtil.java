@@ -1,14 +1,14 @@
 package de.fraunhofer.igd.klarschiff.util;
 
-import java.net.URLDecoder;
-import java.net.URLEncoder;
-
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
-
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
 
+/**
+ * Die Klasse stellt Funktionen zum Ver- und Entschlüsseln bereit.
+ *
+ * @author Stefan Audersch (Fraunhofer IGD)
+ */
 public class SecurityUtil {
 
   static Cipher cipherEncrypt;
@@ -27,6 +27,12 @@ public class SecurityUtil {
     }
   }
 
+  /**
+   * Einfaches Verschlüsseln von Text.
+   *
+   * @param to_encrypt Text der verschlüsselt werden soll.
+   * @return Verschlüsselter Text
+   */
   public static String simpleEncrypt(String to_encrypt) {
     try {
       byte[] bytea;
@@ -43,6 +49,12 @@ public class SecurityUtil {
     }
   }
 
+  /**
+   * Einfaches Verschlüsseln von Bytes.
+   *
+   * @param bytes Bytes die verschlüsselt werden sollen.
+   * @return Verschlüsselte Bytes als Text
+   */
   private static String encode(byte[] bytes) {
     StringBuilder str = new StringBuilder();
     for (byte b : bytes) {
@@ -56,6 +68,12 @@ public class SecurityUtil {
     return str.toString();
   }
 
+  /**
+   * Einfaches Entschlüsseln in Text.
+   *
+   * @param to_decrypt Verschlüsselter Text.
+   * @return Entschlüsselter Text
+   */
   public static String simpleDecrypt(String to_decrypt) {
     try {
       byte[] bytea;
@@ -69,6 +87,12 @@ public class SecurityUtil {
     }
   }
 
+  /**
+   * Einfaches Entschlüsseln in Bytes.
+   *
+   * @param str Verschlüsselter Text.
+   * @return Entschlüsselte Bytes
+   */
   private static byte[] decode(String str) {
     byte[] bytes = new byte[str.length() / 4];
     for (int i = 0; i < str.length() / 4; i++) {

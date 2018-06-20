@@ -6,9 +6,7 @@ import java.math.BigInteger;
 import java.security.*;
 import java.util.Date;
 import java.util.List;
-
 import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 import de.fraunhofer.igd.klarschiff.dao.KategorieDao;
 import de.fraunhofer.igd.klarschiff.dao.KommentarDao;
 import de.fraunhofer.igd.klarschiff.dao.RedaktionEmpfaengerDao;
@@ -42,6 +39,7 @@ import de.fraunhofer.igd.klarschiff.vo.EnumVerlaufTyp;
 import de.fraunhofer.igd.klarschiff.vo.EnumVorgangStatus;
 import de.fraunhofer.igd.klarschiff.vo.EnumVorgangTyp;
 import de.fraunhofer.igd.klarschiff.vo.EnumZustaendigkeitStatus;
+import de.fraunhofer.igd.klarschiff.vo.Foto;
 import de.fraunhofer.igd.klarschiff.vo.GeoRss;
 import de.fraunhofer.igd.klarschiff.vo.Kategorie;
 import de.fraunhofer.igd.klarschiff.vo.Kommentar;
@@ -50,7 +48,6 @@ import de.fraunhofer.igd.klarschiff.vo.Missbrauchsmeldung;
 import de.fraunhofer.igd.klarschiff.vo.RedaktionEmpfaenger;
 import de.fraunhofer.igd.klarschiff.vo.StadtGrenze;
 import de.fraunhofer.igd.klarschiff.vo.StadtteilGrenze;
-import de.fraunhofer.igd.klarschiff.vo.Trashmail;
 import de.fraunhofer.igd.klarschiff.vo.Unterstuetzer;
 import de.fraunhofer.igd.klarschiff.vo.Verlauf;
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
@@ -59,9 +56,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 import java.util.logging.Level;
 import org.codehaus.jackson.map.ObjectMapper;
 
@@ -96,10 +91,10 @@ public class BackendController {
 
   @Autowired
   VerlaufDao verlaufDao;
-  
+
   @Autowired
   GeoRssDao geoRssDao;
-  
+
   @Autowired
   TrashmailDao trashmailDao;
 
@@ -121,7 +116,7 @@ public class BackendController {
   ObjectMapper mapper = new ObjectMapper();
 
   /**
-   * Die Methode verarbeitet den POST-Request auf der URL <code>/service/vorgang</code><br/>
+   * Die Methode verarbeitet den POST-Request auf der URL <code>/service/vorgang</code><br>
    * Beschreibung: erstellt einen neuen Vorgang
    *
    * @param authCode Code zur Identifizierung des Clients
@@ -232,7 +227,7 @@ public class BackendController {
 
   /**
    * Die Methode verarbeitet den POST-Request auf der URL
-   * <code>/service/vorgangAktualisieren</code><br/>
+   * <code>/service/vorgangAktualisieren</code><br>
    * Beschreibung: aktualisiert einen bestehenden Vorgang
    *
    * @param id Vorgang-ID
@@ -369,6 +364,23 @@ public class BackendController {
     }
   }
 
+  /**
+   * Die Methode verarbeitet den POST-Request auf der URL
+   * <code>/service/vorgangAktualisieren</code><br>
+   * Beschreibung: aktualisiert einen bestehenden Vorgang
+   *
+   * @param vorgang Vorgang
+   * @param autorEmail E-Mail-Adresse des Erstellers
+   * @param bild Foto base64 kodiert
+   * @param beschreibung Beschreibung
+   * @param fotowunsch Fotowunsch
+   * @param kategorie Kategorie
+   * @param oviWkt Position als WKT
+   * @param verlaufErgaenzen VerlaufErgaenzen
+   * @param positionWGS84
+   * @param typ Vorgangstyp
+   * @throws BackendControllerException
+   */
   private void vorgangParameterUebernehmen(
     String autorEmail,
     Vorgang vorgang,
@@ -475,7 +487,7 @@ public class BackendController {
   private static boolean isEmail(String email) {
     return Assert.matches(email, "^\\S+@\\S+\\.[A-Za-z]{2,6}$");
   }
-  
+
   private boolean isTrashMail(String email) {
     String pattern = email.substring(email.lastIndexOf("@") + 1).toLowerCase();
     return trashmailDao.findTrashmail(pattern) != null;
@@ -494,7 +506,7 @@ public class BackendController {
 
   /**
    * Die Methode verarbeitet den POST-Request auf der URL
-   * <code>/service/vorgangBestaetigung</code><br/>
+   * <code>/service/vorgangBestaetigung</code><br>
    * Beschreibung: Vorgang bestätigen
    *
    * @param hash Hash zum Bestätigen
@@ -541,7 +553,7 @@ public class BackendController {
   }
 
   /**
-   * Die Methode verarbeitet den POST-Request auf der URL <code>/service/unterstuetzer</code><br/>
+   * Die Methode verarbeitet den POST-Request auf der URL <code>/service/unterstuetzer</code><br>
    * Beschreibung: erstellt eine Unterstützung für ein Vorgang
    *
    * @param vorgang Vorgang
@@ -619,7 +631,7 @@ public class BackendController {
 
   /**
    * Die Methode verarbeitet den POST-Request auf der URL
-   * <code>/service/unterstuetzerBestaetigung</code><br/>
+   * <code>/service/unterstuetzerBestaetigung</code><br>
    * Beschreibung: Unterstützung bestätigen
    *
    * @param hash Hash zum Bestätigen
@@ -656,7 +668,7 @@ public class BackendController {
 
   /**
    * Die Methode verarbeitet den POST-Request auf der URL
-   * <code>/service/missbrauchsmeldung</code><br/>
+   * <code>/service/missbrauchsmeldung</code><br>
    * Beschreibung: erstellt eine Missbrauchsmeldung für einen Vorgang
    *
    * @param vorgang Vorgang
@@ -735,7 +747,7 @@ public class BackendController {
   }
 
   /**
-   * Die Methode verarbeitet den GET-Request auf der URL <code>/service/kommentar</code><br/>
+   * Die Methode verarbeitet den GET-Request auf der URL <code>/service/kommentar</code><br>
    * Beschreibung: holt interne Kommentare zu einem Vorgang
    *
    * @param vorgang_id Vorgang-ID
@@ -760,7 +772,7 @@ public class BackendController {
   }
 
   /**
-   * Die Methode verarbeitet den GET-Request auf der URL <code>/service/kommentarAnlegen</code><br/>
+   * Die Methode verarbeitet den GET-Request auf der URL <code>/service/kommentarAnlegen</code><br>
    * Beschreibung: legt neuen internen Kommentare zu einem Vorgang an
    *
    * @param vorgang_id Vorgang-ID
@@ -804,7 +816,7 @@ public class BackendController {
       if (isTrashMail(autorEmail)) {
         throw new BackendControllerException(10, "[autorEmail] nicht erlaubt", "Die Domain der angegebenen E-Mail-Adresse ist nicht zulässig.");
       }
-      
+
       if (StringUtils.isBlank(text)) {
         throw new BackendControllerException(6, "[text] fehlt", "Es fehlt ein Text für den Kommentar.");
       }
@@ -830,8 +842,7 @@ public class BackendController {
   }
 
   /**
-   * Die Methode verarbeitet den GET-Request auf der URL
-   * <code>/service/lobHinweiseKritik</code><br/>
+   * Die Methode verarbeitet den GET-Request auf der URL <code>/service/lobHinweiseKritik</code><br>
    * Beschreibung: holt Lob, Hinweise oder Kritik zu einem Vorgang
    *
    * @param vorgang_id Vorgang-ID
@@ -857,7 +868,7 @@ public class BackendController {
 
   /**
    * Die Methode verarbeitet den POST-Request auf der URL
-   * <code>/service/lobHinweiseKritik</code><br/>
+   * <code>/service/lobHinweiseKritik</code><br>
    * Beschreibung: erstellt Lob, Hinweise oder Kritik zu einem Vorgang
    *
    * @param vorgang Vorgang
@@ -899,10 +910,10 @@ public class BackendController {
         throw new BackendControllerException(10, "[autorEmail] nicht erlaubt", "Die Domain der angegebenen E-Mail-Adresse ist nicht zulässig.");
       }
       lobHinweiseKritik.setAutorEmail(email);
-      
+
       // aktuelle Zuständigkeit des Vorgangs bestimmen und entsprechende Variable belegen
       String zustaendigkeit = vorg.getZustaendigkeit();
-      
+
       // Variable für E-Mail-Adresse des Empfängers definieren
       String empfaengerEmail = new String();
 
@@ -918,79 +929,76 @@ public class BackendController {
         // falls ein Empfänger gefunden wurde
         if (empfaenger != null && !empfaenger.trim().isEmpty()) {
 
-            // E-Mail-Adresse des Empfängers ermitteln und entsprechende Variable belegen
-            empfaengerEmail = securityService.getUserEmailForRoleByName(empfaenger, zustaendigkeit);
+          // E-Mail-Adresse des Empfängers ermitteln und entsprechende Variable belegen
+          empfaengerEmail = securityService.getUserEmailForRoleByName(empfaenger, zustaendigkeit);
 
-            // Empfänger-E-Mail-Adresse für Lob, Hinweise oder Kritik auf E-Mail-Adresse des Empfängers setzen
-            lobHinweiseKritik.setEmpfaengerEmail(empfaengerEmail);
+          // Empfänger-E-Mail-Adresse für Lob, Hinweise oder Kritik auf E-Mail-Adresse des Empfängers setzen
+          lobHinweiseKritik.setEmpfaengerEmail(empfaengerEmail);
 
-            // Lob, Hinweise oder Kritik als E-Mail versenden
-            mailService.sendLobHinweiseKritikMail(vorg, email, empfaengerEmail, freitext.trim());
-          
-        }
-        // ansonsten
+          // Lob, Hinweise oder Kritik als E-Mail versenden
+          mailService.sendLobHinweiseKritikMail(vorg, email, empfaengerEmail, freitext.trim());
+
+        } // ansonsten
         else {
-            
-            // alle Empfänger redaktioneller E-Mails der aktuellen Zuständigkeit bestimmen, die zugleich auch Lob, Hinweise oder Kritik als E-Mail empfangen sollen
-            List<RedaktionEmpfaenger> allEmpfaengerLobHinweiseKritikForZustaendigkeit = redaktionEmpfaengerDao.getEmpfaengerListLobHinweiseKritikForZustaendigkeit(vorg.getZustaendigkeit());
 
-            // falls Empfänger gefunden wurden
-            if (allEmpfaengerLobHinweiseKritikForZustaendigkeit.size() > 0 && !allEmpfaengerLobHinweiseKritikForZustaendigkeit.isEmpty()) {
-            
-                // Zählvariable definieren
-                Short zaehler = 0;
+          // alle Empfänger redaktioneller E-Mails der aktuellen Zuständigkeit bestimmen, die zugleich auch Lob, Hinweise oder Kritik als E-Mail empfangen sollen
+          List<RedaktionEmpfaenger> allEmpfaengerLobHinweiseKritikForZustaendigkeit = redaktionEmpfaengerDao.getEmpfaengerListLobHinweiseKritikForZustaendigkeit(vorg.getZustaendigkeit());
 
-                // Empfänger durchlaufen
-                for (RedaktionEmpfaenger empfaengerLobHinweiseKritikForZustaendigkeit : allEmpfaengerLobHinweiseKritikForZustaendigkeit) {
+          // falls Empfänger gefunden wurden
+          if (allEmpfaengerLobHinweiseKritikForZustaendigkeit.size() > 0 && !allEmpfaengerLobHinweiseKritikForZustaendigkeit.isEmpty()) {
 
-                    // falls es nur ein Empfänger ist
-                    if (allEmpfaengerLobHinweiseKritikForZustaendigkeit.size() == 1) {
+            // Zählvariable definieren
+            Short zaehler = 0;
 
-                        // E-Mail-Adresse des Empfängers ermitteln und entsprechende Variable belegen
-                        empfaengerEmail = empfaengerLobHinweiseKritikForZustaendigkeit.getEmail();
+            // Empfänger durchlaufen
+            for (RedaktionEmpfaenger empfaengerLobHinweiseKritikForZustaendigkeit : allEmpfaengerLobHinweiseKritikForZustaendigkeit) {
 
-                        // Lob, Hinweise oder Kritik als E-Mail versenden
-                        mailService.sendLobHinweiseKritikMail(vorg, email, empfaengerEmail, freitext.trim());
-                        
-                        // aus Empfänger-Durchlauf aussteigen
-                        break;
-                        
-                    }
-                    // ansonsten
-                    else {
-                        
-                        // E-Mail-Adresse des aktuellen Empfängers ermitteln und entsprechende Variable belegen
-                        String tempEmpfaengerEmail = empfaengerLobHinweiseKritikForZustaendigkeit.getEmail();
-                        
-                        // beim ersten Empfänger
-                        if (zaehler == 0) {
-                            
-                            // entsprechende Variable mit der aktuellen E-Mail-Adresse belegen
-                            empfaengerEmail = tempEmpfaengerEmail;
-                            
-                        }
-                        // ansonsten
-                        else {
-                            
-                            // entsprechende Variable als kommaseparierten String mit der aktuellen E-Mail-Adresse fortführen
-                            empfaengerEmail = empfaengerEmail + ", " + tempEmpfaengerEmail;
-                            
-                        }
+              // falls es nur ein Empfänger ist
+              if (allEmpfaengerLobHinweiseKritikForZustaendigkeit.size() == 1) {
 
-                        // Lob, Hinweise oder Kritik als E-Mail an aktuelle E-Mail-Adresse versenden
-                        mailService.sendLobHinweiseKritikMail(vorg, email, tempEmpfaengerEmail, freitext.trim());
-                        
-                    }
-                    
-                    // Zählvariable erhöhen
-                    zaehler++;
+                // E-Mail-Adresse des Empfängers ermitteln und entsprechende Variable belegen
+                empfaengerEmail = empfaengerLobHinweiseKritikForZustaendigkeit.getEmail();
+
+                // Lob, Hinweise oder Kritik als E-Mail versenden
+                mailService.sendLobHinweiseKritikMail(vorg, email, empfaengerEmail, freitext.trim());
+
+                // aus Empfänger-Durchlauf aussteigen
+                break;
+
+              } // ansonsten
+              else {
+
+                // E-Mail-Adresse des aktuellen Empfängers ermitteln und entsprechende Variable belegen
+                String tempEmpfaengerEmail = empfaengerLobHinweiseKritikForZustaendigkeit.getEmail();
+
+                // beim ersten Empfänger
+                if (zaehler == 0) {
+
+                  // entsprechende Variable mit der aktuellen E-Mail-Adresse belegen
+                  empfaengerEmail = tempEmpfaengerEmail;
+
+                } // ansonsten
+                else {
+
+                  // entsprechende Variable als kommaseparierten String mit der aktuellen E-Mail-Adresse fortführen
+                  empfaengerEmail = empfaengerEmail + ", " + tempEmpfaengerEmail;
+
                 }
 
-                // Empfänger-E-Mail-Adresse für Lob, Hinweise oder Kritik auf E-Mail-Adresse(n) des/der Empfänger(s) setzen
-                lobHinweiseKritik.setEmpfaengerEmail(empfaengerEmail);
-              
+                // Lob, Hinweise oder Kritik als E-Mail an aktuelle E-Mail-Adresse versenden
+                mailService.sendLobHinweiseKritikMail(vorg, email, tempEmpfaengerEmail, freitext.trim());
+
+              }
+
+              // Zählvariable erhöhen
+              zaehler++;
             }
-            
+
+            // Empfänger-E-Mail-Adresse für Lob, Hinweise oder Kritik auf E-Mail-Adresse(n) des/der Empfänger(s) setzen
+            lobHinweiseKritik.setEmpfaengerEmail(empfaengerEmail);
+
+          }
+
         }
       }
 
@@ -1014,7 +1022,7 @@ public class BackendController {
 
   /**
    * Die Methode verarbeitet den POST-Request auf der URL
-   * <code>/service/missbrauchsmeldungBestaetigung</code><br/>
+   * <code>/service/missbrauchsmeldungBestaetigung</code><br>
    * Beschreibung: Vorgang bestätigen
    *
    * @param hash Hash zum Bestätigen
@@ -1050,7 +1058,7 @@ public class BackendController {
   }
 
   /**
-   * Die Methode verarbeitet den POST-Request auf der URL <code>/service/vorgangLoeschen</code><br/>
+   * Die Methode verarbeitet den POST-Request auf der URL <code>/service/vorgangLoeschen</code><br>
    * Beschreibung: Vorgang löschen
    *
    * @param hash Hash zum Löschen
@@ -1094,7 +1102,7 @@ public class BackendController {
    * @param ideen Ideen überwachen?
    * @param ideenHauptkategorien Liste der überwachten Hauptkategorien bei den Ideen
    * @param ideenUnterkategorien Liste der überwachten Unterkategorien bei den Ideen
-   * @param response
+   * @param response Response in das das Ergebnis direkt geschrieben wird
    */
   @RequestMapping(value = "/geoRss", method = RequestMethod.POST)
   @ResponseBody
@@ -1148,7 +1156,7 @@ public class BackendController {
       MessageDigest md = MessageDigest.getInstance("MD5");
       byte[] idDigest = md.digest(bytesOfId);
       result.put("rss_id", new BigInteger(1, idDigest).toString(16));
-      
+
       sendOk(response, mapper.writeValueAsString(result));
     } catch (Exception e) {
       logger.warn(e);
@@ -1157,9 +1165,9 @@ public class BackendController {
   }
 
   /**
-   * Die Methode verarbeitet den GET-Request auf der URL <code>/auftraege</code><br/>
+   * Die Methode verarbeitet den GET-Request auf der URL <code>/auftraege</code><br>
    *
-   * @param response
+   * @param response Response in das das Ergebnis direkt geschrieben wird
    * @throws java.io.IOException
    */
   @RequestMapping(value = "/auftraege", method = RequestMethod.POST)
@@ -1177,10 +1185,10 @@ public class BackendController {
   }
 
   /**
-   * Die Methode verarbeitet den GET-Request auf der URL <code>/auftraegeEinerGruppe</code><br/>
+   * Die Methode verarbeitet den GET-Request auf der URL <code>/auftraegeEinerGruppe</code><br>
    *
-   * @param team
-   * @param response
+   * @param team Außendienst-Team
+   * @param response Response in das das Ergebnis direkt geschrieben wird
    * @throws java.io.IOException
    */
   @RequestMapping(value = "/auftraegeEinerGruppe", method = RequestMethod.POST)
@@ -1199,11 +1207,11 @@ public class BackendController {
   }
 
   /**
-   * Die Methode verarbeitet den GET-Request auf der URL <code>/auftraegeEinerGruppeAm</code><br/>
+   * Die Methode verarbeitet den GET-Request auf der URL <code>/auftraegeEinerGruppeAm</code><br>
    *
-   * @param team
-   * @param datum
-   * @param response
+   * @param team Außendienst-Team
+   * @param datum Datum
+   * @param response Response in das das Ergebnis direkt geschrieben wird
    * @throws java.io.IOException
    */
   @RequestMapping(value = "/auftraegeEinerGruppeAm", method = RequestMethod.POST)
@@ -1225,10 +1233,10 @@ public class BackendController {
   }
 
   /**
-   * Die Methode verarbeitet den GET-Request auf der URL <code>/auftrag</code><br/>
+   * Die Methode verarbeitet den GET-Request auf der URL <code>/auftrag</code><br>
    *
-   * @param id
-   * @param response
+   * @param id ID des Auftrags
+   * @param response Response in das das Ergebnis direkt geschrieben wird
    * @throws java.io.IOException
    */
   @RequestMapping(value = "/auftrag", method = RequestMethod.POST)
@@ -1247,11 +1255,11 @@ public class BackendController {
   }
 
   /**
-   * Die Methode verarbeitet den GET-Request auf der URL <code>/setzeStatus</code><br/>
+   * Die Methode verarbeitet den GET-Request auf der URL <code>/setzeStatus</code><br>
    *
-   * @param id
-   * @param status
-   * @param response
+   * @param id ID des Auftrags
+   * @param status Status
+   * @param response Response in das das Ergebnis direkt geschrieben wird
    * @throws java.io.IOException
    */
   @RequestMapping(value = "/setzeStatus", method = RequestMethod.POST)
@@ -1279,9 +1287,9 @@ public class BackendController {
   }
 
   /**
-   * Die Methode verarbeitet den GET-Request auf der URL <code>/kategorien</code><br/>
+   * Die Methode verarbeitet den GET-Request auf der URL <code>/kategorien</code><br>
    *
-   * @param response
+   * @param response Response in das das Ergebnis direkt geschrieben wird
    * @throws java.io.IOException
    */
   @RequestMapping(value = "/kategorien", method = RequestMethod.POST)
@@ -1300,10 +1308,10 @@ public class BackendController {
   }
 
   /**
-   * Die Methode verarbeitet den GET-Request auf der URL <code>/kategorie</code><br/>
+   * Die Methode verarbeitet den GET-Request auf der URL <code>/kategorie</code><br>
    *
-   * @param id
-   * @param response
+   * @param id ID der Kategorie
+   * @param response Response in das das Ergebnis direkt geschrieben wird
    * @throws java.io.IOException
    */
   @RequestMapping(value = "/kategorie", method = RequestMethod.POST)
@@ -1322,15 +1330,17 @@ public class BackendController {
   }
 
   /**
-   * Die Methode verarbeitet den GET-Request auf der URL <code>/unterkategorien</code><br/>
+   * Die Methode verarbeitet den GET-Request auf der URL <code>/unterkategorien</code><br>
    *
-   * @param response
+   * @param withKategorien
+   * @param authCode Code zur Identifizierung des Clients
+   * @param response Response in das das Ergebnis direkt geschrieben wird
    * @throws java.io.IOException
    */
   @RequestMapping(value = "/unterkategorien", method = RequestMethod.GET)
   @ResponseBody
   public void unterkategorien(
-    @RequestParam(value="extensions", required = false) boolean withKategorien,
+    @RequestParam(value = "extensions", required = false) boolean withKategorien,
     @RequestParam(value = "authCode", required = false) String authCode,
     HttpServletResponse response) throws IOException {
 
@@ -1354,7 +1364,7 @@ public class BackendController {
   }
 
   /**
-   * Die Methode verarbeitet den GET-Request auf der URL <code>/position</code><br/>
+   * Die Methode verarbeitet den GET-Request auf der URL <code>/position</code><br>
    *
    * @param positionWGS84
    * @return Wenn die Postion innerhalb des gültigen Bereichs liegt <code>HttpStatus.OK</code> sonst
@@ -1380,28 +1390,29 @@ public class BackendController {
   }
 
   /**
-   * Die Methode verarbeitet den GET-Request auf der URL <code>/vorgaenge</code><br/>
+   * Die Methode verarbeitet den GET-Request auf der URL <code>/vorgaenge</code><br>
    *
-   * @param id
-   * @param ids
-   * @param category_id
-   * @param status
-   * @param date_from
-   * @param date_to
-   * @param updated_from
-   * @param updated_to
-   * @param agency_responsible
-   * @param negation
-   * @param restriction_area
-   * @param just_times
-   * @param authCode
-   * @param response
-   * @param typ
-   * @param max_requests
-   * @param with_foto
-   * @param also_archived
-   * @param just_count
-   * @param geoRssHash
+   * @param id ID des Vorgangs
+   * @param ids Liste von IDs der Vorgänge
+   * @param category_id Kategorie-ID
+   * @param status Status
+   * @param date_from Erstellt nach
+   * @param date_to Erstellt vor
+   * @param updated_from Aktualisiert nach
+   * @param updated_to Aktualisiert vor
+   * @param agency_responsible Auftrags-Team
+   * @param negation Negiert
+   * @param restriction_area Suchbereich
+   * @param just_times Nur die Zeiten der letzten Änderung ausgeben (für Caching im CitySDK)
+   * @param authCode Code zur Identifizierung des Clients
+   * @param response Response in das das Ergebnis direkt geschrieben wird
+   * @param typ Vorgangstyp
+   * @param max_requests Maximale Anzahl von Vorgängen
+   * @param with_foto Nur vorgänge mit freigegebenem Foto
+   * @param also_archived Auch Archivierte Vorgände ausgeben
+   * @param just_count Nur die Anzahl der Vorgänge zurückgeben
+   * @param area_code Stadtteilgrenze
+   * @param geoRssHash GeoRSS-Hash
    * @throws java.io.IOException
    */
   @RequestMapping(value = "/vorgaenge", method = RequestMethod.GET)
@@ -1426,6 +1437,7 @@ public class BackendController {
     @RequestParam(value = "with_foto", required = false) boolean with_foto,
     @RequestParam(value = "also_archived", required = false) boolean also_archived,
     @RequestParam(value = "just_count", required = false) boolean just_count,
+    @RequestParam(value = "area_code", required = false) Integer area_code,
     HttpServletResponse response) throws IOException {
 
     try {
@@ -1519,7 +1531,7 @@ public class BackendController {
         cmd.setAuftragDatum(new Date());
         cmd.setOrder(8);
       }
-      
+
       if (geoRssHash != null) {
         GeoRss geoRss = geoRssDao.findGeoRss(geoRssHash);
         String hauptKategorien = "";
@@ -1540,16 +1552,20 @@ public class BackendController {
         cmd.setErweitertUnterKategorieIds(unterKategorien);
         cmd.setObservation(geoRss.getOviWkt());
       }
-      
+
+      if (area_code != null) {
+        cmd.setErweitertStadtteilgrenze(area_code);
+      }
+
       if (max_requests != null) {
         cmd.setOrder(9);
         cmd.setSize(max_requests);
       } else {
         cmd.setOrder(0);
       }
-      
+
       cmd.setOrderDirection(1);
-      
+
       if (with_foto) {
         cmd.setFotoFreigabeStatus(EnumFreigabeStatus.extern);
       }
@@ -1592,17 +1608,18 @@ public class BackendController {
   }
 
   /**
-   * Die Methode verarbeitet den GET-Request auf der URL <code>/crenzen</code><br/>
-   * @param ids
-   * @param with_districts
-   * @param response
+   * Die Methode verarbeitet den GET-Request auf der URL <code>/grenzen</code><br>
+   *
+   * @param ids Liste von IDs der Stadtteile
+   * @param with_districts Sollen die Stadtteil-Grenzen mit ausgegeben werden
+   * @param response Response in das das Ergebnis direkt geschrieben wird
    * @throws java.io.IOException
    */
   @RequestMapping(value = "/grenzen", method = RequestMethod.GET)
   @ResponseBody
   public void grenzen(
     @RequestParam(value = "ids", required = false) String ids,
-    @RequestParam(value = "with_districts", required= false) boolean with_districts,
+    @RequestParam(value = "with_districts", required = false) boolean with_districts,
     HttpServletResponse response
   ) throws IOException {
     try {
@@ -1611,7 +1628,7 @@ public class BackendController {
         String[] idStrList = ids.split(", ");
         Integer[] data = new Integer[idStrList.length];
         for (int i = 0; i < idStrList.length; i++) {
-            data[i] = Integer.valueOf(idStrList[i]);
+          data[i] = Integer.valueOf(idStrList[i]);
         }
         for (int i = 0; i < data.length; i++) {
           StadtteilGrenze grenze = grenzenDao.findStadtteilGrenze(data[i]);
@@ -1644,6 +1661,135 @@ public class BackendController {
   }
 
   /**
+   * Die Methode verarbeitet den POST-Request auf der URL <code>/service/foto</code><br>
+   * Beschreibung: erstellt ein neues Foto für einen Vorgang
+   *
+   * @param vorgang Vorgang
+   * @param bild Foto des Vorgangs
+   * @param email E-Mail-Adresse des Erstellers
+   * @param resultHashOnSubmit <code>true</code> - gibt den Hash zum Bestätigen als Ergebnis zurück
+   * @param resultObjectOnSubmit <code>true</code> - gibt den neuen Vorgangs als Ergebnis zurück
+   * @param response Response in das das Ergebnis direkt geschrieben wird
+   */
+  @RequestMapping(value = "/foto", method = RequestMethod.POST)
+  @ResponseBody
+  public void foto(
+    @RequestParam(value = "vorgang", required = false) Long vorgang,
+    @RequestParam(value = "email", required = false) String email,
+    @RequestParam(value = "bild", required = false) String bild,
+    @RequestParam(value = "resultHashOnSubmit", required = false) Boolean resultHashOnSubmit,
+    @RequestParam(value = "resultObjectOnSubmit", required = false) Boolean resultObjectOnSubmit,
+    HttpServletResponse response) {
+
+    if (resultHashOnSubmit == null) {
+      resultHashOnSubmit = false;
+    }
+    if (resultObjectOnSubmit == null) {
+      resultObjectOnSubmit = false;
+    }
+    try {
+      Foto foto = new Foto();
+      if (vorgang == null) {
+        throw new BackendControllerException(401, "[vorgang] fehlt", "Das Foto ist keiner Meldung zugeordnet.");
+      }
+      Vorgang vorg = vorgangDao.findVorgang(vorgang);
+      if (vorg == null) {
+        throw new BackendControllerException(200, "[vorgang] ungültig", "Es konnte kein Vorgang mit der übergebenen ID gefunden werden.");
+      }
+      foto.setVorgang(vorg);
+      if (foto.getVorgang() == null) {
+        throw new BackendControllerException(402, "[vorgang] nicht korrekt", "Das Foto ist keiner Meldung zugeordnet.");
+      }
+      if (StringUtils.isBlank(bild)) {
+        throw new BackendControllerException(403, "[bild] fehlt", "Es wurde kein Foto hochgeladen.");
+      }
+      if (StringUtils.isBlank(email)) {
+        throw new BackendControllerException(404, "[email] fehlt", "Die E-Mail-Adresse fehlt.");
+      }
+      if (!isShortEnough(email, 300)) {
+        throw new BackendControllerException(405, "[email] zu lang", "Die angegebene E-Mail-Adresse ist zu lang.");
+      }
+      if (!isEmail(email)) {
+        throw new BackendControllerException(406, "[email] nicht korrekt", "Die angegebene E-Mail-Adresse ist nicht gültig.");
+      }
+      if (isTrashMail(email)) {
+        throw new BackendControllerException(10, "[autorEmail] nicht erlaubt", "Die Domain der angegebenen E-Mail-Adresse ist nicht zulässig.");
+      }
+
+      foto.setAutorEmail(email);
+      foto.setHash(securityService.createHash(foto.getVorgang().getId() + email + System.currentTimeMillis()));
+
+      foto.setDatum(new Date());
+
+      vorgangDao.persist(foto);
+      try {
+        imageService.setImageForFoto(Base64.decode(bild.getBytes()), foto);
+      } catch (Exception e) {
+        e.printStackTrace();
+        throw new BackendControllerException(11, "[bild] nicht korrekt", "Das Bild ist fehlerhaft und kann nicht verarbeitet werden.", e);
+      }
+      vorgangDao.merge(foto);
+
+      mailService.sendFotoBestaetigungMail(foto, email, vorgang);
+
+      if (resultHashOnSubmit) {
+        sendOk(response, foto.getHash());
+      } else if (resultObjectOnSubmit) {
+        sendOk(response, mapper.writeValueAsString(foto));
+      } else {
+        sendOk(response);
+      }
+    } catch (Exception e) {
+      logger.warn(e);
+      sendError(response, e);
+    }
+  }
+
+  /**
+   * Die Methode verarbeitet den POST-Request auf der URL <code>/service/fotoBestaetigung</code><br>
+   * Beschreibung: Vorgang bestätigen
+   *
+   * @param hash Hash zum Bestätigen
+   * @return View die angezeigt werden soll
+   */
+  @RequestMapping(value = "/fotoBestaetigung")
+  public String fotoBestaetigung(@RequestParam(value = "hash", required = false) String hash) {
+
+    try {
+      if (StringUtils.isBlank(hash)) {
+        throw new BackendControllerException(501, "[hash] fehlt");
+      }
+      Foto foto = vorgangDao.findFoto(hash);
+      if (foto == null) {
+        throw new BackendControllerException(502, "[hash] nicht korrekt");
+      }
+
+      if (foto.getDatumBestaetigung() != null) {
+        throw new BackendControllerException(503, "Missbrauchsmeldung wurde bereits bestätigt");
+      }
+
+      foto.setDatumBestaetigung(new Date());
+
+      verlaufDao.addVerlaufToVorgang(foto.getVorgang(), EnumVerlaufTyp.fotoBestaetigung, null, null);
+      vorgangDao.merge(foto);
+
+      Vorgang vorgang = foto.getVorgang();
+      vorgang.setFotoGross(foto.getFotoGross());
+      vorgang.setFotoNormal(foto.getFotoNormal());
+      vorgang.setFotoThumb(foto.getFotoThumb());
+      vorgang.setFotoFreigabeStatus(EnumFreigabeStatus.intern);
+      vorgang.setFotowunsch(false);
+      vorgangDao.merge(vorgang);
+
+      return "backend/bestaetigungOk";
+
+    } catch (Exception e) {
+      logger.warn(e);
+      return "backend/bestaetigungFehler";
+    }
+  }
+
+  /**
    * Sendet eine Fehlermeldung
    */
   private void sendError(HttpServletResponse response, Exception exception) {
@@ -1665,7 +1811,6 @@ public class BackendController {
    * Sendet ein Ok
    */
   private void sendOk(HttpServletResponse response) {
-
     try {
       response.setCharacterEncoding("utf-8");
       response.setHeader("Content-Type", "text/plain;charset=UTF-8");

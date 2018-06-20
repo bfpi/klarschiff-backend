@@ -1,7 +1,6 @@
 package de.fraunhofer.igd.klarschiff.service.classification;
 
 import java.util.List;
-
 import weka.core.FastVector;
 
 /**
@@ -129,13 +128,15 @@ public class Attribute extends weka.core.Attribute {
   /**
    * Erzeugt ein Attribut mit geographischem Hintergrund. Die Attributwerte werden in der Anwendung
    * über einen WFS ermittelt. Bei der Ermittlung der Attributwerte vom WFS werden dabei Featuretype
-   * (z.B. klarschiff-zustaendigkeitsfinder:hro.klarschiff-zustaendigkeitsfinder.bewirtschaftungskataster),
+   * (z.B.
+   * klarschiff-zustaendigkeitsfinder:hro.klarschiff-zustaendigkeitsfinder.bewirtschaftungskataster),
    * Property-Name (z.B. bewirtschafter) und Property-Value (z.B. Amt für Umweltschutz) verwendet.
    *
    * @param name Name des Attributes im WFS
    * @param typeName Typ des Attributes im WFS
    * @param propertyName PropertyName des Attributes beim WFS
    * @param propertyValue PropertyValue des Attributes beim WFS
+   * @param geoMeasure Berechnungstyp für das Attribut
    * @param geomPropertyName Attributname der Geometrie beim WFS
    * @param updateble Kann sich der Wert des Attributes (Feature des Vorganges) mit der Zeit ändern?
    * @return Attribut mit erweiterten Funktionen, wie es auch in Weka verwendet werden kann
@@ -151,8 +152,8 @@ public class Attribute extends weka.core.Attribute {
    * Erzeugt mehrere Attribute mit geographischem Hintergrund. Dabei wird für jedes
    * <code>GeoMeasure</code> jeweils ein Attribut erzeugt. Der Name der Attribute ergibt sich aus
    * dem <code>namePrefix</code> und dem jeweiligen <code>GeoMeasure</code>. Bei der Ermittlung der
-   * Attributwerte vom WFS werden dabei Featuretype
-   * (z.B. klarschiff-zustaendigkeitsfinder:hro.klarschiff-zustaendigkeitsfinder.bewirtschaftungskataster),
+   * Attributwerte vom WFS werden dabei Featuretype (z.B.
+   * klarschiff-zustaendigkeitsfinder:hro.klarschiff-zustaendigkeitsfinder.bewirtschaftungskataster),
    * Property-Name (z.B. bewirtschafter) und Property-Value (z.B. Amt für Umweltschutz) verwendet.
    *
    * @param namePrefix Präfix für die Namen der Attribute

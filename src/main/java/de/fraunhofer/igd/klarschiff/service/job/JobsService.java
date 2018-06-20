@@ -5,16 +5,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
-
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import org.joda.time.*;
-
 import de.fraunhofer.igd.klarschiff.dao.ClusterDao;
 import de.fraunhofer.igd.klarschiff.dao.RedaktionEmpfaengerDao;
 import de.fraunhofer.igd.klarschiff.dao.RedaktionKriterienDao;
@@ -24,7 +21,9 @@ import de.fraunhofer.igd.klarschiff.service.cluster.ScheduledSyncInCluster;
 import de.fraunhofer.igd.klarschiff.service.mail.MailService;
 import de.fraunhofer.igd.klarschiff.service.security.Role;
 import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
+import de.fraunhofer.igd.klarschiff.service.settings.SettingsService;
 import de.fraunhofer.igd.klarschiff.vo.EnumVorgangTyp;
+import de.fraunhofer.igd.klarschiff.vo.Foto;
 import de.fraunhofer.igd.klarschiff.vo.Missbrauchsmeldung;
 import de.fraunhofer.igd.klarschiff.vo.RedaktionEmpfaenger;
 import de.fraunhofer.igd.klarschiff.vo.RedaktionKriterien;
@@ -48,6 +47,7 @@ public class JobsService {
   int hoursToRemoveUnbestaetigtVorgang;
   int hoursToRemoveUnbestaetigtUnterstuetzer;
   int hoursToRemoveUnbestaetigtMissbrauchsmeldung;
+  int hoursToRemoveUnbestaetigtFoto;
 
   @Autowired
   VorgangDao vorgangDao;
@@ -60,6 +60,9 @@ public class JobsService {
 
   @Autowired
   RedaktionKriterienDao redaktionKriterienDao;
+
+  @Autowired
+  SettingsService settingsService;
 
   @Autowired
   SecurityService securityService;
@@ -110,6 +113,19 @@ public class JobsService {
   }
 
   /**
+   * Dieser Job löscht alle Fotos, die eingegangen sind, aber nach einem bestimmten Zeitraum noch
+   * nicht bestätigt wurden.
+   */
+  @Transactional
+  @ScheduledSyncInCluster(cron = "0 50 * * * *", name = "unbestaetigte Fotos loeschen")
+  public void removeUnbestaetigtFoto() {
+    Date date = DateUtils.addHours(new Date(), -hoursToRemoveUnbestaetigtFoto);
+    for (Foto foto : vorgangDao.findUnbestaetigtFoto(date)) {
+      vorgangDao.remove(foto);
+    }
+  }
+
+  /**
    * Dieser Job aktualisiert den Klassifikator für den Zuständigkeitsfinder.
    */
   @Scheduled(cron = "0 52 * * * *")
@@ -133,6 +149,13 @@ public class JobsService {
     archivVorgaengeByTyp(monthsToArchivIdeen, EnumVorgangTyp.idee);
   }
 
+  /**
+   * Archiviert alle Vorgänge eines Typs, die abgeschlossen sind und seit einem bestimmten Zeitraum
+   * nicht mehr bearbeitet wurden.
+   *
+   * @param months Zeitraum
+   * @param typ Typ
+   */
   private void archivVorgaengeByTyp(int months, EnumVorgangTyp typ) {
     Date dateP = DateUtils.addMonths(new Date(), -months);
     for (Vorgang vorgang : vorgangDao.findNotArchivVorgang(typ, dateP)) {
@@ -336,6 +359,15 @@ public class JobsService {
   }
 
   /**
+   * Dieser Job erstellt statische Dateien als Übersicht von aktuell aktiven Vorgängen
+   */
+  @ScheduledSyncInCluster(cron = "0 05 02 * * *", name = "Erstellt Übersicht von aktuell aktiven Vorgängen")
+  public void createRequestOverview() {
+    RequestOverview ro = new RequestOverview();
+    ro.create(settingsService, vorgangDao);
+  }
+
+  /**
    * Dieser Job registriert die aktulle ServerInstanze in der DB
    */
   @Scheduled(fixedRate = 20000)
@@ -385,4 +417,13 @@ public class JobsService {
     int hoursToRemoveUnbestaetigtMissbrauchsmeldung) {
     this.hoursToRemoveUnbestaetigtMissbrauchsmeldung = hoursToRemoveUnbestaetigtMissbrauchsmeldung;
   }
+
+  public int getHoursToRemoveUnbestaetigtFoto() {
+    return hoursToRemoveUnbestaetigtFoto;
+  }
+
+  public void setHoursToRemoveUnbestaetigtFoto(int hoursToRemoveUnbestaetigtFoto) {
+    this.hoursToRemoveUnbestaetigtFoto = hoursToRemoveUnbestaetigtFoto;
+  }
+
 }

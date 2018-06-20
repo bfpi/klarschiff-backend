@@ -68,6 +68,19 @@
 					<input type="submit" value="Ausführen"/>
 				</form>
 	
+				<div class="subtitle">removeUnbestaetigtFoto</div>
+				<p class="help">
+					Alle Fotos, die eingegangen sind, aber nach einem bestimmten Zeitraum noch nicht bestätigt wurden, werden gelöscht.
+				</p>
+				<ul class="help">
+					<li>Ausführungszeitpunkt: täglich um *:50 Uhr</li>
+					<li>Bedingung: Eingegangene Fotos wurden nach einem bestimmten Zeitraum noch nicht bestätigt.</li>
+				</ul>
+				<form method="post">
+					<input type="hidden" name="action" value="removeUnbestaetigtFoto"/>
+					<input type="submit" value="Ausführen"/>
+				</form>
+
 				<div class="subtitle">reBuildClassifier</div>
 				<p class="help">
 					Der Klassifikator für den Zuständigkeitsfinder wird aktualisiert.
@@ -155,6 +168,18 @@
 				</ul>
 				<form method="post">
 					<input type="hidden" name="action" value="informErstellerAbschluss"/>
+					<input type="submit" value="Ausführen"/>
+				</form>
+
+				<div class="subtitle">createRequestOverview</div>
+				<p class="help">
+                    Dieser Job erstellt statische Dateien als Übersicht von aktuell aktiven Vorgängen
+				</p>
+				<ul class="help">
+					<li>Ausführungszeitpunkt: täglich um 02:05 Uhr</li>
+				</ul>
+				<form method="post">
+					<input type="hidden" name="action" value="createRequestOverview"/>
 					<input type="submit" value="Ausführen"/>
 				</form>
 			</div>
@@ -247,6 +272,17 @@
 					Backend sichtbar und der Vorgang wird entsprechend gekennzeichnet.
 				</p>
 				<c:url value="/service/missbrauchsmeldungBestaetigung" var="url"/>	
+				<form action="${url}" target="_blank" method="get">
+					<label for="typ">hash</label><input type="text" name="hash" value=""/><br/>
+					<input type="submit" value="Ausführen"/>
+				</form>
+
+				<div class="subtitle">Foto bestätigen</div>
+				<p class="help">
+					Ein Foto für einen Vorgang wird anhand des Hash-Wertes bestätigt. Danach wird das Foto am
+          entsprechenden Vorgang aktualisiert
+				</p>
+				<c:url value="/service/fotoBestaetigung" var="url"/>
 				<form action="${url}" target="_blank" method="get">
 					<label for="typ">hash</label><input type="text" name="hash" value=""/><br/>
 					<input type="submit" value="Ausführen"/>

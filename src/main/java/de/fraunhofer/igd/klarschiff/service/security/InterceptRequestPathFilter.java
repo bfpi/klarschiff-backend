@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import javax.annotation.PostConstruct;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -16,7 +15,6 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 
@@ -56,7 +54,14 @@ public class InterceptRequestPathFilter implements Filter {
    * Filtert den Zugriff für den gegebenen Request. Wird der Zugriff für einen Vorgang und eine
    * Rolle erlaubt, so wir dieses in der aktuellen Session registiert, so dass der Zugriff auf ein
    * bereits zugelassenen Vorgang nach einer Zuständigkeitsänderung weiterhin erlaubt bleibt.
+   *
+   * @param servletRequest Request
+   * @param response Response
+   * @param chain Filter
+   * @throws java.io.IOException
+   * @throws javax.servlet.ServletException
    */
+  @Override
   public void doFilter(ServletRequest servletRequest, ServletResponse response, FilterChain chain) throws IOException, ServletException {
     //request casten
     HttpServletRequest request = (HttpServletRequest) servletRequest;

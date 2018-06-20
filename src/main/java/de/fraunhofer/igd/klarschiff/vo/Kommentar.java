@@ -3,7 +3,6 @@ package de.fraunhofer.igd.klarschiff.vo;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -14,7 +13,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
-
 import org.hibernate.annotations.Type;
 import org.springframework.format.annotation.DateTimeFormat;
 

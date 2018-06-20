@@ -1,11 +1,8 @@
 package de.fraunhofer.igd.klarschiff.web;
 
 import static de.fraunhofer.igd.klarschiff.web.Assert.assertNotEmpty;
-
 import java.util.Date;
-
 import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.lang.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
-
 import de.fraunhofer.igd.klarschiff.dao.VerlaufDao;
 import de.fraunhofer.igd.klarschiff.dao.VorgangDao;
 import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
@@ -45,7 +41,7 @@ public class VorgangMissbrauchController {
   SecurityService securityService;
 
   /**
-   * Die Methode verarbeitet den GET-Request auf der URL <code>/vorgang/{id}/missbrauch</code><br/>
+   * Die Methode verarbeitet den GET-Request auf der URL <code>/vorgang/{id}/missbrauch</code><br>
    * Seitenbeschreibung: Anzeige existierender und Erstellung neuer Missbrauchsmeldungen
    *
    * @param id Vorgangs-ID
@@ -65,12 +61,15 @@ public class VorgangMissbrauchController {
   }
 
   /**
-   * Die Methode verarbeitet den POST-Request auf der URL <code>/vorgang/{id}/missbrauch</code><br/>
+   * Die Methode verarbeitet den POST-Request auf der URL <code>/vorgang/{id}/missbrauch</code><br>
    * Funktionsbeschreibung: Nimmt Missbrauchsmeldung oder Bestätigung der Bearbeitung vorhergehender
    * Missbrauchsmeldungen entgegen
    *
+   * @param cmd Command
+   * @param result BindingResult
    * @param id Vorgangs-ID
    * @param model Model in der ggf. Daten für die View abgelegt werden
+   * @param action um den auszuführenden Aktion zu identifizieren
    * @param request HttpServletRequest-Objekt
    * @return Missbrauchs-View mit neuer Meldung oder als nun bearbeitet markiertem Missbrauch
    */

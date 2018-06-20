@@ -15,7 +15,11 @@ public class NamingStrategy extends ImprovedNamingStrategy {
   /**
    * Die Tabellennamen ergeben sich aus dem Klassennamen und einem davorgestellten
    * <code>klarschiff_</code>
+   *
+   * @param className
+   * @return Klassenname
    */
+  @Override
   public String classToTableName(String className) {
     return "klarschiff_" + super.classToTableName(className);
   }
@@ -23,7 +27,11 @@ public class NamingStrategy extends ImprovedNamingStrategy {
   /**
    * Die Tabellennamen ergeben sich aus dem Klassennamen und einem davorgestellten
    * <code>klarschiff_</code>
+   *
+   * @param tableName
+   * @return Tabellenname
    */
+  @Override
   public String tableName(String tableName) {
     return "klarschiff_" + super.tableName(tableName);
   }
@@ -31,7 +39,14 @@ public class NamingStrategy extends ImprovedNamingStrategy {
   /**
    * Die Tabellennamen für collections ergeben sich aus dem Klassennamen und einem davorgestellten
    * <code>klarschiff_</code>
+   *
+   * @param tableName
+   * @param ownerEntityTable
+   * @param associatedEntityTable
+   * @param propertyName
+   * @return Tabellennamen für Collections
    */
+  @Override
   public String logicalCollectionTableName(String tableName, String ownerEntityTable, String associatedEntityTable, String propertyName) {
     return "klarschiff_" + super.logicalCollectionTableName(tableName, ownerEntityTable, associatedEntityTable, propertyName);
   }

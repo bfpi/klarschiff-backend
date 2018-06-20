@@ -417,13 +417,14 @@
                                         <form:checkbox path="alleVorgaengeAuswaehlen" id="alleVorgaengeAuswaehlen" />
                                     </th>
                                 </c:if>
-                                <util:sortedtableheadercolumn name="Typ" id="1" currentOrderId="${cmdvorgangsuchen.order}" currentOrderDirection="${cmdvorgangsuchen.orderDirection}"/>
                                 <util:sortedtableheadercolumn name="Erstellung" id="2" currentOrderId="${cmdvorgangsuchen.order}" currentOrderDirection="${cmdvorgangsuchen.orderDirection}"/>
-                                <util:sortedtableheadercolumn name="Haupt- und Unterkategorie" id="3" colspan="2" currentOrderId="${cmdvorgangsuchen.order}" currentOrderDirection="${cmdvorgangsuchen.orderDirection}"/>
+                                <util:sortedtableheadercolumn name="Unterkategorie" id="3" currentOrderId="${cmdvorgangsuchen.order}" currentOrderDirection="${cmdvorgangsuchen.orderDirection}"/>
                                 <util:sortedtableheadercolumn name="Status" id="4" currentOrderId="${cmdvorgangsuchen.order}" currentOrderDirection="${cmdvorgangsuchen.orderDirection}"/>
                                 <util:sortedtableheadercolumn name="Adresse" id="5" currentOrderId="${cmdvorgangsuchen.order}" currentOrderDirection="${cmdvorgangsuchen.orderDirection}"/>
                                 <util:sortedtableheadercolumn name="Unterstützer" id="6" currentOrderId="${cmdvorgangsuchen.order}" currentOrderDirection="${cmdvorgangsuchen.orderDirection}"/>
                                 <util:sortedtableheadercolumn name="Zuständigkeit" id="7" currentOrderId="${cmdvorgangsuchen.order}" currentOrderDirection="${cmdvorgangsuchen.orderDirection}"/>
+                                <util:sortedtableheadercolumn name="letzter Bearbeiter" id="10" currentOrderId="${cmdvorgangsuchen.order}" currentOrderDirection="${cmdvorgangsuchen.orderDirection}"/>
+                                <util:sortedtableheadercolumn name="Priorität" id="11" currentOrderId="${cmdvorgangsuchen.order}" currentOrderDirection="${cmdvorgangsuchen.orderDirection}"/>
                                 <c:if test="${cmdvorgangsuchen.suchtyp == 'aussendienst'}">
                                     <th>
                                         Team
@@ -454,10 +455,6 @@
                                             <form:checkbox path="vorgangAuswaehlen" value="${vorgang.id}" id="vorgang_${vorgang.id}" />
                                         </td>
                                     </c:if>
-                                    <td style="text-align: center;">
-                                        <c:url value="/images/${vorgang.typ}_15.png" var="imageUrl"/>
-                                        <a href="${url}"><img alt="${vorgang.typ.text}" src="${imageUrl}" height="15" width="15"  title="Typ: ${vorgang.typ.text}"/></a>
-                                    </td>
                                     <c:choose>
                                         <c:when test="${erstellung_datum eq heute_datum}">
                                             <td style="text-align: center;" title="${erstellung_datum_uhrzeit}"><a href="${url}">${erstellung_uhrzeit}</a></td>
@@ -466,9 +463,6 @@
                                             <td style="text-align: center;" title="${erstellung_datum_uhrzeit}"><a href="${url}">${erstellung_datum}</a></td>
                                         </c:otherwise>
                                     </c:choose>
-                                    <td>
-                                      <a href="${url}">${vorgang.kategorie.parent.name}</a>
-                                    </td>
                                     <td>
                                       <a href="${url}">${vorgang.kategorie.name}</a>
                                     </td>
@@ -490,6 +484,12 @@
                                     </td>
                                     <td>
                                       <a href="${url}"><vorgang:zustaendigkeit vorgang="${vorgang}" statusAlignRight="true"/></a>
+                                    </td>
+                                    <td>
+                                      <a href="${url}">${vorgang.letzterBearbeiter}</a>
+                                    </td>
+                                    <td>
+                                      <a href="${url}">${vorgang.prioritaet}</a>
                                     </td>
                                     <c:if test="${cmdvorgangsuchen.suchtyp == 'aussendienst'}">
                                         <td style="text-align: center;">

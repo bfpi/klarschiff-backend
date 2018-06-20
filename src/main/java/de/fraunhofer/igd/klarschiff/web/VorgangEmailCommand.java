@@ -1,7 +1,7 @@
 package de.fraunhofer.igd.klarschiff.web;
 
 /**
- * Command für den Mailversand im Backend <br />
+ * Command für den Mailversand im Backend <br>
  * Beinhaltet ein Vorgangs-Objekt sowie Emaildetails (Absenderadresse und -name, Empfängeradresse
  * und Mailtext).
  *

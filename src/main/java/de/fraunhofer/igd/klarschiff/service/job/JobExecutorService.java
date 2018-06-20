@@ -3,10 +3,8 @@ package de.fraunhofer.igd.klarschiff.service.job;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-
 import org.springframework.stereotype.Service;
 
 /**

@@ -2,11 +2,9 @@ package de.fraunhofer.igd.klarschiff.web;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.format.support.FormattingConversionServiceFactoryBean;
-
 import de.fraunhofer.igd.klarschiff.context.AppContext;
 import de.fraunhofer.igd.klarschiff.dao.GrenzenDao;
 import de.fraunhofer.igd.klarschiff.vo.Kategorie;

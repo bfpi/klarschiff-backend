@@ -1,14 +1,12 @@
 package de.fraunhofer.igd.klarschiff.vo;
 
 import java.util.Date;
-
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.validation.constraints.NotNull;
-
 import org.hibernate.annotations.Type;
 import org.springframework.format.annotation.DateTimeFormat;
 

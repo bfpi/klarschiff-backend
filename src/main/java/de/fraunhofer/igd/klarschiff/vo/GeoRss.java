@@ -5,10 +5,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Transient;
-
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.Type;
-
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.PrecisionModel;
@@ -97,6 +95,7 @@ public class GeoRss {
   public String getOviWkt() {
     return (ovi == null) ? null : wktWriter.write(ovi);
   }
+
   /* --------------- GET + SET ----------------------------*/
 
   public Long getId() {

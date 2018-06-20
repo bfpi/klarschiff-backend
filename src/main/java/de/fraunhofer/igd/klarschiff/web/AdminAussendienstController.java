@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.SessionAttributes;
-
 import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
 import de.fraunhofer.igd.klarschiff.service.security.User;
 import java.util.ArrayList;
@@ -33,7 +32,7 @@ public class AdminAussendienstController {
   AussendienstKoordinatorDao aussendienstKoordinatorDao;
 
   /**
-   * Die Methode verarbeitet den GET-Request auf der URL <code>/admin/aussendienst</code><br/>
+   * Die Methode verarbeitet den GET-Request auf der URL <code>/admin/aussendienst</code><br>
    * Seitenbeschreibung: Übersichtsseite zum Außendienst
    *
    * @param model Model in dem ggf. Daten für die View abgelegt werden
@@ -47,7 +46,7 @@ public class AdminAussendienstController {
 
   /**
    * Die Methode verarbeitet den GET-Request auf der URL
-   * <code>/aussendienst/{login}/bearbeiten</code><br/>
+   * <code>/aussendienst/{login}/bearbeiten</code><br>
    * Seitenbeschreibung: Formular zur Bearbeiten der Berechtigungen zum Zuweisen von
    * Aussendienst-Teams
    *
@@ -81,10 +80,10 @@ public class AdminAussendienstController {
 
   /**
    * Die Methode verarbeitet den POST-Request auf der URL
-   * <code>/aussendienst/{login}/bearbeiten</code><br/>
+   * <code>/aussendienst/{login}/bearbeiten</code><br>
    * Seitenbeschreibung: Ändert die Berechtigungen zum Zuweisen von Aussendienst-Teams
    *
-   * @param login
+   * @param login User-Login
    * @param model Model in dem ggf. Daten für die View abgelegt werden
    * @param request Request
    * @return View, die zum Rendern des Request verwendet wird
@@ -105,6 +104,13 @@ public class AdminAussendienstController {
     return renderListe(model, request);
   }
 
+  /**
+   * Die Methode Rendert die View für die Requests
+   *
+   * @param model Model in dem ggf. Daten für die View abgelegt werden
+   * @param request Request
+   * @return View, die zum Rendern des Request verwendet wird
+   */
   private String renderListe(Model model, HttpServletRequest request) {
     model.addAttribute("benutzer", securityService.getAllUserForGroup(securityService.getGroupKoordinator()));
     return "admin/aussendienst";

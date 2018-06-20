@@ -4,7 +4,6 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.xml.ParserContext;
 import org.w3c.dom.Element;
-
 import de.fraunhofer.igd.klarschiff.service.settings.PropertyPlaceholderConfigurer;
 
 /**
@@ -24,6 +23,10 @@ public class LdapServerBeanDefinitionParser extends org.springframework.security
    * Entfernt die Attribute <code>ldif</code> bzw. <code>port</code> und <code>url</code> aus der
    * Beandefinition anhand des Status der Variable <code>ldap.server.ldif</code> in den Properties,
    * so dass nur die eine oder die andere Variante verwendet wird.
+   *
+   * @param elt Element
+   * @param parserContext ParserContext
+   * @return BeanDefinition
    */
   @Override
   public BeanDefinition parse(Element elt, ParserContext parserContext) {

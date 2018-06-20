@@ -7,6 +7,13 @@ package de.fraunhofer.igd.klarschiff.util;
  */
 public class ThreadUtil {
 
+  /**
+   * Finden von Threads anhand des Namens
+   *
+   * @param name Name des Threads der gesucht werden soll.
+   * @return <code>null</code> - wenn kein Thread mit dem Namen gefunden wurde; sonst der gefundene
+   * Thread
+   */
   public static Thread findThreadByName(String name) {
     ThreadGroup group = Thread.currentThread().getThreadGroup();
 

@@ -5,10 +5,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.lang.StringUtils;
 import org.jdom.CDATA;
 import org.jdom.Document;
@@ -23,14 +21,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 import de.fraunhofer.igd.klarschiff.dao.VorgangDao;
 import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
 import de.fraunhofer.igd.klarschiff.service.security.User;
 import de.fraunhofer.igd.klarschiff.service.settings.SettingsService;
 import de.fraunhofer.igd.klarschiff.util.SecurityUtil;
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
-
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Point;
 import org.geotools.geometry.jts.JTS;
@@ -38,6 +34,11 @@ import org.geotools.referencing.CRS;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 
+/**
+ * Command für den RSS-Feed im Backend <br>
+ *
+ * @author Stefan Audersch (Fraunhofer IGD)
+ */
 @RequestMapping("/xmlfeeds")
 @Controller
 public class VorgangFeedController {
@@ -53,6 +54,16 @@ public class VorgangFeedController {
 
   DateFormat dateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z", Locale.ENGLISH);
 
+  /**
+   * Die Methode verarbeitet den GET-Request auf der URL <code>/feed/{user}</code><br>
+   * Seitenbeschreibung: XML-RSS-Feed von Vorgängen
+   *
+   * @param loginCrypt Encrypted Login
+   * @param version Version
+   * @param request HttpServletRequest-Objekt
+   * @param response Response in das das Ergebnis direkt geschrieben wird
+   * @throws java.lang.Exception
+   */
   @RequestMapping(value = "/feed/{user}", method = RequestMethod.GET)
   @ResponseBody
   public void xmlfeed(
@@ -106,10 +117,9 @@ public class VorgangFeedController {
     //Description
     elem = new Element("description");
     if (settingsService.getContextAppDemo()) {
-        elem.addContent("Diese Daten umfassen Ihre 50 aktuellsten zu bearbeitenden Vorgänge in " + settingsService.getContextAppTitle() + ", dem Portal zur Bürgerbeteiligung.");
-    }
-    else {
-        elem.addContent("Diese Daten umfassen Ihre 50 aktuellsten zu bearbeitenden Vorgänge in " + settingsService.getContextAppTitle() + ", dem Portal zur Bürgerbeteiligung der " + settingsService.getContextAppArea() + ".");
+      elem.addContent("Diese Daten umfassen Ihre 50 aktuellsten zu bearbeitenden Vorgänge in " + settingsService.getContextAppTitle() + ", dem Portal zur Bürgerbeteiligung.");
+    } else {
+      elem.addContent("Diese Daten umfassen Ihre 50 aktuellsten zu bearbeitenden Vorgänge in " + settingsService.getContextAppTitle() + ", dem Portal zur Bürgerbeteiligung der " + settingsService.getContextAppArea() + ".");
     }
     channel.addContent(elem);
 
@@ -155,8 +165,7 @@ public class VorgangFeedController {
       str.append("<b>Statusinformation:</b> ");
       if (vorgang.getStatusKommentar() != null && vorgang.getStatusKommentar() != "") {
         str.append(vorgang.getStatusKommentar());
-      }
-      else {
+      } else {
         str.append("nicht vorhanden");
       }
       str.append("<br/>");
@@ -169,16 +178,14 @@ public class VorgangFeedController {
       str.append("<b>Unterstützungen:</b> ");
       if (unterstuetzer > 0) {
         str.append(unterstuetzer);
-      }
-      else {
+      } else {
         str.append("bisher keine");
       }
       str.append("<br/>");
       str.append("<b>Missbrauchsmeldungen:</b> ");
       if (missbrauchsmeldungen > 0) {
         str.append(missbrauchsmeldungen);
-      }
-      else {
+      } else {
         str.append("bisher keine");
       }
       str.append("<br/>");
@@ -195,16 +202,14 @@ public class VorgangFeedController {
       str.append("<b>Beschreibung:</b> ");
       if (vorgang.getBeschreibung() != null && vorgang.getBeschreibung() != "") {
         str.append(vorgang.getBeschreibung());
-      }
-      else {
+      } else {
         str.append("nicht vorhanden");
       }
       str.append("<br/>");
       str.append("<b>Foto:</b><br/>");
       if (vorgang.getFotoExists()) {
         str.append("<a href=\"" + settingsService.getPropertyValue("image.url") + vorgang.getFotoNormal() + "\" target=\"_blank\" title=\"große Ansicht öffnen…\"><img src=\"" + settingsService.getPropertyValue("image.url") + vorgang.getFotoThumb() + "\" alt=\"" + settingsService.getPropertyValue("image.url") + vorgang.getFotoThumb() + "\" /></a>");
-      }
-      else {
+      } else {
         str.append("nicht vorhanden");
       }
       str.append("<br/>");
@@ -248,6 +253,16 @@ public class VorgangFeedController {
     response.setStatus(HttpServletResponse.SC_OK);
   }
 
+  /**
+   * Die Methode verarbeitet den GET-Request auf der URL <code>/feedDelegiert/{user}</code><br>
+   * Seitenbeschreibung: XML-RSS-Feed von Deligierten Vorgängen
+   *
+   * @param loginCrypt Encrypted Login
+   * @param version Version
+   * @param request HttpServletRequest-Objekt
+   * @param response Response in das das Ergebnis direkt geschrieben wird
+   * @throws java.lang.Exception
+   */
   @RequestMapping(value = "/feedDelegiert/{user}", method = RequestMethod.GET)
   public void xmlfeedDelegiert(
     @PathVariable("user") String loginCrypt,
@@ -298,10 +313,9 @@ public class VorgangFeedController {
     //Description
     elem = new Element("description");
     if (settingsService.getContextAppDemo()) {
-        elem.addContent("Diese Daten umfassen Ihre 50 aktuellsten zu bearbeitenden Vorgänge in " + settingsService.getContextAppTitle() + ", dem Portal zur Bürgerbeteiligung.");
-    }
-    else {
-        elem.addContent("Diese Daten umfassen Ihre 50 aktuellsten zu bearbeitenden Vorgänge in " + settingsService.getContextAppTitle() + ", dem Portal zur Bürgerbeteiligung der " + settingsService.getContextAppArea() + ".");
+      elem.addContent("Diese Daten umfassen Ihre 50 aktuellsten zu bearbeitenden Vorgänge in " + settingsService.getContextAppTitle() + ", dem Portal zur Bürgerbeteiligung.");
+    } else {
+      elem.addContent("Diese Daten umfassen Ihre 50 aktuellsten zu bearbeitenden Vorgänge in " + settingsService.getContextAppTitle() + ", dem Portal zur Bürgerbeteiligung der " + settingsService.getContextAppArea() + ".");
     }
     channel.addContent(elem);
 
@@ -343,8 +357,7 @@ public class VorgangFeedController {
       str.append("<b>Statusinformation:</b> ");
       if (vorgang.getStatusKommentar() != null && vorgang.getStatusKommentar() != "") {
         str.append(vorgang.getStatusKommentar());
-      }
-      else {
+      } else {
         str.append("nicht vorhanden");
       }
       str.append("<br/>");
@@ -357,8 +370,7 @@ public class VorgangFeedController {
       str.append("<b>Unterstützungen:</b> ");
       if (vorgang.getUnterstuetzerCount() != null && vorgang.getUnterstuetzerCount() > 0) {
         str.append(vorgang.getUnterstuetzerCount());
-      }
-      else {
+      } else {
         str.append("bisher keine");
       }
       str.append("<br/>");
@@ -375,16 +387,14 @@ public class VorgangFeedController {
       str.append("<b>Beschreibung:</b> ");
       if (vorgang.getBeschreibung() != null && vorgang.getBeschreibung() != "") {
         str.append(vorgang.getBeschreibung());
-      }
-      else {
+      } else {
         str.append("nicht vorhanden");
       }
       str.append("<br/>");
       str.append("<b>Foto:</b><br/>");
       if (vorgang.getFotoExists()) {
         str.append("<a href=\"" + settingsService.getPropertyValue("image.url") + vorgang.getFotoNormal() + "\" target=\"_blank\" title=\"große Ansicht öffnen…\"><img src=\"" + settingsService.getPropertyValue("image.url") + vorgang.getFotoThumb() + "\" alt=\"" + settingsService.getPropertyValue("image.url") + vorgang.getFotoThumb() + "\" /></a>");
-      }
-      else {
+      } else {
         str.append("nicht vorhanden");
       }
       str.append("<br/>");

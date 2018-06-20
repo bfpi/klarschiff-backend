@@ -3,9 +3,7 @@ package de.fraunhofer.igd.klarschiff.service.mail;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-
 import javax.servlet.ServletContext;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
@@ -13,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
-
 import de.fraunhofer.igd.klarschiff.dao.KommentarDao;
 import de.fraunhofer.igd.klarschiff.dao.LobHinweiseKritikDao;
 import de.fraunhofer.igd.klarschiff.dao.VerlaufDao;
@@ -22,6 +19,7 @@ import de.fraunhofer.igd.klarschiff.service.geo.GeoService;
 import de.fraunhofer.igd.klarschiff.service.job.JobExecutorService;
 import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
 import de.fraunhofer.igd.klarschiff.service.settings.SettingsService;
+import de.fraunhofer.igd.klarschiff.vo.Foto;
 import de.fraunhofer.igd.klarschiff.vo.Kommentar;
 import de.fraunhofer.igd.klarschiff.vo.LobHinweiseKritik;
 import de.fraunhofer.igd.klarschiff.vo.Missbrauchsmeldung;
@@ -76,6 +74,7 @@ public class MailService {
   SimpleMailMessage vorgangBestaetigungMailTemplate;
   SimpleMailMessage unterstuetzungBestaetigungMailTemplate;
   SimpleMailMessage missbrauchsmeldungBestaetigungMailTemplate;
+  SimpleMailMessage fotoBestaetigungMailTemplate;
   SimpleMailMessage vorgangWeiterleitenMailTemplate;
   SimpleMailMessage informDispatcherMailTemplate;
   SimpleMailMessage informExternMailTemplate;
@@ -178,6 +177,27 @@ public class MailService {
     mailText = mailText.replaceAll("%id%", vorgang.toString());
     mailText = mailText.replaceAll("%baseUrlFrontend%", getServerBaseUrlFrontend());
     mailText = mailText.replaceAll("%hash%", missbrauchsmeldung.getHash());
+    msg.setText(mailText);
+    jobExecutorService.runJob(new MailSenderJob(this, msg));
+  }
+
+  /**
+   * Erstellt und versendet eine E-Mail zur Bestätigung eines neuen Fotos
+   *
+   * @param foto Foto, zu der die E-Mail versendet werden soll
+   * @param email E-Mail-Adresse, an die die E-Mail versendet werden soll
+   * @param vorgang Vorgang-Id
+   */
+  public void sendFotoBestaetigungMail(Foto foto, String email, Long vorgang) {
+    SimpleMailMessage msg = new SimpleMailMessage(fotoBestaetigungMailTemplate);
+    msg.setTo(email);
+    msg.setSubject(msg.getSubject().replaceAll("%id%", vorgang.toString()).replaceAll("%title%",
+      settingsService.getContextAppTitle()));
+    String mailText = msg.getText();
+    mailText = mailText.replaceAll("%title%", settingsService.getContextAppTitle());
+    mailText = mailText.replaceAll("%id%", vorgang.toString());
+    mailText = mailText.replaceAll("%baseUrlFrontend%", getServerBaseUrlFrontend());
+    mailText = mailText.replaceAll("%hash%", foto.getHash());
     msg.setText(mailText);
     jobExecutorService.runJob(new MailSenderJob(this, msg));
   }
@@ -512,8 +532,8 @@ public class MailService {
    * die in der E-Mail dargestellt werden sollen.
    * @param vorgaengeIdeeOffenOhneUnterstuetzung Liste der Vorgänge zu Redaktionskriterium 3, die in
    * der E-Mail dargestellt werden sollen.
-   * @param vorgaengeNichtLoesbarOhneStatuskommentar Liste der Vorgänge zu
-   * Redaktionskriterium 4, die in der E-Mail dargestellt werden sollen.
+   * @param vorgaengeNichtLoesbarOhneStatuskommentar Liste der Vorgänge zu Redaktionskriterium 4,
+   * die in der E-Mail dargestellt werden sollen.
    * @param vorgaengeNichtMehrOffenNichtAkzeptiert Liste der Vorgänge zu Redaktionskriterium 5, die
    * in der E-Mail dargestellt werden sollen.
    * @param vorgaengeOhneRedaktionelleFreigaben Liste der Vorgänge zu Redaktionskriterium 6, die in
@@ -632,9 +652,9 @@ public class MailService {
         str.append(String.format("%1$-9s", vorgang.getId()))
           .append(String.format("%1$-27s", vorgang.getZustaendigkeit()))
           .append(String.format("%1$-18s", vorgangDao.countUnterstuetzerByVorgang(vorgang)))
-          .append(formatter.format(verlaufDao.getAktuellstesErstsichtungsdatumZuVorgang(vorgang)))
+          .append(formatter.format(verlaufDao.getAktuellstesAkzeptierenDerZustaendigkeitZuVorgang(vorgang)))
           .append(" (vor ")
-          .append((jetzt.getTime() - verlaufDao.getAktuellstesErstsichtungsdatumZuVorgang(vorgang).getTime()) / (24 * 60 * 60 * 1000))
+          .append((jetzt.getTime() - verlaufDao.getAktuellstesAkzeptierenDerZustaendigkeitZuVorgang(vorgang).getTime()) / (24 * 60 * 60 * 1000))
           .append(" Tagen)\n");
       }
 
@@ -825,6 +845,14 @@ public class MailService {
 
   public void setMissbrauchsmeldungBestaetigungMailTemplate(SimpleMailMessage missbrauchsmeldungBestaetigungMailTemplate) {
     this.missbrauchsmeldungBestaetigungMailTemplate = missbrauchsmeldungBestaetigungMailTemplate;
+  }
+
+  public SimpleMailMessage getFotoBestaetigungMailTemplate() {
+    return fotoBestaetigungMailTemplate;
+  }
+
+  public void setFotoBestaetigungMailTemplate(SimpleMailMessage fotoBestaetigungMailTemplate) {
+    this.fotoBestaetigungMailTemplate = fotoBestaetigungMailTemplate;
   }
 
   public SimpleMailMessage getVorgangWeiterleitenMailTemplate() {

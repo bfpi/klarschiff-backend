@@ -1,7 +1,5 @@
 package de.fraunhofer.igd.klarschiff.web;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -9,7 +7,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.SessionAttributes;
-
 import de.fraunhofer.igd.klarschiff.dao.LobHinweiseKritikDao;
 
 /**
@@ -35,7 +32,7 @@ public class AdminLobHinweiseKritikController {
   }
 
   /**
-   * Die Methode verarbeitet den GET-Request auf der URL <code>/admin/lobhinweisekritik</code><br/>
+   * Die Methode verarbeitet den GET-Request auf der URL <code>/admin/lobhinweisekritik</code><br>
    *
    * @param cmdlobhinweisekritik Command
    * @param modelMap Model in der ggf. Daten für die View abgelegt werden

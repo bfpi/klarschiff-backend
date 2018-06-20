@@ -2,7 +2,6 @@ package org.springframework.security.config;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.config.BeanDefinition;

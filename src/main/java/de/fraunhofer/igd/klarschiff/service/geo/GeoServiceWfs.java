@@ -1,10 +1,8 @@
 package de.fraunhofer.igd.klarschiff.service.geo;
 
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.googlecode.ehcache.annotations.Cacheable;
 import com.googlecode.ehcache.annotations.KeyGenerator;
 import com.googlecode.ehcache.annotations.Property;
@@ -28,6 +26,15 @@ public class GeoServiceWfs {
    * Die Funktion wird zur Nutzung des Chaches auf die Funktion
    * {@link GeoService#getGeoFeatures(Point, double, String, String, String, String)} umgeleitet.
    * see GeoService#getGeoFeatures(Point, double, String, String, String, String)
+   *
+   * @param ovi Punkt für den die Features berechnet werden sollen
+   * @param wfsZufiOviBuffer Umkreis des Punktes der mit berücksichtigt werden soll
+   * @param typeName Typ des Features beim WFS
+   * @param geomPropertyName Name des Geometrieattributs beim WFS
+   * @param propertyName PropertyName beim WFS
+   * @param propertyValue PropertyValue beim WFS
+   * @return Featurwerte für den Punkt [0] abstandAusserhalb, [1] abstandInnerhalb und [2]
+   * flaechenGroesse
    */
   @Cacheable(cacheName = "geoServiceWfsLevel2Cache",
     keyGenerator = @KeyGenerator(name = "ListCacheKeyGenerator",
@@ -46,6 +53,13 @@ public class GeoServiceWfs {
    * Die Funktion wird zur Nutzung des Chaches auf die Funktion
    * {@link GeoService#getGeoFeatures(Point, double, String, String, String)} umgeleitet. see
    * GeoService#getGeoFeatures(Point, double, String, String, String)
+   *
+   * @param ovi Punkt für den die Features berechnet werden sollen
+   * @param wfsZufiOviBuffer Umkreis des Punktes der mit berücksichtigt werden soll
+   * @param typeName Typ des Features beim WFS
+   * @param geomPropertyName Name des Geometrieattributs beim WFS
+   * @param propertyName PropertyName beim WFS
+   * @return Liste von GeoFeatures
    */
   @Cacheable(cacheName = "geoServiceWfsLevel1Cache",
     keyGenerator = @KeyGenerator(name = "ListCacheKeyGenerator",
