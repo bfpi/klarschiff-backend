@@ -42,13 +42,43 @@ public class D3Tools {
     return null;
   }
 
-  public String getCreateLink(Vorgang vorgang) {
+  public String getCreateLinkWithParameters(Vorgang vorgang) {
     if (vorgang.getKategorie().getD3() != null) {
       String ret = vorgang.getKategorie().getD3().getUrl();
       ret = ret.replace("{ks_id}", vorgang.getId().toString());
-      ret = ret.replace("{ks_user}", securityService.getCurrentUser().getName());
+      ret = ret.replace("{ks_user}", securityService.getCurrentUser().getId().toLowerCase());
       ret = ret.replace("{ks_address}", vorgang.getAdresse());
       return ret;
+    }
+    return null;
+  }
+
+  public String getCreateLinkWithoutParameters(Vorgang vorgang) {
+    if (vorgang.getKategorie().getD3() != null) {
+      String ret = vorgang.getKategorie().getD3().getUrl();
+      ret = StringUtils.substringBefore(ret, "?");
+      return ret;
+    }
+    return null;
+  }
+
+  public String getParameterKsId(Vorgang vorgang) {
+    if (vorgang.getKategorie().getD3() != null) {
+      return vorgang.getId().toString();
+    }
+    return null;
+  }
+
+  public String getParameterKsUser(Vorgang vorgang) {
+    if (vorgang.getKategorie().getD3() != null) {
+      return securityService.getCurrentUser().getId().toLowerCase();
+    }
+    return null;
+  }
+
+  public String getParameterKsAddress(Vorgang vorgang) {
+    if (vorgang.getKategorie().getD3() != null) {
+      return vorgang.getAdresse();
     }
     return null;
   }

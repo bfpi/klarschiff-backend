@@ -311,7 +311,10 @@ public class VorgangBearbeitenController {
         model.put("d3action", "open");
       } else {
         model.put("d3action", "create");
-        model.put("d3createLink", d3tools.getCreateLink(cmd.getVorgang()));
+        model.put("d3createLink", d3tools.getCreateLinkWithoutParameters(cmd.getVorgang()));
+        model.put("d3getKsId", d3tools.getParameterKsId(cmd.getVorgang()));
+        model.put("d3getKsUser", d3tools.getParameterKsUser(cmd.getVorgang()));
+        model.put("d3getKsAddress", d3tools.getParameterKsAddress(cmd.getVorgang()));
       }
     }
 

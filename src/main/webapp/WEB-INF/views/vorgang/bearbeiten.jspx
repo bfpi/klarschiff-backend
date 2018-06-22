@@ -626,15 +626,26 @@
             <div id="d3content">
               <c:if test="${d3action == 'open'}">
                 <c:set var="form_url" value="${pageContext.request.contextPath}/vorgang/${cmd.vorgang.id}/d3open"/>
+                <form:form method="GET" action="${form_url}" target="_blank">
+                  <div class="label">
+                    <input type="submit" value="d.3-Akte"/>
+                  </div>
+                </form:form>
               </c:if>
               <c:if test="${d3action == 'create'}">
                 <c:set var="form_url" value="${d3createLink}"/>
+                <c:set var="ks_id" value="${d3getKsId}"/>
+                <c:set var="ks_user" value="${d3getKsUser}"/>
+                <c:set var="ks_address" value="${d3getKsAddress}"/>
+                <form:form method="GET" action="${form_url}" target="_blank">
+                  <div class="label">
+                    <input type="hidden" name="ks_id" value="${d3getKsId}"/>
+                    <input type="hidden" name="ks_user" value="${d3getKsUser}"/>
+                    <input type="hidden" name="ks_address" value="${d3getKsAddress}"/>
+                    <input type="submit" value="d.3-Akte"/>
+                  </div>
+                </form:form>
               </c:if>
-              <form:form method="GET" action="${form_url}" target="_blank">
-                <div class="label">
-                  <input type="submit" value="d.3-Akte" name="action"/>
-                </div>
-              </form:form>
             </div>
           </div>
           <util:ddpanel name="d3"/>
