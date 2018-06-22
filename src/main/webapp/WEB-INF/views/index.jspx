@@ -21,11 +21,11 @@
   <div id="root_style_content">
     <!-- wichtige Hinweise generell nur für Administratoren oder interne Benutzer anzeigen -->
     <sec:authorize access="hasRole('ROLE_INTERN') or hasRole('ROLE_ADMIN')">
-
+      <div class="statistic_blocktitle">persönliche Schnellübersicht</div>
       <table class="statistic">
         <tr>
           <td>
-            <div class="fieldset white" id="statistic_neueste_panel">
+            <div class="fieldset" id="statistic_neueste_panel">
               <div class="fieldsettitle closepanel" id="statistic_neueste_tab">
                 <div>
                   Neueste Vorgänge
@@ -35,27 +35,21 @@
                 <table class="vorgaenge">
                   <c:choose>
                     <c:when test="${not empty statistic.neuesteVorgaenge}">
-                      <c:url value="/images/trusted.png" var="trustedUrl"/>
-                      <c:url value="/images/erstsichtung_offen.png" var="erstsichtungOffenUrl"/>
-                      <c:url value="/images/erstsichtung_erfolgt.png" var="erstsichtungErfolgtUrl"/>
-                      <c:url value="/images/foto_upload.png" var="letzteAktivitaetFotoUrl" />
-                      <c:url value="/images/edit.png" var="letzteAktivitaetLobHinweiseKritikUrl" />
-                      <c:url value="/images/edit.png" var="letzteAktivitaetKommentarUrl" />
+                      <c:url value="/images/freigabeStatus_intern.png" var="erstsichtungOffenUrl"/>
+                      <c:url value="/images/freigabeStatus_extern.png" var="erstsichtungErfolgtUrl"/>
 
                       <c:forEach items="${statistic.neuesteVorgaenge}" var="vorgang" varStatus="loop">
                         <c:url value="/images/${vorgang.typ}_${vorgang.status}_15.png" var="imageUrl"/>
                         <c:url value="/vorgang/${vorgang.id}/uebersicht" var="url"/>
                         <tr>
                           <td class="icon">
-                            <a href="${url}" title="Übersicht zu Vorgang #${vorgang.id} aufrufen">
-                              <img alt="${vorgang.status}" src="${imageUrl}"  title="Status: ${vorgang.status.text}"/>
-                            </a>
+                            <img alt="${vorgang.status}" src="${imageUrl}" title="Typ: ${vorgang.typ.text}; Status: ${vorgang.status.text}"/>
                           </td>
                           <td class="icon">
-                            <c:if test="${vorgang.zustaendigkeitStatus == 'zugewiesen'}"><span style="color:#FF8800;font-weight:bold;width:15px;" title="noch nicht akzeptiert">&#x2715;</span></c:if>
-                            <c:if test="${vorgang.zustaendigkeitStatus == 'akzeptiert'}"><span style="color:#50c80f;font-weight:bold;width:15px;" title="akzeptiert">&#x2714;</span></c:if>
-                            </td>
-                            <td class="icon">
+                            <c:if test="${vorgang.zustaendigkeitStatus == 'zugewiesen'}"><span class="statistic_unaccepted" title="noch nicht akzeptiert">&#x2715;</span></c:if>
+                            <c:if test="${vorgang.zustaendigkeitStatus == 'akzeptiert'}"><span class="statistic_accepted" title="akzeptiert">&#x2714;</span></c:if>
+                          </td>
+                          <td class="icon">
                             <c:choose>
                               <c:when test="${vorgang.erstsichtungErfolgt == 'true'}">
                                 <span title="Erstsichtung erfolgt">
@@ -70,23 +64,31 @@
                             </c:choose>
                           </td>
                           <td>
+                            <c:if test="${not empty vorgang.delegiertAn}">
+                              <c:set value="${fx:role(vorgang.delegiertAn)}" var="delegiertAn"/>
+                              <span title="delegiert an: ${delegiertAn.description}">&#x2794; ${delegiertAn.id}</span><br/>
+                            </c:if>
                             <a href="${url}" title="Übersicht zu Vorgang #${vorgang.id} aufrufen">
-                              <c:if test="${not empty vorgang.delegiertAn}">
-                                <c:set value="${fx:role(vorgang.delegiertAn)}" var="delegiertAn"/>
-                                <span title="delegiert an: ${delegiertAn.description}">(&#x2794; ${delegiertAn.id})</span><br />
-                              </c:if>
-                              #${vorgang.id} (${vorgang.adresse})
-                              <c:if test="${vorgang.trust > 0}">
-                                <img src="${trustedUrl}"/>
-                              </c:if>
+                              #${vorgang.id}<br/>(${fn:trim(vorgang.adresse)})
                             </a>
                           </td>
-                          <td class="icon">
-                            <c:if test="${vorgang.prioritaet != 'mittel'}">
-                              <c:url value="/images/prioritaet_${vorgang.prioritaet}.png" var="vorgang_prioritaet"/>
-                              <img src="${vorgang_prioritaet}"/>
-                            </c:if>
-                          </td>
+                          <c:if test="${vorgang.trust > 0}">
+                            <td class="icon">
+                              <span class="statistic_yellow" title="vertrauenswürdig">&#x2605;</span>
+                            </td>
+                          </c:if>
+                          <c:if test="${vorgang.prioritaet != 'mittel'}">
+                            <td class="icon">
+                              <c:choose>
+                                <c:when test="${vorgang.prioritaet == 'hoch'}">
+                                  <span class="statistic_unaccepted" title="hohe Priorität">&#x25B2;</span>
+                                </c:when>
+                                <c:otherwise>
+                                  <span class="statistic_accepted" title="niedrige Priorität">&#x25BC;</span>
+                                </c:otherwise>
+                              </c:choose>
+                            </td>
+                          </c:if>
                         </tr>
                       </c:forEach>
 
@@ -103,75 +105,74 @@
               </div>
             </div>
         <util:ddpanel name="statistic_neueste_" />
+        <util:ddpaneldefaultopen name="statistic_neueste_" />
         </td>
         <td>
-          <div class="fieldset white" id="statistic_eigene_panel">
+          <div class="fieldset" id="statistic_eigene_panel">
             <div class="fieldsettitle closepanel" id="statistic_eigene_tab">
               <div>
-                Aktivitäten an eigenen Meldungen
+                Aktivitäten an eigenen Vorgängen
               </div>
             </div>
             <div id="statistic_eigene_content">
               <table class="vorgaenge">
                 <c:choose>
                   <c:when test="${not empty statistic.eigeneVorgaenge}">
-                    <c:url value="/images/trusted.png" var="trustedUrl"/>
+                    <c:url value="/images/foto_upload.png" var="letzteAktivitaetFotoUrl" />
+                    <c:url value="/images/mail-message-new.png" var="letzteAktivitaetLobHinweiseKritikUrl" />
+                    <c:url value="/images/bookmark-new.png" var="letzteAktivitaetKommentarUrl" />
+                    <c:url value="/images/edit.png" var="letzteAktivitaetVorgangsdatenUrl" />
                     <c:forEach items="${statistic.eigeneVorgaenge}" var="vorgang" varStatus="loop">
                       <c:url value="/images/${vorgang.typ}_${vorgang.status}_15.png" var="imageUrl"/>
                       <c:url value="/vorgang/${vorgang.id}/uebersicht" var="url"/>
                       <tr>
                         <td class="icon">
-                          <a href="${url}" title="Übersicht zu Vorgang #${vorgang.id} aufrufen">
-                            <img alt="${vorgang.status}" src="${imageUrl}"  title="Status: ${vorgang.status.text}"/>
-                          </a>
+                          <img alt="${vorgang.status}" src="${imageUrl}" title="Typ: ${vorgang.typ.text}; Status: ${vorgang.status.text}"/>
                         </td>
                         <td>
-                          <c:set var="title" value="Änderung der Vorgangsdaten"/>
-                          <c:choose>
-                            <c:when test="${vorgang.letzterAktivitaetenVerlauf.typ=='foto'}">
-                              <c:set var="title" value="Neues Foto hochgeladen"/>
-                            </c:when>
-                            <c:when test="${vorgang.letzterAktivitaetenVerlauf.typ=='lobHinweiseKritik'}">
-                              <c:set var="title" value="Lob, Hinweise oder Kritik von Bürger/-innen angelegt"/>
-                            </c:when>
-                            <c:when test="${vorgang.letzterAktivitaetenVerlauf.typ=='kommentar'}">
-                              <c:set var="title" value="Interner Kommentar angelegt"/>
-                            </c:when>
-                            <c:when test="${vorgang.letzterAktivitaetenVerlauf.typ=='unterstuetzerBestaetigung'}">
-                              <c:set var="title" value="Anzahl der Unterstützungen erhöht"/>
-                            </c:when>
-                          </c:choose>
-
-                          <a href="${url}" title="${title}">
-                            #${vorgang.id} (${vorgang.adresse})
-                            <c:if test="${vorgang.trust > 0}">
-                              <img src="${trustedUrl}"/>
-                            </c:if>
-                            <c:choose>
-                              <c:when test="${vorgang.letzterAktivitaetenVerlauf.typ=='foto'}">
-                                <img src="${letzteAktivitaetFotoUrl}" alt=""/>
-                              </c:when>
-                              <c:when test="${vorgang.letzterAktivitaetenVerlauf.typ=='lobHinweiseKritik'}">
-                                <img src="${letzteAktivitaetLobHinweiseKritikUrl}" alt=""/>
-                              </c:when>
-                              <c:when test="${vorgang.letzterAktivitaetenVerlauf.typ=='kommentar'}">
-                                <img src="${letzteAktivitaetKommentarUrl}" alt=""/>
-                              </c:when>
-                              <c:when test="${vorgang.letzterAktivitaetenVerlauf.typ=='unterstuetzerBestaetigung'}">
-                                <c:set var="unterstuetzerClass" value="yellow" />
-                                <c:if test="${vorgang.unterstuetzerCount >= SettingsVorgangIdeeUnterstuetzer}">
-                                  <c:set var="unterstuetzerClass" value="green" />
-                                </c:if>
-                                <span class="unterstuetzer_count ${unterstuetzerClass}">${vorgang.unterstuetzerCount}</span>
-                              </c:when>
-                            </c:choose>
+                          <a href="${url}" title="Übersicht zu Vorgang #${vorgang.id} aufrufen">
+                            #${vorgang.id}<br/>(${fn:trim(vorgang.adresse)})
                           </a>
                         </td>
+                        <c:if test="${vorgang.trust > 0}">
+                          <td class="icon">
+                            <span class="statistic_yellow" title="vertrauenswürdig">&#x2605;</span>
+                          </td>
+                        </c:if>
+                        <c:if test="${vorgang.prioritaet != 'mittel'}">
+                          <td class="icon">
+                            <c:choose>
+                              <c:when test="${vorgang.prioritaet == 'hoch'}">
+                                <span class="statistic_unaccepted" title="hohe Priorität">&#x25B2;</span>
+                              </c:when>
+                              <c:otherwise>
+                                <span class="statistic_accepted" title="niedrige Priorität">&#x25BC;</span>
+                              </c:otherwise>
+                            </c:choose>
+                          </td>
+                        </c:if>
                         <td class="icon">
-                          <c:if test="${vorgang.prioritaet != 'mittel'}">
-                            <c:url value="/images/prioritaet_${vorgang.prioritaet}.png" var="vorgang_prioritaet"/>
-                            <img src="${vorgang_prioritaet}"/>
-                          </c:if>
+                          <c:choose>
+                            <c:when test="${vorgang.letzterAktivitaetenVerlauf.typ == 'foto'}">
+                              <img src="${letzteAktivitaetFotoUrl}" alt="" title="neues Foto hochgeladen"/>
+                            </c:when>
+                            <c:when test="${vorgang.letzterAktivitaetenVerlauf.typ == 'lobHinweiseKritik'}">
+                              <img src="${letzteAktivitaetLobHinweiseKritikUrl}" alt="" title="Lob, Hinweise oder Kritik von Bürger/-innen eingegangen"/>
+                            </c:when>
+                            <c:when test="${vorgang.letzterAktivitaetenVerlauf.typ == 'kommentar'}">
+                              <img src="${letzteAktivitaetKommentarUrl}" alt="" title="interner Kommentar hinzugefügt"/>
+                            </c:when>
+                            <c:when test="${vorgang.letzterAktivitaetenVerlauf.typ == 'unterstuetzerBestaetigung'}">
+                              <c:set var="unterstuetzerClass" value="yellow" />
+                              <c:if test="${vorgang.unterstuetzerCount >= SettingsVorgangIdeeUnterstuetzer}">
+                                <c:set var="unterstuetzerClass" value="green" />
+                              </c:if>
+                              <span class="unterstuetzer_count ${unterstuetzerClass}" title="Anzahl der Unterstützungen auf ${vorgang.unterstuetzerCount} erhöht">${vorgang.unterstuetzerCount}</span>
+                            </c:when>
+                            <c:otherwise>
+                              <img src="${letzteAktivitaetVorgangsdatenUrl}" alt="" title="Änderung der Vorgangsdaten"/>
+                            </c:otherwise>
+                          </c:choose>
                         </td>
                       </tr>
                     </c:forEach>
@@ -188,38 +189,33 @@
             </div>
           </div>
         <util:ddpanel name="statistic_eigene_" />
+        <util:ddpaneldefaultopen name="statistic_eigene_" />
         </td>
-        <td class="space"> </td>
         <td>
-          <div class="fieldset white" id="statistic_ehemalige_panel">
+          <div class="fieldset" id="statistic_ehemalige_panel">
             <div class="fieldsettitle closepanel" id="statistic_ehemalige_tab">
               <div>
-                Ehemalige
+                Ehemalige Vorgänge
               </div>
             </div>
             <div id="statistic_ehemalige_content">
               <table class="vorgaenge">
                 <c:choose>
                   <c:when test="${not empty statistic.ehemaligeVorgaenge}">
-                    <c:url value="/images/trusted.png" var="trustedUrl"/>
                     <c:forEach items="${statistic.ehemaligeVorgaenge}" var="vorgang" varStatus="loop">
                       <c:url value="/images/${vorgang.typ}_${vorgang.status}_15.png" var="imageUrl"/>
-                      <c:url value="/vorgang/${vorgang.id}/uebersicht" var="url"/>
                       <tr>
                         <td class="icon">
-                          <a href="${url}" title="Übersicht zu Vorgang #${vorgang.id} aufrufen">
-                            <img alt="${vorgang.status}" src="${imageUrl}"  title="Status: ${vorgang.status.text}"/>
-                          </a>
+                          <img alt="${vorgang.status}" src="${imageUrl}" title="Typ: ${vorgang.typ.text}; Status: ${vorgang.status.text}"/>
                         </td>
                         <td class="icon">
-                          <c:if test="${vorgang.zustaendigkeitStatus == 'zugewiesen'}"><span style="color:#FF8800;font-weight:bold;width:15px;" title="noch nicht akzeptiert">&#x2715;</span></c:if>
-                          <c:if test="${vorgang.zustaendigkeitStatus == 'akzeptiert'}"><span style="color:#50c80f;font-weight:bold;width:15px;" title="akzeptiert">&#x2714;</span></c:if>
-                          </td>
-                          <td>
-                            <a href="${url}" title="Übersicht zu Vorgang #${vorgang.id} aufrufen">
-                            #${vorgang.id} (${vorgang.adresse})
-                            <br />&#x2794; ${vorgang.zustaendigkeit}
-                          </a>
+                          <c:if test="${vorgang.zustaendigkeitStatus == 'zugewiesen'}"><span class="statistic_unaccepted" title="noch nicht akzeptiert">&#x2715;</span></c:if>
+                          <c:if test="${vorgang.zustaendigkeitStatus == 'akzeptiert'}"><span class="statistic_accepted" title="akzeptiert">&#x2714;</span></c:if>
+                        </td>
+                        <td>
+                          <c:set value="${fx:role(vorgang.zustaendigkeit)}" var="zustaendigkeit"/>
+                          <span title="aktuell bei: ${zustaendigkeit.description}">&#x2794; ${zustaendigkeit.id}</span><br/>
+                          #${vorgang.id}<br/>(${fn:trim(vorgang.adresse)})
                         </td>
                       </tr>
                     </c:forEach>
@@ -236,10 +232,11 @@
             </div>
           </div>
         <util:ddpanel name="statistic_ehemalige_" />
+        <util:ddpaneldefaultopen name="statistic_ehemalige_" />
         </td>
         </tr>
       </table>
-
+      
       <!-- falls aktive Vorgänge mit Missbrauchsmeldungen oder redaktionelle Hinweise existieren... -->
       <c:if test="${not empty statistic.vorgaengeMissbrauchsmeldungen || not empty statistic.vorgaengeOffenNichtAkzeptiert || not empty statistic.vorgaengeInbearbeitungOhneStatusKommentar || not empty statistic.vorgaengeIdeeOffenOhneUnterstuetzung || not empty statistic.vorgaengeNichtLoesbarOhneStatuskommentar || not empty statistic.vorgaengeNichtMehrOffenNichtAkzeptiert || not empty statistic.vorgaengeOhneRedaktionelleFreigaben}">
         <div class="statistic_blocktitle">wichtige Hinweise</div>
@@ -306,7 +303,7 @@
                 <div id="statistic_hinweise_content">
                   <c:if test="${not empty statistic.vorgaengeOffenNichtAkzeptiert}">
                     <c:url value="/vorgang/${statistic.vorgaengeOffenNichtAkzeptiert[0].id}/uebersicht" var="url"/>
-                    <img alt="offen" src="${urlStaticIcon}status_offen_15.png" height="15" width="15" title="offen" class="statistic_icon"/> und seit 3 Tagen zugewiesen, aber nicht <span class="statistic_accepted" title="akzeptiert">✔</span>:<br/><a href="${url}" title="Übersicht zu Vorgang #${statistic.vorgaengeOffenNichtAkzeptiert[0].id} aufrufen">#${statistic.vorgaengeOffenNichtAkzeptiert[0].id}</a>
+                    <img alt="offen" src="${urlStaticIcon}status_offen_15.png" height="15" width="15" title="offen" class="statistic_icon"/> und seit 3 Tagen zugewiesen, aber <span class="statistic_unaccepted" title="noch nicht akzeptiert">&#x2715;</span>:<br/><a href="${url}" title="Übersicht zu Vorgang #${statistic.vorgaengeOffenNichtAkzeptiert[0].id} aufrufen">#${statistic.vorgaengeOffenNichtAkzeptiert[0].id}</a>
                   </c:if>
                   <c:if test="${not empty statistic.vorgaengeInbearbeitungOhneStatusKommentar}">
                     <c:url value="/vorgang/${statistic.vorgaengeInbearbeitungOhneStatusKommentar[0].id}/uebersicht" var="url"/>
@@ -322,7 +319,7 @@
                   </c:if>
                   <c:if test="${not empty statistic.vorgaengeNichtMehrOffenNichtAkzeptiert}">
                     <c:url value="/vorgang/${statistic.vorgaengeNichtMehrOffenNichtAkzeptiert[0].id}/uebersicht" var="url"/>
-                    zwar schon <img alt="in Bearbeitung" src="${urlStaticIcon}status_inBearbeitung_15.png" height="15" width="15" title="in Bearbeitung" class="statistic_icon"/>, aber noch nicht <span class="statistic_accepted" title="akzeptiert">✔</span>:<br/><a href="${url}" title="Übersicht zu Vorgang #${statistic.vorgaengeNichtMehrOffenNichtAkzeptiert[0].id} aufrufen">#${statistic.vorgaengeNichtMehrOffenNichtAkzeptiert[0].id}</a>
+                    zwar schon <img alt="in Bearbeitung" src="${urlStaticIcon}status_inBearbeitung_15.png" height="15" width="15" title="in Bearbeitung" class="statistic_icon"/>, aber <span class="statistic_unaccepted" title="noch nicht akzeptiert">&#x2715;</span>:<br/><a href="${url}" title="Übersicht zu Vorgang #${statistic.vorgaengeNichtMehrOffenNichtAkzeptiert[0].id} aufrufen">#${statistic.vorgaengeNichtMehrOffenNichtAkzeptiert[0].id}</a>
                   </c:if>
                   <c:if test="${not empty statistic.vorgaengeOhneRedaktionelleFreigaben}">
                     <c:url value="/vorgang/${statistic.vorgaengeOhneRedaktionelleFreigaben[0].id}/uebersicht" var="url"/>
@@ -339,7 +336,7 @@
                 </div>
                 <div id="statistic_hinweise_content">
                   <c:if test="${not empty statistic.vorgaengeOffenNichtAkzeptiert}">
-                    <img alt="offen" src="${urlStaticIcon}status_offen_15.png" height="15" width="15" title="offen" class="statistic_icon"/> und seit 3 Tagen zugewiesen, aber nicht <span class="statistic_accepted" title="akzeptiert">✔</span>:<br/>
+                    <img alt="offen" src="${urlStaticIcon}status_offen_15.png" height="15" width="15" title="offen" class="statistic_icon"/> und seit 3 Tagen zugewiesen, aber <span class="statistic_unaccepted" title="noch nicht akzeptiert">&#x2715;</span>:<br/>
                     <c:forEach items="${statistic.vorgaengeOffenNichtAkzeptiert}" var="offenNichtAkzeptiertVorgang" varStatus="loop">
                       <c:url value="/vorgang/${offenNichtAkzeptiertVorgang.id}/uebersicht" var="url"/>
                       <c:choose>
@@ -407,7 +404,7 @@
                     </c:forEach>
                   </c:if>
                   <c:if test="${not empty statistic.vorgaengeNichtMehrOffenNichtAkzeptiert}">
-                    zwar schon <img alt="in Bearbeitung" src="${urlStaticIcon}status_inBearbeitung_15.png" height="15" width="15" title="in Bearbeitung" class="statistic_icon"/>, aber noch nicht <span class="statistic_accepted" title="akzeptiert">✔</span>:<br/>
+                    zwar schon <img alt="in Bearbeitung" src="${urlStaticIcon}status_inBearbeitung_15.png" height="15" width="15" title="in Bearbeitung" class="statistic_icon"/>, aber <span class="statistic_unaccepted" title="noch nicht akzeptiert">&#x2715;</span>:<br/>
                     <c:forEach items="${statistic.vorgaengeNichtMehrOffenNichtAkzeptiert}" var="nichtMehrOffenNichtAkzeptiert" varStatus="loop">
                       <c:url value="/vorgang/${nichtMehrOffenNichtAkzeptiert.id}/uebersicht" var="url"/>
                       <c:choose>

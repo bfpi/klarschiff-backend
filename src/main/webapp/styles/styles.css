@@ -1021,10 +1021,6 @@ table.vorgaenge tr td a span.unterstuetzer_count.green {
   background-color: #009900;
 }
 
-div.fieldset.white {
-  background-color: #ffffff;
-}
-
 div.statistic_blocktitle {
   font-size: 12px;
   font-weight: bold;
@@ -1058,6 +1054,18 @@ img.statistic_icon {
 
 span.statistic_accepted {
   color: #50c80f;
+  font-weight: bold;
+  width: 15px;
+}
+
+span.statistic_unaccepted {
+  color: #ff8800;
+  font-weight: bold;
+  width: 15px;
+}
+
+span.statistic_yellow {
+  color: #fff63d;
   font-weight: bold;
   width: 15px;
 }
