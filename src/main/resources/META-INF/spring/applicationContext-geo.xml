@@ -38,5 +38,7 @@
         p:wfsZufiOviBuffer="${geo.wfszufi.ovi.buffer}"
         p:wfsZufiCapabilitiesUrl="${geo.wfszufi.capabilities.url}"
         p:adressensucheUrl="${geo.adressensuche.url}"
+        p:adressensucheKey="${geo.adressensuche.key}"
+        p:adressensucheLocalisator="${geo.adressensuche.localisator}"
   />
 </beans>

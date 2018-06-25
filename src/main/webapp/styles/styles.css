@@ -1709,15 +1709,6 @@ div.resultElement:hover span, div.result-element:hover span {
   color:#000000;
 }
 
-div.resultElement a, div.result-element a {
-  color: #164194;
-  text-decoration:none;
-}
-
-div.resultElement a:hover, div.result-element a:hover {
-  color:#d81920;
-}
-
 
 /*
     Colorbox Core Style:

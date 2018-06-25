@@ -182,7 +182,11 @@ Konfigurationen zur Anzeige von Karten im Backend
 
 #### Bereich 'geo.adressensuche.'
   - `geo.adressensuche.url`:
-    - URL zur Straßen- und Adresssuche
+    - URL zur Adressensuche
+  - `geo.adressensuche.key`:
+    - API-Key für Adressensuche
+  - `geo.adressensuche.localisator`:
+    - String zur Voreingrenzung der Resultate der Adressensuche (z.B. `rostock`, um Resultate der Adressensuche auf Rostock voreinzugrenzen)
 
 #### Bereich 'proxy.'
 - Proxyeinstellungen, die der Server zur Kommunikation mit dem Internet benötigt. Diese werden z.B. für die Kommunikation mit dem WFS benötigt

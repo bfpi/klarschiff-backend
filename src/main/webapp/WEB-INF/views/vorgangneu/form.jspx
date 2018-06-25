@@ -96,12 +96,15 @@
             searchField.keyup(function() {
               if ($(this).val().length >= 3) {
                 var searchText = searchField.val();
-
                 $.ajax({
-                  url: '${geoService.adressensucheUrl}',
+                  url: '${geoService.adressensucheUrl}' + 'key=' + '${geoService.adressensucheKey}',
                   dataType: 'json',
                   data: {
-                    searchtext: searchText
+                    query: '${geoService.adressensucheLocalisator}' + ' ' + searchText,
+                    type: 'search',
+                    class: 'address',
+                    shape: 'bbox',
+                    limit: '5'
                   },
                   success: showResults
                 });
@@ -132,11 +135,29 @@
               }
             }).val(hinweisBeschreibung);
           });
-
+        
+          // Resultate der Adressensuche
           function showResults(json) {
+            // Resultate leeren
             results.children().remove();
-            results.append(json.result);
+            // JSON durchgehen und je Feature ein Resultat bauen
+            jQuery.each(json.features, function(index, item) {
+              var titel = item.properties._title_.substring(item.properties._title_.lastIndexOf(', ') + 2);
+              if (item.properties.objektgruppe === 'Gemeindeteil')
+                results.append('<div class="resultElement">' + titel + '<span>Ortsteil</span></div>');
+              else
+                results.append('<div class="resultElement">' + titel + '<small style="padding-left:3px">(' + item.properties.abkuerzung + ')</small><span>' + item.properties.objektgruppe + '</span></div>');
+            });
+            // Resultate einblenden
             results.fadeIn();
+            // bei Klick auf Resultat Karte auf dieses zoomen
+            results.children().on('click', function() {
+              var featureGeometry = json.features[$(this).index()].geometry;
+              if (featureGeometry.type === 'Point')
+                map.zoomToExtent(new OpenLayers.Bounds(featureGeometry.coordinates[0], featureGeometry.coordinates[1], featureGeometry.coordinates[0], featureGeometry.coordinates[1]));
+              else
+                map.zoomToExtent(new OpenLayers.Bounds(featureGeometry.coordinates[0][1][0], featureGeometry.coordinates[0][0][1], featureGeometry.coordinates[0][0][0], featureGeometry.coordinates[0][2][1]));
+            });
           }
         </script>
 

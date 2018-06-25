@@ -33,6 +33,7 @@ import com.vividsolutions.jts.io.WKTReader;
 import com.vividsolutions.jts.io.WKTWriter;
 import static de.bfpi.tools.GeoTools.transformPosition;
 import static de.bfpi.tools.GeoTools.wgs84Projection;
+import de.fraunhofer.igd.klarschiff.service.geo.GeoService;
 import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
 import de.fraunhofer.igd.klarschiff.service.security.User;
 import de.fraunhofer.igd.klarschiff.service.settings.PropertyPlaceholderConfigurer;
@@ -322,6 +323,12 @@ public class Vorgang implements Serializable {
     = PropertyPlaceholderConfigurer.getPropertyValue("geo.map.projection");
 
   /**
+   * geoService wird benötigt, um die Adresse zu ermitteln
+   */
+  @Transient
+  private GeoService geoService = new GeoService();
+
+  /**
    * securityService wird benötigt, um das Trust-Level zu ermitteln
    */
   @Transient
@@ -346,6 +353,8 @@ public class Vorgang implements Serializable {
   @Transient
   public void setOviWkt(String oviWkt) throws Exception {
     ovi = (StringUtils.isBlank(oviWkt)) ? null : (Point) wktReader.read(oviWkt);
+    String adresse = geoService.calculateAddress(getOvi(), false);
+    setAdresse(adresse);
   }
 
   /**
@@ -390,6 +399,8 @@ public class Vorgang implements Serializable {
     if (position != null) {
       ovi = transformPosition((Point) wktReader.read(position),
         wgs84Projection, internalProjection);
+      String adresse = geoService.calculateAddress(getOvi(), false);
+      setAdresse(adresse);
     }
   }
 
@@ -466,6 +477,8 @@ public class Vorgang implements Serializable {
 
   public void setOvi(Point ovi) {
     this.ovi = ovi;
+    String adresse = geoService.calculateAddress(ovi, false);
+    setAdresse(adresse);
   }
 
   public EnumVorgangTyp getTyp() {

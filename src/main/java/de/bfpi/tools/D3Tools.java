@@ -1,5 +1,6 @@
 package de.bfpi.tools;
 
+import de.fraunhofer.igd.klarschiff.service.geo.GeoService;
 import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
 import de.fraunhofer.igd.klarschiff.service.settings.SettingsService;
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
@@ -22,6 +23,9 @@ import org.jdom.input.SAXBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class D3Tools {
+
+  @Autowired
+  GeoService geoService;
 
   @Autowired
   SecurityService securityService;
@@ -47,7 +51,7 @@ public class D3Tools {
       String ret = vorgang.getKategorie().getD3().getUrl();
       ret = ret.replace("{ks_id}", vorgang.getId().toString());
       ret = ret.replace("{ks_user}", securityService.getCurrentUser().getId().toLowerCase());
-      ret = ret.replace("{ks_address}", vorgang.getAdresse());
+      ret = ret.replace("{ks_address}", geoService.calculateAddress(vorgang.getOvi(), true));
       return ret;
     }
     return null;
@@ -78,7 +82,7 @@ public class D3Tools {
 
   public String getParameterKsAddress(Vorgang vorgang) {
     if (vorgang.getKategorie().getD3() != null) {
-      return vorgang.getAdresse();
+      return geoService.calculateAddress(vorgang.getOvi(), true);
     }
     return null;
   }

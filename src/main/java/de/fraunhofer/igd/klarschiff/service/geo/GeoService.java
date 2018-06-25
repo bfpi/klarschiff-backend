@@ -1,12 +1,17 @@
 package de.fraunhofer.igd.klarschiff.service.geo;
 
 import static de.fraunhofer.igd.klarschiff.util.NumberUtil.min;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
+import javax.persistence.Transient;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -18,6 +23,8 @@ import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.GeoTools;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
@@ -87,6 +94,10 @@ public class GeoService {
   String wfsVorgaengeFeaturePrefix;
   String wfsVorgaengeFeatureType;
 
+  String adressensucheUrl;
+  String adressensucheKey;
+  String adressensucheLocalisator;
+
   public enum WfsZufiExceptionHandling {
 
     warn, error
@@ -95,10 +106,11 @@ public class GeoService {
   String wfsZufiCapabilitiesUrl;
   double wfsZufiOviBuffer = 10d;
 
-  String adressensucheUrl;
-
   DataStore dataStore;
   FilterFactory2 filterFactory;
+
+  @Transient
+  private static SettingsService localSettingsService = new SettingsService();
 
   /**
    * Initialisierung für die Nutzung des WFS und in diesem Zusammenhang ggf. das Setzen von
@@ -197,6 +209,91 @@ public class GeoService {
     String ymax = String.valueOf((int) (point.getY() + 200));
     String id = String.valueOf(vorgang.getId());
     return mapExternUrl.replaceAll("%xmin%", xmin).replaceAll("%ymin%", ymin).replaceAll("%xmax%", xmax).replaceAll("%ymax%", ymax).replaceAll("%x%", x).replaceAll("%y%", y).replaceAll("%id%", id);
+  }
+
+  /**
+   * Ermittlung der Adresse
+   *
+   * @param point Punktkoordinate, für die die Adresse ermittelt werden soll
+   * @return Adresse
+   */
+  public String calculateAddress(Point point, Boolean d3) {
+    try {
+      String x = String.valueOf((int) point.getX());
+      String y = String.valueOf((int) point.getY());
+      String adresse = null;
+      String url = localSettingsService.getPropertyValue("geo.adressensuche.url");
+      url += "key=" + localSettingsService.getPropertyValue("geo.adressensuche.key");
+      url += "&query=" + x + "," + y;
+      url += "&type=reverse";
+      url += "&class=address";
+      if (!d3)
+        url += "&radius=100";
+      url += "&in_epsg=25833";
+
+      URL httpUrl = new URL(url);
+      HttpURLConnection connection = (HttpURLConnection) httpUrl.openConnection();
+      connection.setRequestMethod("GET");
+
+      BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+      StringBuilder stringBuilder = new StringBuilder();
+      String line;
+      while ((line = bufferedReader.readLine()) != null) {
+        stringBuilder.append(line + "\n");
+      }
+      bufferedReader.close();
+
+      JSONObject jsonObject = new JSONObject(stringBuilder.toString());
+      JSONArray features = jsonObject.getJSONArray("features");
+      if (d3) {
+        for (int i = 0; i < features.length(); i++) {
+          JSONObject feature = features.getJSONObject(i);
+          JSONObject properties = feature.getJSONObject("properties");
+          String objektgruppe = properties.getString("objektgruppe");
+          if (StringUtils.equals(objektgruppe, "Straße")) {
+            adresse = properties.getString("strasse_name");
+            adresse += " (";
+            adresse += properties.getString("gemeindeteil_name");
+            adresse += "-";
+            adresse += properties.getString("strasse_schluessel");
+            adresse += ")";
+            break;
+          }
+        }
+      } else {
+        for (int i = 0; i < features.length(); i++) {
+          JSONObject feature = features.getJSONObject(i);
+          JSONObject properties = feature.getJSONObject("properties");
+          String objektgruppe = properties.getString("objektgruppe");
+          if (StringUtils.equals(objektgruppe, "Adresse")) {
+            adresse = properties.getString("strasse_name");
+            adresse += " ";
+            adresse += properties.getString("hausnummer");
+            if (!properties.get("hausnummer_zusatz").equals(null))
+              adresse += properties.getString("hausnummer_zusatz");
+            adresse += " (";
+            adresse += properties.getString("abkuerzung");
+            adresse += ")";
+            Double entfernung = properties.getDouble("entfernung");
+            if (entfernung > 50)
+              adresse = "bei " + adresse;
+            break;
+          } else if (StringUtils.equals(objektgruppe, "Straße") && StringUtils.isEmpty(adresse)) {
+            adresse = properties.getString("strasse_name");
+            Double entfernung = properties.getDouble("entfernung");
+            if (entfernung > 50)
+              adresse = "bei " + adresse;
+          }
+        }
+      }
+
+      if (!d3 && StringUtils.isEmpty(adresse))
+        adresse = "nicht zuordenbar";
+
+      return adresse;
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
   }
 
   /**
@@ -599,6 +696,22 @@ public class GeoService {
 
   public void setAdressensucheUrl(String adressensucheUrl) {
     this.adressensucheUrl = adressensucheUrl;
+  }
+
+  public String getAdressensucheKey() {
+    return adressensucheKey;
+  }
+
+  public void setAdressensucheKey(String adressensucheKey) {
+    this.adressensucheKey = adressensucheKey;
+  }
+
+  public String getAdressensucheLocalisator() {
+    return adressensucheLocalisator;
+  }
+
+  public void setAdressensucheLocalisator(String adressensucheLocalisator) {
+    this.adressensucheLocalisator = adressensucheLocalisator;
   }
 
   public DataStore getDataStore() {
