@@ -126,8 +126,16 @@ public class VorgangController {
 
     if (StringUtils.isNotEmpty(oviWkt)) {
       vorgang.setOviWkt(oviWkt);
+      String alteAdresse = vorgang.getAdresse();
       vorgang.setAdresseByPoint(vorgang.getOvi());
       vorgangDao.merge(vorgang);
+      String neueAdresse = vorgang.getAdresse();
+      // Verlauf: Adresse
+      if (!StringUtils.equals(alteAdresse, neueAdresse)) {
+        verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.adresse,
+          StringUtils.abbreviate(alteAdresse, 100),
+          StringUtils.abbreviate(neueAdresse, 100));
+      }
       featureService.removeNonUpdatableFeatures(vorgang);
     }
 

@@ -81,6 +81,7 @@
             />
         </div>
 
+        <c:url value="/service/adressensuche" var="url"/>
         <script type="text/javascript">
           function isBlank(obj) {
             return (!obj || $.trim(obj) === "");
@@ -97,14 +98,10 @@
               if ($(this).val().length >= 3) {
                 var searchText = searchField.val();
                 $.ajax({
-                  url: '${geoService.adressensucheUrl}' + 'key=' + '${geoService.adressensucheKey}',
+                  url: '${url}',
                   dataType: 'json',
                   data: {
-                    query: '${geoService.adressensucheLocalisator}' + ' ' + searchText,
-                    type: 'search',
-                    class: 'address',
-                    shape: 'bbox',
-                    limit: '5'
+                    query: searchText
                   },
                   success: showResults
                 });

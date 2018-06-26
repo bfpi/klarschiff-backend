@@ -5,6 +5,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -207,6 +208,42 @@ public class GeoService {
     String ymax = String.valueOf((int) (point.getY() + 200));
     String id = String.valueOf(vorgang.getId());
     return mapExternUrl.replaceAll("%xmin%", xmin).replaceAll("%ymin%", ymin).replaceAll("%xmax%", xmax).replaceAll("%ymax%", ymax).replaceAll("%x%", x).replaceAll("%y%", y).replaceAll("%id%", id);
+  }
+
+  /**
+   * Adressensuche
+   *
+   * @param query Suchtext
+   * @return Adresse
+   */
+  public String searchAddress(String query) {
+    try {
+      String url = PropertyPlaceholderConfigurer.getPropertyValue("geo.adressensuche.url");
+      url += "key=" + PropertyPlaceholderConfigurer.getPropertyValue("geo.adressensuche.key");
+      url += "&query=" + URLEncoder.encode(!StringUtils.isBlank(settingsService.getPropertyValue("geo.adressensuche.localisator")) ? settingsService.getPropertyValue("geo.adressensuche.localisator") + " " + query : query, "UTF-8");
+      url += "&type=search";
+      url += "&class=address";
+      url += "&shape=bbox";
+      url += "&limit=5";
+      
+      URL httpUrl = new URL(url);
+      HttpURLConnection connection = (HttpURLConnection) httpUrl.openConnection();
+      connection.setRequestMethod("GET");
+
+      BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+      StringBuilder stringBuilder = new StringBuilder();
+      String line;
+      while ((line = bufferedReader.readLine()) != null) {
+        stringBuilder.append(line + "\n");
+      }
+      bufferedReader.close();
+
+      return stringBuilder.toString();
+    }
+    catch (Exception e) {
+      logger.error("Die Adressensuche funktioniert nicht richtig.");
+      return null;
+    }
   }
 
   /**

@@ -28,6 +28,7 @@ import de.fraunhofer.igd.klarschiff.dao.TrashmailDao;
 import de.fraunhofer.igd.klarschiff.service.classification.ClassificationService;
 import de.fraunhofer.igd.klarschiff.service.image.ImageService;
 import de.fraunhofer.igd.klarschiff.service.mail.MailService;
+import de.fraunhofer.igd.klarschiff.service.geo.GeoService;
 import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
 import de.fraunhofer.igd.klarschiff.service.security.User;
 import de.fraunhofer.igd.klarschiff.service.settings.PropertyPlaceholderConfigurer;
@@ -121,6 +122,9 @@ public class BackendController {
   @Autowired
   SettingsService settingsService;
 
+  @Autowired
+  GeoService geoService;
+
   ObjectMapper mapper = new ObjectMapper();
 
   private static final String internalProjection = PropertyPlaceholderConfigurer.getPropertyValue("geo.map.projection");
@@ -212,7 +216,6 @@ public class BackendController {
         vorgang.setStatus(EnumVorgangStatus.offen);
         vorgang.setStatusDatum(new Date());
         vorgangDao.persist(vorgang);
-
         vorgang.setZustaendigkeit(classificationService.calculateZustaendigkeitforVorgang(vorgang).getId());
         vorgang.setZustaendigkeitFrontend(securityService.getZustaendigkeit(vorgang.getZustaendigkeit()).getL());
         vorgang.setZustaendigkeitStatus(EnumZustaendigkeitStatus.zugewiesen);
@@ -1194,6 +1197,26 @@ logger.error("positionWGS84: " + positionWGS84);
     } catch (Exception e) {
       logger.warn(e);
       sendError(response, e);
+    }
+  }
+
+  /**
+   * Die Methode verarbeitet den GET-Request auf der URL <code>/adressensuche</code><br>
+   *
+   * @param response Response in das das Ergebnis direkt geschrieben wird
+   * @throws java.io.IOException
+   */
+  @RequestMapping(value = "/adressensuche", method = RequestMethod.GET)  
+  @ResponseBody
+  public void adressensuche(
+    @RequestParam(value = "query", required = false) String query,
+    HttpServletResponse response) throws IOException {
+
+    try {
+      sendOk(response, geoService.searchAddress(query));
+    } catch (Exception ex) {
+      java.util.logging.Logger.getLogger(BackendController.class.getName()).log(Level.SEVERE, null, ex);
+      sendError(response, ex);
     }
   }
 
