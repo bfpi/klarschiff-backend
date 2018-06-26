@@ -1,7 +1,13 @@
 package de.bfpi.tools;
 
+import javax.persistence.Transient;
 import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.geom.PrecisionModel;
+import com.vividsolutions.jts.io.ParseException;
+import com.vividsolutions.jts.io.WKTReader;
+import org.apache.commons.lang.StringUtils;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;
 import org.opengis.geometry.MismatchedDimensionException;
@@ -12,6 +18,27 @@ import org.opengis.referencing.operation.TransformException;
 public class GeoTools {
 
   public static final String wgs84Projection = "EPSG:4326";
+
+  @Transient
+  private static GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(), 25833);
+
+  @Transient
+  private static WKTReader wktReader = new WKTReader(geometryFactory);
+
+  /**
+   * Wandelt einen WKT-Punkt in einen Punkt im Koordinatenformat [LAT, LONG]
+   *
+   * @param point WKT
+   * @return Point im Koordinatenformat [LAT, LONG]
+   * @throws com.vividsolutions.jts.io.ParseException
+   */
+  public static Point pointWktToPoint(String pointWkt) {
+    try {
+      return (StringUtils.isBlank(pointWkt)) ? null : (Point) wktReader.read(pointWkt);
+    } catch (ParseException e) {
+      return null;
+    }
+  }
 
   /**
    * Sichere Tranformation eines Punktes von einer Projektion in eine andere. Berücksichtigung der

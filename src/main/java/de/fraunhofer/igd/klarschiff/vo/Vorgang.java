@@ -353,8 +353,6 @@ public class Vorgang implements Serializable {
   @Transient
   public void setOviWkt(String oviWkt) throws Exception {
     ovi = (StringUtils.isBlank(oviWkt)) ? null : (Point) wktReader.read(oviWkt);
-    String adresse = geoService.calculateAddress(getOvi(), false);
-    setAdresse(adresse);
   }
 
   /**
@@ -399,8 +397,6 @@ public class Vorgang implements Serializable {
     if (position != null) {
       ovi = transformPosition((Point) wktReader.read(position),
         wgs84Projection, internalProjection);
-      String adresse = geoService.calculateAddress(getOvi(), false);
-      setAdresse(adresse);
     }
   }
 
@@ -447,6 +443,11 @@ public class Vorgang implements Serializable {
     this.adresse = adresse;
   }
 
+  public void setAdresseByPoint(Point point) {
+    String adresse = geoService.calculateAddress(point, false);
+    this.adresse = adresse;
+  }
+
   public String getFlurstueckseigentum() {
     return flurstueckseigentum;
   }
@@ -477,8 +478,6 @@ public class Vorgang implements Serializable {
 
   public void setOvi(Point ovi) {
     this.ovi = ovi;
-    String adresse = geoService.calculateAddress(ovi, false);
-    setAdresse(adresse);
   }
 
   public EnumVorgangTyp getTyp() {

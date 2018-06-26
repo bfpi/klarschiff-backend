@@ -41,6 +41,7 @@ import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 import de.fraunhofer.igd.klarschiff.service.classification.Attribute;
+import de.fraunhofer.igd.klarschiff.service.settings.PropertyPlaceholderConfigurer;
 import de.fraunhofer.igd.klarschiff.service.settings.SettingsService;
 import de.fraunhofer.igd.klarschiff.util.LogUtil;
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
@@ -108,9 +109,6 @@ public class GeoService {
 
   DataStore dataStore;
   FilterFactory2 filterFactory;
-
-  @Transient
-  private static SettingsService localSettingsService = new SettingsService();
 
   /**
    * Initialisierung für die Nutzung des WFS und in diesem Zusammenhang ggf. das Setzen von
@@ -221,15 +219,20 @@ public class GeoService {
     try {
       String x = String.valueOf((int) point.getX());
       String y = String.valueOf((int) point.getY());
+      
+LogUtil.info("x: " + x + "; y: " + y);
+
       String adresse = null;
-      String url = localSettingsService.getPropertyValue("geo.adressensuche.url");
-      url += "key=" + localSettingsService.getPropertyValue("geo.adressensuche.key");
+      String url = PropertyPlaceholderConfigurer.getPropertyValue("geo.adressensuche.url");
+      url += "key=" + PropertyPlaceholderConfigurer.getPropertyValue("geo.adressensuche.key");
       url += "&query=" + x + "," + y;
       url += "&type=reverse";
       url += "&class=address";
       if (!d3)
         url += "&radius=100";
       url += "&in_epsg=25833";
+      
+LogUtil.info("URL: " + url);
 
       URL httpUrl = new URL(url);
       HttpURLConnection connection = (HttpURLConnection) httpUrl.openConnection();
@@ -291,8 +294,10 @@ public class GeoService {
         adresse = "nicht zuordenbar";
 
       return adresse;
-    } catch (Exception e) {
-      throw new RuntimeException(e);
+    }
+    catch (Exception e) {
+      logger.error("Die Ermittlung der Adresse funktioniert nicht richtig. Alle Adressen werden auf nicht zuordenbar gesetzt.");
+      return "nicht zuordenbar";
     }
   }
 

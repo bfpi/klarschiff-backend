@@ -30,6 +30,7 @@ import de.fraunhofer.igd.klarschiff.service.image.ImageService;
 import de.fraunhofer.igd.klarschiff.service.mail.MailService;
 import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
 import de.fraunhofer.igd.klarschiff.service.security.User;
+import de.fraunhofer.igd.klarschiff.service.settings.PropertyPlaceholderConfigurer;
 import de.fraunhofer.igd.klarschiff.service.settings.SettingsService;
 import de.fraunhofer.igd.klarschiff.vo.Auftrag;
 import de.fraunhofer.igd.klarschiff.vo.EnumAuftragStatus;
@@ -59,6 +60,13 @@ import java.util.HashMap;
 import java.util.Objects;
 import java.util.logging.Level;
 import org.codehaus.jackson.map.ObjectMapper;
+import com.vividsolutions.jts.geom.Point;
+import static de.bfpi.tools.GeoTools.pointWktToPoint;
+import static de.bfpi.tools.GeoTools.transformPosition;
+import static de.bfpi.tools.GeoTools.wgs84Projection;
+import org.opengis.geometry.MismatchedDimensionException;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.operation.TransformException;
 
 /**
  * Der Controller dient als Schnittstelle für das Frontend
@@ -115,6 +123,8 @@ public class BackendController {
 
   ObjectMapper mapper = new ObjectMapper();
 
+  private static final String internalProjection = PropertyPlaceholderConfigurer.getPropertyValue("geo.map.projection");
+
   /**
    * Die Methode verarbeitet den POST-Request auf der URL <code>/service/vorgang</code><br>
    * Beschreibung: erstellt einen neuen Vorgang
@@ -127,6 +137,7 @@ public class BackendController {
    * @param kategorie Kategorie
    * @param oviWkt Position als WKT
    * @param positionWGS84 Position im WGS84 Format
+   * @param adresse Adresse
    * @param resultObjectOnSubmit <code>true</code> - gibt den neuen Vorgangs als Ergebnis zurück
    * @param resultHashOnSubmit <code>true</code> - gibt den Hash zum Bestätigen als Ergebnis zurück
    * @param typ Vorgangstyp
@@ -143,6 +154,7 @@ public class BackendController {
     @RequestParam(value = "kategorie", required = false) Long kategorie,
     @RequestParam(value = "oviWkt", required = false) String oviWkt,
     @RequestParam(value = "positionWGS84", required = false) String positionWGS84,
+    @RequestParam(value = "adresse", required = false) String adresse,
     @RequestParam(value = "resultObjectOnSubmit", required = false) Boolean resultObjectOnSubmit,
     @RequestParam(value = "resultHashOnSubmit", required = false) Boolean resultHashOnSubmit,
     @RequestParam(value = "typ", required = false) String typ,
@@ -189,7 +201,7 @@ public class BackendController {
 
       vorgang.setStatus(EnumVorgangStatus.gemeldet);
       vorgang.setStatusDatum(new Date());
-      vorgangParameterUebernehmen(autorEmail, vorgang, typ, kategorie, positionWGS84, oviWkt,
+      vorgangParameterUebernehmen(autorEmail, vorgang, typ, kategorie, positionWGS84, oviWkt, adresse,
         beschreibung, fotowunsch, bild, false);
 
       if (authCode != null && authCode.equals(settingsService.getPropertyValue("auth.kod_code")) && vorgang.autorAussendienst()) {
@@ -239,6 +251,7 @@ public class BackendController {
    * @param kategorie Kategorie
    * @param oviWkt Position als WKT
    * @param positionWGS84
+   * @param adresse
    * @param typ Vorgangstyp
    * @param status Status
    * @param statusKommentar Statuskommentar
@@ -261,6 +274,7 @@ public class BackendController {
     @RequestParam(value = "kategorie", required = false) Long kategorie,
     @RequestParam(value = "oviWkt", required = false) String oviWkt,
     @RequestParam(value = "positionWGS84", required = false) String positionWGS84,
+    @RequestParam(value = "adresse", required = false) String adresse,
     @RequestParam(value = "typ", required = false) String typ,
     @RequestParam(value = "status", required = false) String status,
     @RequestParam(value = "statusKommentar", required = false) String statusKommentar,
@@ -293,7 +307,7 @@ public class BackendController {
       if (vorgang == null) {
         throw new BackendControllerException(200, "[id] unbekannt", "Es konnte kein Vorgang mit der übergebenen ID gefunden werden.");
       }
-      vorgangParameterUebernehmen(autorEmail, vorgang, typ, kategorie, positionWGS84, oviWkt,
+      vorgangParameterUebernehmen(autorEmail, vorgang, typ, kategorie, positionWGS84, oviWkt, adresse,
         beschreibung, fotowunsch, bild, true);
 
       if (prioritaet != null) {
@@ -376,6 +390,7 @@ public class BackendController {
    * @param fotowunsch Fotowunsch
    * @param kategorie Kategorie
    * @param oviWkt Position als WKT
+   * @param adresse Adresse
    * @param verlaufErgaenzen VerlaufErgaenzen
    * @param positionWGS84
    * @param typ Vorgangstyp
@@ -388,6 +403,7 @@ public class BackendController {
     Long kategorie,
     String positionWGS84,
     String oviWkt,
+    String adresse,
     String beschreibung,
     Boolean fotowunsch,
     String bild,
@@ -448,6 +464,23 @@ public class BackendController {
 
     if (!vorgang.getOvi().within(grenzenDao.getStadtgrenze().getGrenze())) {
       throw new BackendControllerException(13, "[position] außerhalb", "Die neue Meldung befindet sich außerhalb des gültigen Bereichs.");
+    }
+
+    if (adresse != null) {
+      vorgang.setAdresse(adresse);
+    } else {
+      if (oviWkt != null) {
+        Point point = pointWktToPoint(oviWkt);
+        vorgang.setAdresseByPoint(point);
+      } else if (positionWGS84 != null) {
+        try {
+          Point point = transformPosition(pointWktToPoint(positionWGS84), wgs84Projection, internalProjection);
+logger.error("positionWGS84: " + positionWGS84);
+          vorgang.setAdresseByPoint(point);
+        } catch (FactoryException|MismatchedDimensionException|TransformException e) {
+          logger.error(e);
+        }
+      }
     }
 
     if (beschreibung != null) {

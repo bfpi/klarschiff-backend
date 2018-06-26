@@ -126,6 +126,7 @@ public class VorgangController {
 
     if (StringUtils.isNotEmpty(oviWkt)) {
       vorgang.setOviWkt(oviWkt);
+      vorgang.setAdresseByPoint(vorgang.getOvi());
       vorgangDao.merge(vorgang);
       featureService.removeNonUpdatableFeatures(vorgang);
     }
