@@ -161,8 +161,14 @@
                 <c:when test="${verlaufItem.typ=='kommentar'}">
                   Interner Kommentar angelegt: ${verlaufItem.wertNeu}
                 </c:when>
+                <c:when test="${verlaufItem.typ=='fotoBestaetigung'}">
+                  Neues Foto von externem Autor bestätigt
+                </c:when>
                 <c:when test="${verlaufItem.typ=='foto'}">
-                  Neues Foto hinzugefügt
+                  <c:choose>
+                    <c:when test="${verlaufItem.nutzer!=null}">Neues Foto hinzugefügt</c:when>
+                    <c:otherwise>Neues Foto von externem Autor hinzugefügt</c:otherwise>
+                  </c:choose>
                 </c:when>
                 <c:when test="${verlaufItem.typ=='prioritaet'}">
                   Priorität geändert in: ${verlaufItem.wertNeu}

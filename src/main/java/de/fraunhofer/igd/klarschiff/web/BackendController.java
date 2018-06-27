@@ -710,6 +710,10 @@ public class BackendController {
 
       verlaufDao.addVerlaufToVorgang(unterstuetzer.getVorgang(), EnumVerlaufTyp.unterstuetzerBestaetigung, null, null);
       vorgangDao.merge(unterstuetzer);
+      
+      unterstuetzer.getVorgang().setAdresse(unterstuetzer.getVorgang().getAdresse());
+
+      vorgangDao.merge(unterstuetzer, false);
 
       return "backend/bestaetigungOk";
 
@@ -1101,6 +1105,10 @@ public class BackendController {
 
       verlaufDao.addVerlaufToVorgang(missbrauchsmeldung.getVorgang(), EnumVerlaufTyp.missbrauchsmeldungBestaetigung, null, null);
       vorgangDao.merge(missbrauchsmeldung);
+      
+      missbrauchsmeldung.getVorgang().setAdresse(missbrauchsmeldung.getVorgang().getAdresse());
+
+      vorgangDao.merge(missbrauchsmeldung, false);
 
       return "backend/bestaetigungOk";
 
@@ -1802,6 +1810,10 @@ public class BackendController {
         throw new BackendControllerException(11, "[bild] nicht korrekt", "Das Bild ist fehlerhaft und kann nicht verarbeitet werden.", e);
       }
       vorgangDao.merge(foto);
+      
+      foto.getVorgang().setAdresse(foto.getVorgang().getAdresse());
+
+      vorgangDao.merge(foto, false);
 
       mailService.sendFotoBestaetigungMail(foto, email, vorgang);
 
@@ -1853,6 +1865,10 @@ public class BackendController {
       vorgang.setFotoFreigabeStatus(EnumFreigabeStatus.intern);
       vorgang.setFotowunsch(false);
       vorgangDao.merge(vorgang);
+      
+      foto.getVorgang().setAdresse(foto.getVorgang().getAdresse());
+
+      vorgangDao.merge(foto, false);
 
       return "backend/bestaetigungOk";
 
