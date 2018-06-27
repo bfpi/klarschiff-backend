@@ -240,6 +240,22 @@ public class BackendController {
         vorgangDao.merge(vorgang, false);
       } else {
         vorgangDao.persist(vorgang);
+        
+        String neueAdresse = "nicht zuordenbar";
+        if (oviWkt != null) {
+          Point point = pointWktToPoint(oviWkt);
+          neueAdresse = geoService.calculateAddress(point, false);
+        } else if (positionWGS84 != null) {
+          try {
+            Point point = transformPosition(pointWktToPoint(positionWGS84), wgs84Projection, internalProjection);
+            neueAdresse = geoService.calculateAddress(point, false);
+          } catch (FactoryException|MismatchedDimensionException|TransformException e) {
+            logger.error(e);
+          }
+        }
+        vorgang.setAdresse(neueAdresse);
+
+        vorgangDao.merge(vorgang, false);
         mailService.sendVorgangBestaetigungMail(vorgang);
       }
 
@@ -579,7 +595,7 @@ public class BackendController {
       String neueAdresse = geoService.calculateAddress(vorgang.getOvi(), false);
       vorgang.setAdresse(neueAdresse);
 
-      vorgangDao.merge(vorgang);
+      vorgangDao.merge(vorgang, false);
 
       return "backend/bestaetigungOk";
 
