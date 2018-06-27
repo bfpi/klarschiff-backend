@@ -81,6 +81,22 @@ public class VorgangDao {
   }
 
   /**
+   * Das Objekt wird in der DB gespeichert. Bei Vorgängen wird ggf. geprüft, ob diese sich geändert
+   * haben. Entsprechend werden die Verlaufsdaten zum Vorgang ergänzt.
+   *
+   * @param o Das zu speichernde Objekt
+   * @param checkForUpdateEnable Sollen Vorgänge auf Änderung geprüft werden und somit ggf. der
+   * Verlauf ergänzt werden?
+   */
+  @Transactional
+  public void persist(Object o, boolean checkForUpdateEnable) {
+    if (checkForUpdateEnable && o instanceof Vorgang) {
+      checkForUpdate((Vorgang) o);
+    }
+    em.persist(o);
+  }
+
+  /**
    * Das Objekt wird in der DB gespeichert.
    *
    * @param o Das zu speichernde Objekt
@@ -199,6 +215,12 @@ public class VorgangDao {
         verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.adresse,
           StringUtils.abbreviate(vorgangOld.getAdresse(), 100),
           StringUtils.abbreviate(vorgang.getAdresse(), 100));
+      }
+      //Ovi
+      if (!StringUtils.equals(vorgangOld.getOviWkt(), vorgang.getOviWkt())) {
+        verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.ovi,
+          StringUtils.abbreviate(vorgangOld.getOviWkt(), 100),
+          StringUtils.abbreviate(vorgang.getOviWkt(), 100));
       }
       //Flurstückseigentum
       if (!StringUtils.equals(vorgangOld.getFlurstueckseigentum(), vorgang.getFlurstueckseigentum())) {

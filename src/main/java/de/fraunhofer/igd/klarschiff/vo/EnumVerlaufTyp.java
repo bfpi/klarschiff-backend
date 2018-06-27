@@ -11,6 +11,7 @@ public enum EnumVerlaufTyp implements EnumText {
   beschreibung,
   beschreibungFreigabeStatus,
   adresse,
+  ovi,
   fotoFreigabeStatus,
   foto,
   fotowunsch,
@@ -44,6 +45,6 @@ public enum EnumVerlaufTyp implements EnumText {
   }
 
   public static EnumVerlaufTyp[] relevantBeiLetztenAktivitaeten() {
-    return new EnumVerlaufTyp[]{foto, lobHinweiseKritik, kommentar, unterstuetzerBestaetigung, beschreibung, typ, kategorie, adresse, flurstueckseigentum};
+    return new EnumVerlaufTyp[]{foto, lobHinweiseKritik, kommentar, unterstuetzerBestaetigung, beschreibung, typ, kategorie, adresse, ovi, flurstueckseigentum};
   }
 }

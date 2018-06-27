@@ -132,6 +132,14 @@
                     <c:otherwise>Adresse gelöscht</c:otherwise>
                   </c:choose>
                 </c:when>
+                <c:when test="${verlaufItem.typ=='ovi'}">
+                  <c:choose>
+                    <c:when test="${not empty verlaufItem.wertNeu}">
+                      Position geändert <img style="vertical-align:middle" alt="Position geändert" src="${url}map.png" height="15" width="15"  title="Position geändert"/>
+                    </c:when>
+                    <c:otherwise>Position gelöscht</c:otherwise>
+                  </c:choose>
+                </c:when>
                 <c:when test="${verlaufItem.typ=='flurstueckseigentum'}">
                   <c:choose>
                     <c:when test="${not empty verlaufItem.wertNeu}">Flurstückseigentum geändert in: ${verlaufItem.wertNeu}</c:when>

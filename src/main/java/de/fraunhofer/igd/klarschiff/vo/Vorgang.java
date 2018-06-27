@@ -33,7 +33,6 @@ import com.vividsolutions.jts.io.WKTReader;
 import com.vividsolutions.jts.io.WKTWriter;
 import static de.bfpi.tools.GeoTools.transformPosition;
 import static de.bfpi.tools.GeoTools.wgs84Projection;
-import de.fraunhofer.igd.klarschiff.service.geo.GeoService;
 import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
 import de.fraunhofer.igd.klarschiff.service.security.User;
 import de.fraunhofer.igd.klarschiff.service.settings.PropertyPlaceholderConfigurer;
@@ -323,12 +322,6 @@ public class Vorgang implements Serializable {
     = PropertyPlaceholderConfigurer.getPropertyValue("geo.map.projection");
 
   /**
-   * geoService wird benötigt, um die Adresse zu ermitteln
-   */
-  @Transient
-  private GeoService geoService = new GeoService();
-
-  /**
    * securityService wird benötigt, um das Trust-Level zu ermitteln
    */
   @Transient
@@ -440,11 +433,6 @@ public class Vorgang implements Serializable {
   }
 
   public void setAdresse(String adresse) {
-    this.adresse = adresse;
-  }
-
-  public void setAdresseByPoint(Point point) {
-    String adresse = geoService.calculateAddress(point, false);
     this.adresse = adresse;
   }
 

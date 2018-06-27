@@ -125,11 +125,19 @@ public class VorgangController {
     Vorgang vorgang = vorgangDao.findVorgang(id);
 
     if (StringUtils.isNotEmpty(oviWkt)) {
+      String alterOviWkt = vorgang.getOviWkt();
       vorgang.setOviWkt(oviWkt);
       String alteAdresse = vorgang.getAdresse();
-      vorgang.setAdresseByPoint(vorgang.getOvi());
+      String neueAdresse = geoService.calculateAddress(vorgang.getOvi(), false);
+      vorgang.setAdresse(neueAdresse);
       vorgangDao.merge(vorgang);
-      String neueAdresse = vorgang.getAdresse();
+      String neuerOviWkt = vorgang.getOviWkt();
+      // Verlauf: Ovi
+      if (!StringUtils.equals(alterOviWkt, neuerOviWkt)) {
+        verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.ovi,
+          StringUtils.abbreviate(alterOviWkt, 100),
+          StringUtils.abbreviate(neuerOviWkt, 100));
+      }
       // Verlauf: Adresse
       if (!StringUtils.equals(alteAdresse, neueAdresse)) {
         verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.adresse,

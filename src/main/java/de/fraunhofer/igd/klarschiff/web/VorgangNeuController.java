@@ -7,7 +7,6 @@ import java.util.Collection;
 import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -39,8 +38,6 @@ import de.fraunhofer.igd.klarschiff.vo.Vorgang;
 @RequestMapping("/vorgangneu")
 @Controller
 public class VorgangNeuController {
-
-  public static Logger logger = Logger.getLogger(VorgangNeuController.class);
 
   @Autowired
   KategorieDao kategorieDao;
@@ -172,6 +169,8 @@ public class VorgangNeuController {
       vorgang.setZustaendigkeit(classificationService.calculateZustaendigkeitforVorgang(vorgang).getId());
       vorgang.setZustaendigkeitFrontend(securityService.getZustaendigkeit(vorgang.getZustaendigkeit()).getL());
       vorgang.setZustaendigkeitStatus(EnumZustaendigkeitStatus.zugewiesen);
+      String neueAdresse = geoService.calculateAddress(vorgang.getOvi(), false);
+      vorgang.setAdresse(neueAdresse);
       vorgangDao.merge(vorgang);
     }
 

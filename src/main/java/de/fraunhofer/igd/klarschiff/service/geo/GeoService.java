@@ -256,9 +256,6 @@ public class GeoService {
     try {
       String x = String.valueOf((int) point.getX());
       String y = String.valueOf((int) point.getY());
-      
-LogUtil.info("x: " + x + "; y: " + y);
-
       String adresse = null;
       String url = PropertyPlaceholderConfigurer.getPropertyValue("geo.adressensuche.url");
       url += "key=" + PropertyPlaceholderConfigurer.getPropertyValue("geo.adressensuche.key");
@@ -269,8 +266,6 @@ LogUtil.info("x: " + x + "; y: " + y);
         url += "&radius=100";
       url += "&in_epsg=25833";
       
-LogUtil.info("URL: " + url);
-
       URL httpUrl = new URL(url);
       HttpURLConnection connection = (HttpURLConnection) httpUrl.openConnection();
       connection.setRequestMethod("GET");

@@ -158,7 +158,6 @@ public class BackendController {
     @RequestParam(value = "kategorie", required = false) Long kategorie,
     @RequestParam(value = "oviWkt", required = false) String oviWkt,
     @RequestParam(value = "positionWGS84", required = false) String positionWGS84,
-    @RequestParam(value = "adresse", required = false) String adresse,
     @RequestParam(value = "resultObjectOnSubmit", required = false) Boolean resultObjectOnSubmit,
     @RequestParam(value = "resultHashOnSubmit", required = false) Boolean resultHashOnSubmit,
     @RequestParam(value = "typ", required = false) String typ,
@@ -205,7 +204,7 @@ public class BackendController {
 
       vorgang.setStatus(EnumVorgangStatus.gemeldet);
       vorgang.setStatusDatum(new Date());
-      vorgangParameterUebernehmen(autorEmail, vorgang, typ, kategorie, positionWGS84, oviWkt, adresse,
+      vorgangParameterUebernehmen(autorEmail, vorgang, typ, kategorie, positionWGS84, oviWkt,
         beschreibung, fotowunsch, bild, false);
 
       if (authCode != null && authCode.equals(settingsService.getPropertyValue("auth.kod_code")) && vorgang.autorAussendienst()) {
@@ -215,12 +214,30 @@ public class BackendController {
       if (authCode != null && authCode.equals(settingsService.getPropertyValue("auth.kod_code")) && vorgang.autorIntern()) {
         vorgang.setStatus(EnumVorgangStatus.offen);
         vorgang.setStatusDatum(new Date());
+        
         vorgangDao.persist(vorgang);
+        
         vorgang.setZustaendigkeit(classificationService.calculateZustaendigkeitforVorgang(vorgang).getId());
         vorgang.setZustaendigkeitFrontend(securityService.getZustaendigkeit(vorgang.getZustaendigkeit()).getL());
         vorgang.setZustaendigkeitStatus(EnumZustaendigkeitStatus.zugewiesen);
 
         vorgangDao.merge(vorgang);
+        
+        String neueAdresse = "nicht zuordenbar";
+        if (oviWkt != null) {
+          Point point = pointWktToPoint(oviWkt);
+          neueAdresse = geoService.calculateAddress(point, false);
+        } else if (positionWGS84 != null) {
+          try {
+            Point point = transformPosition(pointWktToPoint(positionWGS84), wgs84Projection, internalProjection);
+            neueAdresse = geoService.calculateAddress(point, false);
+          } catch (FactoryException|MismatchedDimensionException|TransformException e) {
+            logger.error(e);
+          }
+        }
+        vorgang.setAdresse(neueAdresse);
+
+        vorgangDao.merge(vorgang, false);
       } else {
         vorgangDao.persist(vorgang);
         mailService.sendVorgangBestaetigungMail(vorgang);
@@ -277,7 +294,6 @@ public class BackendController {
     @RequestParam(value = "kategorie", required = false) Long kategorie,
     @RequestParam(value = "oviWkt", required = false) String oviWkt,
     @RequestParam(value = "positionWGS84", required = false) String positionWGS84,
-    @RequestParam(value = "adresse", required = false) String adresse,
     @RequestParam(value = "typ", required = false) String typ,
     @RequestParam(value = "status", required = false) String status,
     @RequestParam(value = "statusKommentar", required = false) String statusKommentar,
@@ -310,7 +326,7 @@ public class BackendController {
       if (vorgang == null) {
         throw new BackendControllerException(200, "[id] unbekannt", "Es konnte kein Vorgang mit der übergebenen ID gefunden werden.");
       }
-      vorgangParameterUebernehmen(autorEmail, vorgang, typ, kategorie, positionWGS84, oviWkt, adresse,
+      vorgangParameterUebernehmen(autorEmail, vorgang, typ, kategorie, positionWGS84, oviWkt,
         beschreibung, fotowunsch, bild, true);
 
       if (prioritaet != null) {
@@ -406,7 +422,6 @@ public class BackendController {
     Long kategorie,
     String positionWGS84,
     String oviWkt,
-    String adresse,
     String beschreibung,
     Boolean fotowunsch,
     String bild,
@@ -467,23 +482,6 @@ public class BackendController {
 
     if (!vorgang.getOvi().within(grenzenDao.getStadtgrenze().getGrenze())) {
       throw new BackendControllerException(13, "[position] außerhalb", "Die neue Meldung befindet sich außerhalb des gültigen Bereichs.");
-    }
-
-    if (adresse != null) {
-      vorgang.setAdresse(adresse);
-    } else {
-      if (oviWkt != null) {
-        Point point = pointWktToPoint(oviWkt);
-        vorgang.setAdresseByPoint(point);
-      } else if (positionWGS84 != null) {
-        try {
-          Point point = transformPosition(pointWktToPoint(positionWGS84), wgs84Projection, internalProjection);
-logger.error("positionWGS84: " + positionWGS84);
-          vorgang.setAdresseByPoint(point);
-        } catch (FactoryException|MismatchedDimensionException|TransformException e) {
-          logger.error(e);
-        }
-      }
     }
 
     if (beschreibung != null) {
@@ -577,6 +575,9 @@ logger.error("positionWGS84: " + positionWGS84);
       vorgang.setZustaendigkeit(classificationService.calculateZustaendigkeitforVorgang(vorgang).getId());
       vorgang.setZustaendigkeitFrontend(securityService.getZustaendigkeit(vorgang.getZustaendigkeit()).getL());
       vorgang.setZustaendigkeitStatus(EnumZustaendigkeitStatus.zugewiesen);
+      
+      String neueAdresse = geoService.calculateAddress(vorgang.getOvi(), false);
+      vorgang.setAdresse(neueAdresse);
 
       vorgangDao.merge(vorgang);
 

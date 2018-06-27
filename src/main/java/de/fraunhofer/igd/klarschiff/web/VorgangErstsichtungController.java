@@ -209,6 +209,11 @@ public class VorgangErstsichtungController {
       }
 
       vorgangDao.merge(cmd.getVorgang());
+      
+      String neueAdresse = geoService.calculateAddress(cmd.getVorgang().getOvi(), false);
+      cmd.getVorgang().setAdresse(neueAdresse);
+
+      vorgangDao.merge(cmd.getVorgang(), false);
 
       return "redirect:/vorgang/" + id + "/uebersicht";
 
