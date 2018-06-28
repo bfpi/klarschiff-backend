@@ -74,17 +74,17 @@
                           </td>
                           <c:if test="${vorgang.trust > 0}">
                             <td class="icon">
-                              <span class="statistic_yellow" title="vertrauenswürdig">&#x2605;</span>
+                              <span class="statistic_yellow icon_larger" title="vertrauenswürdig">&#x2605;</span>
                             </td>
                           </c:if>
                           <c:if test="${vorgang.prioritaet != 'mittel'}">
                             <td class="icon">
                               <c:choose>
                                 <c:when test="${vorgang.prioritaet == 'hoch'}">
-                                  <span class="statistic_unaccepted" title="hohe Priorität">&#x25B2;</span>
+                                  <span class="statistic_unaccepted icon_large" title="hohe Priorität">&#x25B2;</span>
                                 </c:when>
                                 <c:otherwise>
-                                  <span class="statistic_accepted" title="niedrige Priorität">&#x25BC;</span>
+                                  <span class="statistic_accepted icon_large" title="niedrige Priorität">&#x25BC;</span>
                                 </c:otherwise>
                               </c:choose>
                             </td>
@@ -119,7 +119,7 @@
                 <c:choose>
                   <c:when test="${not empty statistic.eigeneVorgaenge}">
                     <c:url value="/images/foto_upload.png" var="letzteAktivitaetFotoUrl" />
-                    <c:url value="/images/mail-message-new.png" var="letzteAktivitaetLobHinweiseKritikUrl" />
+                    <c:url value="/images/mail-message-new_small.png" var="letzteAktivitaetLobHinweiseKritikUrl" />
                     <c:url value="/images/bookmark-new.png" var="letzteAktivitaetKommentarUrl" />
                     <c:url value="/images/edit.png" var="letzteAktivitaetVorgangsdatenUrl" />
                     <c:forEach items="${statistic.eigeneVorgaenge}" var="vorgang" varStatus="loop">
@@ -136,44 +136,48 @@
                         </td>
                         <c:if test="${vorgang.trust > 0}">
                           <td class="icon">
-                            <span class="statistic_yellow" title="vertrauenswürdig">&#x2605;</span>
+                            <span class="statistic_yellow icon_larger" title="vertrauenswürdig">&#x2605;</span>
                           </td>
                         </c:if>
                         <c:if test="${vorgang.prioritaet != 'mittel'}">
                           <td class="icon">
                             <c:choose>
                               <c:when test="${vorgang.prioritaet == 'hoch'}">
-                                <span class="statistic_unaccepted" title="hohe Priorität">&#x25B2;</span>
+                                <span class="statistic_unaccepted icon_large" title="hohe Priorität">&#x25B2;</span>
                               </c:when>
                               <c:otherwise>
-                                <span class="statistic_accepted" title="niedrige Priorität">&#x25BC;</span>
+                                <span class="statistic_accepted icon_large" title="niedrige Priorität">&#x25BC;</span>
                               </c:otherwise>
                             </c:choose>
                           </td>
                         </c:if>
-                        <td class="icon">
-                          <c:choose>
-                            <c:when test="${vorgang.letzterAktivitaetenVerlauf.typ == 'foto'}">
+                        <c:choose>
+                          <c:when test="${vorgang.letzterAktivitaetenVerlauf.typ == 'foto'}">
+                            <td class="icon">
                               <img src="${letzteAktivitaetFotoUrl}" alt="" title="neues Foto hochgeladen"/>
-                            </c:when>
-                            <c:when test="${vorgang.letzterAktivitaetenVerlauf.typ == 'lobHinweiseKritik'}">
-                              <img src="${letzteAktivitaetLobHinweiseKritikUrl}" alt="" title="Lob, Hinweise oder Kritik von Bürger/-innen eingegangen"/>
-                            </c:when>
-                            <c:when test="${vorgang.letzterAktivitaetenVerlauf.typ == 'kommentar'}">
+                            </td>
+                          </c:when>
+                          <c:when test="${vorgang.letzterAktivitaetenVerlauf.typ == 'lobHinweiseKritik'}">
+                            <td class="icon">
+                              <img src="${letzteAktivitaetLobHinweiseKritikUrl}" alt="" title="Lob, Hinweise oder Kritik von Bürger/-in eingegangen"/>
+                            </td>
+                          </c:when>
+                          <c:when test="${vorgang.letzterAktivitaetenVerlauf.typ == 'kommentar'}">
+                            <td class="icon">
                               <img src="${letzteAktivitaetKommentarUrl}" alt="" title="interner Kommentar hinzugefügt"/>
-                            </c:when>
-                            <c:when test="${vorgang.letzterAktivitaetenVerlauf.typ == 'unterstuetzerBestaetigung'}">
-                              <c:set var="unterstuetzerClass" value="yellow" />
-                              <c:if test="${vorgang.unterstuetzerCount >= SettingsVorgangIdeeUnterstuetzer}">
-                                <c:set var="unterstuetzerClass" value="green" />
-                              </c:if>
-                              <span class="unterstuetzer_count ${unterstuetzerClass}" title="Anzahl der Unterstützungen auf ${vorgang.unterstuetzerCount} erhöht">${vorgang.unterstuetzerCount}</span>
-                            </c:when>
-                            <c:otherwise>
+                            </td>
+                          </c:when>
+                          <c:when test="${vorgang.letzterAktivitaetenVerlauf.typ == 'unterstuetzerBestaetigung'}">
+                            <td class="icon unterstuetzer_count_icon">
+                              <span class="unterstuetzer_count" title="Anzahl der Unterstützungen auf ${vorgang.unterstuetzerCount} erhöht">${vorgang.unterstuetzerCount}</span>
+                            </td>
+                          </c:when>
+                          <c:otherwise>
+                            <td class="icon">
                               <img src="${letzteAktivitaetVorgangsdatenUrl}" alt="" title="Änderung der Vorgangsdaten"/>
-                            </c:otherwise>
-                          </c:choose>
-                        </td>
+                            </td>
+                          </c:otherwise>
+                        </c:choose>
                       </tr>
                     </c:forEach>
                   </c:when>
@@ -258,6 +262,7 @@
                 </div>
               </div>
               <util:ddpanel name="statistic_missbrauch_" />
+              <util:ddpaneldefaultopen name="statistic_missbrauch_" />
             </c:when>
             <!-- ansonsten alle Vorgänge mit Missbrauchsmeldungen mit entsprechendem Text ausgeben und verlinken -->
             <c:otherwise>
@@ -284,6 +289,7 @@
                 </div>
               </div>
               <util:ddpanel name="statistic_missbrauch_" />
+              <util:ddpaneldefaultopen name="statistic_missbrauch_" />
             </c:otherwise>
           </c:choose>
         </c:if>
@@ -439,6 +445,7 @@
             </c:choose>
           </div>
           <util:ddpanel name="statistic_hinweise_" />
+          <util:ddpaneldefaultopen name="statistic_hinweise_" />
         </c:if>
       </c:if>
     </sec:authorize>

@@ -90,10 +90,19 @@
             </span>
           </td>
         </c:if>
-
-        <td valign="middle">
-          <span title="Priorität">${vorgang.prioritaet.text}</span>
-        </td>
+        
+        <c:if test="${vorgang.prioritaet != 'mittel'}">
+          <td valign="middle">
+            <c:choose>
+              <c:when test="${vorgang.prioritaet == 'hoch'}">
+                <span>Priorität hoch</span>
+              </c:when>
+              <c:otherwise>
+                <span>Priorität niedrig</span>
+              </c:otherwise>
+            </c:choose>
+          </td>
+        </c:if>
 
       </tr>
     </table>

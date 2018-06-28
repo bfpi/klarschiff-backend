@@ -1008,17 +1008,17 @@ table.vorgaenge tr td.icon {
   width: 14px;
 }
 
-table.vorgaenge tr td a span.unterstuetzer_count {
-  color: #000000;
-  padding: 2px 4px;
+table.vorgaenge tr td span.unterstuetzer_count {
+  font-size: 10px;
+  font-weight: bold;
 }
 
-table.vorgaenge tr td a span.unterstuetzer_count.yellow {
-  background-color: #ffcc66;
-}
-
-table.vorgaenge tr td a span.unterstuetzer_count.green {
-  background-color: #009900;
+table.vorgaenge tr td.unterstuetzer_count_icon {
+  background: #f3b1eb;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: block;
 }
 
 div.statistic_blocktitle {
@@ -1065,9 +1065,19 @@ span.statistic_unaccepted {
 }
 
 span.statistic_yellow {
-  color: #fff63d;
+  color: #c3bb19;
   font-weight: bold;
   width: 15px;
+}
+
+span.icon_larger {
+  font-size: 16px;
+  line-height: 16px;
+}
+
+span.icon_large {
+  font-size: 18px;
+  line-height: 18px;
 }
 
 div.statistic_verteilung {
