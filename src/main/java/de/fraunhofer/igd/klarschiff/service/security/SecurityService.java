@@ -22,6 +22,7 @@ import org.apache.commons.exec.DefaultExecuteResultHandler;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.ExecuteWatchdog;
 import org.apache.commons.exec.PumpStreamHandler;
+import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -543,7 +544,7 @@ public class SecurityService {
    */
   public List<Role> getDelegiertAn(String login) {
     if (isUserAdmin(login)) {
-      return getAllDelegiertAn();
+      return getAllDelegiertAn(false);
     } else {
       User user = getUser(login);
       if (user == null) {
@@ -565,14 +566,19 @@ public class SecurityService {
   /**
    * Ermittelt alle im System vorhandenen Rollen zum Delegieren
    *
+   * @param sortByDescription Soll nach der Beschreibung sortiert werden statt (standardmäßig) nach der ID?
    * @return Liste mit allen Rollen zum Delegieren
    */
-  public List<Role> getAllDelegiertAn() {
+  public List<Role> getAllDelegiertAn(Boolean sortByDescription) {
     List<Role> allDelegiertAn = securityServiceLdap.getObjectListFromLdap(groupSearchBase, "(&(objectclass=" + groupObjectClass + ")(" + groupRoleAttribute + "=" + groupExtern + "))", roleContextMapper);
 
     Collections.sort(allDelegiertAn, new Comparator<Role>() {
       public int compare(Role r1, Role r2) {
-        return r1.getId().compareTo(r2.getId());
+        if (BooleanUtils.isTrue(sortByDescription)) {
+          return r1.getDescription().compareTo(r2.getDescription());
+        } else {
+          return r1.getId().compareTo(r2.getId());
+        }
       }
     });
 

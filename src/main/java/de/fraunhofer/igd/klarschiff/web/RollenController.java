@@ -31,7 +31,7 @@ public class RollenController {
   @RequestMapping(value = "", method = RequestMethod.GET)
   public String rollen(Model model, HttpServletRequest request) {
     model.addAttribute("rollenIntern", securityService.getAllZustaendigkeiten(true));
-    model.addAttribute("rollenExtern", securityService.getAllDelegiertAn());
+    model.addAttribute("rollenExtern", securityService.getAllDelegiertAn(false));
     model.addAttribute("rollenAussendienst", securityService.getAllAussendienstTeams());
     return "rollen";
   }

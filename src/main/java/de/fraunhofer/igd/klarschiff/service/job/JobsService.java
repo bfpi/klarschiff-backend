@@ -294,7 +294,7 @@ public class JobsService {
     Date date = DateUtils.addDays(new Date(), -1);
 
     // für alle delegiertAn
-    for (Role delegiertAn : securityService.getAllDelegiertAn()) {
+    for (Role delegiertAn : securityService.getAllDelegiertAn(false)) {
 
       // finde alle Vorgänge, deren DelegiertAn in den letzten 24 Stunden geändert wurde und deren DelegiertAn gleich delegiertAn ist
       List<Vorgang> vorgaenge = vorgangDao.findVorgaengeForDelegiertAn(date, delegiertAn.getId());

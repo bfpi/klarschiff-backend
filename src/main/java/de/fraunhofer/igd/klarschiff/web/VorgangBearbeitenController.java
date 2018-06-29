@@ -152,7 +152,7 @@ public class VorgangBearbeitenController {
    */
   @ModelAttribute("allDelegiertAn")
   public List<Role> allDelegiertAn() {
-    return securityService.getAllDelegiertAn();
+    return securityService.getAllDelegiertAn(true);
   }
 
   /**
