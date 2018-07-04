@@ -48,6 +48,8 @@ public class JobsService {
   int hoursToRemoveUnbestaetigtVorgang;
   int hoursToRemoveUnbestaetigtUnterstuetzer;
   int hoursToRemoveUnbestaetigtMissbrauchsmeldung;
+  boolean removeAuthorEmailFromArchiv;
+  String removeAuthorEmailFromArchivReplacement;
 
   @Autowired
   VorgangDao vorgangDao;
@@ -131,6 +133,15 @@ public class JobsService {
   public void archivVorgaenge() {
     archivVorgaengeByTyp(monthsToArchivProbleme, EnumVorgangTyp.problem);
     archivVorgaengeByTyp(monthsToArchivIdeen, EnumVorgangTyp.idee);
+    System.out.println("removeAuthorEmailFromArchiv: " + removeAuthorEmailFromArchiv);
+    if (removeAuthorEmailFromArchiv) {
+      System.out.println("removeAuthorEmailFromArchivReplacement: " + removeAuthorEmailFromArchivReplacement);
+      for (Vorgang vorgang : vorgangDao.findArchivVorgangWithEmail(removeAuthorEmailFromArchivReplacement)) {
+        System.out.println("vorgang: " + vorgang.getId() + " - " + vorgang.getAutorEmail());
+        vorgang.setAutorEmail(removeAuthorEmailFromArchivReplacement);
+        vorgangDao.merge(vorgang);
+      }
+    }
   }
 
   private void archivVorgaengeByTyp(int months, EnumVorgangTyp typ) {
@@ -384,5 +395,21 @@ public class JobsService {
   public void setHoursToRemoveUnbestaetigtMissbrauchsmeldung(
     int hoursToRemoveUnbestaetigtMissbrauchsmeldung) {
     this.hoursToRemoveUnbestaetigtMissbrauchsmeldung = hoursToRemoveUnbestaetigtMissbrauchsmeldung;
+  }
+
+  public boolean isRemoveAuthorEmailFromArchiv() {
+    return removeAuthorEmailFromArchiv;
+  }
+
+  public void setRemoveAuthorEmailFromArchiv(boolean removeAuthorEmailFromArchiv) {
+    this.removeAuthorEmailFromArchiv = removeAuthorEmailFromArchiv;
+  }
+
+  public String getRemoveAuthorEmailFromArchivReplacement() {
+    return removeAuthorEmailFromArchivReplacement;
+  }
+
+  public void setRemoveAuthorEmailFromArchivReplacement(String removeAuthorEmailFromArchivReplacement) {
+    this.removeAuthorEmailFromArchivReplacement = removeAuthorEmailFromArchivReplacement;
   }
 }

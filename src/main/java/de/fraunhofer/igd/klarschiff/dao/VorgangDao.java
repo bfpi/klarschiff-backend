@@ -895,6 +895,19 @@ public class VorgangDao {
   }
 
   /**
+   * Ermittelt alle Vorgänge, die archiviert sind und an denen die Author-Email nicht entfernt wurde.
+   *
+   * @param replacement
+   * @return Ergebnisliste mit Vorgängen
+   * @see de.fraunhofer.igd.klarschiff.service.job.JobsService#archivVorgaenge()
+   */
+  public List<Vorgang> findArchivVorgangWithEmail(String replacement) {
+    return em.createQuery("SELECT o FROM Vorgang o WHERE o.archiviert = TRUE AND o.autorEmail != :replacement", Vorgang.class)
+      .setParameter("replacement", replacement)
+      .getResultList();
+  }
+
+  /**
    * Ermittelt alle Vorgänge, die gemeldet, aber nach einem bestimmten Zeitraum noch nicht bestätigt
    * wurden.
    *
