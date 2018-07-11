@@ -83,7 +83,7 @@
         <property name="entityManagerFactory" ref="entityManagerFactory"/>
     </bean>
     
-    <tx:annotation-driven transaction-manager="transactionManager"/>
+    <tx:annotation-driven mode="aspectj" transaction-manager="transactionManager"/>
     
     <bean class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean" id="entityManagerFactory">
         <property name="dataSource" ref="dataSource"/>
