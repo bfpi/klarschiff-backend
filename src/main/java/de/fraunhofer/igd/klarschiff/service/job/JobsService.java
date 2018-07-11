@@ -78,7 +78,7 @@ public class JobsService {
    * bestätigt wurden.
    */
   @Transactional
-  @ScheduledSyncInCluster(cron = "0 43 * * * *", name = "unbestaetigte Vorgaenge loeschen")
+  @ScheduledSyncInCluster(cron = "0 32 * * * *", name = "unbestaetigte Vorgaenge loeschen")
   public void removeUnbestaetigtVorgang() {
     Date date = DateUtils.addHours(new Date(), -hoursToRemoveUnbestaetigtVorgang);
     for (Vorgang vorgang : vorgangDao.findUnbestaetigtVorgang(date)) {
@@ -91,7 +91,7 @@ public class JobsService {
    * Zeitraum noch nicht bestätigt wurden.
    */
   @Transactional
-  @ScheduledSyncInCluster(cron = "0 46 * * * *", name = "unbestaetigte Unterstuetzungen loeschen")
+  @ScheduledSyncInCluster(cron = "0 37 * * * *", name = "unbestaetigte Unterstuetzungen loeschen")
   public void removeUnbestaetigtUnterstuetzer() {
     Date date = DateUtils.addHours(new Date(), -hoursToRemoveUnbestaetigtUnterstuetzer);
     for (Unterstuetzer unterstuetzer : vorgangDao.findUnbestaetigtUnterstuetzer(date)) {
@@ -104,7 +104,7 @@ public class JobsService {
    * Zeitraum noch nicht bestätigt wurden.
    */
   @Transactional
-  @ScheduledSyncInCluster(cron = "0 49 * * * *", name = "unbestaetigte Missbrauchsmeldungen loeschen")
+  @ScheduledSyncInCluster(cron = "0 42 * * * *", name = "unbestaetigte Missbrauchsmeldungen loeschen")
   public void removeUnbestaetigtMissbrauchsmeldung() {
     Date date = DateUtils.addHours(new Date(), -hoursToRemoveUnbestaetigtMissbrauchsmeldung);
     for (Missbrauchsmeldung missbrauchsmeldung : vorgangDao.findUnbestaetigtMissbrauchsmeldung(date)) {
@@ -117,7 +117,7 @@ public class JobsService {
    * nicht bestätigt wurden.
    */
   @Transactional
-  @ScheduledSyncInCluster(cron = "0 50 * * * *", name = "unbestaetigte Fotos loeschen")
+  @ScheduledSyncInCluster(cron = "0 47 * * * *", name = "unbestaetigte Fotos loeschen")
   public void removeUnbestaetigtFoto() {
     Date date = DateUtils.addHours(new Date(), -hoursToRemoveUnbestaetigtFoto);
     for (Foto foto : vorgangDao.findUnbestaetigtFoto(date)) {
@@ -286,10 +286,19 @@ public class JobsService {
   }
 
   /**
+   * Dieser Job erstellt statische Dateien als Übersicht von aktuell aktiven Vorgängen
+   */
+  @ScheduledSyncInCluster(cron = "0 05 02 * * *", name = "Erstellt Übersicht von aktuell aktiven Vorgängen")
+  public void createRequestOverview() {
+    RequestOverview ro = new RequestOverview();
+    ro.create(settingsService, vorgangDao);
+  }
+
+  /**
    * Dieser Job informiert externe Nutzer mittels E-Mail über diejenigen Vorgänge, die innerhalb der
    * letzten 24 Stunden an sie delegiert wurden.
    */
-  @ScheduledSyncInCluster(cron = "0 00 05 * * *", name = "externe Nutzer ueber neue Vorgaenge informieren")
+  @ScheduledSyncInCluster(cron = "0 00 07 * * *", name = "externe Nutzer ueber neue Vorgaenge informieren")
   public void informExtern() {
     Date date = DateUtils.addDays(new Date(), -1);
 
@@ -313,7 +322,7 @@ public class JobsService {
    * letzten 24 Stunden durch wiederholtes automatisches Zuweisung keiner Zuständigkeit zugeordnet
    * werden konnten und somit letztendlich der Dispatcher-Gruppe zugewiesen wurden.
    */
-  @ScheduledSyncInCluster(cron = "0 05 05 * * *", name = "Dispatcher ueber neue Vorgaenge informieren")
+  @ScheduledSyncInCluster(cron = "0 05 07 * * *", name = "Dispatcher ueber neue Vorgaenge informieren")
   public void informDispatcher() {
     Date date = DateUtils.addDays(new Date(), -1);
 
@@ -356,15 +365,6 @@ public class JobsService {
     for (Vorgang vorgang : vorgaenge) {
       mailService.sendInformErstellerMailAbschluss(vorgang);
     }
-  }
-
-  /**
-   * Dieser Job erstellt statische Dateien als Übersicht von aktuell aktiven Vorgängen
-   */
-  @ScheduledSyncInCluster(cron = "0 05 02 * * *", name = "Erstellt Übersicht von aktuell aktiven Vorgängen")
-  public void createRequestOverview() {
-    RequestOverview ro = new RequestOverview();
-    ro.create(settingsService, vorgangDao);
   }
 
   /**
