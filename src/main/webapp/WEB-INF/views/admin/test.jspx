@@ -31,10 +31,10 @@
 
 				<div class="subtitle">removeUnbestaetigtVorgang</div>
 				<p class="help">
-                    Alle Vorgänge, die gemeldet, aber nach einem bestimmten Zeitraum noch nicht bestätigt wurden, werden gelöscht.
+          Alle Vorgänge, die gemeldet, aber nach einem bestimmten Zeitraum noch nicht bestätigt wurden, werden gelöscht.
 				</p>
 				<ul class="help">
-					<li>Ausführungszeitpunkt: täglich um *:43 Uhr</li>
+					<li>Ausführungszeitpunkt: täglich um *:32 Uhr</li>
 					<li>Bedingung: Gemeldete Vorgänge wurden nach einem bestimmten Zeitraum noch nicht bestätigt.</li>
 				</ul>
 				<form method="post">
@@ -44,10 +44,10 @@
 	
 				<div class="subtitle">removeUnbestaetigtUnterstuetzer</div>
 				<p class="help">
-                    Alle Unterstützungen, die eingegangen sind, aber nach einem bestimmten Zeitraum noch nicht bestätigt wurden, werden gelöscht.
+          Alle Unterstützungen, die eingegangen sind, aber nach einem bestimmten Zeitraum noch nicht bestätigt wurden, werden gelöscht.
 				</p>
 				<ul class="help">
-					<li>Ausführungszeitpunkt: täglich um *:46 Uhr</li>
+					<li>Ausführungszeitpunkt: täglich um *:37 Uhr</li>
 					<li>Bedingung: Eingegangene Unterstützungen wurden nach einem bestimmten Zeitraum noch nicht bestätigt.</li>
 				</ul>
 				<form method="post">
@@ -60,7 +60,7 @@
 					Alle Missbrauchsmeldungen, die eingegangen sind, aber nach einem bestimmten Zeitraum noch nicht bestätigt wurden, werden gelöscht.
 				</p>
 				<ul class="help">
-					<li>Ausführungszeitpunkt: täglich um *:49 Uhr</li>
+					<li>Ausführungszeitpunkt: täglich um *:42 Uhr</li>
 					<li>Bedingung: Eingegangene Missbrauchsmeldungen wurden nach einem bestimmten Zeitraum noch nicht bestätigt.</li>
 				</ul>
 				<form method="post">
@@ -73,7 +73,7 @@
 					Alle Fotos, die eingegangen sind, aber nach einem bestimmten Zeitraum noch nicht bestätigt wurden, werden gelöscht.
 				</p>
 				<ul class="help">
-					<li>Ausführungszeitpunkt: täglich um *:50 Uhr</li>
+					<li>Ausführungszeitpunkt: täglich um *:47 Uhr</li>
 					<li>Bedingung: Eingegangene Fotos wurden nach einem bestimmten Zeitraum noch nicht bestätigt.</li>
 				</ul>
 				<form method="post">
@@ -94,7 +94,7 @@
 					<input type="submit" value="Ausführen"/>
 				</form>
                 
-                <div class="subtitle">archivVorgaenge</div>
+        <div class="subtitle">archivVorgaenge</div>
 				<p class="help">
 					Alle Vorgänge, die abgeschlossen sind und seit einem bestimmten Zeitraum nicht mehr bearbeitet wurden, werden archiviert.
 				</p>
@@ -107,7 +107,7 @@
 					<input type="submit" value="Ausführen"/>
 				</form>
                 
-                <div class="subtitle">informRedaktionEmpfaenger</div>
+        <div class="subtitle">informRedaktionEmpfaenger</div>
 				<p class="help">
 					Die Empfänger redaktioneller E-Mails werden informiert. 
 				</p>
@@ -118,13 +118,25 @@
 					<input type="hidden" name="action" value="informRedaktionEmpfaenger"/>
 					<input type="submit" value="Ausführen"/>
 				</form>
+
+				<div class="subtitle">createRequestOverview</div>
+				<p class="help">
+           Dieser Job erstellt statische Dateien als Übersicht von aktuell aktiven Vorgängen
+				</p>
+				<ul class="help">
+					<li>Ausführungszeitpunkt: täglich um 02:05 Uhr</li>
+				</ul>
+				<form method="post">
+					<input type="hidden" name="action" value="createRequestOverview"/>
+					<input type="submit" value="Ausführen"/>
+				</form>
 	
 				<div class="subtitle">informExtern</div>
 				<p class="help">
 					Externe Nutzer werden mittels E-Mail über diejenigen Vorgänge informiert, die innerhalb der letzten 24 Stunden an sie delegiert wurden.
 				</p>
 				<ul class="help">
-					<li>Ausführungszeitpunkt: täglich um 05:00 Uhr</li>
+					<li>Ausführungszeitpunkt: täglich um 07:00 Uhr</li>
 					<li>Anmerkung: Es werden immer alle Vorgänge berücksichtigt, bei denen das Delegieren innerhalb der letzten 24 Stunden stattfand.</li>
 				</ul>
 				<form method="post">
@@ -137,7 +149,7 @@
 					Die Dispatcher werden mittels E-Mail über diejenigen Vorgänge informiert, die innerhalb der letzten 24 Stunden durch wiederholtes automatisches Zuweisung keiner Zuständigkeit zugeordnet werden konnten und somit letztendlich der Dispatcher-Gruppe zugewiesen wurden.
 				</p>
 				<ul class="help">
-					<li>Ausführungszeitpunkt: täglich um 05:05 Uhr</li>
+					<li>Ausführungszeitpunkt: täglich um 07:05 Uhr</li>
 					<li>Anmerkung: Es werden immer alle Vorgänge berücksichtigt, die innerhalb der letzten 24 Stunden der Dispatcher-Gruppe zugeordnet wurden.</li>
 				</ul>
 				<form method="post">
@@ -168,18 +180,6 @@
 				</ul>
 				<form method="post">
 					<input type="hidden" name="action" value="informErstellerAbschluss"/>
-					<input type="submit" value="Ausführen"/>
-				</form>
-
-				<div class="subtitle">createRequestOverview</div>
-				<p class="help">
-                    Dieser Job erstellt statische Dateien als Übersicht von aktuell aktiven Vorgängen
-				</p>
-				<ul class="help">
-					<li>Ausführungszeitpunkt: täglich um 02:05 Uhr</li>
-				</ul>
-				<form method="post">
-					<input type="hidden" name="action" value="createRequestOverview"/>
 					<input type="submit" value="Ausführen"/>
 				</form>
 			</div>
