@@ -81,22 +81,6 @@ public class VorgangDao {
   }
 
   /**
-   * Das Objekt wird in der DB gespeichert. Bei Vorgängen wird ggf. geprüft, ob diese sich geändert
-   * haben. Entsprechend werden die Verlaufsdaten zum Vorgang ergänzt.
-   *
-   * @param o Das zu speichernde Objekt
-   * @param checkForUpdateEnable Sollen Vorgänge auf Änderung geprüft werden und somit ggf. der
-   * Verlauf ergänzt werden?
-   */
-  @Transactional
-  public void persist(Object o, boolean checkForUpdateEnable) {
-    if (checkForUpdateEnable && o instanceof Vorgang) {
-      checkForUpdate((Vorgang) o);
-    }
-    em.persist(o);
-  }
-
-  /**
    * Das Objekt wird in der DB gespeichert.
    *
    * @param o Das zu speichernde Objekt
