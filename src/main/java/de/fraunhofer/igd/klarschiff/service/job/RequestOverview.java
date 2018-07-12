@@ -2,6 +2,7 @@ package de.fraunhofer.igd.klarschiff.service.job;
 
 import de.fraunhofer.igd.klarschiff.dao.VorgangDao;
 import de.fraunhofer.igd.klarschiff.service.settings.SettingsService;
+import de.fraunhofer.igd.klarschiff.vo.EnumVorgangStatus;
 import de.fraunhofer.igd.klarschiff.web.VorgangSuchenCommand;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -44,6 +45,7 @@ public class RequestOverview {
         cmd.setOrderDirection(0);
         cmd.setUeberspringeVorgaengeMitMissbrauchsmeldungen(true);
         cmd.setErweitertArchiviert(false);
+        cmd.setErweitertVorgangStatus(EnumVorgangStatus.aussendienstVorgangStatus());
         List<Object[]> vg = vorgangDao.getVorgaenge(cmd);
 
         int eintraegeProSeite = Integer.parseInt(settingsService.getPropertyValue("resources.overview.entries_per_page"));
