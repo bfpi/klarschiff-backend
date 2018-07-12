@@ -370,10 +370,10 @@ public class JobsService {
   /**
    * Dieser Job registriert die aktulle ServerInstanze in der DB
    */
-  /*@Scheduled(fixedRate = 20000)
+  @Scheduled(fixedRate = 20000)
   public void notifyAliveServer() {
     clusterDao.notifyAliveServer();
-  }*/
+  }
 
   public int getMonthsToArchivProbleme() {
     return monthsToArchivProbleme;
