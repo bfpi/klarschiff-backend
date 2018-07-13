@@ -5,6 +5,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
 import de.fraunhofer.igd.klarschiff.vo.RedaktionEmpfaenger;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * DAO zum Lesen und Aktualisieren der Empfänger von redaktionellen E-Mails mit Hilfe der DB
@@ -38,6 +39,17 @@ public class RedaktionEmpfaengerDao {
   @SuppressWarnings("unchecked")
   public List<RedaktionEmpfaenger> getEmpfaengerListLobHinweiseKritikForZustaendigkeit(String zustaendigkeit) {
     return (List<RedaktionEmpfaenger>) em.createQuery("SELECT v FROM RedaktionEmpfaenger v WHERE v.empfaengerLobHinweiseKritik = true AND v.zustaendigkeit=:zustaendigkeit").setParameter("zustaendigkeit", zustaendigkeit).getResultList();
+  }
+
+  /**
+   * Das Objekt wird in der DB gespeichert.
+   *
+   * @param o Das zu speichernde Objekt
+   */
+  @Transactional
+  public void merge(Object o) {
+    em.merge(o);
+    em.flush();
   }
 
 }
