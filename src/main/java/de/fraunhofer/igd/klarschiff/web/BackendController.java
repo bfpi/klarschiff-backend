@@ -68,7 +68,6 @@ import static de.bfpi.tools.GeoTools.wgs84Projection;
 import org.opengis.geometry.MismatchedDimensionException;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
-import org.springframework.ui.ModelMap;
 
 /**
  * Der Controller dient als Schnittstelle für das Frontend
@@ -482,7 +481,7 @@ public class BackendController {
         try {
           Point point = transformPosition(pointWktToPoint(positionWGS84), wgs84Projection, internalProjection);
           neueAdresse = geoService.calculateAddress(point, false);
-        } catch (FactoryException | MismatchedDimensionException | TransformException e) {
+        } catch (FactoryException|MismatchedDimensionException|TransformException e) {
           logger.error(e);
         }
       }
@@ -549,11 +548,10 @@ public class BackendController {
    * Beschreibung: Vorgang bestätigen
    *
    * @param hash Hash zum Bestätigen
-   * @param model
    * @return View die angezeigt werden soll
    */
   @RequestMapping(value = "/vorgangBestaetigung")
-  public String vorgangBestaetigung(@RequestParam(value = "hash", required = false) String hash, ModelMap model) {
+  public String vorgangBestaetigung(@RequestParam(value = "hash", required = false) String hash) {
 
     try {
       if (StringUtils.isBlank(hash)) {
@@ -584,12 +582,6 @@ public class BackendController {
 
       vorgangDao.merge(vorgang);
 
-      model.put("message", "Die Meldung wurde erfolgreich aufgenommen.");
-      model.put("vorgangId", String.valueOf(vorgang.getId()));
-
-      String link = settingsService.getPropertyValue("geo.map.extern.extern.url");
-      link = link.replaceAll("%id%", String.valueOf(vorgang.getId()));
-      model.put("link", link);
       return "backend/bestaetigungOk";
 
     } catch (Exception e) {
@@ -681,11 +673,10 @@ public class BackendController {
    * Beschreibung: Unterstützung bestätigen
    *
    * @param hash Hash zum Bestätigen
-   * @param model
    * @return View die angezeigt werden soll
    */
   @RequestMapping(value = "/unterstuetzerBestaetigung")
-  public String unterstuetzerBestaetigung(@RequestParam(value = "hash", required = false) String hash, ModelMap model) {
+  public String unterstuetzerBestaetigung(@RequestParam(value = "hash", required = false) String hash) {
 
     try {
       if (StringUtils.isBlank(hash)) {
@@ -704,14 +695,6 @@ public class BackendController {
 
       verlaufDao.addVerlaufToVorgang(unterstuetzer.getVorgang(), EnumVerlaufTyp.unterstuetzerBestaetigung, null, null);
       vorgangDao.merge(unterstuetzer);
-
-      Vorgang vorgang = unterstuetzer.getVorgang();
-      model.put("message", "Die Unterstützung wurde erfolgreich aufgenommen.");
-      model.put("vorgangId", String.valueOf(vorgang.getId()));
-
-      String link = settingsService.getPropertyValue("geo.map.extern.extern.url");
-      link = link.replaceAll("%id%", String.valueOf(vorgang.getId()));
-      model.put("link", link);
 
       return "backend/bestaetigungOk";
 
@@ -1081,11 +1064,10 @@ public class BackendController {
    * Beschreibung: Vorgang bestätigen
    *
    * @param hash Hash zum Bestätigen
-   * @param model
    * @return View die angezeigt werden soll
    */
   @RequestMapping(value = "/missbrauchsmeldungBestaetigung")
-  public String missbrauchsmeldungBestaetigung(@RequestParam(value = "hash", required = false) String hash, ModelMap model) {
+  public String missbrauchsmeldungBestaetigung(@RequestParam(value = "hash", required = false) String hash) {
 
     try {
       if (StringUtils.isBlank(hash)) {
@@ -1105,7 +1087,6 @@ public class BackendController {
       verlaufDao.addVerlaufToVorgang(missbrauchsmeldung.getVorgang(), EnumVerlaufTyp.missbrauchsmeldungBestaetigung, null, null);
       vorgangDao.merge(missbrauchsmeldung);
 
-      model.put("message", "Die Missbrauchsmeldung wurde erfolgreich aufgenommen und die entsprechende Meldung damit deaktiviert.");
       return "backend/bestaetigungOk";
 
     } catch (Exception e) {
@@ -1227,7 +1208,7 @@ public class BackendController {
    * @param response Response in das das Ergebnis direkt geschrieben wird
    * @throws java.io.IOException
    */
-  @RequestMapping(value = "/adressensuche", method = RequestMethod.GET)
+  @RequestMapping(value = "/adressensuche", method = RequestMethod.GET)  
   @ResponseBody
   public void adressensuche(
     @RequestParam(value = "query", required = false) String query,
@@ -1827,11 +1808,10 @@ public class BackendController {
    * Beschreibung: Vorgang bestätigen
    *
    * @param hash Hash zum Bestätigen
-   * @param model
    * @return View die angezeigt werden soll
    */
   @RequestMapping(value = "/fotoBestaetigung")
-  public String fotoBestaetigung(@RequestParam(value = "hash", required = false) String hash, ModelMap model) {
+  public String fotoBestaetigung(@RequestParam(value = "hash", required = false) String hash) {
 
     try {
       if (StringUtils.isBlank(hash)) {
@@ -1858,13 +1838,6 @@ public class BackendController {
       vorgang.setFotoFreigabeStatus(EnumFreigabeStatus.intern);
       vorgang.setFotowunsch(false);
       vorgangDao.merge(vorgang);
-
-      model.put("message", "Das Foto wurde erfolgreich aufgenommen.");
-      model.put("vorgangId", String.valueOf(vorgang.getId()));
-
-      String link = settingsService.getPropertyValue("geo.map.extern.extern.url");
-      link = link.replaceAll("%id%", String.valueOf(vorgang.getId()));
-      model.put("link", link);
 
       return "backend/bestaetigungOk";
 
