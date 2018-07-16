@@ -68,6 +68,7 @@ import static de.bfpi.tools.GeoTools.wgs84Projection;
 import org.opengis.geometry.MismatchedDimensionException;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
+import org.springframework.ui.ModelMap;
 
 /**
  * Der Controller dient als Schnittstelle für das Frontend
@@ -214,15 +215,15 @@ public class BackendController {
       if (authCode != null && authCode.equals(settingsService.getPropertyValue("auth.kod_code")) && vorgang.autorIntern()) {
         vorgang.setStatus(EnumVorgangStatus.offen);
         vorgang.setStatusDatum(new Date());
-        
+
         vorgangDao.persist(vorgang);
-        
+
         vorgang.setZustaendigkeit(classificationService.calculateZustaendigkeitforVorgang(vorgang).getId());
         vorgang.setZustaendigkeitFrontend(securityService.getZustaendigkeit(vorgang.getZustaendigkeit()).getL());
         vorgang.setZustaendigkeitStatus(EnumZustaendigkeitStatus.zugewiesen);
 
         vorgangDao.merge(vorgang);
-        
+
         String neueAdresse = "nicht zuordenbar";
         if (oviWkt != null) {
           Point point = pointWktToPoint(oviWkt);
@@ -231,7 +232,7 @@ public class BackendController {
           try {
             Point point = transformPosition(pointWktToPoint(positionWGS84), wgs84Projection, internalProjection);
             neueAdresse = geoService.calculateAddress(point, false);
-          } catch (FactoryException|MismatchedDimensionException|TransformException e) {
+          } catch (FactoryException | MismatchedDimensionException | TransformException e) {
             logger.error(e);
           }
         }
@@ -240,7 +241,7 @@ public class BackendController {
         vorgangDao.merge(vorgang, false);
       } else {
         vorgangDao.persist(vorgang);
-        
+
         String neueAdresse = "nicht zuordenbar";
         if (oviWkt != null) {
           Point point = pointWktToPoint(oviWkt);
@@ -249,7 +250,7 @@ public class BackendController {
           try {
             Point point = transformPosition(pointWktToPoint(positionWGS84), wgs84Projection, internalProjection);
             neueAdresse = geoService.calculateAddress(point, false);
-          } catch (FactoryException|MismatchedDimensionException|TransformException e) {
+          } catch (FactoryException | MismatchedDimensionException | TransformException e) {
             logger.error(e);
           }
         }
@@ -560,10 +561,11 @@ public class BackendController {
    * Beschreibung: Vorgang bestätigen
    *
    * @param hash Hash zum Bestätigen
+   * @param model
    * @return View die angezeigt werden soll
    */
   @RequestMapping(value = "/vorgangBestaetigung")
-  public String vorgangBestaetigung(@RequestParam(value = "hash", required = false) String hash) {
+  public String vorgangBestaetigung(@RequestParam(value = "hash", required = false) String hash, ModelMap model) {
 
     try {
       if (StringUtils.isBlank(hash)) {
@@ -591,9 +593,16 @@ public class BackendController {
       vorgang.setZustaendigkeit(classificationService.calculateZustaendigkeitforVorgang(vorgang).getId());
       vorgang.setZustaendigkeitFrontend(securityService.getZustaendigkeit(vorgang.getZustaendigkeit()).getL());
       vorgang.setZustaendigkeitStatus(EnumZustaendigkeitStatus.zugewiesen);
-      
+
       String neueAdresse = geoService.calculateAddress(vorgang.getOvi(), false);
       vorgang.setAdresse(neueAdresse);
+
+      model.put("message", "Die Meldung wurde erfolgreich aufgenommen.");
+      model.put("vorgangId", String.valueOf(vorgang.getId()));
+
+      String link = settingsService.getPropertyValue("geo.map.extern.extern.url");
+      link = link.replaceAll("%id%", String.valueOf(vorgang.getId()));
+      model.put("link", link);
 
       vorgangDao.merge(vorgang, false);
 
@@ -688,10 +697,11 @@ public class BackendController {
    * Beschreibung: Unterstützung bestätigen
    *
    * @param hash Hash zum Bestätigen
+   * @param model
    * @return View die angezeigt werden soll
    */
   @RequestMapping(value = "/unterstuetzerBestaetigung")
-  public String unterstuetzerBestaetigung(@RequestParam(value = "hash", required = false) String hash) {
+  public String unterstuetzerBestaetigung(@RequestParam(value = "hash", required = false) String hash, ModelMap model) {
 
     try {
       if (StringUtils.isBlank(hash)) {
@@ -710,10 +720,18 @@ public class BackendController {
 
       verlaufDao.addVerlaufToVorgang(unterstuetzer.getVorgang(), EnumVerlaufTyp.unterstuetzerBestaetigung, null, null);
       vorgangDao.merge(unterstuetzer);
-      
+
       unterstuetzer.getVorgang().setAdresse(unterstuetzer.getVorgang().getAdresse());
 
       vorgangDao.merge(unterstuetzer, false);
+
+      Vorgang vorgang = unterstuetzer.getVorgang();
+      model.put("message", "Die Unterstützung wurde erfolgreich aufgenommen.");
+      model.put("vorgangId", String.valueOf(vorgang.getId()));
+
+      String link = settingsService.getPropertyValue("geo.map.extern.extern.url");
+      link = link.replaceAll("%id%", String.valueOf(vorgang.getId()));
+      model.put("link", link);
 
       return "backend/bestaetigungOk";
 
@@ -1086,7 +1104,7 @@ public class BackendController {
    * @return View die angezeigt werden soll
    */
   @RequestMapping(value = "/missbrauchsmeldungBestaetigung")
-  public String missbrauchsmeldungBestaetigung(@RequestParam(value = "hash", required = false) String hash) {
+  public String missbrauchsmeldungBestaetigung(@RequestParam(value = "hash", required = false) String hash, ModelMap model) {
 
     try {
       if (StringUtils.isBlank(hash)) {
@@ -1105,11 +1123,12 @@ public class BackendController {
 
       verlaufDao.addVerlaufToVorgang(missbrauchsmeldung.getVorgang(), EnumVerlaufTyp.missbrauchsmeldungBestaetigung, null, null);
       vorgangDao.merge(missbrauchsmeldung);
-      
+
       missbrauchsmeldung.getVorgang().setAdresse(missbrauchsmeldung.getVorgang().getAdresse());
 
       vorgangDao.merge(missbrauchsmeldung, false);
 
+      model.put("message", "Die Missbrauchsmeldung wurde erfolgreich aufgenommen und die entsprechende Meldung damit deaktiviert."); 
       return "backend/bestaetigungOk";
 
     } catch (Exception e) {
@@ -1231,7 +1250,7 @@ public class BackendController {
    * @param response Response in das das Ergebnis direkt geschrieben wird
    * @throws java.io.IOException
    */
-  @RequestMapping(value = "/adressensuche", method = RequestMethod.GET)  
+  @RequestMapping(value = "/adressensuche", method = RequestMethod.GET)
   @ResponseBody
   public void adressensuche(
     @RequestParam(value = "query", required = false) String query,
@@ -1810,7 +1829,7 @@ public class BackendController {
         throw new BackendControllerException(11, "[bild] nicht korrekt", "Das Bild ist fehlerhaft und kann nicht verarbeitet werden.", e);
       }
       vorgangDao.merge(foto);
-      
+
       foto.getVorgang().setAdresse(foto.getVorgang().getAdresse());
 
       vorgangDao.merge(foto, false);
@@ -1838,7 +1857,7 @@ public class BackendController {
    * @return View die angezeigt werden soll
    */
   @RequestMapping(value = "/fotoBestaetigung")
-  public String fotoBestaetigung(@RequestParam(value = "hash", required = false) String hash) {
+  public String fotoBestaetigung(@RequestParam(value = "hash", required = false) String hash, ModelMap model) {
 
     try {
       if (StringUtils.isBlank(hash)) {
@@ -1865,10 +1884,17 @@ public class BackendController {
       vorgang.setFotoFreigabeStatus(EnumFreigabeStatus.intern);
       vorgang.setFotowunsch(false);
       vorgangDao.merge(vorgang);
-      
+
       foto.getVorgang().setAdresse(foto.getVorgang().getAdresse());
 
       vorgangDao.merge(foto, false);
+
+      model.put("message", "Das Foto wurde erfolgreich aufgenommen.");
+      model.put("vorgangId", String.valueOf(vorgang.getId()));
+
+      String link = settingsService.getPropertyValue("geo.map.extern.extern.url");
+      link = link.replaceAll("%id%", String.valueOf(vorgang.getId()));
+      model.put("link", link);
 
       return "backend/bestaetigungOk";
 
