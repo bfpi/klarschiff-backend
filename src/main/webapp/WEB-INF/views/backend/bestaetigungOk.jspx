@@ -1,8 +1,15 @@
 <jsp:root 
-	xmlns:jsp="http://java.sun.com/JSP/Page" 
-	version="2.0"
-	>
-	<jsp:directive.page contentType="text/html;charset=UTF-8"/>
+  xmlns:c="http://java.sun.com/jsp/jstl/core"
+  xmlns:jsp="http://java.sun.com/JSP/Page"
+  version="2.0"
+  >
+  <jsp:directive.page contentType="text/html;charset=UTF-8"/>
 
-	Ihre Bestätigung wurde akzeptiert.
+  Ihre Bestätigung wurde akzeptiert. ${message}
+
+
+  <c:if test="${link != null}">
+    <br /><br />
+    Hier gelangen Sie zur Meldung: <span class="link"><a href="${link}">#${vorgangId}</a></span>
+  </c:if>
 </jsp:root>
