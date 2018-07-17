@@ -142,6 +142,8 @@ public class VorgangNeuController {
     vorgang.setStatus(EnumVorgangStatus.offen);
     vorgang.setStatusDatum(new Date());
     vorgang.setPrioritaet(EnumPrioritaet.mittel);
+    String neueAdresse = geoService.calculateAddress(vorgang.getOvi(), false);
+    vorgang.setAdresse(neueAdresse);
 
     if (StringUtils.isNotBlank(cmd.zustaendigkeit)) {
       vorgang.setZustaendigkeit(cmd.getZustaendigkeit());
@@ -169,8 +171,6 @@ public class VorgangNeuController {
       vorgang.setZustaendigkeit(classificationService.calculateZustaendigkeitforVorgang(vorgang).getId());
       vorgang.setZustaendigkeitFrontend(securityService.getZustaendigkeit(vorgang.getZustaendigkeit()).getL());
       vorgang.setZustaendigkeitStatus(EnumZustaendigkeitStatus.zugewiesen);
-      String neueAdresse = geoService.calculateAddress(vorgang.getOvi(), false);
-      vorgang.setAdresse(neueAdresse);
       vorgangDao.merge(vorgang);
     }
 

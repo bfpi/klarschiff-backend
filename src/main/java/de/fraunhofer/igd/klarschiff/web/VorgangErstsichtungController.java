@@ -207,13 +207,10 @@ public class VorgangErstsichtungController {
       if (cmd.getVorgang().getFotoExists()) {
         cmd.getVorgang().setFotoFreigabeStatus(EnumFreigabeStatus.extern);
       }
-
-      vorgangDao.merge(cmd.getVorgang());
-      
       String neueAdresse = geoService.calculateAddress(cmd.getVorgang().getOvi(), false);
       cmd.getVorgang().setAdresse(neueAdresse);
 
-      vorgangDao.merge(cmd.getVorgang(), false);
+      vorgangDao.merge(cmd.getVorgang());
 
       return "redirect:/vorgang/" + id + "/uebersicht";
 

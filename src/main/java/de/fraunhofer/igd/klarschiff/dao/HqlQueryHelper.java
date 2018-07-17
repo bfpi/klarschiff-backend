@@ -157,7 +157,7 @@ public class HqlQueryHelper {
       str.append(" WHERE ");
 
       User user = securityService.getCurrentUser();
-      if (str.indexOf("Vorgang vo") != -1 && user.getFlaechen().size() > 0) {
+      if (str.indexOf("Vorgang vo") != -1 && user != null && user.getFlaechen().size() > 0) {
         Query tmp = entityManager.createNativeQuery("SELECT ST_AsText(ST_Union(flaeche)) FROM klarschiff_flaeche WHERE id in (SELECT flaeche_id FROM klarschiff_benutzer_flaeche where benutzer_id = :user_id)");
         tmp.setParameter("user_id", user.getDbId());
         String mp = (String) tmp.getSingleResult();

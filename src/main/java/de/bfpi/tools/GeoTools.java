@@ -28,8 +28,8 @@ public class GeoTools {
   /**
    * Wandelt einen WKT-Punkt in einen Punkt im Koordinatenformat [LAT, LONG]
    *
-   * @param point WKT
-   * @return Point im Koordinatenformat [LAT, LONG]
+   * @param pointWkt WKT-Punkt
+   * @return Punkt im Koordinatenformat [LAT, LONG]
    * @throws com.vividsolutions.jts.io.ParseException
    */
   public static Point pointWktToPoint(String pointWkt) {
