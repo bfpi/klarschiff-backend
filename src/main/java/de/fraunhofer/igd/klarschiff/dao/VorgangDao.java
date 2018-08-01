@@ -135,9 +135,7 @@ public class VorgangDao {
         && (!StringUtils.isBlank(vorgangOld.getStatusKommentar())
         || !StringUtils.isBlank(vorgang.getStatusKommentar()))) {
 
-        verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.statusKommentar,
-          StringUtils.abbreviate(vorgangOld.getStatusKommentar(), 100),
-          StringUtils.abbreviate(vorgang.getStatusKommentar(), 100));
+        verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.statusKommentar, vorgangOld.getStatusKommentar(), vorgang.getStatusKommentar());
       }
       //Zuständigkeit
       if (!StringUtils.equals(vorgangOld.getZustaendigkeit(), vorgang.getZustaendigkeit())) {
@@ -190,32 +188,24 @@ public class VorgangDao {
       }
       //Beschreibung
       if (!StringUtils.equals(vorgangOld.getBeschreibung(), vorgang.getBeschreibung())) {
-        verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.beschreibung,
-          StringUtils.abbreviate(vorgangOld.getBeschreibung(), 100),
-          StringUtils.abbreviate(vorgang.getBeschreibung(), 100));
+        verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.beschreibung, vorgangOld.getBeschreibung(), vorgang.getBeschreibung());
       }
       //Adresse
       if (!StringUtils.equals(vorgangOld.getAdresse(), vorgang.getAdresse())) {
-        verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.adresse,
-          StringUtils.abbreviate(vorgangOld.getAdresse(), 100),
-          StringUtils.abbreviate(vorgang.getAdresse(), 100));
+        verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.adresse, vorgangOld.getAdresse(), vorgang.getAdresse());
       }
       //Ovi
       if (!StringUtils.equals(vorgangOld.getOviWkt(), vorgang.getOviWkt())) {
-        verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.ovi,
-          StringUtils.abbreviate(vorgangOld.getOviWkt(), 100),
-          StringUtils.abbreviate(vorgang.getOviWkt(), 100));
+        verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.ovi, null, null);
       }
       //Flurstückseigentum
       if (!StringUtils.equals(vorgangOld.getFlurstueckseigentum(), vorgang.getFlurstueckseigentum())) {
-        verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.flurstueckseigentum,
-          StringUtils.abbreviate(vorgangOld.getFlurstueckseigentum(), 100),
-          StringUtils.abbreviate(vorgang.getFlurstueckseigentum(), 100));
+        verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.flurstueckseigentum, vorgangOld.getFlurstueckseigentum(), vorgang.getFlurstueckseigentum());
       }
       //Delegieren
       if (!StringUtils.equals(vorgangOld.getDelegiertAn(), vorgang.getDelegiertAn())) {
         verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.delegiertAn,
-          vorgangOld.getDelegiertAn(), vorgang.getDelegiertAn());
+          null, vorgang.getDelegiertAn());
       }
       //Priorität
       if (vorgangOld.getPrioritaet() != vorgang.getPrioritaet()) {

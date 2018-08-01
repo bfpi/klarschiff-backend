@@ -1,7 +1,6 @@
 <jsp:root
   xmlns:c="http://java.sun.com/jsp/jstl/core"
   xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-  xmlns:fx="http://igd.fraunhofer.de/tags/elfunctions"
   xmlns:spring="http://www.springframework.org/tags"
   xmlns:jsp="http://java.sun.com/JSP/Page"
   xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu"
@@ -78,7 +77,8 @@
                 </c:when>
                 <c:when test="${verlaufItem.typ=='statusKommentar'}">
                   <c:choose>
-                    <c:when test="${not empty verlaufItem.wertNeu}">öffentliche Statusinformation geändert</c:when>
+                    <c:when test="${not empty verlaufItem.wertAlt and not empty verlaufItem.wertNeu}">öffentliche Statusinformation geändert von <i>${verlaufItem.wertAlt}</i> auf <i>${verlaufItem.wertNeu}</i></c:when>
+                    <c:when test="${empty verlaufItem.wertAlt and not empty verlaufItem.wertNeu}">öffentliche Statusinformation geändert auf <i>${verlaufItem.wertNeu}</i></c:when>
                     <c:otherwise>öffentliche Statusinformation gelöscht</c:otherwise>
                   </c:choose>
                 </c:when>
@@ -89,7 +89,7 @@
                   </c:choose>
                 </c:when>
                 <c:when test="${verlaufItem.typ=='zustaendigkeit'}">
-                  Zuständigkeit geändert: ${verlaufItem.wertAlt} ➔ ${verlaufItem.wertNeu}
+                  Zuständigkeit geändert: <i>${verlaufItem.wertAlt}</i> ➔ <i>${verlaufItem.wertNeu}</i>
                 </c:when>
                 <c:when test="${verlaufItem.typ=='erzeugt'}">
                   <c:choose>
@@ -118,7 +118,7 @@
                   Typ geändert: <img style="vertical-align:middle" alt="${altAlt}" src="${url}${altAlt}" height="15" width="15"  title="${verlaufItem.wertAlt}"/> ➔ <img style="vertical-align:middle" alt="${altNeu}" src="${url}${altNeu}" height="15" width="15"  title="${verlaufItem.wertNeu}"/>
                 </c:when>
                 <c:when test="${verlaufItem.typ=='kategorie' and verlaufItem.wertNeu!=verlaufItem.wertAlt}">
-                  Kategorie geändert: ${verlaufItem.wertAlt} ➔ ${verlaufItem.wertNeu}
+                  Kategorie geändert: <i>${verlaufItem.wertAlt}</i> ➔ <i>${verlaufItem.wertNeu}</i>
                 </c:when>
                 <c:when test="${verlaufItem.typ=='archiv' and verlaufItem.wertNeu=='true'}">
                   Vorgang archiviert <img style="vertical-align:middle" alt="archiviert" src="${url}archiviert_15.png" height="15" width="15"  title="archiviert"/>
@@ -128,50 +128,52 @@
                 </c:when>
                 <c:when test="${verlaufItem.typ=='adresse'}">
                   <c:choose>
-                    <c:when test="${not empty verlaufItem.wertNeu}">Adresse geändert in: ${verlaufItem.wertNeu}</c:when>
+                    <c:when test="${not empty verlaufItem.wertAlt and not empty verlaufItem.wertNeu}">Adresse geändert von <i>${verlaufItem.wertAlt}</i> auf <i>${verlaufItem.wertNeu}</i></c:when>
+                    <c:when test="${empty verlaufItem.wertAlt and not empty verlaufItem.wertNeu}">Adresse geändert auf <i>${verlaufItem.wertNeu}</i></c:when>
                     <c:otherwise>Adresse gelöscht</c:otherwise>
                   </c:choose>
                 </c:when>
                 <c:when test="${verlaufItem.typ=='ovi'}">
-                  <c:choose>
-                    <c:when test="${not empty verlaufItem.wertNeu}">
-                      Position geändert <img style="vertical-align:middle" alt="Position geändert" src="${url}map.png" height="15" width="15"  title="Position geändert"/>
-                    </c:when>
-                    <c:otherwise>Position gelöscht</c:otherwise>
-                  </c:choose>
+                  Position geändert <img style="vertical-align:middle" alt="Position geändert" src="${url}map.png" height="15" width="15"  title="Position geändert"/>
                 </c:when>
                 <c:when test="${verlaufItem.typ=='flurstueckseigentum'}">
                   <c:choose>
-                    <c:when test="${not empty verlaufItem.wertNeu}">Flurstückseigentum geändert in: ${verlaufItem.wertNeu}</c:when>
+                    <c:when test="${not empty verlaufItem.wertAlt and not empty verlaufItem.wertNeu}">Flurstückseigentum geändert von <i>${verlaufItem.wertAlt}</i> auf <i>${verlaufItem.wertNeu}</i></c:when>
+                    <c:when test="${empty verlaufItem.wertAlt and not empty verlaufItem.wertNeu}">Flurstückseigentum geändert auf <i>${verlaufItem.wertNeu}</i></c:when>
                     <c:otherwise>Flurstückseigentum gelöscht</c:otherwise>
                   </c:choose>
                 </c:when>
                 <c:when test="${verlaufItem.typ=='beschreibung'}">
                   <c:choose>
-                    <c:when test="${not empty verlaufItem.wertNeu}">Beschreibung geändert in: ${fx:toHtml(verlaufItem.wertNeu)}</c:when>
+                    <c:when test="${not empty verlaufItem.wertAlt and not empty verlaufItem.wertNeu}">Beschreibung geändert von <i>${verlaufItem.wertAlt}</i> auf <i>${verlaufItem.wertNeu}</i></c:when>
+                    <c:when test="${empty verlaufItem.wertAlt and not empty verlaufItem.wertNeu}">Beschreibung geändert auf <i>${verlaufItem.wertNeu}</i></c:when>
                     <c:otherwise>Beschreibung gelöscht</c:otherwise>
                   </c:choose>
                 </c:when>
                 <c:when test="${verlaufItem.typ=='delegiertAn'}">
                   <c:choose>
-                    <c:when test="${not empty verlaufItem.wertNeu}">Vorgang delegiert an: ${fx:toHtml(verlaufItem.wertNeu)}</c:when>
-                    <c:otherwise>Vorgang zurückgewiesen von: ${fx:toHtml(verlaufItem.wertAlt)}</c:otherwise>
+                    <c:when test="${not empty verlaufItem.wertNeu}">Vorgang delegiert an <i>${verlaufItem.wertNeu}</i></c:when>
+                    <c:otherwise>Vorgang zurückgewiesen</c:otherwise>
                   </c:choose>
                 </c:when>
                 <c:when test="${verlaufItem.typ=='kommentar'}">
-                  Interner Kommentar angelegt: ${verlaufItem.wertNeu}
+                  interner Kommentar angelegt
                 </c:when>
                 <c:when test="${verlaufItem.typ=='fotoBestaetigung'}">
-                  Neues Foto von externem Autor bestätigt
+                  neues Foto von externem Autor bestätigt
                 </c:when>
                 <c:when test="${verlaufItem.typ=='foto'}">
                   <c:choose>
-                    <c:when test="${verlaufItem.nutzer!=null}">Neues Foto hinzugefügt</c:when>
-                    <c:otherwise>Neues Foto von externem Autor hinzugefügt</c:otherwise>
+                    <c:when test="${verlaufItem.nutzer!=null}">neues Foto hinzugefügt</c:when>
+                    <c:otherwise>neues Foto von externem Autor hinzugefügt</c:otherwise>
                   </c:choose>
                 </c:when>
                 <c:when test="${verlaufItem.typ=='prioritaet'}">
-                  Priorität geändert in: ${verlaufItem.wertNeu}
+                  <c:choose>
+                    <c:when test="${not empty verlaufItem.wertAlt and not empty verlaufItem.wertNeu}">Priorität geändert von <i>${verlaufItem.wertAlt}</i> auf <i>${verlaufItem.wertNeu}</i></c:when>
+                    <c:when test="${empty verlaufItem.wertAlt and not empty verlaufItem.wertNeu}">Priorität geändert auf <i>${verlaufItem.wertNeu}</i></c:when>
+                    <c:otherwise>Priorität gelöscht</c:otherwise>
+                  </c:choose>
                 </c:when>
                 <c:when test="${verlaufItem.typ=='missbrauchsmeldungErzeugt'}">
                   Missbrauchsmeldung erzeugt
@@ -192,7 +194,7 @@
                   Vorgang von externem Autor bestätigt
                 </c:when>
                 <c:when test="${verlaufItem.typ=='aufgabeStatus'}">
-                  Aufgaben-Status geändert auf:
+                  Auftragsstatus geändert auf:
                   <c:choose>
                     <c:when test="${verlaufItem.wertNeu == 'abgehakt'}">
                       &#x2611;

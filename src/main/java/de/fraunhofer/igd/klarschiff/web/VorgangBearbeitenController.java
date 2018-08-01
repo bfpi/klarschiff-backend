@@ -493,8 +493,7 @@ public class VorgangBearbeitenController {
         kommentar.setAnzBearbeitet(0);
         kommentar.setDatum(new Date());
         kommentarDao.persist(kommentar);
-        Verlauf verlauf = verlaufDao.addVerlaufToVorgang(kommentar.getVorgang(), EnumVerlaufTyp.kommentar,
-          "", cmd.getKommentar());
+        Verlauf verlauf = verlaufDao.addVerlaufToVorgang(kommentar.getVorgang(), EnumVerlaufTyp.kommentar, null, null);
         verlaufDao.merge(verlauf);
         cmd.setKommentar(null);
       }

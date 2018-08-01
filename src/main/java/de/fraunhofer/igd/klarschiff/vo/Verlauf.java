@@ -15,7 +15,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
-
+import org.hibernate.annotations.Type;
 import org.springframework.format.annotation.DateTimeFormat;
 
 /**
@@ -65,11 +65,13 @@ public class Verlauf implements Serializable {
   /**
    * alter Wert (ist abhängig von Typ des Verlaufeintrages)
    */
+  @Type(type = "org.hibernate.type.TextType")
   private String wertAlt;
 
   /**
    * alter Wert (ist abhängig von Typ des Verlaufeintrages)
    */
+  @Type(type = "org.hibernate.type.TextType")
   private String wertNeu;
 
   /* --------------- GET + SET ----------------------------*/
