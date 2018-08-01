@@ -337,7 +337,7 @@ public class BackendController {
 
       if (statusKommentar != null) {
         if (!vorgang.getStatusKommentar().equals(statusKommentar)) {
-          verlaufDao.persist(verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.statusKommentar, StringUtils.abbreviate(vorgang.getStatusKommentar(), 100), StringUtils.abbreviate(statusKommentar, 100), autorEmail));
+          verlaufDao.persist(verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.statusKommentar, vorgang.getStatusKommentar(), statusKommentar, autorEmail));
         }
         vorgang.setStatusKommentar(statusKommentar);
       }
@@ -352,7 +352,7 @@ public class BackendController {
 
         if (delegiertAn != null) {
           if (!vorgang.getDelegiertAn().equals(delegiertAn)) {
-            verlaufDao.persist(verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.delegiertAn, vorgang.getDelegiertAn(), delegiertAn, autorEmail));
+            verlaufDao.persist(verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.delegiertAn, null, delegiertAn, autorEmail));
           }
           vorgang.setDelegiertAn(delegiertAn);
         }
@@ -490,8 +490,7 @@ public class BackendController {
 
     if (beschreibung != null) {
       if (verlaufErgaenzen && (vorgang.getBeschreibung() == null || !vorgang.getBeschreibung().equals(beschreibung))) {
-        verlaufDao.persist(verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.beschreibung,
-          StringUtils.abbreviate(vorgang.getBeschreibung(), 100), StringUtils.abbreviate(beschreibung, 100), autorEmail));
+        verlaufDao.persist(verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.beschreibung, vorgang.getBeschreibung(), beschreibung, autorEmail));
       }
       vorgang.setBeschreibung(beschreibung);
     }

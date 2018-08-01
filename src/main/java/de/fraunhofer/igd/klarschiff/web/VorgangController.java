@@ -125,6 +125,7 @@ public class VorgangController {
     Vorgang vorgang = vorgangDao.findVorgang(id);
 
     if (StringUtils.isNotEmpty(oviWkt)) {
+      String altesFlurstueckseigentum = vorgang.getFlurstueckseigentum();
       String alterOviWkt = vorgang.getOviWkt();
       vorgang.setOviWkt(oviWkt);
       String alteAdresse = vorgang.getAdresse();
@@ -132,17 +133,18 @@ public class VorgangController {
       vorgang.setAdresse(neueAdresse);
       vorgangDao.merge(vorgang);
       String neuerOviWkt = vorgang.getOviWkt();
+      String neuesFlurstueckseigentum = vorgang.getFlurstueckseigentum();
       // Verlauf: Ovi
       if (!StringUtils.equals(alterOviWkt, neuerOviWkt)) {
-        verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.ovi,
-          StringUtils.abbreviate(alterOviWkt, 100),
-          StringUtils.abbreviate(neuerOviWkt, 100));
+        verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.ovi, null, null);
       }
       // Verlauf: Adresse
       if (!StringUtils.equals(alteAdresse, neueAdresse)) {
-        verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.adresse,
-          StringUtils.abbreviate(alteAdresse, 100),
-          StringUtils.abbreviate(neueAdresse, 100));
+        verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.adresse, alteAdresse, neueAdresse);
+      }
+      // Verlauf: Flurstückseigentum
+      if (!StringUtils.equals(altesFlurstueckseigentum, neuesFlurstueckseigentum)) {
+        verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.adresse, altesFlurstueckseigentum, neuesFlurstueckseigentum);
       }
       featureService.removeNonUpdatableFeatures(vorgang);
     }
