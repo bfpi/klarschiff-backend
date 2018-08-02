@@ -116,9 +116,10 @@ public class BackendController {
    * @param kategorie Kategorie
    * @param oviWkt Position als WKT
    * @param positionWGS84 Position im WGS84 Format
+   * @param typ Vorgangstyp
+   * @param datenschutz Datenschutzerklärung wurde akzeptiert
    * @param resultObjectOnSubmit <code>true</code> - gibt den neuen Vorgangs als Ergebnis zurück
    * @param resultHashOnSubmit <code>true</code> - gibt den Hash zum Bestätigen als Ergebnis zurück
-   * @param typ Vorgangstyp
    * @param response Response in das das Ergebnis direkt geschrieben wird
    */
   @RequestMapping(value = "/vorgang", method = RequestMethod.POST)
@@ -132,9 +133,10 @@ public class BackendController {
     @RequestParam(value = "kategorie", required = false) Long kategorie,
     @RequestParam(value = "oviWkt", required = false) String oviWkt,
     @RequestParam(value = "positionWGS84", required = false) String positionWGS84,
+    @RequestParam(value = "typ", required = false) String typ,
+    @RequestParam(value = "datenschutz", required = false) Boolean datenschutz,
     @RequestParam(value = "resultObjectOnSubmit", required = false) Boolean resultObjectOnSubmit,
     @RequestParam(value = "resultHashOnSubmit", required = false) Boolean resultHashOnSubmit,
-    @RequestParam(value = "typ", required = false) String typ,
     HttpServletResponse response) {
 
     if (resultHashOnSubmit == null) {
@@ -144,6 +146,9 @@ public class BackendController {
       resultObjectOnSubmit = false;
     }
     try {
+      if (datenschutz == null || !datenschutz) {
+        throw new BackendControllerException(101, "[datenschutz] fehlt", "Die Datenschutzerklärung wurde nicht akzeptiert.");
+      }
       Vorgang vorgang = new Vorgang();
       vorgang.setSecurityService(securityService);
 
@@ -519,6 +524,7 @@ public class BackendController {
    *
    * @param vorgang Vorgang
    * @param email E-Mail-Adresse des Erstellers
+   * @param datenschutz Datenschutzerklärung wurde akzeptiert
    * @param resultObjectOnSubmit <code>true</code> - gibt den neuen Vorgangs als Ergebnis zurück
    * @param resultHashOnSubmit <code>true</code> - gibt den Hash zum Bestätigen als Ergebnis zurück
    * @param response Response in das das Ergebnis direkt geschrieben wird
@@ -528,6 +534,7 @@ public class BackendController {
   public void unterstuetzer(
     @RequestParam(value = "vorgang", required = false) Long vorgang,
     @RequestParam(value = "email", required = false) String email,
+    @RequestParam(value = "datenschutz", required = false) Boolean datenschutz,
     @RequestParam(value = "resultHashOnSubmit", required = false) Boolean resultHashOnSubmit,
     @RequestParam(value = "resultObjectOnSubmit", required = false) Boolean resultObjectOnSubmit,
     HttpServletResponse response) {
@@ -538,6 +545,9 @@ public class BackendController {
       resultObjectOnSubmit = false;
     }
     try {
+      if (datenschutz == null || !datenschutz) {
+        throw new BackendControllerException(101, "[datenschutz] fehlt", "Die Datenschutzerklärung wurde nicht akzeptiert.");
+      }
       Unterstuetzer unterstuetzer = new Unterstuetzer();
       if (vorgang == null) {
         throw new BackendControllerException(201, "[vorgang] fehlt", "Die Unterstützung ist keiner Meldung zugeordnet.");
@@ -632,6 +642,7 @@ public class BackendController {
    * @param vorgang Vorgang
    * @param text Text der Missbrauchsmeldung
    * @param email E-Mail-Adresse des Erstellers
+   * @param datenschutz Datenschutzerklärung wurde akzeptiert
    * @param resultHashOnSubmit <code>true</code> - gibt den Hash zum Bestätigen als Ergebnis zurück
    * @param resultObjectOnSubmit <code>true</code> - gibt den neuen Vorgangs als Ergebnis zurück
    * @param response Response in das das Ergebnis direkt geschrieben wird
@@ -642,6 +653,7 @@ public class BackendController {
     @RequestParam(value = "vorgang", required = false) Long vorgang,
     @RequestParam(value = "text", required = false) String text,
     @RequestParam(value = "email", required = false) String email,
+    @RequestParam(value = "datenschutz", required = false) Boolean datenschutz,
     @RequestParam(value = "resultHashOnSubmit", required = false) Boolean resultHashOnSubmit,
     @RequestParam(value = "resultObjectOnSubmit", required = false) Boolean resultObjectOnSubmit,
     HttpServletResponse response) {
@@ -652,6 +664,9 @@ public class BackendController {
       resultObjectOnSubmit = false;
     }
     try {
+      if (datenschutz == null || !datenschutz) {
+        throw new BackendControllerException(101, "[datenschutz] fehlt", "Die Datenschutzerklärung wurde nicht akzeptiert.");
+      }
       Missbrauchsmeldung missbrauchsmeldung = new Missbrauchsmeldung();
       if (vorgang == null) {
         throw new BackendControllerException(401, "[vorgang] fehlt", "Die Missbrauchsmeldung ist keiner Meldung zugeordnet.");
@@ -827,6 +842,7 @@ public class BackendController {
    * @param vorgang Vorgang
    * @param email E-Mail-Adresse des Erstellers
    * @param freitext Freitext
+   * @param datenschutz Datenschutzerklärung wurde akzeptiert
    * @param response Response in das das Ergebnis direkt geschrieben wird
    */
   @RequestMapping(value = "/lobHinweiseKritik", method = RequestMethod.POST)
@@ -835,8 +851,12 @@ public class BackendController {
     @RequestParam(value = "vorgang", required = false) Long vorgang,
     @RequestParam(value = "email", required = false) String email,
     @RequestParam(value = "freitext", required = false) String freitext,
+    @RequestParam(value = "datenschutz", required = false) Boolean datenschutz,
     HttpServletResponse response) {
     try {
+      if (datenschutz == null || !datenschutz) {
+        throw new BackendControllerException(101, "[datenschutz] fehlt", "Die Datenschutzerklärung wurde nicht akzeptiert.");
+      }
       LobHinweiseKritik lobHinweiseKritik = new LobHinweiseKritik();
       if (vorgang == null) {
         throw new BackendControllerException(401, "[vorgang] fehlt", "Lob, Hinweise oder Kritik kann/können keiner Meldung zugeordnet werden.");
