@@ -248,6 +248,7 @@ public class StatisticDao {
       .addWhereConditions("ve.typ IN (:typen)").addParameter("typen", Arrays.asList(EnumVerlaufTyp.relevantBeiLetztenAktivitaeten()))
       .addWhereConditions("vo.status IN ('offen', 'inBearbeitung', 'nichtLoesbar', 'geloest')")
       .orderBy("vo.prioritaetOrdinal DESC, vo.delegiertAn ASC, vo.zustaendigkeitStatus DESC, vo.erstsichtungErfolgt ASC, vo.id DESC");
+    processZustaendigkeitDelegiertAn(query);
     query.distinctEnable = true;
     query.maxResults(maxResult);
     return query.getResultList(entityManager);
