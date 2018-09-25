@@ -31,6 +31,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import de.fraunhofer.igd.klarschiff.dao.VorgangDao;
+import de.fraunhofer.igd.klarschiff.service.settings.SettingsService;
 import de.fraunhofer.igd.klarschiff.util.SystemUtil;
 import de.fraunhofer.igd.klarschiff.vo.Benutzer;
 import de.fraunhofer.igd.klarschiff.vo.Kommentar;
@@ -59,6 +60,9 @@ public class SecurityService {
   VorgangDao vorgangDao;
   @Autowired
   AussendienstKoordinatorDao aussendienstKoordinatorDao;
+
+  @Autowired
+  SettingsService settingsService;
 
   SecurityServiceLdap securityServiceLdap;
 
@@ -811,11 +815,18 @@ public class SecurityService {
   }
 
   private String getGroupConditions(List<Role> roles) {
+    String groupConditionFilterKey = "GROUPMEMBERSHIP";
+    if (!StringUtils.isBlank(settingsService.getPropertyValue("ldap.groupConditionFilterKey"))) {
+      groupConditionFilterKey = settingsService.getPropertyValue("ldap.groupConditionFilterKey");
+    }
+    if(roles.size() > 0) {
     ArrayList conditionList = new ArrayList<String>();
     for (Role role : roles) {
-      conditionList.add("(GROUPMEMBERSHIP=" + role.getDn() + ")");
+      conditionList.add("(" + groupConditionFilterKey + "=" + role.getDn() + ")");
     }
     return conditionList.size() > 1 ? "(|" + String.join("", conditionList) + ")" : conditionList.get(0).toString();
+    }
+    return "";
   }
 
   private List<User> sortedUsers(List<User> users) {

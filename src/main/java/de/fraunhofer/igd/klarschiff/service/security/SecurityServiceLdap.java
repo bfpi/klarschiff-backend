@@ -88,27 +88,29 @@ public class SecurityServiceLdap {
         conditionList.add("(" + StringUtils.replace(userSearchFilter, "{0}", user) + ")");
       }
     }
-    String condition = conditionList.size() > 1 ? "(|" + String.join("", conditionList) + ")" : conditionList.get(0).toString();
-    List<User> ldapUsers = getObjectListFromLdap(userSearchBase, condition, userContextMapper);
+    if(conditionList.size() > 0) {
+      String condition = conditionList.size() > 1 ? "(|" + String.join("", conditionList) + ")" : conditionList.get(0).toString();
+      List<User> ldapUsers = getObjectListFromLdap(userSearchBase, condition, userContextMapper);
 
-    for (Role role : roles) {
-      List<String> newUser = new ArrayList<String>();
-      for (String user : role.getUser()) {
-        for (User ldapUser : ldapUsers) {
-          if (user.equals(ldapUser.getId())) {
-            newUser.add(ldapUser.getName() + " (" + ldapUser.getId() + ")");
-            break;
+      for (Role role : roles) {
+        List<String> newUser = new ArrayList<String>();
+        for (String user : role.getUser()) {
+          for (User ldapUser : ldapUsers) {
+            if (user.equals(ldapUser.getId())) {
+              newUser.add(ldapUser.getName() + " (" + ldapUser.getId() + ")");
+              break;
+            }
           }
         }
+        role.setUser(newUser);
       }
-      role.setUser(newUser);
-    }
 
-    Collections.sort(roles, new Comparator<Role>() {
-      public int compare(Role r1, Role r2) {
-        return r1.getId().compareTo(r2.getId());
-      }
-    });
+      Collections.sort(roles, new Comparator<Role>() {
+        public int compare(Role r1, Role r2) {
+          return r1.getId().compareTo(r2.getId());
+        }
+      });
+    }
     return roles;
   }
 
