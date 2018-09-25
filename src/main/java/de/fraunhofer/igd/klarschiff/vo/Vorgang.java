@@ -297,8 +297,7 @@ public class Vorgang implements Serializable {
   /**
    * ein Wunsch nach einem Foto wurde geäußert
    */
-  @NotNull
-  @Column(columnDefinition = "boolean default false")
+  @Column(nullable = false, columnDefinition = "boolean default false")
   Boolean fotowunsch;
 
   /**
