@@ -1,11 +1,14 @@
 package de.fraunhofer.igd.klarschiff.dao;
 
+import de.fraunhofer.igd.klarschiff.vo.EnumVerlaufTyp;
 import de.fraunhofer.igd.klarschiff.vo.StadtGrenze;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
 import de.fraunhofer.igd.klarschiff.vo.StadtteilGrenze;
+import de.fraunhofer.igd.klarschiff.vo.Vorgang;
+import javax.persistence.Query;
 
 /**
  * Die Dao-Klasse erlaubt den Zugriff auf die Stadtteilgrenzen in der DB.
@@ -62,6 +65,23 @@ public class GrenzenDao {
       return null;
     }
     return entityManager.find(StadtteilGrenze.class, id);
+  }
+
+  /**
+   * Holt die Stadtteilgrenze anhand eines vorgangs
+   *
+   * @param vorgang Vorgang
+   * @return Stadtteilgrenze
+   */
+  public StadtteilGrenze findStadtteilGrenzeByVorgang(Vorgang vorgang) {
+    if (vorgang == null) {
+      return null;
+    }
+    List<Integer> l = entityManager.createNativeQuery("select ssg.id from klarschiff_stadtteil_grenze ssg "
+      + " inner join klarschiff_vorgang kv on ST_Within(kv.ovi, ssg.grenze) where kv.id = " + vorgang.getId())
+      .getResultList();
+
+    return findStadtteilGrenze(l.get(0));
   }
 
   /**

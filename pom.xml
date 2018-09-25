@@ -5,7 +5,7 @@
   <groupId>de.fraunhofer.igd.klarschiff</groupId>
   <artifactId>backend</artifactId>
   <packaging>war</packaging>
-  <version>1.8.0</version>
+  <version>1.8.1</version>
   <name>Klarschiff-Backend</name>
 
   <properties>
@@ -604,6 +604,8 @@
         <version>2.9.1</version>
         <configuration>
           <show>private</show>
+          <reportOutputDirectory>src/main/webapp/dokumentation</reportOutputDirectory>
+          <destDir>apidoc</destDir>
         </configuration>
       </plugin>
       <plugin>
@@ -662,6 +664,24 @@
         <configuration>
           <encoding>${project.build.sourceEncoding}</encoding>
         </configuration>
+        <executions>
+          <execution>
+            <id>copy-resources</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${basedir}/target/${project.artifactId}-${project.version}/dokumentation</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>doc</directory>
+                  <filtering>true</filtering>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

@@ -31,21 +31,8 @@
                 Falls Ihnen das Benutzerhandbuch nicht weiterhilft beziehungsweise Sie Kommentare, Anregungen oder Kritik zum Backend von ${fx:title()}
                 äußern möchten, so wenden Sie sich bitte an:<br/>
                 <br/>
-                Matthias Meißer<br/>
-                Hanse- und Universitätsstadt Rostock<br/>
-                Kataster-, Vermessungs- und Liegenschaftsamt<br/>
-                Holbeinplatz 14<br/>					
-                18069 Rostock<br/>					
-                Telefon: +49 381 381-6221<br/>					
-                E-Mail: <a href="mailto:matthias.meisser@rostock.de">matthias.meisser@rostock.de</a><br/>
-                <br/>
-                Sebastian Gutzeit<br/>
-                Hanse- und Universitätsstadt Rostock<br/>
-                Kataster-, Vermessungs- und Liegenschaftsamt<br/>
-                Holbeinplatz 14<br/>					
-                18069 Rostock<br/>					
-                Telefon: +49 381 381-6256<br/>					
-                E-Mail: <a href="mailto:sebastian.gutzeit@rostock.de">sebastian.gutzeit@rostock.de</a>
+                <c:set var="req" value="${pageContext.request}" />
+                <c:import url="${req.scheme}://${req.serverName}/resources/backend/service.html" charEncoding="UTF-8" />
             </div>
         </c:otherwise>
     </c:choose>

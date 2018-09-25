@@ -200,11 +200,12 @@
 				<form action="${url}" target="_blank" method="post">
 					<label for="typ">typ</label><input type="text" name="typ" value="problem"/><br/>
 					<label for="typ">kategorie</label><input type="text" name="kategorie" value="2"/><br/>
-					<label for="typ">oviWkt</label><input type="text" name="oviWkt" value="POINT(311279.42193707 6002855.152289)"/><br/>
+					<label for="typ">oviWkt</label><input type="text" name="oviWkt" value="POINT(262589 5943955)"/><br/>
 					<label for="typ">autorEmail</label><input type="text" name="autorEmail" value="test@test.de"/><br/>
 					<label for="typ">beschreibung</label><input type="text" name="beschreibung" value="beschreibung"/><br/>
 					<label for="typ">bild</label><input type="text" name="bild" value="/9j/4AAQSkZJRgABAQEASABIAAD//gATQ3JlYXRlZCB3aXRoIEdJTVD/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAAdADgDASIAAhEBAxEB/8QAGwABAQACAwEAAAAAAAAAAAAAAAUDBgECBAf/xAAlEAACAgMAAgICAgMAAAAAAAABAgMEAAUREjEhQQYTFGFRgZH/xAAaAQACAwEBAAAAAAAAAAAAAAABAwAEBQIH/8QAJREAAQMDBAICAwAAAAAAAAAAAQACEQMhQQQxUWEFEhNCgbHw/9oADAMBAAIRAxEAPwD4fjJn5BckpJSdJREr240lY854Hve99eveYdptog9FKF6B2ktxpIqOrkoe9/zz6+cwW0nOgjK9Yq66lSLmuN2xxeeLqzjJ13arVsNEaGwlC87JFB5J677zzbW8Jq2rs053Ec12JSVJHkp70H/nrIKTjHalTW0mB0GS3H5AyO+1axkepaMe53JsTsIIBCQGY+KDwJPB9Z2g39OSWNXhtwpKeRyyxeKMT64cJpOwg3X0fuYMkX6MfvmFWxjGKVxSfyWu1hKCCEzKLsZkUL5Dx+ek/wBZh3OtgjfXvSoRqy3Yi7QwgEL89J4PXrLmMa2qWwBhUquhp1S9zt3RgWjhatarPLs7S7HXX7rNIf4/62IiCfQ70c/vFWrZXQaWI1phJHfV3Uoeqvm/yR9D5GbTjO/nMAR/RCrDxLA5zvbecCbuDrnc7RfC127r7NuxvokjZf3rB+pmHA5VekA/65nGwnubakutTV2a7uy/skkXiRgEEkH79ZseMArbW2THeNB9gHkB0zYXBJMdbkSMdpjGMQtJf//Z"/><br/>
 					<label for="typ">resultHashOnSubmit</label><input type="text" name="resultHashOnSubmit" value="true"/><br/>
+          <label for="neuerVorgang-datenschutz">datenschutz</label><input type="checkbox" id="neuerVorgang-datenschutz" name="datenschutz" value="true"/><br/>
 					<input type="submit" value="Ausführen"/>
 				</form>
 	

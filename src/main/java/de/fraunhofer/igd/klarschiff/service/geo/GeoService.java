@@ -306,9 +306,11 @@ public class GeoService {
             adresse += properties.getString("hausnummer");
             if (!properties.get("hausnummer_zusatz").equals(null))
               adresse += properties.getString("hausnummer_zusatz");
-            adresse += " (";
-            adresse += properties.getString("abkuerzung");
-            adresse += ")";
+            if (!properties.isNull("abkuerzung")) {
+              adresse += " (";
+              adresse += properties.getString("abkuerzung");
+              adresse += ")";
+            }
             Double entfernung = properties.getDouble("entfernung");
             if (entfernung > 50)
               adresse = "bei " + adresse;
@@ -328,7 +330,7 @@ public class GeoService {
       return adresse;
     }
     catch (Exception e) {
-      logger.error("Die Ermittlung der Adresse funktioniert nicht richtig. Alle Adressen werden auf nicht zuordenbar gesetzt.");
+      logger.error("Die Ermittlung der Adresse funktioniert nicht richtig. Alle Adressen werden auf nicht zuordenbar gesetzt.", e);
       return "nicht zuordenbar";
     }
   }
@@ -375,23 +377,9 @@ public class GeoService {
       return null;
     }
 
-    Double[] features = geoServiceWfs.getGeoFeatures(ovi, wfsZufiOviBuffer, attribute.getTypeName(), attribute.getGeomPropertyName(), attribute.getPropertyName(), attribute.getPropertyValue());
-
-    /*switch(attribute.getGeoMeasure()) {
-     case abstandAusserhalb: return features[0];
-     case abstandInnerhalb: return features[1];
-     case flaechenGroesse: return features[2];*/
-    if (features[1] == null) {
-      return 0.0;
-    } else {
-      if (features[1] > 0) {
-        return 1.0;
-      } else {
-        return 0.0;
-      }
-    }
-    //default: throw new RuntimeException();
-    //}
+    Double abstandInnerhalb = geoServiceWfs.getGeoFeatures(ovi, wfsZufiOviBuffer, attribute.getTypeName(),
+        attribute.getGeomPropertyName(), attribute.getPropertyName(), attribute.getPropertyValue())[1];
+    return (abstandInnerhalb != null && abstandInnerhalb > 0) ? 1.0 : 0.0;
   }
 
   /**

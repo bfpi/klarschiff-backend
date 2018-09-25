@@ -1,47 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:aop="http://www.springframework.org/schema/aop"
-	xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:jee="http://www.springframework.org/schema/jee"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:p="http://www.springframework.org/schema/p"
-	xsi:schemaLocation="
-	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
-	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
-	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
-	http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.5.xsd
-	">
-
-    <!-- <context:property-placeholder location="classpath*:settings.properties"/>-->
-
-
-	<bean class="de.fraunhofer.igd.klarschiff.service.classification.FeatureService" id="featureService">
+<beans
+  xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
+>
+  <bean class="de.fraunhofer.igd.klarschiff.service.classification.FeatureService" id="featureService">
 		<property name="bewirtschaftungskatasterClasses">
-			<list>
-				<value>Amt für Jugend und Soziales</value>
-				<value>Amt für Kultur, Denkmalpflege und Museen</value>
-				<value>Amt für Stadtgrün, Naturschutz und Landschaftspflege</value>
-				<value>Amt für Umweltschutz</value>
-				<value>Eigenbetrieb Klinikum Südstadt</value>
-				<value>Eigenbetrieb KOE</value>
-				<value>Eigenbetrieb Tourismuszentrale Rostock und Warnemünde</value>
-				<value>Hafen- und Seemannsamt</value>
-				<value>Kataster-, Vermessungs- und Liegenschaftsamt</value>
-				<value>Rostocker Gesellschaft für Stadterneuerung, Stadtentwicklung und Wohnungsbau mbH</value>
-				<value>Rostocker Straßenbahn AG</value>
-				<value>Stadtforstamt</value>
-				<value>Tief- und Hafenbauamt</value>
-				<value>Tief- und Hafenbauamt (Hafenbau)</value>
-				<value>Volkstheater</value>
-				<value>Wasser- und Abwasserverbände</value>
-			</list>
-		</property>
+      <list></list>
+    </property>
 		<property name="flaechendatenFeaturetypes">
-			<list>
-				<value>hro.klarschiff-zustaendigkeitsfinder.forstflaechen</value>
-				<value>hro.klarschiff-zustaendigkeitsfinder.gruenflaechen</value>
-				<value>hro.klarschiff-zustaendigkeitsfinder.strandflaechen</value>
-			</list>
+			<list></list>
 		</property>
-	</bean>
+  </bean>
 </beans>

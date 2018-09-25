@@ -19,6 +19,7 @@ public class Role {
   String dn;
   String l;
   List<String> user = new ArrayList<String>();
+  String ou;
 
   /**
    * IDs der übergebenen Rollen als Liste wieder zurückgeben.
@@ -100,4 +101,11 @@ public class Role {
     this.user = user;
   }
 
+  public String getOu() {
+    return ou;
+  }
+
+  public void setOu(String ou) {
+    this.ou = ou;
+  }
 }

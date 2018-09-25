@@ -24,7 +24,8 @@ public class KategorieDao {
    * @return Liste der Hauptkategorien
    */
   public List<Kategorie> findRootKategorien() {
-    return entityManager.createQuery("SELECT o FROM Kategorie o WHERE o.parent IS NULL ORDER BY o.name",
+    return entityManager.createQuery("SELECT o FROM Kategorie o "
+      + "WHERE o.parent IS NULL ORDER BY o.name",
       Kategorie.class).getResultList();
   }
 
@@ -45,7 +46,8 @@ public class KategorieDao {
    * @return Liste der Kategorien
    */
   public List<Kategorie> findRootKategorienForTyp(EnumVorgangTyp typ) {
-    return entityManager.createQuery("SELECT o FROM Kategorie o WHERE o.parent IS NULL AND o.typ = :typ ORDER BY o.name",
+    return entityManager.createQuery("SELECT o FROM Kategorie o "
+      + "WHERE o.parent IS NULL AND o.typ = :typ ORDER BY o.name",
       Kategorie.class).setParameter("typ", typ).getResultList();
   }
 

@@ -23,7 +23,7 @@ public class GeoServiceWfs {
   GeoService geoService;
 
   /**
-   * Die Funktion wird zur Nutzung des Chaches auf die Funktion
+   * Die Funktion wird zur Nutzung des Caches auf die Funktion
    * {@link GeoService#getGeoFeatures(Point, double, String, String, String, String)} umgeleitet.
    * see GeoService#getGeoFeatures(Point, double, String, String, String, String)
    *
@@ -45,8 +45,11 @@ public class GeoServiceWfs {
       }
     )
   )
-  public Double[] getGeoFeatures(Point ovi, double wfsZufiOviBuffer, String typeName, String geomPropertyName, String propertyName, String propertyValue) {
-    return geoService.getGeoFeatures(ovi, wfsZufiOviBuffer, typeName, geomPropertyName, propertyName, propertyValue);
+  public Double[] getGeoFeatures(Point ovi, double wfsZufiOviBuffer, String typeName, 
+    String geomPropertyName, String propertyName, String propertyValue) {
+
+    return geoService.getGeoFeatures(ovi, wfsZufiOviBuffer, typeName, geomPropertyName, propertyName,
+      propertyValue);
   }
 
   /**
@@ -70,7 +73,9 @@ public class GeoServiceWfs {
       }
     )
   )
-  public List<GeoFeature> getGeoFeatures(Point ovi, double wfsZufiOviBuffer, String typeName, String geomPropertyName, String propertyName) {
+  public List<GeoFeature> getGeoFeatures(Point ovi, double wfsZufiOviBuffer, String typeName, 
+    String geomPropertyName, String propertyName) {
+
     return geoService.getGeoFeatures(ovi, wfsZufiOviBuffer, typeName, geomPropertyName, propertyName);
   }
 }

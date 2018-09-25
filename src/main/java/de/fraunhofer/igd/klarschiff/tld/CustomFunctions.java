@@ -124,6 +124,19 @@ public class CustomFunctions {
   }
 
   /**
+   * Ermittelt ob der Statistik-Export aktiviert ist
+   *
+   * @return Titel
+   */
+  public static Boolean statistikEnabled() {
+    try {
+      return Boolean.parseBoolean(AppContext.getApplicationContext().getBean(SettingsService.class).getPropertyValue("statistic.enabled"));
+    } catch (Exception e) {
+      return false;
+    }
+  }
+
+  /**
    * Ermittelt das Gebiet, auf das sich Klarschiff bezieht
    *
    * @return Gebiet

@@ -488,6 +488,15 @@ select option.info {
   color: #cccccc;
 }
 
+select.kategorie {
+  width: 358px;
+}
+
+select.kategorie option.deleted {
+  color: #AAAAAA;
+  font-style: italic;
+}
+
 .watermark {
   color: #666;
 }
@@ -1369,9 +1378,9 @@ span.show-tooltip-text {
 
 /* ######################### HEADER ######################### */
 #root_style_header {
-  height:65px;
+  height:120px;
   margin-bottom: 10px;
-  background-image: url("../images/header.png");
+  background-image: url("/resources/backend/header.png");
   background-repeat: repeat-x;
   color:#FFFFFF;
   /* abgerundete Ecken */

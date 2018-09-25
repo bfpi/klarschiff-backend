@@ -95,13 +95,16 @@ public class Attribute extends weka.core.Attribute {
    * @param updateble Kann sich der Wert des Attributes (Feature des Vorganges) mit der Zeit ändern?
    * @return Attribut mit erweiterten Funktionen, wie es auch in Weka verwendet werden kann
    */
-  public static Attribute createGeoAttribute(String name, String typeName, GeoMeasure geoMeasure, String geomPropertyName, boolean updateble) {
+  public static Attribute createGeoAttribute(String name, String typeName, GeoMeasure geoMeasure,
+    String geomPropertyName, boolean updateble) {
+
     Attribute attr = new Attribute(name);
     attr.typeName = typeName;
     attr.geoMeasure = geoMeasure;
     attr.geomPropertyName = geomPropertyName;
     attr.isGeoAttribute = true;
     attr.isUpdateble = updateble;
+
     return attr;
   }
 
@@ -117,11 +120,15 @@ public class Attribute extends weka.core.Attribute {
    * ändern?
    * @return List (FastVector) mit Attributen
    */
-  public static FastVector createGeoAttributes(String namePrefix, String typeName, String geomPropertyName, boolean updateble) {
+  public static FastVector createGeoAttributes(String namePrefix, String typeName,
+    String geomPropertyName, boolean updateble) {
+
     FastVector v = new FastVector();
     for (GeoMeasure geoMeasure : GeoMeasure.values()) {
-      v.addElement(createGeoAttribute(namePrefix + "_" + geoMeasure.name(), typeName, geoMeasure, geomPropertyName, updateble));
+      v.addElement(createGeoAttribute(namePrefix + "_" + geoMeasure.name(), typeName, geoMeasure,
+        geomPropertyName, updateble));
     }
+
     return v;
   }
 
@@ -141,10 +148,13 @@ public class Attribute extends weka.core.Attribute {
    * @param updateble Kann sich der Wert des Attributes (Feature des Vorganges) mit der Zeit ändern?
    * @return Attribut mit erweiterten Funktionen, wie es auch in Weka verwendet werden kann
    */
-  public static Attribute createGeoAttribute(String name, String typeName, String propertyName, String propertyValue, GeoMeasure geoMeasure, String geomPropertyName, boolean updateble) {
+  public static Attribute createGeoAttribute(String name, String typeName, String propertyName,
+    String propertyValue, GeoMeasure geoMeasure, String geomPropertyName, boolean updateble) {
+
     Attribute attr = createGeoAttribute(name, typeName, geoMeasure, geomPropertyName, updateble);
     attr.propertyName = propertyName;
     attr.propertyValue = propertyValue;
+
     return attr;
   }
 
@@ -165,15 +175,18 @@ public class Attribute extends weka.core.Attribute {
    * ändern?
    * @return List (FastVector) mit Attributen
    */
-  public static FastVector createGeoAttributes(String namePrefix, String typeName, String propertyName, String propertyValue, String geomPropertyName, boolean updateble) {
+  public static FastVector createGeoAttributes(String namePrefix, String typeName, String propertyName,
+    String propertyValue, String geomPropertyName, boolean updateble) {
+
     FastVector v = new FastVector();
     for (GeoMeasure geoMeasure : GeoMeasure.values()) {
-      v.addElement(createGeoAttribute(namePrefix + "_" + geoMeasure.name(), typeName, propertyName, propertyValue, geoMeasure, geomPropertyName, updateble));
+      v.addElement(createGeoAttribute(namePrefix + "_" + geoMeasure.name(), typeName, propertyName,
+        propertyValue, geoMeasure, geomPropertyName, updateble));
     }
+
     return v;
   }
 
-  /* --------------- GET + SET ----------------------------*/
   public String getName() {
     return name();
   }
@@ -209,5 +222,4 @@ public class Attribute extends weka.core.Attribute {
   public String getGeomPropertyName() {
     return geomPropertyName;
   }
-
 }

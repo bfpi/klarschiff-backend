@@ -40,17 +40,25 @@
 
         <div>
           <form:label path="kategorie">Hauptkategorie</form:label>
-          <form:select path="kategorie" id="hauptkategorie" disabled="true" onchange="updateUnterkategorie()" style="width:358px;">
+          <form:select path="kategorie.id" id="hauptkategorie" cssClass="kategorie" disabled="true" onchange="updateUnterkategorie()">
             <form:option value="" label="Hauptkategorie wählen" cssClass="info"/>
-            <form:options items="${hauptkategorien}" itemValue="id" itemLabel="name"/>
+            <c:forEach items="${hauptkategorien}" var="hauptkategorie">
+              <c:if test="${not hauptkategorie.geloescht}">
+                <form:option value="${hauptkategorie.id}" label="${hauptkategorie.name}"/>
+              </c:if>
+            </c:forEach>
           </form:select>
         </div>
 
         <div>
           <form:label path="vorgang.kategorie">Unterkategorie</form:label>
-          <form:select path="vorgang.kategorie" id="unterkategorie" disabled="true" cssStyle="width:358px;">
+          <form:select path="vorgang.kategorie.id" id="unterkategorie" cssClass="kategorie" disabled="true" onchange="updateInfo()">
             <form:option value="" label="Unterkategorie wählen" cssClass="info"/>
-            <form:options items="${unterkategorien}" itemValue="id" itemLabel="name"/>
+            <c:forEach items="${unterkategorien}" var="unterkategorie">
+              <c:if test="${not unterkategorie.geloescht}">
+                <form:option value="${unterkategorie.id}" label="${unterkategorie.name}"/>
+              </c:if>
+            </c:forEach>
           </form:select>
         </div>
 
@@ -90,11 +98,11 @@
           var results;
           var searchField;
 
-          $(document).ready(function() {
+          $(document).ready(function () {
             results = $("div.results");
             searchField = $("input#searchtext");
 
-            searchField.keyup(function() {
+            searchField.keyup(function () {
               if ($(this).val().length >= 3) {
                 var searchText = searchField.val();
                 $.ajax({
@@ -111,22 +119,22 @@
               }
             });
 
-            $(".resultElement").on("click", function() {
+            $(".resultElement").on("click", function () {
               results.fadeOut();
             });
 
-            $("#searchtext").on("click", function() {
+            $("#searchtext").on("click", function () {
               $(this).val('');
               $('#results_container').hide();
             });
 
             var hinweisBeschreibung = 'Bitte beschreiben Sie Ihre Meldung genauer.';
-            $("#beschreibung").on("focus", function() {
+            $("#beschreibung").on("focus", function () {
               if ($(this).val() === hinweisBeschreibung) {
                 $(this).val('');
-              } 
+              }
               $(this).removeClass('watermark');
-            }).on("blur", function() {
+            }).on("blur", function () {
               if (isBlank($(this))) {
                 $(this).val(hinweisBeschreibung).addClass('watermark');
               }
@@ -224,12 +232,17 @@
           $.ajaxSetup({scriptCharset: "utf-8", contentType: "application/json; charset=utf-8"});
           $.getJSON('${url}/kategorieTyp?typ=' + value, function (data) {
             $.each(data, function (index, val) {
-              items.push($('<option></option>').val(val.id).html(val.nameEscapeHtml)[0].outerHTML);
+              var option = $('<option></option>').val(val.id).html(val.nameEscapeHtml);
+              if (val.geloescht) {
+                option.addClass('deleted');
+              }
+              items.push(option[0].outerHTML);
             });
             node.empty();
             node.append(items.join(''));
-            if (items.length > 1)
+            if (items.length > 1) {
               node.removeAttr("disabled");
+            }
             updateUnterkategorie('');
           });
         }
@@ -248,12 +261,16 @@
           $.ajaxSetup({scriptCharset: "utf-8", contentType: "application/json; charset=utf-8"});
           $.getJSON('${url}/kategorie?kategorie=' + value, function (data) {
             $.each(data, function (index, val) {
-              items.push($('<option></option>').val(val.id).html(val.nameEscapeHtml)[0].outerHTML);
+              var option = $('<option></option>').val(val.id).html(val.nameEscapeHtml);
+              if (!val.geloescht) {
+                items.push(option[0].outerHTML);
+              }
             });
             node.empty();
             node.append(items.join(''));
-            if (items.length > 1)
+            if (items.length > 1) {
               node.removeAttr("disabled");
+            }
           });
         }
 

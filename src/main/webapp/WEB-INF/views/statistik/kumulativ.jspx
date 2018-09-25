@@ -1,0 +1,85 @@
+<jsp:root 
+  xmlns:c="http://java.sun.com/jsp/jstl/core" 
+  xmlns:fn="http://java.sun.com/jsp/jstl/functions" 
+  xmlns:spring="http://www.springframework.org/tags" 
+  xmlns:jsp="http://java.sun.com/JSP/Page" 
+  xmlns:form="http://www.springframework.org/tags/form"
+  xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu"
+  xmlns:tiles="http://tiles.apache.org/tags-tiles" 
+  xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+  version="2.0"
+  >
+  <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+
+  <!-- Datepicker-->
+  <c:url value="/script/jquery-ui/jquery.ui.core.js" var="url"/>
+  <script src="${url}" type="text/javascript"><!-- //jquery.ui.datepicker --></script>
+  <c:url value="/script/jquery-ui/jquery.ui.datepicker.js" var="url"/>
+  <script src="${url}" type="text/javascript"><!-- //jquery.ui.datepicker --></script>
+ 	<c:url value="/script/jquery-ui/jquery.ui.datepicker-de.js" var="url"/>
+  <script src="${url}" type="text/javascript"><!-- //jquery.ui.datepicker-de --></script>
+
+  <c:url value="/script/jquery-ui/css/jquery.ui.all.css" var="url"/>
+	<link rel="stylesheet" type="text/css" href="${url}"> <!-- styles.css --> </link>
+  
+  <!-- CONTENTTITLE -->
+  <div id="root_style_content_title">
+    Statistik
+  </div>
+
+  <!-- TABMENU -->
+  <tiles:importAttribute name="tabmenu_item" ignore="true" toName="tabmenu_item"/>
+  <menu:tabmenustatistik currentId="${tabmenu_item}"/>
+
+  <!-- CONTENT -->
+  <div id="root_style_content">
+    <form:form method="POST" modelAttribute="cmd" enctype="multipart/form-data">
+      <form:errors path="*" class="error" style="padding-top:2px" element="div"/>
+
+      <div class="fieldset">
+        <div class="fieldsettitle">Kumulative Statistik vom Start des Klarschiff bis zum Stichtag</div>
+
+        <div>
+          <form:label path="typ">Typ</form:label>
+          <form:select path="typ" id="typ">
+            <form:option value="" label="Typ wählen" cssClass="info"/>
+            <c:forEach items="${vorgangtypen}" var="vorgangtyp">
+              <c:url value="/images/${vorgangtyp}_15.png" var="url"/>
+              <form:option value="${vorgangtyp}" label="${vorgangtyp.text}" cssStyle="background-image:url(${url});" cssClass="suffixiconsmall"/>
+            </c:forEach>
+          </form:select>
+        </div>
+
+        <div>
+          <form:label path="zeitraumBis">Datum</form:label>
+          <form:input path="zeitraumBis" id="zeitraumBis" cssStyle="width:80px;" cssClass="inputtext"/>
+          <script>
+$(function () {
+
+  var dates = $("#zeitraumBis").datepicker({
+    changeMonth: true,
+    numberOfMonths: 1,
+    dateFormat: 'dd.mm.yy',
+    onSelect: function (selectedDate) {
+      var option = "minDate",
+        instance = $(this).data("datepicker"),
+        date = $.datepicker.parseDate(
+          instance.settings.dateFormat ||
+          $.datepicker._defaults.dateFormat,
+          selectedDate, instance.settings);
+      dates.not(this).datepicker("option", option, date);
+      $("#zeitraumBis").datepicker($.datepicker.regional[ "de" ]);
+    }
+  });
+});
+          </script>
+        </div>
+        <div>
+					<input type="submit" value="Exportieren" />
+				</div>
+      </div>
+    </form:form>
+  </div>
+
+</jsp:root>
+

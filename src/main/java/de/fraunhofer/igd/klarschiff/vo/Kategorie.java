@@ -194,5 +194,5 @@ public class Kategorie implements Serializable {
 
   public void setInitialZustaendigkeiten(List<String> initialZustaendigkeiten) {
     this.initialZustaendigkeiten = initialZustaendigkeiten;
-  }
+	}
 }

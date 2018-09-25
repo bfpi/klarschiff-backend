@@ -48,6 +48,8 @@ public class JobsService {
   int hoursToRemoveUnbestaetigtUnterstuetzer;
   int hoursToRemoveUnbestaetigtMissbrauchsmeldung;
   int hoursToRemoveUnbestaetigtFoto;
+  boolean removeAuthorEmailFromArchiv;
+  String removeAuthorEmailFromArchivReplacement;
 
   @Autowired
   VorgangDao vorgangDao;
@@ -139,23 +141,28 @@ public class JobsService {
   }
 
   /**
-   * Dieser Job archiviert alle Vorgänge, die abgeschlossen sind und seit einem bestimmten Zeitraum
-   * nicht mehr bearbeitet wurden.
-   */
-  @Transactional
-  @ScheduledSyncInCluster(cron = "0 40 00 * * *", name = "abgeschlossene Vorgaenge archivieren")
-  public void archivVorgaenge() {
-    archivVorgaengeByTyp(monthsToArchivProbleme, EnumVorgangTyp.problem);
-    archivVorgaengeByTyp(monthsToArchivIdeen, EnumVorgangTyp.idee);
-  }
-
-  /**
    * Archiviert alle Vorgänge eines Typs, die abgeschlossen sind und seit einem bestimmten Zeitraum
    * nicht mehr bearbeitet wurden.
    *
    * @param months Zeitraum
    * @param typ Typ
    */
+  @Transactional
+  @ScheduledSyncInCluster(cron = "0 40 00 * * *", name = "abgeschlossene Vorgaenge archivieren")
+  public void archivVorgaenge() {
+    archivVorgaengeByTyp(monthsToArchivProbleme, EnumVorgangTyp.problem);
+    archivVorgaengeByTyp(monthsToArchivIdeen, EnumVorgangTyp.idee);
+    System.out.println("removeAuthorEmailFromArchiv: " + removeAuthorEmailFromArchiv);
+    if (removeAuthorEmailFromArchiv) {
+      System.out.println("removeAuthorEmailFromArchivReplacement: " + removeAuthorEmailFromArchivReplacement);
+      for (Vorgang vorgang : vorgangDao.findArchivVorgangWithEmail(removeAuthorEmailFromArchivReplacement)) {
+        System.out.println("vorgang: " + vorgang.getId() + " - " + vorgang.getAutorEmail());
+        vorgang.setAutorEmail(removeAuthorEmailFromArchivReplacement);
+        vorgangDao.merge(vorgang);
+      }
+    }
+  }
+
   private void archivVorgaengeByTyp(int months, EnumVorgangTyp typ) {
     Date dateP = DateUtils.addMonths(new Date(), -months);
     for (Vorgang vorgang : vorgangDao.findNotArchivVorgang(typ, dateP)) {
@@ -428,4 +435,19 @@ public class JobsService {
     this.hoursToRemoveUnbestaetigtFoto = hoursToRemoveUnbestaetigtFoto;
   }
 
+  public boolean isRemoveAuthorEmailFromArchiv() {
+    return removeAuthorEmailFromArchiv;
+  }
+
+  public void setRemoveAuthorEmailFromArchiv(boolean removeAuthorEmailFromArchiv) {
+    this.removeAuthorEmailFromArchiv = removeAuthorEmailFromArchiv;
+  }
+
+  public String getRemoveAuthorEmailFromArchivReplacement() {
+    return removeAuthorEmailFromArchivReplacement;
+  }
+
+  public void setRemoveAuthorEmailFromArchivReplacement(String removeAuthorEmailFromArchivReplacement) {
+    this.removeAuthorEmailFromArchivReplacement = removeAuthorEmailFromArchivReplacement;
+  }
 }

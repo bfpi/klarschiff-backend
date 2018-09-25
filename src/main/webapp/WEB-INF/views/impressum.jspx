@@ -13,35 +13,29 @@
 		Impressum
 	</div>
 	
-	<!-- CONTENT -->
-	<div id="root_style_content">
-		<div style="position:relative">
-					Konzept und Betreuung:<br/>
-					<br/>
-					Hanse- und Universitätsstadt Rostock<br/>
-					Kataster-, Vermessungs- und Liegenschaftsamt<br/>
-					Holbeinplatz 14<br/>					
-					18069 Rostock<br/>					
-					Telefon: +49 381 381-6281<br/>					
-					Telefax: +49 381 381-6902<br/>					
-					E-Mail: <a href="mailto:klarschiff.hro@rostock.de">klarschiff.hro@rostock.de</a>
-            <div style="position:absolute;top:0px;left:350px">
-					Technische Realisierung:<br/>					
-					<br/>					
-					BFPI – Büro für praktische Informatik GmbH<br/>					
-                	Fleckebyer Straße 1<br/>					
-					18239 Satow<br/>					
-					Telefon: +49 38295 778-780<br/>					
-					Telefax: +49 38295 778-781<br/>					
-					E-Mail: <a href="mailto:info@bfpi.de">info@bfpi.de</a>
-			</div>
-		</div>
-		<br/>
-		<br/>
-		Lizenzbestimmungen:<br/>
-		<br/>
-		Das Backend von ${fx:title()} ist unter der Freien-Software-Lizenz <a rel="license" href="http://www.apache.org/licenses/LICENSE-2.0.html" target="_blank">Apache License v2.0</a> auf <a href="https://github.com/rostock/klarschiff-backend" target="_blank">GitHub</a> veröffentlicht.
-	</div>
-	
+  <!-- CONTENT -->
+  <div id="root_style_content">
+    <div style="position:relative">
+      Konzept und Betreuung:<br/>
+      <br/>
+      <c:set var="req" value="${pageContext.request}" />
+      <c:import url="${req.scheme}://${req.serverName}/resources/backend/impressum_konzept_betreuung.html" charEncoding="UTF-8" />
+      <div style="position:absolute;top:0px;left:350px">
+        Technische Realisierung:<br/>
+        <br/>
+        BFPI Büro für praktische Informatik GmbH<br/>
+        Fleckebyer Str. 1<br/>
+        18239 Satow<br/>
+        Telefon: +49-38295-77878-0<br/>
+        Telefax: +49-38295-77878-1<br/>
+        E-Mail: <a href="mailto:info@bfpi.de">info@bfpi.de</a>
+      </div>
+    </div>
+    <br/>
+    <br/>
+    Lizenzbestimmungen:<br/>
+    <br/>
+    Das Backend von ${fx:title()} ist unter der Freien-Software-Lizenz <a href="http://www.apache.org/licenses/LICENSE-2.0.html" target="_blank">Apache License v2.0</a> auf <a href="https://github.com/bfpi/klarschiff-backend" target="_blank">GitHub</a> veröffentlicht.
+  </div>
 
 </jsp:root>

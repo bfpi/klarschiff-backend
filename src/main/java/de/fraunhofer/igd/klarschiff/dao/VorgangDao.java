@@ -24,6 +24,7 @@ import de.fraunhofer.igd.klarschiff.vo.EnumVorgangTyp;
 import de.fraunhofer.igd.klarschiff.vo.EnumZustaendigkeitStatus;
 import de.fraunhofer.igd.klarschiff.vo.Foto;
 import de.fraunhofer.igd.klarschiff.vo.Missbrauchsmeldung;
+import de.fraunhofer.igd.klarschiff.vo.StadtteilGrenze;
 import de.fraunhofer.igd.klarschiff.vo.StatusKommentarVorlage;
 import de.fraunhofer.igd.klarschiff.vo.Unterstuetzer;
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
@@ -34,6 +35,7 @@ import de.fraunhofer.igd.klarschiff.web.VorgangFeedCommand;
 import de.fraunhofer.igd.klarschiff.web.VorgangFeedDelegiertAnCommand;
 import de.fraunhofer.igd.klarschiff.web.VorgangSuchenCommand;
 import java.math.BigInteger;
+import java.text.SimpleDateFormat;
 import java.util.Objects;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.hibernate.SQLQuery;
@@ -153,8 +155,14 @@ public class VorgangDao {
         if (vorgang.getInitialeAkzeptierteZustaendigkeit() == null || vorgang.getInitialeAkzeptierteZustaendigkeit().isEmpty()) {
           vorgang.setInitialeAkzeptierteZustaendigkeit(vorgang.getZustaendigkeit());
         }
-        verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.zustaendigkeitAkzeptiert,
-          vorgangOld.getZustaendigkeitStatus().getText(), vorgang.getZustaendigkeitStatus().getText());
+        String wertAlt = null, wertNeu = null;
+        if (vorgangOld.getZustaendigkeitStatus() != null) {
+          wertAlt = vorgangOld.getZustaendigkeitStatus().getText();
+        }
+        if (vorgang.getZustaendigkeitStatus() != null) {
+          wertNeu = vorgang.getZustaendigkeitStatus().getText();
+        }
+        verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.zustaendigkeitAkzeptiert, wertAlt, wertNeu);
       }
       //Zuständigkeit beim ClassificationService registrieren
       if (vorgang.getZustaendigkeitStatus() == EnumZustaendigkeitStatus.akzeptiert
@@ -1072,6 +1080,19 @@ public class VorgangDao {
   }
 
   /**
+   * Ermittelt alle Vorgänge, die archiviert sind und an denen die Author-Email nicht entfernt wurde.
+   *
+   * @param replacement
+   * @return Ergebnisliste mit Vorgängen
+   * @see de.fraunhofer.igd.klarschiff.service.job.JobsService#archivVorgaenge()
+   */
+  public List<Vorgang> findArchivVorgangWithEmail(String replacement) {
+    return em.createQuery("SELECT o FROM Vorgang o WHERE o.archiviert = TRUE AND o.autorEmail != :replacement", Vorgang.class)
+      .setParameter("replacement", replacement)
+      .getResultList();
+  }
+
+  /**
    * Ermittelt alle Vorgänge, die gemeldet, aber nach einem bestimmten Zeitraum noch nicht bestätigt
    * wurden.
    *
@@ -1151,7 +1172,8 @@ public class VorgangDao {
       return null;
     }
     try {
-      return em.createQuery("select o from VorgangFeatures o WHERE o.vorgang=:vorgang", VorgangFeatures.class).setParameter("vorgang", vorgang).getSingleResult();
+      return em.createQuery("select o from VorgangFeatures o WHERE o.vorgang = :vorgang",
+        VorgangFeatures.class).setParameter("vorgang", vorgang).getSingleResult();
     } catch (Exception e) {
       return null;
     }
@@ -1461,5 +1483,37 @@ public class VorgangDao {
       conds.add("st_within(ST_GeomFromText(ST_AsText(vo.ovi)), ST_GeomFromText('" + mp + "'))");
     }
     return conds;
+  }
+  
+  /**
+   * Holt den zuletzt angelegten Vorgang
+   *
+   * @param vorgang Vorgang
+   * @return Stadtteilgrenze
+   */
+  public Vorgang getLastVorgang() {
+    HqlQueryHelper query = (new HqlQueryHelper(securityService)).addSelectAttribute("vo")
+      .addFromTables("Vorgang vo")
+      .orderBy("vo.id desc").maxResults(1);
+    return (Vorgang) query.getResultList(em).get(0);
+  }
+  
+  /**
+   * Holt den zuletzt angelegten Vorgang vor dem angegebenen Datum
+   *
+   * @param vorgang Vorgang
+   * @return Stadtteilgrenze
+   */
+  public Vorgang getLastVorgangBefore(Date datum) {
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+    Calendar cDatum = Calendar.getInstance();
+    cDatum.setTime(datum);
+    cDatum.add(Calendar.DATE, 1);
+    
+    HqlQueryHelper query = (new HqlQueryHelper(securityService)).addSelectAttribute("vo")
+      .addFromTables("Vorgang vo")
+      .addWhereConditions("vo.datum < '" + sdf.format(cDatum.getTime()) + "'")
+      .orderBy("vo.id desc").maxResults(1);
+    return (Vorgang) query.getResultList(em).get(0);
   }
 }

@@ -29,6 +29,7 @@ public class ClassficationServiceInitThread extends Thread {
    * Warten und initialisieren des Klassifikators
    */
   @SuppressWarnings("static-access")
+  @Override
   public void run() {
     try {
       sleep(classificationService.waitTimeToInitClassficationService);

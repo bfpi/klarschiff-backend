@@ -15,7 +15,6 @@ public class ClassificationResultEntry {
     this.weight = weight;
   }
 
-  /* --------------- GET + SET ----------------------------*/
   /**
    * @return Name der Klasse (bzw. Zuständigkeit)
    */
