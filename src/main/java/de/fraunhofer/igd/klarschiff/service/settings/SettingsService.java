@@ -34,6 +34,10 @@ public class SettingsService {
     return PropertyPlaceholderConfigurer.getPropertyValue(name);
   }
 
+  public boolean getPropertyValueBoolean(String name) {
+    return Boolean.parseBoolean(PropertyPlaceholderConfigurer.getPropertyValue(name));
+  }
+
   /* --------------- GET + SET ----------------------------*/
   public String getVersion() {
     return version;

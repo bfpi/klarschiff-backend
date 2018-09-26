@@ -287,6 +287,19 @@ Konfigurationen zur Anzeige von Karten im Backend
   - `d3.proxy.port`:
     - Port, des zu verwendenden Proxy-Servers für d.3-Anfragen
 
+#### Bereich 'statistic.'
+  - `statistic.enabled`
+    - Aktiviert (true) oder deaktiviert (false) die Statistiken im Backend
+  - `statistic.department.1.name`
+    - Name des Amtes (LDAP OU) für die Statistik
+  - `statistic.department.1.categories`
+    - Kategogie-IDs für die Statistik
+
+#### Bereich 'validation.'
+  - `validation.vorgang.datenschutz_required`
+    - Aktiviert (true) oder deaktiviert (false), beim Anlegen eines Vorgangs über den BackendController (z.B. durch den CitySDK), die überprüfung ob die Datenschutzbestimmungen akzeptiert wurde.
+
+
 ### URL-Umleitung und Direkt-Links
 
 #### Änderungen an der .conf-Datei des Apache-Servers

@@ -16,7 +16,7 @@ import de.fraunhofer.igd.klarschiff.service.dbsync.DbSyncService;
 import de.fraunhofer.igd.klarschiff.service.geo.GeoService;
 import de.fraunhofer.igd.klarschiff.service.job.JobsService;
 import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
-import de.fraunhofer.igd.klarschiff.util.SqlScriptUtil;
+import de.fraunhofer.igd.klarschiff.service.settings.SettingsService;
 
 /**
  * Controller für den Adminbereich
@@ -29,6 +29,9 @@ public class AdminController {
 
   @Autowired
   SecurityService securityService;
+
+  @Autowired
+  SettingsService settingsService;
 
   @Autowired
   JobsService jobsService;
@@ -141,6 +144,7 @@ public class AdminController {
    */
   @RequestMapping(value = "/test", method = RequestMethod.GET)
   public String test(Model model, HttpServletRequest request) {
+    model.addAttribute("vorgangDatenschutzRequired", settingsService.getPropertyValueBoolean("validation.vorgang.datenschutz_required"));
     return "admin/test";
   }
 

@@ -174,7 +174,9 @@ public class BackendController {
       resultObjectOnSubmit = false;
     }
     try {
-      if (datenschutz == null || !datenschutz) {
+
+      if (settingsService.getPropertyValueBoolean("validation.vorgang.datenschutz_required")
+        && (datenschutz == null || !datenschutz)) {
         throw new BackendControllerException(101, "[datenschutz] fehlt", "Die Datenschutzerklärung wurde nicht akzeptiert.");
       }
       Vorgang vorgang = new Vorgang();
@@ -519,7 +521,7 @@ public class BackendController {
         try {
           Point point = transformPosition(pointWktToPoint(positionWGS84), wgs84Projection, internalProjection);
           neueAdresse = geoService.calculateAddress(point, false);
-        } catch (FactoryException|MismatchedDimensionException|TransformException e) {
+        } catch (FactoryException | MismatchedDimensionException | TransformException e) {
           logger.error(e);
         }
       }
@@ -665,7 +667,8 @@ public class BackendController {
       resultObjectOnSubmit = false;
     }
     try {
-      if (datenschutz == null || !datenschutz) {
+      if (settingsService.getPropertyValueBoolean("validation.vorgang.datenschutz_required")
+        && (datenschutz == null || !datenschutz)) {
         throw new BackendControllerException(101, "[datenschutz] fehlt", "Die Datenschutzerklärung wurde nicht akzeptiert.");
       }
       Unterstuetzer unterstuetzer = new Unterstuetzer();
@@ -800,7 +803,7 @@ public class BackendController {
       resultObjectOnSubmit = false;
     }
     try {
-      if (datenschutz == null || !datenschutz) {
+      if (settingsService.getPropertyValueBoolean("validation.vorgang.datenschutz_required") && (datenschutz == null || !datenschutz)) {
         throw new BackendControllerException(101, "[datenschutz] fehlt", "Die Datenschutzerklärung wurde nicht akzeptiert.");
       }
       Missbrauchsmeldung missbrauchsmeldung = new Missbrauchsmeldung();
@@ -995,7 +998,8 @@ public class BackendController {
     @RequestParam(value = "datenschutz", required = false) Boolean datenschutz,
     HttpServletResponse response) {
     try {
-      if (datenschutz == null || !datenschutz) {
+      if (settingsService.getPropertyValueBoolean("validation.vorgang.datenschutz_required")
+        && (datenschutz == null || !datenschutz)) {
         throw new BackendControllerException(101, "[datenschutz] fehlt", "Die Datenschutzerklärung wurde nicht akzeptiert.");
       }
       LobHinweiseKritik lobHinweiseKritik = new LobHinweiseKritik();
@@ -1167,7 +1171,7 @@ public class BackendController {
 
       vorgangDao.merge(missbrauchsmeldung, false);
 
-      model.put("message", "Die Missbrauchsmeldung wurde erfolgreich aufgenommen und die entsprechende Meldung damit deaktiviert."); 
+      model.put("message", "Die Missbrauchsmeldung wurde erfolgreich aufgenommen und die entsprechende Meldung damit deaktiviert.");
       return "backend/bestaetigungOk";
 
     } catch (Exception e) {
