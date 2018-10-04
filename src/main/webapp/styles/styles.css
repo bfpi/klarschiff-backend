@@ -1378,7 +1378,7 @@ span.show-tooltip-text {
 
 /* ######################### HEADER ######################### */
 #root_style_header {
-  height:120px;
+  height:65px;
   margin-bottom: 10px;
   background-image: url("/resources/backend/header.png");
   background-repeat: repeat-x;
