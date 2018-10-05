@@ -1488,8 +1488,7 @@ public class VorgangDao {
   /**
    * Holt den zuletzt angelegten Vorgang
    *
-   * @param vorgang Vorgang
-   * @return Stadtteilgrenze
+   * @return zuletzt angelegter Vorgang
    */
   public Vorgang getLastVorgang() {
     HqlQueryHelper query = (new HqlQueryHelper(securityService)).addSelectAttribute("vo")
@@ -1501,8 +1500,8 @@ public class VorgangDao {
   /**
    * Holt den zuletzt angelegten Vorgang vor dem angegebenen Datum
    *
-   * @param vorgang Vorgang
-   * @return Stadtteilgrenze
+   * @param datum Datum
+   * @return zuletzt angelegter Vorgang vor dem angegebenen Datum
    */
   public Vorgang getLastVorgangBefore(Date datum) {
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");

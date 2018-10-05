@@ -141,11 +141,9 @@ public class JobsService {
   }
 
   /**
-   * Archiviert alle Vorgänge eines Typs, die abgeschlossen sind und seit einem bestimmten Zeitraum
+   * Archiviert alle Vorgänge, die abgeschlossen sind und seit einem bestimmten Zeitraum
    * nicht mehr bearbeitet wurden.
    *
-   * @param months Zeitraum
-   * @param typ Typ
    */
   @Transactional
   @ScheduledSyncInCluster(cron = "0 40 00 * * *", name = "abgeschlossene Vorgaenge archivieren")
