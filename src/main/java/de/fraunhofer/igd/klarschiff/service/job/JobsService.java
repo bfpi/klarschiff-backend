@@ -84,6 +84,9 @@ public class JobsService {
   public void removeUnbestaetigtVorgang() {
     Date date = DateUtils.addHours(new Date(), -hoursToRemoveUnbestaetigtVorgang);
     for (Vorgang vorgang : vorgangDao.findUnbestaetigtVorgang(date)) {
+      for (Foto foto : vorgangDao.findFotosZuUnbestaetigtVorgang(date)) {
+        vorgangDao.remove(foto);
+      }
       vorgangDao.remove(vorgang);
     }
   }

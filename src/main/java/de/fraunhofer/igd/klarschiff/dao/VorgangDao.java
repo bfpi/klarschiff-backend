@@ -1108,6 +1108,21 @@ public class VorgangDao {
   }
 
   /**
+   * Ermittelt alle Vorgänge, die gemeldet, aber nach einem bestimmten Zeitraum noch nicht bestätigt
+   * wurden.
+   *
+   * @param datumBefor Zeitpunkt, bis zu dem die Vorgänge hätten bestätigt werden müssen
+   * @return Ergebnisliste mit Fotos
+   * @see de.fraunhofer.igd.klarschiff.service.job.JobsService#removeUnbestaetigtVorgang()
+   */
+  public List<Foto> findFotosZuUnbestaetigtVorgang(Date datumBefor) {
+    return em.createQuery("SELECT f FROM Foto f, Vorgang v WHERE f.vorgang = v.id AND v.status = :status AND v.datum <= :datumBefor", Foto.class)
+      .setParameter("status", EnumVorgangStatus.gemeldet)
+      .setParameter("datumBefor", datumBefor)
+      .getResultList();
+  }
+
+  /**
    * Ermittelt alle Unterstützungen, die eingegangen sind, aber nach einem bestimmten Zeitraum noch
    * nicht bestätigt wurden.
    *

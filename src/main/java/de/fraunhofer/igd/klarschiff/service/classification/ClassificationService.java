@@ -141,14 +141,45 @@ public class ClassificationService {
     for (int i = 0; i < distribution.length; i++) {
       classificationResult.add(new ClassificationResultEntry(newData.classAttribute().value(i), distribution[i]));
     }
-    //Sortieren
-    Collections.sort(classificationResult, new Comparator<ClassificationResultEntry>() {
-      @Override
-      public int compare(ClassificationResultEntry o1, ClassificationResultEntry o2) {
-        return -(o1.getWeight().compareTo(o2.getWeight()));
+    //prüfen, ob alle Wichtungen gleich sind
+    boolean allWeightsEqual = true;
+    double firstWeight = classificationResult.get(0).getWeight();
+    for (int i = 1; i < classificationResult.size() && allWeightsEqual; i++) {
+      if (classificationResult.get(i).getWeight() != firstWeight) {
+        allWeightsEqual = false;
       }
-    });
-
+    }
+    //falls ja: initiale Zuständigkeiten für den Vorgang zunächst aus der Liste löschen und anschließend an deren Beginn einfügen
+    if (allWeightsEqual) {
+      List<Integer> indexList = new ArrayList<Integer>();
+      List<String> zustaendigkeiten = vorgang.getKategorie().getInitialZustaendigkeiten();
+      int currentIndex = 0;
+      for (String zustaendigkeit : zustaendigkeiten) {
+        for (ClassificationResultEntry entry : classificationResult) {
+          if (entry.getClassValue().equals(zustaendigkeit)) {
+            indexList.add(currentIndex);
+          }
+          currentIndex++;
+        }
+        currentIndex = 0;
+      }
+      for (int index : indexList) {
+        classificationResult.remove(index);
+      }
+      for (String zustaendigkeit : zustaendigkeiten) {
+        classificationResult.add(0, new ClassificationResultEntry(zustaendigkeit, firstWeight));
+      }
+    }
+    //falls nein: Liste sortieren
+    else {
+      Collections.sort(classificationResult, new Comparator<ClassificationResultEntry>() {
+        @Override
+        public int compare(ClassificationResultEntry o1, ClassificationResultEntry o2) {
+          return -(o1.getWeight().compareTo(o2.getWeight()));
+        }
+      });
+    }
+    
     if (logger.isDebugEnabled()) {
       logEvaluationInfos(eTest, instance, newData, classificationResult);
     }
