@@ -32,7 +32,7 @@ body,div {
   color: #000000;
 }
 
-#j_username, #j_password {
+#username, #password {
   margin-left:5px;
   width:150px;
   font-family: Verdana, sans-serif;
@@ -699,6 +699,11 @@ div.pagination span.nav.disabled {
 div.pagination span.nav.enabled {
   cursor: pointer;
 }
+
+div.pagination > form > div {
+  display: inline;
+}
+
 /* ######################### Kommentar ######################### */
 .kommentar,.missbrauch {
   border: 2px solid #ffffff;

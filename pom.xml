@@ -5,7 +5,7 @@
   <groupId>de.fraunhofer.igd.klarschiff</groupId>
   <artifactId>backend</artifactId>
   <packaging>war</packaging>
-  <version>1.7.1</version>
+  <version>1.9.0</version>
   <name>Klarschiff-Backend</name>
 
   <properties>
@@ -13,15 +13,15 @@
     <roo.version>1.1.1.RELEASE</roo.version>
     <aspectj.version>1.8.10</aspectj.version>
 
-    <spring.version>3.0.5.RELEASE</spring.version>
-    <spring-security.version>3.0.5.RELEASE</spring-security.version>
+    <spring.version>4.3.20.RELEASE</spring.version>
+    <spring-security.version>4.2.9.RELEASE</spring-security.version>
 
     <slf4j.version>1.6.1</slf4j.version>
-
     <hibernate.version>3.6.0.Final</hibernate.version>
     <postgresql.version>9.4.1212.jre6</postgresql.version>
     <postgis.version>[1.1.6,)</postgis.version>
     <poi.version>3.7</poi.version>
+
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <netbeans.hint.deploy.server>Tomcat</netbeans.hint.deploy.server>
   </properties>
