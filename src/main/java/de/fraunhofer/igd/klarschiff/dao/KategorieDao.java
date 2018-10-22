@@ -21,15 +21,25 @@ public class KategorieDao {
   @PersistenceContext
   EntityManager entityManager;
 
+  /**
+   * Gibt eine Liste aller vorhandenen Hauptkategorien zurück, die nicht als gelöscht markiert sind.
+   *
+   * @return Liste der Hauptkategorien
+   */
   public List<Kategorie> findRootKategorien() {
     return entityManager.createQuery("SELECT o FROM Kategorie o "
-      + "WHERE o.parent IS NULL ORDER BY o.name",
+      + "WHERE o.geloescht = false AND o.parent IS NULL ORDER BY o.name",
       Kategorie.class).getResultList();
   }
 
+  /**
+   * Gibt eine Liste aller vorhandenen Unterkategorien zurück, die nicht als gelöscht markiert sind.
+   *
+   * @return Liste der Unterkategorien
+   */
   public List<Kategorie> getKategorien() {
-    return entityManager.createQuery("SELECT o FROM Kategorie o "
-      + "WHERE o.parent IS NOT NULL ORDER BY o.name",
+    return entityManager.createQuery("SELECT o FROM Kategorie o JOIN o.parent op " +
+      " WHERE op.geloescht = false AND o.parent IS NOT NULL ORDER BY o.name",
       Kategorie.class).getResultList();
   }
 
