@@ -19,23 +19,24 @@ public class KategorieDao {
   EntityManager entityManager;
 
   /**
-   * Gibt eine Liste aller vorhandenen Hauptkategorien zurück.
+   * Gibt eine Liste aller vorhandenen Hauptkategorien zurück, die nicht als gelöscht markiert sind.
    *
    * @return Liste der Hauptkategorien
    */
   public List<Kategorie> findRootKategorien() {
     return entityManager.createQuery("SELECT o FROM Kategorie o "
-      + "WHERE o.parent IS NULL ORDER BY o.name",
+      + "WHERE o.geloescht = false AND o.parent IS NULL ORDER BY o.name",
       Kategorie.class).getResultList();
   }
 
   /**
-   * Gibt eine Liste aller vorhandenen Unterkategorien zurück.
+   * Gibt eine Liste aller vorhandenen Unterkategorien zurück, die nicht als gelöscht markiert sind.
    *
    * @return Liste der Unterkategorien
    */
   public List<Kategorie> findUnterKategorien() {
-    return entityManager.createQuery("SELECT o FROM Kategorie o WHERE o.parent IS NOT NULL ORDER BY o.name",
+    return entityManager.createQuery("SELECT o FROM Kategorie o JOIN o.parent op " +
+      " WHERE op.geloescht = false AND o.parent IS NOT NULL ORDER BY o.name",
       Kategorie.class).getResultList();
   }
 
@@ -74,7 +75,7 @@ public class KategorieDao {
   }
 
   /**
-   * Gibt eine Liste der Kategorien zurück.
+   * Gibt eine Liste der Kategorien zurück, die nicht als gelöscht markiert sind.
    *
    * @param showTipp Tipps ebenfalls anzeigen
    * @return Liste der Kategorien
@@ -82,7 +83,7 @@ public class KategorieDao {
   public List<Kategorie> getKategorien(boolean showTipp) {
     StringBuilder sql = new StringBuilder();
     sql.append("SELECT o FROM Kategorie o JOIN o.parent op ");
-    sql.append("WHERE o.parent IS NOT NULL ");
+    sql.append("WHERE op.geloescht = false AND o.parent IS NOT NULL ");
 
     if (!showTipp) {
       sql.append("AND op.typ <> 'tipp' ");
@@ -94,14 +95,15 @@ public class KategorieDao {
   }
 
   /**
-   * Gibt eine Liste aller vorhandenen Kategorien zurück, die nicht den Typ 'Tipp' haben.
+   * Gibt eine Liste aller vorhandenen Kategorien zurück, die nicht den Typ 'Tipp' haben und nicht
+   * als gelöscht markiert sind.
    *
    * @return Liste der Kategorien
    */
   public List<Kategorie> getAllKategorien() {
     StringBuilder sql = new StringBuilder();
     sql.append("SELECT o FROM Kategorie o LEFT JOIN o.parent op ");
-    sql.append("WHERE op.typ <> 'tipp' OR o.typ <> 'tipp' ");
+    sql.append("WHERE op.geloescht = false AND o.geloescht = false AND (op.typ <> 'tipp' OR o.typ <> 'tipp') ");
     sql.append("ORDER BY op.name, o.name");
     return entityManager.createQuery(sql.toString(), Kategorie.class).getResultList();
   }
