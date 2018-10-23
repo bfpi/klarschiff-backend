@@ -24,7 +24,7 @@ import de.fraunhofer.igd.klarschiff.vo.extra.EnumVerlaufTyp;
 import de.fraunhofer.igd.klarschiff.vo.extra.EnumVorgangStatus;
 import de.fraunhofer.igd.klarschiff.vo.extra.EnumVorgangTyp;
 import de.fraunhofer.igd.klarschiff.vo.extra.EnumZustaendigkeitStatus;
-import org.hibernate.impl.SessionImpl;
+import org.hibernate.internal.SessionImpl;
 
 /**
  * Thread in dem die Initialisierung vorgenommen wird.
@@ -164,7 +164,7 @@ public class InitializeServiceThread extends Thread {
             Object id = metadata.getIdentifier(entity, (SessionImpl) session);
             String idPropertyName = metadata.getIdentifierPropertyName();
             BeanUtils.setProperty(o, idPropertyName, id);
-            session.refresh(o);
+            session.refresh(session.merge(o));
             logger.debug("Merge Object [" + o + "]");
           } else if (l.size() > 1) {
             logger.warn("find duplicate object in db for  [" + o + "]");

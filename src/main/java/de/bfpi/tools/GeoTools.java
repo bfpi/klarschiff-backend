@@ -1,12 +1,12 @@
 package de.bfpi.tools;
 
-import javax.persistence.Transient;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.PrecisionModel;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
+import javax.persistence.Transient;
 import org.apache.commons.lang.StringUtils;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;

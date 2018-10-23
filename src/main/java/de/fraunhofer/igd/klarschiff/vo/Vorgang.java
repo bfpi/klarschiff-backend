@@ -130,7 +130,7 @@ public class Vorgang implements Serializable {
    * geographische Position/Ort
    */
   @JsonIgnore
-  @Type(type = "org.hibernatespatial.GeometryUserType")
+  @Type(type = "org.hibernate.spatial.GeometryType")
   private Point ovi;
 
   /**

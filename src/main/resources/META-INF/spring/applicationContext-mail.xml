@@ -1,55 +1,57 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:aop="http://www.springframework.org/schema/aop"
-	xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:jee="http://www.springframework.org/schema/jee"
-	xmlns:tx="http://www.springframework.org/schema/tx"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:p="http://www.springframework.org/schema/p"
-	xsi:schemaLocation="
-	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
-	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
-	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
-	http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.5.xsd
-	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:jee="http://www.springframework.org/schema/jee"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="
+         http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+	       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+	       http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.5.xsd
+	       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+       ">
 
-    <!-- <context:property-placeholder location="classpath*:settings.properties"/>-->
+  <!-- <context:property-placeholder location="classpath*:settings.properties"/>-->
 
-	<bean class="de.fraunhofer.igd.klarschiff.service.mail.JavaMailSenderImpl" id="mailSender"
-		p:host="${mail.host}"
-		p:username="${mail.username}"
-		p:password="${mail.password}"
-		p:smtpStarttlsEnable="${mail.smtp.starttls.enable}"/>
+  <bean class="de.fraunhofer.igd.klarschiff.service.mail.JavaMailSenderImpl" id="mailSender"
+        p:host="${mail.host}"
+        p:username="${mail.username}"
+        p:password="${mail.password}"
+        p:smtpStarttlsEnable="${mail.smtp.starttls.enable}"/>
     
-    <bean class="de.fraunhofer.igd.klarschiff.service.mail.MailService" id="mailService"
-    	p:mailSender-ref="mailSender" 
-		p:serverBaseUrlBackend="${mail.server.baseurl.backend}"
-		p:serverBaseUrlFrontend="${mail.server.baseurl.frontend}"
-		p:mailFrom="${mail.from}"
+  <bean class="de.fraunhofer.igd.klarschiff.service.mail.MailService" id="mailService"
+        p:mailSender-ref="mailSender"
+        p:serverBaseUrlBackend="${mail.server.baseurl.backend}"
+        p:serverBaseUrlFrontend="${mail.server.baseurl.frontend}"
+        p:mailFrom="${mail.from}"
         p:sendAllMailsTo="${mail.sendAllMailsTo}"
-		p:mailtoMailclientEncoding="${mail.mailto.encoding}"
-    	p:vorgangBestaetigungMailTemplate-ref="vorgangBestaetigungMailTemplate"
-    	p:unterstuetzungBestaetigungMailTemplate-ref="unterstuetzungBestaetigungMailTemplate"
-    	p:missbrauchsmeldungBestaetigungMailTemplate-ref="missbrauchsmeldungBestaetigungMailTemplate"
-    	p:fotoBestaetigungMailTemplate-ref="fotoBestaetigungMailTemplate"
-    	p:vorgangWeiterleitenMailTemplate-ref="vorgangWeiterleitenMailTemplate"
-    	p:informDispatcherMailTemplate-ref="informDispatcherMailTemplate"
-    	p:informExternMailTemplate-ref="informExternMailTemplate"
-    	p:informErstellerMailInBearbeitungTemplate-ref="informErstellerMailInBearbeitungTemplate"
-    	p:informErstellerMailAbschlussTemplate-ref="informErstellerMailAbschlussTemplate"
-    	p:kriteriumOffenNichtAkzeptiertTemplate-ref="kriteriumOffenNichtAkzeptiertTemplate"
-    	p:kriteriumOffenInbearbeitungOhneStatusKommentarTemplate-ref="kriteriumOffenInbearbeitungOhneStatusKommentarTemplate"
-    	p:kriteriumIdeeOffenOhneUnterstuetzungTemplate-ref="kriteriumIdeeOffenOhneUnterstuetzungTemplate"
-    	p:kriteriumNichtLoesbarOhneStatuskommentarTemplate-ref="kriteriumNichtLoesbarOhneStatuskommentarTemplate"
-    	p:kriteriumNichtMehrOffenNichtAkzeptiertTemplate-ref="kriteriumNichtMehrOffenNichtAkzeptiertTemplate"
-    	p:kriteriumOhneRedaktionelleFreigabenTemplate-ref="kriteriumOhneRedaktionelleFreigabenTemplate"
-    	p:kriteriumOhneZustaendigkeitTemplate-ref="kriteriumOhneZustaendigkeitTemplate"
+        p:mailtoMailclientEncoding="${mail.mailto.encoding}"
+        p:vorgangBestaetigungMailTemplate-ref="vorgangBestaetigungMailTemplate"
+        p:unterstuetzungBestaetigungMailTemplate-ref="unterstuetzungBestaetigungMailTemplate"
+        p:missbrauchsmeldungBestaetigungMailTemplate-ref="missbrauchsmeldungBestaetigungMailTemplate"
+        p:fotoBestaetigungMailTemplate-ref="fotoBestaetigungMailTemplate"
+        p:vorgangWeiterleitenMailTemplate-ref="vorgangWeiterleitenMailTemplate"
+        p:informDispatcherMailTemplate-ref="informDispatcherMailTemplate"
+        p:informExternMailTemplate-ref="informExternMailTemplate"
+        p:informErstellerMailInBearbeitungTemplate-ref="informErstellerMailInBearbeitungTemplate"
+        p:informErstellerMailAbschlussTemplate-ref="informErstellerMailAbschlussTemplate"
+        p:kriteriumOffenNichtAkzeptiertTemplate-ref="kriteriumOffenNichtAkzeptiertTemplate"
+        p:kriteriumOffenInbearbeitungOhneStatusKommentarTemplate-ref="kriteriumOffenInbearbeitungOhneStatusKommentarTemplate"
+        p:kriteriumIdeeOffenOhneUnterstuetzungTemplate-ref="kriteriumIdeeOffenOhneUnterstuetzungTemplate"
+        p:kriteriumNichtLoesbarOhneStatuskommentarTemplate-ref="kriteriumNichtLoesbarOhneStatuskommentarTemplate"
+        p:kriteriumNichtMehrOffenNichtAkzeptiertTemplate-ref="kriteriumNichtMehrOffenNichtAkzeptiertTemplate"
+        p:kriteriumOhneRedaktionelleFreigabenTemplate-ref="kriteriumOhneRedaktionelleFreigabenTemplate"
+        p:kriteriumOhneZustaendigkeitTemplate-ref="kriteriumOhneZustaendigkeitTemplate"
         p:informRedaktionEmpfaengerMailTemplate-ref="informRedaktionEmpfaengerMailTemplate"
-    />
+  />
 
-	<bean class="org.springframework.mail.SimpleMailMessage" id="vorgangBestaetigungMailTemplate"
-	p:from="${mail.from}" p:subject="%title% #%id%: Meldungsbestätigung">
-		<property name="text"><value><![CDATA[Sehr geehrte(r) Nutzer/-in von %title%,
+  <bean class="org.springframework.mail.SimpleMailMessage" id="vorgangBestaetigungMailTemplate"
+        p:from="${mail.from}" p:subject="%title% #%id%: Meldungsbestätigung">
+    <property name="text">
+      <value><![CDATA[Sehr geehrte(r) Nutzer/-in von %title%,
 
 um Ihre Meldung zu bestätigen rufen Sie bitte folgende URL auf: %baseUrlFrontend%vorgangBestaetigung/?hash=%hash%
 
@@ -64,12 +66,14 @@ Meldung löschen: %baseUrlFrontend%vorgangLoeschen/?hash=%hash%
 Vielen Dank und mit freundlichen Grüßen
 
 
-Ihr %title%-Team]]></value></property>
-	</bean>
+Ihr %title%-Team]]></value>
+    </property>
+  </bean>
 
-	<bean class="org.springframework.mail.SimpleMailMessage" id="unterstuetzungBestaetigungMailTemplate"
-	p:from="${mail.from}" p:subject="%title% #%id%: Bestätigung einer Unterstützung">
-		<property name="text"><value><![CDATA[Sehr geehrte(r) Nutzer/-in von %title%,
+  <bean class="org.springframework.mail.SimpleMailMessage" id="unterstuetzungBestaetigungMailTemplate"
+        p:from="${mail.from}" p:subject="%title% #%id%: Bestätigung einer Unterstützung">
+    <property name="text">
+      <value><![CDATA[Sehr geehrte(r) Nutzer/-in von %title%,
 
 um Ihre Unterstützung zu bestätigen rufen Sie bitte folgende URL auf: %baseUrlFrontend%unterstuetzerBestaetigung/?hash=%hash%
 
@@ -78,12 +82,14 @@ Diese URL funktioniert für 24 Stunden und kann einmalig aufgerufen werden. Nach
 Vielen Dank und mit freundlichen Grüßen
 
 
-Ihr %title%-Team]]></value></property>
-	</bean>
+Ihr %title%-Team]]></value>
+    </property>
+  </bean>
 
-	<bean class="org.springframework.mail.SimpleMailMessage" id="missbrauchsmeldungBestaetigungMailTemplate"
-	p:from="${mail.from}" p:subject="%title% #%id%: Bestätigung einer Missbrauchsmeldung">
-		<property name="text"><value><![CDATA[Sehr geehrte(r) Nutzer/-in von %title%,
+  <bean class="org.springframework.mail.SimpleMailMessage" id="missbrauchsmeldungBestaetigungMailTemplate"
+        p:from="${mail.from}" p:subject="%title% #%id%: Bestätigung einer Missbrauchsmeldung">
+    <property name="text">
+      <value><![CDATA[Sehr geehrte(r) Nutzer/-in von %title%,
 
 um Ihre Missbrauchsmeldung zu bestätigen rufen Sie bitte folgende URL auf: %baseUrlFrontend%missbrauchsmeldungBestaetigung/?hash=%hash%
   
@@ -92,12 +98,14 @@ Diese URL funktioniert für 24 Stunden und kann einmalig aufgerufen werden. Nach
 Vielen Dank und mit freundlichen Grüßen
 
 
-Ihr %title%-Team]]></value></property>
-	</bean>
+Ihr %title%-Team]]></value>
+    </property>
+  </bean>
 
-	<bean class="org.springframework.mail.SimpleMailMessage" id="fotoBestaetigungMailTemplate"
-	p:from="${mail.from}" p:subject="%title% #%id%: Bestätigung eines Fotos">
-		<property name="text"><value><![CDATA[Sehr geehrte(r) Nutzer/-in von %title%,
+  <bean class="org.springframework.mail.SimpleMailMessage" id="fotoBestaetigungMailTemplate"
+        p:from="${mail.from}" p:subject="%title% #%id%: Bestätigung eines Fotos">
+    <property name="text">
+      <value><![CDATA[Sehr geehrte(r) Nutzer/-in von %title%,
 
 um Ihr Foto zu bestätigen rufen Sie bitte folgende URL auf: %baseUrlFrontend%fotoBestaetigung/?hash=%hash%
 
@@ -106,8 +114,9 @@ Diese URL funktioniert für 24 Stunden und kann einmalig aufgerufen werden. Nach
 Vielen Dank und mit freundlichen Grüßen
 
 
-Ihr %title%-Team]]></value></property>
-	</bean>
+Ihr %title%-Team]]></value>
+    </property>
+  </bean>
 
   <bean class="org.springframework.mail.SimpleMailMessage" id="vorgangWeiterleitenMailTemplate"
         p:from="${mail.from}" p:subject="${mail.request.redirect.subject}">
@@ -127,12 +136,14 @@ Daten des weitergeleiteten Vorgangs
 Vielen Dank und mit freundlichen Grüßen
 
 
-Ihr %title%-Team]]></value></property>
-	</bean>
+Ihr %title%-Team]]></value>
+    </property>
+  </bean>
 
-	<bean class="org.springframework.mail.SimpleMailMessage" id="informDispatcherMailTemplate"
-	p:from="${mail.from}" p:subject="nicht zuordenbare Vorgänge">
-		<property name="text"><value><![CDATA[Sehr geehrte(r) Dispatcher/-in von Vorgängen in %title%,
+  <bean class="org.springframework.mail.SimpleMailMessage" id="informDispatcherMailTemplate"
+        p:from="${mail.from}" p:subject="nicht zuordenbare Vorgänge">
+    <property name="text">
+      <value><![CDATA[Sehr geehrte(r) Dispatcher/-in von Vorgängen in %title%,
 
 innerhalb der letzten 24 Stunden wurden Ihnen in Ihrer Funktion als Dispatcher/-in automatisch Vorgänge überantwortet, die auch nach mehrfacher automatischer Zuständigkeitsfindung nicht eindeutig zugewiesen werden konnten. Bitte bearbeiten Sie diese Vorgänge oder weisen Sie die jeweils passende Zuständigkeit manuell zu: 
 
@@ -143,12 +154,14 @@ Daten der nicht zuordenbaren Vorgänge
 Vielen Dank und mit freundlichen Grüßen
 
 
-Ihr %title%-Team]]></value></property>
-	</bean>
+Ihr %title%-Team]]></value>
+    </property>
+  </bean>
 	
-	<bean class="org.springframework.mail.SimpleMailMessage" id="informExternMailTemplate"
-	p:from="${mail.from}" p:subject="neue delegierte Vorgänge">
-		<property name="text"><value><![CDATA[Sehr geehrte(r) Bearbeiter/-in von Vorgängen in %title%,
+  <bean class="org.springframework.mail.SimpleMailMessage" id="informExternMailTemplate"
+        p:from="${mail.from}" p:subject="neue delegierte Vorgänge">
+    <property name="text">
+      <value><![CDATA[Sehr geehrte(r) Bearbeiter/-in von Vorgängen in %title%,
 		
 innerhalb der letzten 24 Stunden wurden Vorgänge an Sie delegiert. Bitte bearbeiten Sie diese Vorgänge: 
 
@@ -159,12 +172,14 @@ Daten der neuen delegierten Vorgänge
 Vielen Dank und mit freundlichen Grüßen
 
 
-Ihr %title%-Team]]></value></property>
-	</bean>
+Ihr %title%-Team]]></value>
+    </property>
+  </bean>
 
-	<bean class="org.springframework.mail.SimpleMailMessage" id="informErstellerMailInBearbeitungTemplate"
-	p:from="${mail.from}" p:subject="%title% #%id%: in Bearbeitung">
-		<property name="text"><value><![CDATA[Sehr geehrte(r) Nutzer/-in von %title%,
+  <bean class="org.springframework.mail.SimpleMailMessage" id="informErstellerMailInBearbeitungTemplate"
+        p:from="${mail.from}" p:subject="%title% #%id%: in Bearbeitung">
+    <property name="text">
+      <value><![CDATA[Sehr geehrte(r) Nutzer/-in von %title%,
 		
 hiermit teilen wir Ihnen mit, dass Ihre Meldung vom %datum% nun in Bearbeitung ist.
 
@@ -175,12 +190,14 @@ Nachfolgend können Sie nochmals die wichtigsten Daten Ihrer Meldung in kompakte
 Vielen Dank und mit freundlichen Grüßen
 
 
-Ihr %title%-Team]]></value></property>
-	</bean>
+Ihr %title%-Team]]></value>
+    </property>
+  </bean>
 
-	<bean class="org.springframework.mail.SimpleMailMessage" id="informErstellerMailAbschlussTemplate"
-	p:from="${mail.from}" p:subject="%title% #%id%: abgeschlossen">
-		<property name="text"><value><![CDATA[Sehr geehrte(r) Nutzer/-in von %title%,
+  <bean class="org.springframework.mail.SimpleMailMessage" id="informErstellerMailAbschlussTemplate"
+        p:from="${mail.from}" p:subject="%title% #%id%: abgeschlossen">
+    <property name="text">
+      <value><![CDATA[Sehr geehrte(r) Nutzer/-in von %title%,
 		
 hiermit teilen wir Ihnen mit, dass die Bearbeitung Ihrer Meldung vom %datum% abgeschlossen ist, und zwar mit folgendem Status:
 
@@ -193,68 +210,84 @@ Nachfolgend können Sie nochmals die wichtigsten Daten Ihrer Meldung in kompakte
 Vielen Dank und mit freundlichen Grüßen
 
 
-Ihr %title%-Team]]></value></property>
-	</bean>
+Ihr %title%-Team]]></value>
+    </property>
+  </bean>
 	
-	<bean class="org.springframework.mail.SimpleMailMessage" id="kriteriumOffenNichtAkzeptiertTemplate">
-		<property name="text"><value><![CDATA[Folgende Vorgänge mit dem Status „offen“ sind seit mindestens %tage% Tagen zugewiesen. Bitte prüfen Sie jeweils die Zuständigkeit; anschließend akzeptieren Sie diese bitte oder leiten den Vorgang weiter. Falls Sie die Zuständigkeit akzeptieren, so führen Sie bitte außerdem die Erstsichtung durch, falls diese noch nicht erfolgt ist:
+  <bean class="org.springframework.mail.SimpleMailMessage" id="kriteriumOffenNichtAkzeptiertTemplate">
+    <property name="text">
+      <value><![CDATA[Folgende Vorgänge mit dem Status „offen“ sind seit mindestens %tage% Tagen zugewiesen. Bitte prüfen Sie jeweils die Zuständigkeit; anschließend akzeptieren Sie diese bitte oder leiten den Vorgang weiter. Falls Sie die Zuständigkeit akzeptieren, so führen Sie bitte außerdem die Erstsichtung durch, falls diese noch nicht erfolgt ist:
 
 Nummer   aktuelle Zuständigkeit     Typ       zugewiesen seit
 ******   **********************     ***       ***************
-%vorgaenge%]]></value></property>
-	</bean>
+%vorgaenge%]]></value>
+    </property>
+  </bean>
 	
-	<bean class="org.springframework.mail.SimpleMailMessage" id="kriteriumOffenInbearbeitungOhneStatusKommentarTemplate">
-		<property name="text"><value><![CDATA[Folgende Vorgänge mit dem Status „in Bearbeitung“ sind seit mindestens %tage% Tagen unverändert. Bitte geben Sie den Bürgerinnen und Bürgern jeweils eine kurze Info zum Bearbeitungsstand mittels der öffentlichen Statusinformation oder schließen Sie den Vorgang ab, falls dies bislang einfach vergessen wurde:
+  <bean class="org.springframework.mail.SimpleMailMessage" id="kriteriumOffenInbearbeitungOhneStatusKommentarTemplate">
+    <property name="text">
+      <value><![CDATA[Folgende Vorgänge mit dem Status „in Bearbeitung“ sind seit mindestens %tage% Tagen unverändert. Bitte geben Sie den Bürgerinnen und Bürgern jeweils eine kurze Info zum Bearbeitungsstand mittels der öffentlichen Statusinformation oder schließen Sie den Vorgang ab, falls dies bislang einfach vergessen wurde:
 
 Nummer   aktuelle Zuständigkeit     Typ       unverändert seit
 ******   **********************     ***       ****************
-%vorgaenge%]]></value></property>
-	</bean>
+%vorgaenge%]]></value>
+    </property>
+  </bean>
 	
-	<bean class="org.springframework.mail.SimpleMailMessage" id="kriteriumIdeeOffenOhneUnterstuetzungTemplate">
-		<property name="text"><value><![CDATA[Folgende Ideen mit dem Status „offen“ haben ihre Erstsichtung seit mindestens %tage% Tagen hinter sich, weisen aber bisher noch nicht die notwendige Anzahl von %unterstuetzungen% Unterstützungen auf. Falls Sie die jeweilige Idee abschließen möchten, so setzen Sie diese bitte auf den Status „nicht lösbar“ und geben Sie den Bürgerinnen und Bürgern eine kurze Begründung mittels der öffentlichen Statusinformation:
+  <bean class="org.springframework.mail.SimpleMailMessage" id="kriteriumIdeeOffenOhneUnterstuetzungTemplate">
+    <property name="text">
+      <value><![CDATA[Folgende Ideen mit dem Status „offen“ haben ihre Erstsichtung seit mindestens %tage% Tagen hinter sich, weisen aber bisher noch nicht die notwendige Anzahl von %unterstuetzungen% Unterstützungen auf. Falls Sie die jeweilige Idee abschließen möchten, so setzen Sie diese bitte auf den Status „nicht lösbar“ und geben Sie den Bürgerinnen und Bürgern eine kurze Begründung mittels der öffentlichen Statusinformation:
 
 Nummer   aktuelle Zuständigkeit     Unterstützungen   Erstsichtungszeitpunkt
 ******   **********************     ***************   **********************
-%vorgaenge%]]></value></property>
-	</bean>
+%vorgaenge%]]></value>
+    </property>
+  </bean>
 	
-	<bean class="org.springframework.mail.SimpleMailMessage" id="kriteriumNichtLoesbarOhneStatuskommentarTemplate">
-		<property name="text"><value><![CDATA[Folgende Vorgänge mit dem Status „nicht lösbar“ weisen bisher keine öffentliche Statusinformation auf. Bitte geben Sie den Bürgerinnen und Bürgern jeweils eine kurze Info zum Bearbeitungsstand mittels der öffentlichen Statusinformation:
+  <bean class="org.springframework.mail.SimpleMailMessage" id="kriteriumNichtLoesbarOhneStatuskommentarTemplate">
+    <property name="text">
+      <value><![CDATA[Folgende Vorgänge mit dem Status „nicht lösbar“ weisen bisher keine öffentliche Statusinformation auf. Bitte geben Sie den Bürgerinnen und Bürgern jeweils eine kurze Info zum Bearbeitungsstand mittels der öffentlichen Statusinformation:
 
 Nummer   aktuelle Zuständigkeit     Typ       Status „nicht lösbar“ seit
 ******   **********************     ***       ***********************************
-%vorgaenge%]]></value></property>
-	</bean>
+%vorgaenge%]]></value>
+    </property>
+  </bean>
 	
-	<bean class="org.springframework.mail.SimpleMailMessage" id="kriteriumNichtMehrOffenNichtAkzeptiertTemplate">
-		<property name="text"><value><![CDATA[Folgende Vorgänge weisen zwar nicht mehr den Status „offen“ auf, wurden bisher aber dennoch nicht akzeptiert. Bitte prüfen Sie jeweils die Zuständigkeit; anschließend akzeptieren Sie diese bitte oder leiten den Vorgang weiter:
+  <bean class="org.springframework.mail.SimpleMailMessage" id="kriteriumNichtMehrOffenNichtAkzeptiertTemplate">
+    <property name="text">
+      <value><![CDATA[Folgende Vorgänge weisen zwar nicht mehr den Status „offen“ auf, wurden bisher aber dennoch nicht akzeptiert. Bitte prüfen Sie jeweils die Zuständigkeit; anschließend akzeptieren Sie diese bitte oder leiten den Vorgang weiter:
 
 Nummer   aktuelle Zuständigkeit     Typ       Status                  nicht akzeptiert seit
 ******   **********************     ***       ******                  *********************
-%vorgaenge%]]></value></property>
-	</bean>
+%vorgaenge%]]></value>
+    </property>
+  </bean>
 	
-	<bean class="org.springframework.mail.SimpleMailMessage" id="kriteriumOhneRedaktionelleFreigabenTemplate">
-		<property name="text"><value><![CDATA[Folgende Vorgänge haben zwar ihre Erstsichtung bereits hinter sich, allerdings wurden Beschreibung und/oder Foto bisher noch nicht redaktionell freigegeben. Bitte prüfen Sie jeweils Beschreibung und/oder Foto redaktionell und setzen Sie diese (gegebenenfalls nach redaktioneller Korrektur und/oder Anpassung) möglichst auf den Freigabestatus „extern“:
+  <bean class="org.springframework.mail.SimpleMailMessage" id="kriteriumOhneRedaktionelleFreigabenTemplate">
+    <property name="text">
+      <value><![CDATA[Folgende Vorgänge haben zwar ihre Erstsichtung bereits hinter sich, allerdings wurden Beschreibung und/oder Foto bisher noch nicht redaktionell freigegeben. Bitte prüfen Sie jeweils Beschreibung und/oder Foto redaktionell und setzen Sie diese (gegebenenfalls nach redaktioneller Korrektur und/oder Anpassung) möglichst auf den Freigabestatus „extern“:
 
 Nummer   aktuelle Zuständigkeit     Typ       Status                  Freigabestatus Beschreibung   Freigabestatus Foto
 ******   **********************     ***       ******                  ***************************   *******************
-%vorgaenge%]]></value></property>
-	</bean>
+%vorgaenge%]]></value>
+    </property>
+  </bean>
 	
-	<bean class="org.springframework.mail.SimpleMailMessage" id="kriteriumOhneZustaendigkeitTemplate">
-		<property name="text"><value><![CDATA[Folgende Vorgänge weisen auf Grund von Kommunikationsfehlern im System keine Einträge in den Datenbankfeldern „zustaendigkeit“ und/oder „zustaendigkeit_status“ auf:
+  <bean class="org.springframework.mail.SimpleMailMessage" id="kriteriumOhneZustaendigkeitTemplate">
+    <property name="text">
+      <value><![CDATA[Folgende Vorgänge weisen auf Grund von Kommunikationsfehlern im System keine Einträge in den Datenbankfeldern „zustaendigkeit“ und/oder „zustaendigkeit_status“ auf:
 
 Nummer   Typ       Status
 ******   ***       ******
-%vorgaenge%]]></value></property>
-	</bean>
+%vorgaenge%]]></value>
+    </property>
+  </bean>
 	
-	<bean class="org.springframework.mail.SimpleMailMessage" id="informRedaktionEmpfaengerMailTemplate"
-	p:from="${mail.from}" p:subject="%title%: wichtige redaktionelle Hinweise">
-		<property name="text"><value><![CDATA[Sehr geehrte(r) Bearbeiter/-in,
+  <bean class="org.springframework.mail.SimpleMailMessage" id="informRedaktionEmpfaengerMailTemplate"
+        p:from="${mail.from}" p:subject="%title%: wichtige redaktionelle Hinweise">
+    <property name="text">
+      <value><![CDATA[Sehr geehrte(r) Bearbeiter/-in,
 
 es gibt folgende wichtige Hinweise zum Bearbeitungsstand in Ihrer %title%-Rolle %zustaendigkeit%:
 		
@@ -275,7 +308,8 @@ es gibt folgende wichtige Hinweise zum Bearbeitungsstand in Ihrer %title%-Rolle 
 Wir möchten Sie bitten diesen Hinweisen nachzugehen. Eine kurzfristige Reaktion auf die Vorgänge in %title% trägt zum positiven Image der Verwaltung bei.
 
 
-Diese E-Mail wird automatisch vom %title%-System generiert.]]></value></property>
-	</bean>
+Diese E-Mail wird automatisch vom %title%-System generiert.]]></value>
+    </property>
+  </bean>
 	
 </beans>

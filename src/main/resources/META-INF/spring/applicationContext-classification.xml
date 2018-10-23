@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<beans
-  xmlns="http://www.springframework.org/schema/beans"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+       ">
   <bean class="de.fraunhofer.igd.klarschiff.service.classification.FeatureService" id="featureService">
-		<property name="bewirtschaftungskatasterClasses">
+    <property name="bewirtschaftungskatasterClasses">
       <list></list>
     </property>
-		<property name="flaechendatenFeaturetypes">
-			<list></list>
-		</property>
+    <property name="flaechendatenFeaturetypes">
+      <list></list>
+    </property>
   </bean>
 </beans>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>de.fraunhofer.igd.klarschiff</groupId>
   <artifactId>backend</artifactId>
@@ -9,18 +9,21 @@
   <name>Klarschiff-Backend</name>
 
   <properties>
-    <geotools.version>12.0</geotools.version>
-    <roo.version>1.1.1.RELEASE</roo.version>
-    <aspectj.version>1.8.10</aspectj.version>
+    <geotools.version>16.5</geotools.version>
+    <roo.version>1.0.0.RELEASE</roo.version>
+    <aspectj.version>1.9.1</aspectj.version>
 
     <spring.version>4.3.20.RELEASE</spring.version>
     <spring-security.version>4.2.9.RELEASE</spring-security.version>
 
-    <slf4j.version>1.6.1</slf4j.version>
-    <hibernate.version>3.6.0.Final</hibernate.version>
+    <slf4j.version>1.7.25</slf4j.version>
+    <hibernate.version>4.3.11.Final</hibernate.version>
     <postgresql.version>9.4.1212.jre6</postgresql.version>
-    <postgis.version>[1.1.6,)</postgis.version>
-    <poi.version>3.7</poi.version>
+    <postgis.version>1.3.3</postgis.version>
+    <poi.version>3.17</poi.version>
+    <apacheds.version>2.0.0.AM25</apacheds.version>
+    <apache-tiles.version>3.0.8</apache-tiles.version>
+    <jts.version>1.16.0</jts.version>
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <netbeans.hint.deploy.server>Tomcat</netbeans.hint.deploy.server>
@@ -112,17 +115,17 @@
     <dependency>
       <groupId>org.apache.directory.server</groupId>
       <artifactId>apacheds-core</artifactId>
-      <version>1.5.5</version>
+      <version>${apacheds.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.directory.server</groupId>
       <artifactId>apacheds-protocol-ldap</artifactId>
-      <version>1.5.5</version>
+      <version>${apacheds.version}</version>
     </dependency>
     <dependency>
       <groupId>commons-collections</groupId>
       <artifactId>commons-collections</artifactId>
-      <version>3.2.1</version>
+      <version>3.2.2</version>
     </dependency>
     <dependency>
       <groupId>org.geotools</groupId>
@@ -157,15 +160,15 @@
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
-      <version>2.1</version>
+      <version>2.6</version>
     </dependency>
     <dependency>
       <groupId>commons-lang</groupId>
       <artifactId>commons-lang</artifactId>
-      <version>2.5</version>
+      <version>2.6</version>
     </dependency>
     <!-- <dependency> <groupId>org.hibernatespatial</groupId> <artifactId>hibernate-spatial-postgis</artifactId> 
-      <version>1.0</version> </dependency> -->
+    <version>1.0</version> </dependency> -->
 
     <!-- the Postgis JDBC driver -->
     <dependency>
@@ -181,15 +184,15 @@
     </dependency>
     <!-- General dependencies for standard applications -->
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.8.1</version>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <version>5.3.1</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
-      <version>1.2.16</version>
+      <version>1.2.17</version>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -218,19 +221,19 @@
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
-      <version>2.5</version>
+      <artifactId>javax.servlet-api</artifactId>
+      <version>4.0.1</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>net.sf.flexjson</groupId>
       <artifactId>flexjson</artifactId>
-      <version>2.1</version>
+      <version>3.3</version>
     </dependency>
     <dependency>
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
-      <version>20180130</version>
+      <version>20180813</version>
     </dependency>
     <!-- ROO dependencies -->
     <dependency>
@@ -309,6 +312,11 @@
       </exclusions>
     </dependency>
     <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-spatial</artifactId>
+      <version>4.3</version>
+    </dependency>
+    <dependency>
       <groupId>org.hibernate.javax.persistence</groupId>
       <artifactId>hibernate-jpa-2.0-api</artifactId>
       <version>1.0.0.Final</version>
@@ -331,12 +339,12 @@
     <dependency>
       <groupId>javax.validation</groupId>
       <artifactId>validation-api</artifactId>
-      <version>1.0.0.GA</version>
+      <version>2.0.1.Final</version>
     </dependency>
     <dependency>
       <groupId>cglib</groupId>
       <artifactId>cglib-nodep</artifactId>
-      <version>2.2</version>
+      <version>3.2.8</version>
     </dependency>
     <dependency>
       <groupId>javax.transaction</groupId>
@@ -356,7 +364,7 @@
     <dependency>
       <groupId>commons-pool</groupId>
       <artifactId>commons-pool</artifactId>
-      <version>1.5.4</version>
+      <version>1.6</version>
       <exclusions>
         <exclusion>
           <groupId>commons-logging</groupId>
@@ -367,7 +375,7 @@
     <dependency>
       <groupId>commons-dbcp</groupId>
       <artifactId>commons-dbcp</artifactId>
-      <version>1.3</version>
+      <version>1.4</version>
       <exclusions>
         <exclusion>
           <groupId>commons-logging</groupId>
@@ -394,12 +402,12 @@
     <dependency>
       <groupId>xerces</groupId>
       <artifactId>xercesImpl</artifactId>
-      <version>2.9.1</version>
+      <version>2.12.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.tiles</groupId>
       <artifactId>tiles-core</artifactId>
-      <version>2.2.1</version>
+      <version>${apache-tiles.version}</version>
       <exclusions>
         <exclusion>
           <groupId>commons-logging</groupId>
@@ -410,7 +418,7 @@
     <dependency>
       <groupId>org.apache.tiles</groupId>
       <artifactId>tiles-jsp</artifactId>
-      <version>2.2.1</version>
+      <version>${apache-tiles.version}</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
@@ -437,12 +445,12 @@
     <dependency>
       <groupId>org.springframework.webflow</groupId>
       <artifactId>spring-js-resources</artifactId>
-      <version>2.2.1.RELEASE</version>
+      <version>2.5.1.RELEASE</version>
     </dependency>
     <dependency>
       <groupId>commons-digester</groupId>
       <artifactId>commons-digester</artifactId>
-      <version>2.0</version>
+      <version>2.1</version>
       <exclusions>
         <exclusion>
           <groupId>commons-logging</groupId>
@@ -453,7 +461,7 @@
     <dependency>
       <groupId>commons-fileupload</groupId>
       <artifactId>commons-fileupload</artifactId>
-      <version>1.2.1</version>
+      <version>1.3.3</version>
       <exclusions>
         <exclusion>
           <groupId>commons-logging</groupId>
@@ -468,19 +476,19 @@
     </dependency>
     <dependency>
       <groupId>javax.el</groupId>
-      <artifactId>el-api</artifactId>
-      <version>1.0</version>
+      <artifactId>javax.el-api</artifactId>
+      <version>3.0.0</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>joda-time</groupId>
       <artifactId>joda-time</artifactId>
-      <version>1.6</version>
+      <version>2.10</version>
     </dependency>
     <dependency>
       <groupId>javax.servlet.jsp</groupId>
       <artifactId>jsp-api</artifactId>
-      <version>2.1</version>
+      <version>2.2</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -528,37 +536,36 @@
     <dependency>
       <groupId>javax.mail</groupId>
       <artifactId>mail</artifactId>
-      <version>1.4.1</version>
+      <version>1.4.7</version>
     </dependency>
     <dependency>
       <groupId>javax.activation</groupId>
       <artifactId>activation</artifactId>
       <version>1.1.1</version>
     </dependency>
-
     <dependency>
       <groupId>com.googlecode.ehcache-spring-annotations</groupId>
       <artifactId>ehcache-spring-annotations</artifactId>
-      <version>1.1.3</version>
+      <version>1.2.0</version>
     </dependency>
     <dependency>
       <groupId>org.jdom</groupId>
       <artifactId>jdom</artifactId>
-      <version>1.1</version>
+      <version>2.0.2</version>
       <type>jar</type>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>jaxen</groupId>
       <artifactId>jaxen</artifactId>
-      <version>1.1.1</version>
+      <version>1.1.6</version>
       <type>jar</type>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-exec</artifactId>
-      <version>1.1</version>
+      <version>1.3</version>
     </dependency>
     <dependency>
       <groupId>commons-regex</groupId>
@@ -566,20 +573,20 @@
       <version>0.1</version>
     </dependency>
     <dependency>
-      <groupId>org.hibernatespatial</groupId>
-      <artifactId>hibernate-spatial-postgis</artifactId>
-      <version>1.1</version>
+      <groupId>org.codehaus.jackson</groupId>
+      <artifactId>jackson-mapper-asl</artifactId>
+      <version>1.9.13</version>
     </dependency>
-   <dependency>
-    <groupId>org.codehaus.jackson</groupId>
-    <artifactId>jackson-mapper-asl</artifactId>
-    <version>1.9.13</version>
-   </dependency>
     <dependency>
       <groupId>com.drewnoakes</groupId>
       <artifactId>metadata-extractor</artifactId>
       <version>2.11.0</version>
       <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>org.locationtech.jts</groupId>
+      <artifactId>jts-core</artifactId>
+      <version>${jts.version}</version>
     </dependency>
   </dependencies>
 
@@ -624,7 +631,7 @@
         <version>1.0</version>
         <dependencies>
           <!-- NB: You must use Maven 2.0.9 or above or these are ignored (see 
-            MNG-2972) -->
+          MNG-2972) -->
           <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjrt</artifactId>
@@ -760,7 +767,6 @@
           </webAppConfig>
         </configuration>
       </plugin>
-
     </plugins>
   </build>
 </project>

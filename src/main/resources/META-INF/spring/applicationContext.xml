@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<beans xmlns="http://www.springframework.org/schema/beans" 
-	xmlns:aop="http://www.springframework.org/schema/aop" 
-	xmlns:context="http://www.springframework.org/schema/context" 
-	xmlns:jee="http://www.springframework.org/schema/jee" 
-	xmlns:tx="http://www.springframework.org/schema/tx" 
-	xmlns:task="http://www.springframework.org/schema/task"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xmlns:p="http://www.springframework.org/schema/p"
-	xsi:schemaLocation="
-		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
-		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
-		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
-		http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-4.3.xsd
-		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd
-		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.3.xsd
-	">
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:jee="http://www.springframework.org/schema/jee"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:task="http://www.springframework.org/schema/task"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="
+         http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+         http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-4.3.xsd
+         http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd
+         http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.3.xsd
+       ">
     
     <!--
 		This will automatically locate any and all property files you have
@@ -55,59 +55,59 @@
 		by a web tier application context. Refer to web.xml for more details
 		about the web tier application context setup services.
 		
-		Furthermore, this turns on @Autowired, @PostConstruct etc support. These 
-		annotations allow you to use common Spring and Java Enterprise Edition 
-		annotations in your classes without needing to do any special configuration. 
-		The most commonly used annotation is @Autowired, which instructs Spring to
-		dependency inject an object into your class.
-	-->
-    <context:component-scan base-package="de.fraunhofer.igd.klarschiff">
-        <!-- <context:exclude-filter expression=".*_Roo_.*" type="regex"/>
-        <context:exclude-filter expression="org.springframework.stereotype.Controller" type="annotation"/>-->
-    </context:component-scan>
+    Furthermore, this turns on @Autowired, @PostConstruct etc support. These
+    annotations allow you to use common Spring and Java Enterprise Edition
+    annotations in your classes without needing to do any special configuration.
+    The most commonly used annotation is @Autowired, which instructs Spring to
+    dependency inject an object into your class.
+  -->
+  <context:component-scan base-package="de.fraunhofer.igd.klarschiff">
+    <!-- <context:exclude-filter expression=".*_Roo_.*" type="regex"/>
+    <context:exclude-filter expression="org.springframework.stereotype.Controller" type="annotation"/>-->
+  </context:component-scan>
 
-    <context:annotation-config />
+  <context:annotation-config />
     
-	<bean id="contextApplicationContextProvider" class="de.fraunhofer.igd.klarschiff.context.ApplicationContextProvider"/>
+  <bean id="contextApplicationContextProvider" class="de.fraunhofer.igd.klarschiff.context.ApplicationContextProvider"/>
 	
-	<bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
+  <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
 
-    <bean class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close" id="dataSource">
-        <property name="driverClassName" value="org.postgresql.Driver"/>
-        <property name="url" value="jdbc:postgresql://${database.host}:${database.port}/${database.dbname}"/>
-        <property name="username" value="${database.username}"/>
-        <property name="password" value="${database.password}"/>
-    </bean>
+  <bean class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close" id="dataSource">
+    <property name="driverClassName" value="org.postgresql.Driver"/>
+    <property name="url" value="jdbc:postgresql://${database.host}:${database.port}/${database.dbname}"/>
+    <property name="username" value="${database.username}"/>
+    <property name="password" value="${database.password}"/>
+  </bean>
     
-    <bean class="org.springframework.orm.jpa.JpaTransactionManager" id="transactionManager">
-        <property name="entityManagerFactory" ref="entityManagerFactory"/>
-    </bean>
+  <bean class="org.springframework.orm.jpa.JpaTransactionManager" id="transactionManager">
+    <property name="entityManagerFactory" ref="entityManagerFactory"/>
+  </bean>
     
-    <tx:annotation-driven mode="aspectj" transaction-manager="transactionManager"/>
+  <tx:annotation-driven mode="aspectj" transaction-manager="transactionManager"/>
     
-    <bean class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean" id="entityManagerFactory">
-        <property name="dataSource" ref="dataSource"/>
-    </bean>
+  <bean class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean" id="entityManagerFactory">
+    <property name="dataSource" ref="dataSource"/>
+  </bean>
     
-    <!-- allows for integration of file upload functionality -->
-	<bean class="org.springframework.web.multipart.commons.CommonsMultipartResolver" id="multipartResolver">
-		<property name="maxUploadSize" value="100000"/>
-	</bean>
+  <!-- allows for integration of file upload functionality -->
+  <bean class="org.springframework.web.multipart.commons.CommonsMultipartResolver" id="multipartResolver">
+    <property name="maxUploadSize" value="100000"/>
+  </bean>
 
 
-	<bean class="de.fraunhofer.igd.klarschiff.service.settings.SettingsService" id="settingsService" 
-		p:version="${version}"
-		p:vorgangIdeeUnterstuetzer="${vorgang.idee.unterstuetzer}"
-		p:vorgangStatusKommentarTextlaengeMaximal="${vorgang.statusKommentar.textlaengeMaximal}"
-		p:proxyHost="${proxy.host}"
-		p:proxyPort="${proxy.port}"
-		p:showLogins="${show.logins}"
-		p:showFehlerDetails="${show.fehler.details}"
-		p:bugTrackingUrl="${bug.tracking.url}"
+  <bean class="de.fraunhofer.igd.klarschiff.service.settings.SettingsService" id="settingsService"
+        p:version="${version}"
+        p:vorgangIdeeUnterstuetzer="${vorgang.idee.unterstuetzer}"
+        p:vorgangStatusKommentarTextlaengeMaximal="${vorgang.statusKommentar.textlaengeMaximal}"
+        p:proxyHost="${proxy.host}"
+        p:proxyPort="${proxy.port}"
+        p:showLogins="${show.logins}"
+        p:showFehlerDetails="${show.fehler.details}"
+        p:bugTrackingUrl="${bug.tracking.url}"
         p:contextAppTitle="${context.app.title}"
         p:contextAppArea="${context.app.area}"
         p:contextAppDemo="${context.app.demo}"
-		/>
+  />
 
-	<bean class="de.bfpi.tools.D3Tools" id="d3Tools" />
+  <bean class="de.bfpi.tools.D3Tools" id="d3Tools" />
 </beans>

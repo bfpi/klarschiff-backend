@@ -37,7 +37,7 @@ public class StadtteilGrenze {
   /**
    * Stadtteilgrenze
    */
-  @Type(type = "org.hibernatespatial.GeometryUserType")
+  @Type(type = "org.hibernate.spatial.GeometryType")
   private MultiPolygon grenze;
 
   /* --------------- transient ----------------------------*/

@@ -39,7 +39,7 @@ public class Flaeche implements Serializable {
   /**
    * Stadtteilgrenze
    */
-  @Type(type = "org.hibernatespatial.GeometryUserType")
+  @Type(type = "org.hibernate.spatial.GeometryType")
   private MultiPolygon flaeche;
 
   @ManyToMany(mappedBy = "flaechen")

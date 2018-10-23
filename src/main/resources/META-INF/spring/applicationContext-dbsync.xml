@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:aop="http://www.springframework.org/schema/aop"
-	xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:jee="http://www.springframework.org/schema/jee"
-	xmlns:tx="http://www.springframework.org/schema/tx"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:p="http://www.springframework.org/schema/p"
-	xsi:schemaLocation="
-	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
-	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
-	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
-	http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.5.xsd
-	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:jee="http://www.springframework.org/schema/jee"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="
+	       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+	       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+	       http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.5.xsd
+	       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+       ">
 
-    <!-- <context:property-placeholder location="classpath*:settings.properties"/>-->
+  <!-- <context:property-placeholder location="classpath*:settings.properties"/>-->
 
-
-	<bean class="de.fraunhofer.igd.klarschiff.service.dbsync.DbSyncService" id="dbSyncService" 
- 		p:backendDbHost="${database.host}"
-		p:backendDbPort="${database.port}"
-		p:backendDbSchema="${database.schema}"
-		p:backendDbDbName="${database.dbname}"
-		p:backendDbUsername="${database.username}"
-		p:backendDbPassword="${database.password}"
-	/>
+  <bean class="de.fraunhofer.igd.klarschiff.service.dbsync.DbSyncService" id="dbSyncService" 
+        p:backendDbHost="${database.host}"
+        p:backendDbPort="${database.port}"
+        p:backendDbSchema="${database.schema}"
+        p:backendDbDbName="${database.dbname}"
+        p:backendDbUsername="${database.username}"
+        p:backendDbPassword="${database.password}"
+  />
 </beans>

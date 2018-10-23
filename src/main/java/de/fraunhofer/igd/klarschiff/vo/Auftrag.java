@@ -40,7 +40,6 @@ public class Auftrag implements Serializable {
   /**
    * Team für den Auftrag
    */
-  @Enumerated(EnumType.STRING)
   private String team;
 
   /**

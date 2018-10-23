@@ -153,11 +153,8 @@ public class JobsService {
   public void archivVorgaenge() {
     archivVorgaengeByTyp(monthsToArchivProbleme, EnumVorgangTyp.problem);
     archivVorgaengeByTyp(monthsToArchivIdeen, EnumVorgangTyp.idee);
-    System.out.println("removeAuthorEmailFromArchiv: " + removeAuthorEmailFromArchiv);
     if (removeAuthorEmailFromArchiv) {
-      System.out.println("removeAuthorEmailFromArchivReplacement: " + removeAuthorEmailFromArchivReplacement);
       for (Vorgang vorgang : vorgangDao.findArchivVorgangWithEmail(removeAuthorEmailFromArchivReplacement)) {
-        System.out.println("vorgang: " + vorgang.getId() + " - " + vorgang.getAutorEmail());
         vorgang.setAutorEmail(removeAuthorEmailFromArchivReplacement);
         vorgangDao.merge(vorgang);
       }
