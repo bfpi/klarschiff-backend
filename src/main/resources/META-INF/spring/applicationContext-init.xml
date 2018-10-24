@@ -1,23 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-  xmlns:aop="http://www.springframework.org/schema/aop"
-  xmlns:context="http://www.springframework.org/schema/context"
-  xmlns:jee="http://www.springframework.org/schema/jee"
-  xmlns:tx="http://www.springframework.org/schema/tx"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns:p="http://www.springframework.org/schema/p"
-  xsi:schemaLocation="
-  http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
-  http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
-  http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
-  http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.5.xsd
-  http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:jee="http://www.springframework.org/schema/jee"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="
+         http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+         http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.5.xsd
+         http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+       ">
 
 
   <bean class="de.fraunhofer.igd.klarschiff.service.init.InitializeService" id="initializeService"
-    p:enable="true"
-    >
-
+        p:enable="true">
     <property name="initObjectList">
       <list>
         <ref bean="statusKommentarVorlage_01"/>
@@ -31,22 +30,34 @@
   </bean>
 
   <bean id="statusKommentarVorlage_01" class="de.fraunhofer.igd.klarschiff.vo.StatusKommentarVorlage" lazy-init="true" p:titel="Eigentum">
-    <property name="text"><value><![CDATA[Die Fläche befindet sich nicht im Eigentum der Stadt.]]></value></property>
+    <property name="text">
+      <value><![CDATA[Die Fläche befindet sich nicht im Eigentum der Stadt.]]></value>
+    </property>
   </bean>
   <bean id="statusKommentarVorlage_02" class="de.fraunhofer.igd.klarschiff.vo.StatusKommentarVorlage" lazy-init="true" p:titel="Gehölzschnitt">
-    <property name="text"><value><![CDATA[Schnitt- und Fällmaßnahmen können gemäß Bundesnaturschutzgesetz (§ 39 Abs. 5) nur vom 01. Oktober bis 28. Februar durchgeführt werden. Der Hinweis ist vorgemerkt.]]></value></property>
+    <property name="text">
+      <value><![CDATA[Schnitt- und Fällmaßnahmen können gemäß Bundesnaturschutzgesetz (§ 39 Abs. 5) nur vom 01. Oktober bis 28. Februar durchgeführt werden. Der Hinweis ist vorgemerkt.]]></value>
+    </property>
   </bean>
   <bean id="statusKommentarVorlage_03" class="de.fraunhofer.igd.klarschiff.vo.StatusKommentarVorlage" lazy-init="true" p:titel="Lichtraumprofil">
-    <property name="text"><value><![CDATA[Die Einschränkung der Durchgangsbreite ist noch nicht wesentlich. Derzeit besteht kein Handlungsbedarf.]]></value></property>
+    <property name="text">
+      <value><![CDATA[Die Einschränkung der Durchgangsbreite ist noch nicht wesentlich. Derzeit besteht kein Handlungsbedarf.]]></value>
+    </property>
   </bean>
   <bean id="statusKommentarVorlage_04" class="de.fraunhofer.igd.klarschiff.vo.StatusKommentarVorlage" lazy-init="true" p:titel="Pflegeerfordernis">
-    <property name="text"><value><![CDATA[Ihr Hinweis ist berechtigt. Er wird in die turnusmäßige Pflege/Säuberung eingeordnet.]]></value></property>
+    <property name="text">
+      <value><![CDATA[Ihr Hinweis ist berechtigt. Er wird in die turnusmäßige Pflege/Säuberung eingeordnet.]]></value>
+    </property>
   </bean>
   <bean id="statusKommentarVorlage_05" class="de.fraunhofer.igd.klarschiff.vo.StatusKommentarVorlage" lazy-init="true" p:titel="Pflegezustand">
-    <property name="text"><value><![CDATA[Ihr Hinweis ist nicht berechtigt. Der Pflegezustand/Reinigungszustand entspricht der Pflegestandard-Einstufung.]]></value></property>
+    <property name="text">
+      <value><![CDATA[Ihr Hinweis ist nicht berechtigt. Der Pflegezustand/Reinigungszustand entspricht der Pflegestandard-Einstufung.]]></value>
+    </property>
   </bean>
   <bean id="statusKommentarVorlage_06" class="de.fraunhofer.igd.klarschiff.vo.StatusKommentarVorlage" lazy-init="true" p:titel="Unmut">
-    <property name="text"><value><![CDATA[Ihr Hinweis zielt auf übergeordnete kommunalpolitische Belange ab. Eine Bearbeitung ist uns mittels dieses Mediums nicht möglich.]]></value></property>
+    <property name="text">
+      <value><![CDATA[Ihr Hinweis zielt auf übergeordnete kommunalpolitische Belange ab. Eine Bearbeitung ist uns mittels dieses Mediums nicht möglich.]]></value>
+    </property>
   </bean>
 
 </beans>

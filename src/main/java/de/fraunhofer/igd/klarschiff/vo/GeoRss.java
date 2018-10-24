@@ -32,7 +32,7 @@ public class GeoRss {
   /**
    * überwachte Fläche
    */
-  @Type(type = "org.hibernatespatial.GeometryUserType")
+  @Type(type = "org.hibernate.spatial.GeometryType")
   private MultiPolygon ovi;
 
   /**

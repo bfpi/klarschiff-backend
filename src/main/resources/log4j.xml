@@ -2,42 +2,56 @@
 <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
 
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
-
   <appender name="STDOUT" class="org.apache.log4j.ConsoleAppender"> 
     <layout class="org.apache.log4j.PatternLayout"> 
       <param name="ConversionPattern" value="%d [%t] %-5p %c - %m%n"/>
     </layout>
     <filter class="de.fraunhofer.igd.klarschiff.util.Log4jNdcFilter"/>
   </appender>
-<!-- 
-  <appender name="FILE" class="org.apache.log4j.RollingFileAppender"> 
-    <layout class="org.apache.log4j.PatternLayout"> 
-      <param name="ConversionPattern" value="%d [%t] %-5p %c - %m%n"/>
-    </layout>
-    <param name="File" value="klarschiff.backend.log"/>
-    <param name="MaxFileSize" value="100KB"/>
-    <param name="MaxBackupIndex" value="1"/>
-    <filter class="de.fraunhofer.igd.klarschiff.util.Log4jNdcFilter"/>
-  </appender>
- -->
+  <!--
+   <appender name="FILE" class="org.apache.log4j.RollingFileAppender">
+     <layout class="org.apache.log4j.PatternLayout">
+       <param name="ConversionPattern" value="%d [%t] %-5p %c - %m%n"/>
+     </layout>
+     <param name="File" value="klarschiff.backend.log"/>
+     <param name="MaxFileSize" value="100KB"/>
+     <param name="MaxBackupIndex" value="1"/>
+     <filter class="de.fraunhofer.igd.klarschiff.util.Log4jNdcFilter"/>
+   </appender>
+  -->
 
-  <logger name="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping"><level value="ERROR"/></logger>
-  <logger name="org.apache.directory.server"><level value="ERROR"/></logger>
-  <logger name="org.apache.directory.server.schema.registries.DefaultAttributeTypeRegistry"><level value="FATAL"/></logger>
-  <logger name="org.hibernate.mapping.RootClass"><level value="ERROR"/></logger>
-  <logger name="klarschiff.backend"><level value="INFO"/></logger>
+  <logger name="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">
+    <level value="ERROR"/>
+  </logger>
+  <logger name="org.apache.directory.server">
+    <level value="ERROR"/>
+  </logger>
+  <logger name="org.apache.directory.server.schema.registries.DefaultAttributeTypeRegistry">
+    <level value="FATAL"/>
+  </logger>
+  <logger name="org.hibernate.mapping.RootClass">
+    <level value="ERROR"/>
+  </logger>
+  <logger name="klarschiff.backend">
+    <level value="INFO"/>
+  </logger>
+  <logger name="de.fraunhofer.igd.klarschiff.service.classification">
+    <level value="WARN"/>
+  </logger>
+  <logger name="de.fraunhofer.igd.klarschiff.service.classification.ClassificationService">
+    <level value="WARN"/>
+  </logger>
+  <logger name="de.fraunhofer.igd.klarschiff.service.geo.GeoService">
+    <level value="INFO"/>
+  </logger>
 
-  <logger name="de.fraunhofer.igd.klarschiff.service.classification"><level value="WARN"/></logger>
-  <logger name="de.fraunhofer.igd.klarschiff.service.classification.ClassificationService"><level value="WARN"/></logger>
-  <logger name="de.fraunhofer.igd.klarschiff.service.geo.GeoService"><level value="INFO"/></logger>
-
-<!-- 
-  <logger name="de.fraunhofer.igd.klarschiff.service.security.SecurityServiceLdap"><level value="DEBUG"/></logger>
-  <logger name="de.fraunhofer.igd.klarschiff.service.security.LdapTemplate"><level value="DEBUG"/></logger>
-  <logger name="de.fraunhofer.igd.klarschiff.dao.HqlQueryHelper" level="DEBUG"/>
-  <logger name="de.fraunhofer.igd.klarschiff.service.security.SecurityServiceLdap" level="DEBUG"/>
-  <logger name="de.fraunhofer.igd.klarschiff.service.mail" level="DEBUG"/>
- -->
+  <!--
+   <logger name="de.fraunhofer.igd.klarschiff.service.security.SecurityServiceLdap"><level value="DEBUG"/></logger>
+   <logger name="de.fraunhofer.igd.klarschiff.service.security.LdapTemplate"><level value="DEBUG"/></logger>
+   <logger name="de.fraunhofer.igd.klarschiff.dao.HqlQueryHelper" level="DEBUG"/>
+   <logger name="de.fraunhofer.igd.klarschiff.service.security.SecurityServiceLdap" level="DEBUG"/>
+   <logger name="de.fraunhofer.igd.klarschiff.service.mail" level="DEBUG"/>
+  -->
 
   <root>
     <priority value ="WARN"/>

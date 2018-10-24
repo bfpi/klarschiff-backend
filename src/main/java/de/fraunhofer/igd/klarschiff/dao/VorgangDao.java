@@ -54,7 +54,7 @@ public class VorgangDao {
   final static String CLASSIFIER_TRAIN_QUERY = "FROM Vorgang a, Vorgang b "
     + " WHERE a.kategorie = b.kategorie AND a.version <= b.version AND "
     + " a.zustaendigkeitStatus = 'akzeptiert' AND b.zustaendigkeitStatus = 'akzeptiert' "
-    + "GROUP BY a.id HAVING count(*) <= 10)";
+    + " GROUP BY a.id HAVING count(*) <= 10";
 
   @PersistenceContext
   EntityManager em;
@@ -805,7 +805,7 @@ public class VorgangDao {
   public List<Object[]> getVorgaenge(VorgangSuchenCommand cmd) {
     StringBuilder sql = new StringBuilder();
     if (cmd.getJustTimes()) {
-      sql.append("SELECT vo.id, vo.version, vo.adresse ");
+      sql.append("SELECT vo.id, vo.version, vo.adresse, vo.autorEmail ");
     } else {
       sql.append("SELECT vo.*,")
         .append(" verlauf1.datum AS aenderungsdatum,")
