@@ -22,6 +22,7 @@ import de.fraunhofer.igd.klarschiff.vo.EnumFreigabeStatus;
 import de.fraunhofer.igd.klarschiff.vo.EnumVerlaufTyp;
 import de.fraunhofer.igd.klarschiff.vo.Verlauf;
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
+import org.springframework.security.core.codec.Base64;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 /**
