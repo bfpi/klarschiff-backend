@@ -23,6 +23,7 @@ import de.fraunhofer.igd.klarschiff.vo.EnumVorgangStatus;
 import de.fraunhofer.igd.klarschiff.vo.EnumVorgangTyp;
 import de.fraunhofer.igd.klarschiff.vo.EnumZustaendigkeitStatus;
 import de.fraunhofer.igd.klarschiff.vo.Foto;
+import de.fraunhofer.igd.klarschiff.vo.Kategorie;
 import de.fraunhofer.igd.klarschiff.vo.Missbrauchsmeldung;
 import de.fraunhofer.igd.klarschiff.vo.StadtteilGrenze;
 import de.fraunhofer.igd.klarschiff.vo.StatusKommentarVorlage;
@@ -67,6 +68,9 @@ public class VorgangDao {
 
   @Autowired
   VerlaufDao verlaufDao;
+
+  @Autowired
+  KategorieDao kategorieDao;
 
   /**
    * Das Objekt wird in der DB gespeichert. Bei Vorgängen wird geprüft, ob diese sich geändert
@@ -626,6 +630,13 @@ public class VorgangDao {
     if (!cmd.getShowTips()) {
       conds.add("vo.typ <> 'tipp'");
     }
+    // Nur Vorgänge zurückgeben, deren Kategorie nicht gelöscht ist
+    List<Long>kategorieIds = new ArrayList<>();
+    for (Kategorie kategorie : kategorieDao.getAllKategorien()) {
+      kategorieIds.add(kategorie.getId());
+    }
+    conds.add("vo.kategorie IN (" + StringUtils.join(kategorieIds, ',') + ")");
+
     // Unterstützer
     sql.append(" LEFT JOIN (SELECT vorgang, COUNT(DISTINCT id) FROM klarschiff_unterstuetzer")
       .append(" WHERE datum_bestaetigung IS NOT NULL GROUP BY vorgang) un")
