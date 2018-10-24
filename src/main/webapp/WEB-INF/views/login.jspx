@@ -20,12 +20,12 @@
 		<c:url value='/resources/j_spring_security_check' var="form_url"/>
 		<form action="${form_url}" method="post">
 			<div>
-			    <label for="username" class="${loginError ? 'error' : ''}" style="color:black;font-size:12px;">Benutzername:</label>
-			    <input id="username" type='text' name='username' />
+			    <label for="j_username" class="${loginError ? 'error' : ''}" style="color:black;font-size:12px;">Benutzername:</label>
+			    <input id="j_username" type='text' name='j_username' />
 			</div>
 			<div>
-			    <label for="password" class="${loginError ? 'error' : ''}" style="color:black;font-size:12px;">Passwort:</label>
-			    <input id="password" type='password' name='password' />
+			    <label for="j_password" class="${loginError ? 'error' : ''}" style="color:black;font-size:12px;">Passwort:</label>
+			    <input id="j_password" type='password' name='j_password' />
 			</div>
 			<!--<div>
 			    <label for="j_rememberme" class="${loginError ? 'error' : ''}" style="color:black;font-size:12px;">angemeldet bleiben:</label>

@@ -14,6 +14,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Example;
+import org.hibernate.impl.SessionImpl;
 import org.hibernate.metadata.ClassMetadata;
 import org.springframework.dao.DataAccessException;
 
@@ -26,7 +27,6 @@ import de.fraunhofer.igd.klarschiff.vo.extra.EnumVerlaufTyp;
 import de.fraunhofer.igd.klarschiff.vo.extra.EnumVorgangStatus;
 import de.fraunhofer.igd.klarschiff.vo.extra.EnumVorgangTyp;
 import de.fraunhofer.igd.klarschiff.vo.extra.EnumZustaendigkeitStatus;
-import org.hibernate.impl.SessionImpl;
 
 /**
  * Thread in dem die Initialisierung vorgenommen wird.

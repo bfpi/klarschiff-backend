@@ -21,6 +21,11 @@ import de.fraunhofer.igd.klarschiff.vo.Trashmail;
  */
 public class ApplicationConversionServiceFactoryBean extends FormattingConversionServiceFactoryBean {
 
+  @Override
+  protected void installFormatters(FormatterRegistry registry) {
+    super.installFormatters(registry);
+  }
+
   Converter<Trashmail, String> getTrashmail2StringConverter() {
     return new Converter<Trashmail, String>() {
       public String convert(Trashmail source) {
