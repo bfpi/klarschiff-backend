@@ -22,7 +22,7 @@
     <postgis.version>1.3.3</postgis.version>
     <poi.version>3.17</poi.version>
     <apacheds.version>2.0.0.AM25</apacheds.version>
-    <apache-tiles.version>3.0.8</apache-tiles.version>
+    <apache-tiles.version>2.2.1</apache-tiles.version>
     <jts.version>1.16.0</jts.version>
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
