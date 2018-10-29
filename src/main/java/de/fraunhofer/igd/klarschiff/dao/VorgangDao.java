@@ -536,7 +536,9 @@ public class VorgangDao {
         boolean filter_auftrag_datum = true;
         if (!StringUtils.isBlank(cmd.getAuftragTeam())) {
           if (cmd_negation != null && cmd_negation.length() > 0 && cmd_negation.contains("agency_responsible")) {
-            conds.add("auftrag.vorgang is null OR auftrag.team != '" + cmd.getAuftragTeam() + "'");
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date d = new Date();
+            conds.add("auftrag.vorgang IS NULL OR auftrag.team != '" + cmd.getAuftragTeam() + "' OR auftrag.datum != '" + sdf.format(d) + "'");
             filter_auftrag_datum = false;
           } else {
             conds.add("auftrag.team = '" + cmd.getAuftragTeam() + "'");
