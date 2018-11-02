@@ -102,8 +102,8 @@ public class KategorieDao {
    */
   public List<Kategorie> getAllKategorien() {
     StringBuilder sql = new StringBuilder();
-    sql.append("SELECT o FROM Kategorie o LEFT JOIN o.parent op ");
-    sql.append("WHERE op.geloescht = false AND o.geloescht = false AND (op.typ <> 'tipp' OR o.typ <> 'tipp') ");
+    sql.append("SELECT o FROM Kategorie o LEFT JOIN o.parent op on op.geloescht = false ");
+    sql.append("WHERE o.geloescht = false AND (op.typ <> 'tipp' OR o.typ <> 'tipp') ");
     sql.append("ORDER BY op.name, o.name");
     return entityManager.createQuery(sql.toString(), Kategorie.class).getResultList();
   }
