@@ -758,6 +758,8 @@ public class BackendController {
       vorgangDao.merge(unterstuetzer, false);
 
       Vorgang vorgang = unterstuetzer.getVorgang();
+      vorgang.setVersion(new Date());
+      vorgangDao.merge(vorgang);
       model.put("message", "Die Unterstützung wurde erfolgreich aufgenommen.");
       model.put("vorgangId", String.valueOf(vorgang.getId()));
 
@@ -1170,6 +1172,9 @@ public class BackendController {
       missbrauchsmeldung.getVorgang().setAdresse(missbrauchsmeldung.getVorgang().getAdresse());
 
       vorgangDao.merge(missbrauchsmeldung, false);
+      Vorgang vorgang = missbrauchsmeldung.getVorgang();
+      vorgang.setVersion(new Date());
+      vorgangDao.merge(vorgang);
 
       model.put("message", "Die Missbrauchsmeldung wurde erfolgreich aufgenommen und die entsprechende Meldung damit deaktiviert.");
       return "backend/bestaetigungOk";
