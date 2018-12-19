@@ -86,7 +86,7 @@
       <snapshots>
         <enabled>true</enabled>
       </snapshots>
-      <url>http://repo.opengeo.org/</url>
+      <url>https://repo.boundlessgeo.com/main/</url>
     </repository>
   </repositories>
   <pluginRepositories>
