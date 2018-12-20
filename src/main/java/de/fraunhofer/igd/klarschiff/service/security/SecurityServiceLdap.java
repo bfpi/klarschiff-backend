@@ -96,7 +96,7 @@ public class SecurityServiceLdap {
         List<String> newUser = new ArrayList<String>();
         for (String user : role.getUser()) {
           for (User ldapUser : ldapUsers) {
-            if (user.equals(ldapUser.getId())) {
+            if (user.toLowerCase().equals(ldapUser.getId().toLowerCase())) {
               newUser.add(ldapUser.getName() + " (" + ldapUser.getId() + ")");
               break;
             }
