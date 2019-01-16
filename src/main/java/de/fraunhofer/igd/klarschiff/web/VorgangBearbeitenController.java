@@ -14,6 +14,8 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
@@ -305,18 +307,11 @@ public class VorgangBearbeitenController {
     updateKommentarInModel(model, cmd);
     updateLobHinweiseKritikInModel(model, cmd);
     updateZustaendigkeitStatusInModel(model, cmd);
-
-    if (cmd.getVorgang().getKategorie().getD3() != null) {
-      if (d3tools.documentExists(cmd.getVorgang())) {
-        model.put("d3action", "open");
-      } else {
-        model.put("d3action", "create");
-        model.put("d3createLink", d3tools.getCreateLinkWithoutParameters(cmd.getVorgang()));
-        model.put("d3getKsId", d3tools.getParameterKsId(cmd.getVorgang()));
-        model.put("d3getKsUser", d3tools.getParameterKsUser(cmd.getVorgang()));
-        model.put("d3getKsAddress", d3tools.getParameterKsAddress(cmd.getVorgang()));
-      }
-    }
+    
+    model.put("d3createLink", d3tools.getCreateLinkWithoutParameters(cmd.getVorgang()));
+    model.put("d3getKsId", d3tools.getParameterKsId(cmd.getVorgang()));
+    model.put("d3getKsUser", d3tools.getParameterKsUser(cmd.getVorgang()));
+    model.put("d3getKsAddress", d3tools.getParameterKsAddress(cmd.getVorgang()));
 
     return (cmd.getVorgang().getStatus() == EnumVorgangStatus.gemeldet) ? "vorgang/bearbeitenDisabled" : "vorgang/bearbeiten";
   }
@@ -347,6 +342,25 @@ public class VorgangBearbeitenController {
     IOUtils.copy(targetStream, response.getOutputStream());
     response.setHeader("Content-Disposition", "attachment; filename=\"" + filename + "\"");
     response.flushBuffer();
+  }
+
+  /**
+   * Die Methode verarbeitet den GET-Request auf der URL <code>/vorgang/{id}/d3exists</code><br>
+   * Seitenbeschreibung: Es wird <code>HttpStatus.OK</code> oder <code>HttpStatus.FORBIDDEN</code>
+   * zurückgeliefert, je nach dem, ob bereits eine d.3-Akte zum Vorgang existiert oder nicht.
+   *
+   * @param id Vorgangs-ID
+   * @param request Request
+   * @return Wenn bereits eine d.3-Akte zum Vorgang existiert, wird <code>HttpStatus.OK</code>,
+   * ansonsten <code>HttpStatus.FORBIDDEN</code> zurückgeliefert.
+   */
+  @RequestMapping(value = "/vorgang/{id}/d3exists", method = RequestMethod.GET)
+  public ResponseEntity<String> d3exists(@PathVariable("id") Long id, HttpServletRequest request) {
+    Vorgang vorgang = getVorgang(id);
+    if (d3tools.documentExists(vorgang))
+      return new ResponseEntity<String>(HttpStatus.OK);
+    else
+      return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
   }
 
   /**

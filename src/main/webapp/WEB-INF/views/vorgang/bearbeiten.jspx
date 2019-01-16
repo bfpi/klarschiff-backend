@@ -632,34 +632,33 @@
 				<util:ddpanel name="prioritaet"/>
 
         <c:if test="${cmd.vorgang.kategorie.d3 != null}">
-          <!-- D3-Akte -->
+          <!-- d.3-Akte -->
           <div class="fieldset" id="d3panel">
             <div class="fieldsettitle closepanel" id="d3tab"><div style="width:100%; height:15px;">d.3</div></div>
             <div id="d3content">
-              <c:if test="${d3action == 'open'}">
-                <c:set var="form_url" value="${pageContext.request.contextPath}/vorgang/${cmd.vorgang.id}/d3open"/>
-                <form:form method="GET" action="${form_url}" target="_blank">
-                  <div class="label">
-                    <input type="submit" value="d.3-Akte"/>
-                  </div>
-                </form:form>
-              </c:if>
-              <c:if test="${d3action == 'create'}">
-                <c:set var="form_url" value="${d3createLink}"/>
-                <c:set var="ks_id" value="${d3getKsId}"/>
-                <c:set var="ks_user" value="${d3getKsUser}"/>
-                <c:set var="ks_address" value="${d3getKsAddress}"/>
-                <form:form method="GET" action="${form_url}" target="_blank">
-                  <div class="label">
-                    <input type="hidden" name="ks_id" value="${d3getKsId}"/>
-                    <input type="hidden" name="ks_user" value="${d3getKsUser}"/>
-                    <input type="hidden" name="ks_address" value="${d3getKsAddress}"/>
-                    <input type="submit" value="d.3-Akte"/>
-                  </div>
-                </form:form>
-              </c:if>
+              <div class="label">
+                <input id="d3button" type="button" value="d.3-Akte"/>
+              </div>
             </div>
           </div>
+          <script type="text/javascript">
+            $(document).on('click', '#d3button', function() {
+              var d3exists = false;
+              $.ajax({
+                url: "${pageContext.request.contextPath}/vorgang/${cmd.vorgang.id}/d3exists",
+                type: 'GET',
+                complete: function(e){
+                  if (e.status === 200)
+                    d3exists = true;
+                },
+                async: false
+              });
+              if (d3exists == true)
+                window.open("${pageContext.request.contextPath}/vorgang/${cmd.vorgang.id}/d3open");
+              else
+                window.open("${d3createLink}?ks_id=${d3getKsId}&amp;ks_user=${d3getKsUser}&amp;ks_address=${d3getKsAddress}");
+            });
+          </script>
           <util:ddpanel name="d3"/>
         </c:if>
 
