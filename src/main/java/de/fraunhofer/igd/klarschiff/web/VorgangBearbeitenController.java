@@ -334,14 +334,20 @@ public class VorgangBearbeitenController {
 
     Vorgang vorgang = getVorgang(id);
     String documentId = d3tools.getDocumentId(vorgang);
-
-    String filename = documentId + " (" + documentId + ").d3l";
-
-    String initialString = "idlist\r\n" + documentId + "\r\n\r\n";
-    InputStream targetStream = new ByteArrayInputStream(initialString.getBytes());
-    IOUtils.copy(targetStream, response.getOutputStream());
-    response.setHeader("Content-Disposition", "attachment; filename=\"" + filename + "\"");
-    response.flushBuffer();
+    if (documentId != null) {
+      String filename = documentId + " (" + documentId + ").d3l";
+      String initialString = "idlist\r\n" + documentId + "\r\n\r\n";
+      InputStream targetStream = new ByteArrayInputStream(initialString.getBytes());
+      IOUtils.copy(targetStream, response.getOutputStream());
+      response.setHeader("Content-Disposition", "attachment; filename=\"" + filename + "\"");
+      response.flushBuffer();
+    } else {
+      String errorString = "Die d.3-Akte ist zwar vorhanden, jedoch liefert die d.3-API nicht deren Aktennummer zurück, sodass die Akte nicht geöffnet werden kann.";
+      InputStream targetStream = new ByteArrayInputStream(errorString.getBytes());
+      IOUtils.copy(targetStream, response.getOutputStream());
+      response.setContentType("text/plain;charset=UTF-8");
+      response.flushBuffer();
+    }
   }
 
   /**

@@ -41,7 +41,8 @@ public class D3Tools {
   public String getDocumentId(Vorgang vorgang) {
     if (documentExists(vorgang)) {
       Document document = executeRequest(vorgang.getD3ShowUrl());
-      return document.getRootElement().getValue().trim();
+      if (document != null)
+        return document.getRootElement().getValue().trim();
     }
     return null;
   }
