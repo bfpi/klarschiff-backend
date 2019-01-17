@@ -363,10 +363,13 @@ public class VorgangBearbeitenController {
   @RequestMapping(value = "/vorgang/{id}/d3exists", method = RequestMethod.GET)
   public ResponseEntity<String> d3exists(@PathVariable("id") Long id, HttpServletRequest request) {
     Vorgang vorgang = getVorgang(id);
-    if (d3tools.documentExists(vorgang))
+    if (d3tools.documentExists(vorgang)) {
+      d3tools.resetSearch(vorgang);
       return new ResponseEntity<String>(HttpStatus.OK);
-    else
+    } else {
+      d3tools.resetSearch(vorgang);
       return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
+    }
   }
 
   /**

@@ -38,9 +38,14 @@ public class D3Tools {
     return (document != null && document.getRootElement().getValue().trim().equals("1"));
   }
 
+  public void resetSearch(Vorgang vorgang) {
+    executeRequest(vorgang.getD3ResetSearchUrl());
+  }
+
   public String getDocumentId(Vorgang vorgang) {
     if (documentExists(vorgang)) {
       Document document = executeRequest(vorgang.getD3ShowUrl());
+      resetSearch(vorgang);
       if (document != null)
         return document.getRootElement().getValue().trim();
     }

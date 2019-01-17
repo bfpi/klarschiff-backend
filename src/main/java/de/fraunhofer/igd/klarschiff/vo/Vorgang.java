@@ -840,6 +840,12 @@ public class Vorgang implements Serializable {
     return ret;
   }
 
+  public String getD3ResetSearchUrl() {
+    String ret = settingsService.getPropertyValue("d3.request.akte.reset_search");
+    ret = ret.replace("%vorgang_id%", getId().toString());
+    return ret;
+  }
+
   public String getD3ShowUrl() {
     String ret = settingsService.getPropertyValue("d3.request.akte.show");
     ret = ret.replace("%vorgang_id%", getId().toString());

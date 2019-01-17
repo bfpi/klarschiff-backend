@@ -280,6 +280,8 @@ Konfigurationen zur Anzeige von Karten im Backend
     - URL des d.3 API-Endpunkts
   - `d3.request.akte.check_existence`:
     - Pfad der API-Funktion zur Akten-/Dokumentensuche
+  - `d3.request.akte.reset_search`:
+    - Pfad der API-Funktion zum Zurücksetzen der Akten-/Dokumentensuche
   - `d3.request.akte.show`:
     - Pfad der API-Funktion zum Abrufen der Akten-/Dokumenten-ID
   - `d3.proxy.host`:
