@@ -844,11 +844,13 @@ public class VorgangDao {
     sql = addOrder(cmd, sql);
 
     Session sess = ((Session) em.getDelegate());
+    boolean opened = false;
     if(!sess.isOpen()) {
       sess = sess.getSessionFactory().openSession();
+      opened = true;
     }
 
-    return sess
+    List<Object[]> result = sess
       .createSQLQuery(sql.toString())
       .addEntity("vo", Vorgang.class)
       .addScalar("aenderungsdatum", StandardBasicTypes.DATE)
@@ -856,6 +858,11 @@ public class VorgangDao {
       .addScalar("missbrauchsmeldung", StandardBasicTypes.LONG)
       .addScalar("missbrauchsmeldung_vorhanden", StandardBasicTypes.NUMERIC_BOOLEAN)
       .list();
+
+    if(opened) {
+      sess.close();
+    }
+    return result;
   }
 
   /**
