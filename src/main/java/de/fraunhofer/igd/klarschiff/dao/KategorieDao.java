@@ -36,7 +36,7 @@ public class KategorieDao {
    */
   public List<Kategorie> findUnterKategorien() {
     return entityManager.createQuery("SELECT o FROM Kategorie o JOIN o.parent op " +
-      " WHERE op.geloescht = false AND o.parent IS NOT NULL ORDER BY o.name",
+      " WHERE op.geloescht = false AND o.geloescht = false AND o.parent IS NOT NULL ORDER BY o.name",
       Kategorie.class).getResultList();
   }
 
@@ -83,7 +83,7 @@ public class KategorieDao {
   public List<Kategorie> getKategorien(boolean showTipp) {
     StringBuilder sql = new StringBuilder();
     sql.append("SELECT o FROM Kategorie o JOIN o.parent op ");
-    sql.append("WHERE op.geloescht = false AND o.parent IS NOT NULL ");
+    sql.append("WHERE op.geloescht = false AND o.geloescht = false AND o.parent IS NOT NULL ");
 
     if (!showTipp) {
       sql.append("AND op.typ <> 'tipp' ");

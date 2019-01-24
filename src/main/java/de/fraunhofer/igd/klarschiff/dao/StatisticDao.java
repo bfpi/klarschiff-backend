@@ -61,7 +61,8 @@ public class StatisticDao {
   @SuppressWarnings("unchecked")
   public List<Vorgang> findVorgaengeOffenNichtAkzeptiert(Date datum) {
     HqlQueryHelper query = (new HqlQueryHelper(securityService)).addSelectAttribute("vo")
-      .addFromTables("Vorgang vo")
+      .addFromTables("Vorgang vo JOIN vo.kategorie k JOIN k.parent kp ")
+      .addWhereConditions("(kp.geloescht = false AND k.geloescht = false)")
       .addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert = FALSE)")
       .addWhereConditions("vo.status = 'offen'")
       .addWhereConditions("vo.zustaendigkeitStatus != 'akzeptiert'")
@@ -81,7 +82,8 @@ public class StatisticDao {
   @SuppressWarnings("unchecked")
   public List<Vorgang> findVorgaengeInbearbeitungOhneStatusKommentar(Date datum) {
     HqlQueryHelper query = (new HqlQueryHelper(securityService)).addSelectAttribute("vo")
-      .addFromTables("Vorgang vo")
+      .addFromTables("Vorgang vo JOIN vo.kategorie k JOIN k.parent kp ")
+      .addWhereConditions("(kp.geloescht = false AND k.geloescht = false)")
       .addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert = FALSE)")
       .addWhereConditions("vo.status = 'inBearbeitung'")
       .addWhereConditions("(vo.statusKommentar IS NULL OR vo.statusKommentar = '')")
@@ -101,7 +103,8 @@ public class StatisticDao {
   @SuppressWarnings("unchecked")
   public List<Vorgang> findVorgaengeIdeeOffenOhneUnterstuetzung(Date datum) {
     HqlQueryHelper query = (new HqlQueryHelper(securityService)).addSelectAttribute("vo")
-      .addFromTables("Vorgang vo JOIN vo.verlauf ve")
+      .addFromTables("Vorgang vo JOIN vo.verlauf ve JOIN vo.kategorie k JOIN k.parent kp ")
+      .addWhereConditions("(kp.geloescht = false AND k.geloescht = false)")
       .addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert = FALSE)")
       .addWhereConditions("vo.typ = 'idee'")
       .addWhereConditions("vo.status = 'offen'")
@@ -123,7 +126,8 @@ public class StatisticDao {
   @SuppressWarnings("unchecked")
   public List<Vorgang> findVorgaengeNichtLoesbarOhneStatuskommentar() {
     HqlQueryHelper query = (new HqlQueryHelper(securityService)).addSelectAttribute("vo")
-      .addFromTables("Vorgang vo")
+      .addFromTables("Vorgang vo JOIN vo.kategorie k JOIN k.parent kp ")
+      .addWhereConditions("(kp.geloescht = false AND k.geloescht = false)")
       .addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert = FALSE)")
       .addWhereConditions("vo.status = 'nichtLoesbar'")
       .addWhereConditions("(vo.statusKommentar IS NULL OR vo.statusKommentar = '')")
@@ -141,7 +145,8 @@ public class StatisticDao {
   @SuppressWarnings("unchecked")
   public List<Vorgang> findVorgaengeNichtMehrOffenNichtAkzeptiert() {
     HqlQueryHelper query = (new HqlQueryHelper(securityService)).addSelectAttribute("vo")
-      .addFromTables("Vorgang vo")
+      .addFromTables("Vorgang vo JOIN vo.kategorie k JOIN k.parent kp ")
+      .addWhereConditions("(kp.geloescht = false AND k.geloescht = false)")
       .addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert = FALSE)")
       .addWhereConditions("vo.status NOT IN ('gemeldet','offen')")
       .addWhereConditions("vo.zustaendigkeitStatus != 'akzeptiert'")
@@ -159,11 +164,12 @@ public class StatisticDao {
   @SuppressWarnings("unchecked")
   public List<Vorgang> findVorgaengeOhneRedaktionelleFreigaben() {
     HqlQueryHelper query = (new HqlQueryHelper(securityService)).addSelectAttribute("vo")
-      .addFromTables("Vorgang vo")
+      .addFromTables("Vorgang vo JOIN vo.kategorie k JOIN k.parent kp ")
+      .addWhereConditions("(kp.geloescht = false AND k.geloescht = false)")
       .addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert = FALSE)")
       .addWhereConditions("vo.status IN ('offen', 'inBearbeitung', 'nichtLoesbar', 'geloest')")
       .addWhereConditions("vo.erstsichtungErfolgt = TRUE")
-      .addWhereConditions("((vo.beschreibung IS NOT NULL AND vo.beschreibung != '' AND (beschreibungFreigabeStatus IS NULL OR beschreibungFreigabeStatus = 'intern')) OR (vo.fotoThumb IS NOT NULL AND (fotoFreigabeStatus IS NULL OR fotoFreigabeStatus = 'intern')))")
+      .addWhereConditions("((vo.beschreibung IS NOT NULL AND vo.beschreibung != '' AND (vo.beschreibungFreigabeStatus IS NULL OR vo.beschreibungFreigabeStatus = 'intern')) OR (vo.fotoThumb IS NOT NULL AND (vo.fotoFreigabeStatus IS NULL OR vo.fotoFreigabeStatus = 'intern')))")
       .orderBy("vo.id");
     processZustaendigkeitDelegiertAn(query);
     return query.getResultList(entityManager);
@@ -179,7 +185,8 @@ public class StatisticDao {
   @SuppressWarnings("unchecked")
   public List<Object[]> getStatusVerteilung(boolean onlyCurrentZustaendigkeitDelegiertAn) {
     HqlQueryHelper query = new HqlQueryHelper(securityService)
-      .addFromTables("Vorgang vo")
+      .addFromTables("Vorgang vo JOIN vo.kategorie k JOIN k.parent kp ")
+      .addWhereConditions("(kp.geloescht = false AND k.geloescht = false)")
       .addSelectAttribute("vo.status")
       .addSelectAttribute("COUNT(vo.id)")
       .addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert = FALSE)")
@@ -223,7 +230,8 @@ public class StatisticDao {
   @SuppressWarnings("unchecked")
   public List<Vorgang> findNeuesteVorgaenge(int maxResult) {
     HqlQueryHelper query = (new HqlQueryHelper(securityService)).addSelectAttribute("vo")
-      .addFromTables("Vorgang vo")
+      .addFromTables("Vorgang vo JOIN vo.kategorie k JOIN k.parent kp ")
+      .addWhereConditions("(kp.geloescht = false AND k.geloescht = false)")
       .addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert = FALSE)")
       .addWhereConditions("vo.status IN ('offen', 'inBearbeitung', 'nichtLoesbar', 'geloest')")
       .orderBy("vo.prioritaetOrdinal DESC, vo.delegiertAn ASC, vo.zustaendigkeitStatus DESC, vo.erstsichtungErfolgt ASC, vo.id DESC");
@@ -242,7 +250,8 @@ public class StatisticDao {
   @SuppressWarnings("unchecked")
   public List<Vorgang> findEigeneVorgaenge(int maxResult, Date datum) {
     HqlQueryHelper query = (new HqlQueryHelper(securityService)).addSelectAttribute("vo")
-      .addFromTables("Verlauf ve JOIN ve.vorgang vo")
+      .addFromTables("Verlauf ve JOIN ve.vorgang vo JOIN vo.kategorie k JOIN k.parent kp ")
+      .addWhereConditions("(kp.geloescht = false AND k.geloescht = false)")
       .addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert = FALSE)")
       .addWhereConditions("ve.datum >= :datum").addParameter("datum", datum)
       .addWhereConditions("ve.typ IN (:typen)").addParameter("typen", Arrays.asList(EnumVerlaufTyp.relevantBeiLetztenAktivitaeten()))
@@ -268,7 +277,8 @@ public class StatisticDao {
       return new ArrayList<Vorgang>();
     }
     HqlQueryHelper query = (new HqlQueryHelper(securityService)).addSelectAttribute("vo")
-      .addFromTables("Vorgang vo")
+      .addFromTables("Vorgang vo JOIN vo.kategorie k JOIN k.parent kp ")
+      .addWhereConditions("(kp.geloescht = false AND k.geloescht = false)")
       .addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert = FALSE)")
       .addWhereConditions("vo.initialeAkzeptierteZustaendigkeit IN (:zustaendigkeit)").addParameter("zustaendigkeit", Role.toString(zustaendigkeiten))
       .addWhereConditions("vo.zustaendigkeit != vo.initialeAkzeptierteZustaendigkeit")
