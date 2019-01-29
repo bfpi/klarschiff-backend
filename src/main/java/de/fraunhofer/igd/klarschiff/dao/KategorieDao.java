@@ -115,7 +115,8 @@ public class KategorieDao {
    */
   @SuppressWarnings("unchecked")
   public List<Kategorie> findKategorienWithUntrainedVorgaengeForTrainClassificator() {
-    return entityManager.createQuery("SELECT k FROM Kategorie k WHERE id NOT IN ("
+    return entityManager.createQuery("SELECT k FROM Kategorie k LEFT JOIN k.parent kp WHERE "
+      + "(kp.geloescht = false AND k.geloescht = false) AND k.id NOT IN ("
       + "SELECT a.kategorie " + VorgangDao.CLASSIFIER_TRAIN_QUERY + ")", Kategorie.class).getResultList();
   }
 }

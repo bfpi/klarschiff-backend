@@ -53,7 +53,9 @@ import javax.persistence.Query;
 public class VorgangDao {
 
   final static String CLASSIFIER_TRAIN_QUERY = "FROM Vorgang a, Vorgang b "
-    + " WHERE a.kategorie = b.kategorie AND a.version <= b.version AND "
+    + " JOIN a.kategorie k JOIN k.parent kp "
+    + " WHERE (kp.geloescht = false AND k.geloescht = false) AND "
+    + " a.kategorie = b.kategorie AND a.version <= b.version AND "
     + " a.zustaendigkeitStatus = 'akzeptiert' AND b.zustaendigkeitStatus = 'akzeptiert' "
     + " GROUP BY a.id HAVING count(*) <= 10";
 
@@ -633,7 +635,7 @@ public class VorgangDao {
       conds.add("vo.typ <> 'tipp'");
     }
     // Nur Vorgänge zurückgeben, deren Kategorie nicht gelöscht ist
-    List<Long>kategorieIds = new ArrayList<>();
+    List<Long> kategorieIds = new ArrayList<>();
     for (Kategorie kategorie : kategorieDao.getAllKategorien()) {
       kategorieIds.add(kategorie.getId());
     }
@@ -845,7 +847,7 @@ public class VorgangDao {
 
     Session sess = ((Session) em.getDelegate());
     boolean opened = false;
-    if(!sess.isOpen()) {
+    if (!sess.isOpen()) {
       sess = sess.getSessionFactory().openSession();
       opened = true;
     }
@@ -859,7 +861,7 @@ public class VorgangDao {
       .addScalar("missbrauchsmeldung_vorhanden", StandardBasicTypes.NUMERIC_BOOLEAN)
       .list();
 
-    if(opened) {
+    if (opened) {
       sess.close();
     }
     return result;
@@ -1100,7 +1102,8 @@ public class VorgangDao {
   }
 
   /**
-   * Ermittelt alle Vorgänge, die archiviert sind und an denen die Author-Email nicht entfernt wurde.
+   * Ermittelt alle Vorgänge, die archiviert sind und an denen die Author-Email nicht entfernt
+   * wurde.
    *
    * @param replacement
    * @return Ergebnisliste mit Vorgängen
@@ -1172,13 +1175,12 @@ public class VorgangDao {
   }
 
   /**
-   * Ermittelt alle Fotos, die eingegangen sind, aber nach einem bestimmten Zeitraum
-   * noch nicht bestätigt wurden.
+   * Ermittelt alle Fotos, die eingegangen sind, aber nach einem bestimmten Zeitraum noch nicht
+   * bestätigt wurden.
    *
    * @param datumBefor Zeitpunkt, bis zu dem die Fotos hätten bestätigt werden müssen
    * @return Ergebnisliste mit Fotos
-   * @see
-   * de.fraunhofer.igd.klarschiff.service.job.JobsService#removeUnbestaetigtFoto()
+   * @see de.fraunhofer.igd.klarschiff.service.job.JobsService#removeUnbestaetigtFoto()
    */
   public List<Foto> findUnbestaetigtFoto(Date datumBefor) {
     return em.createQuery("SELECT o FROM Foto o WHERE o.datumBestaetigung IS NULL AND datum <= :datumBefor", Foto.class)
@@ -1519,7 +1521,7 @@ public class VorgangDao {
     }
     return conds;
   }
-  
+
   /**
    * Holt den zuletzt angelegten Vorgang
    *
@@ -1531,7 +1533,7 @@ public class VorgangDao {
       .orderBy("vo.id desc").maxResults(1);
     return (Vorgang) query.getResultList(em).get(0);
   }
-  
+
   /**
    * Holt den zuletzt angelegten Vorgang vor dem angegebenen Datum
    *
@@ -1543,7 +1545,7 @@ public class VorgangDao {
     Calendar cDatum = Calendar.getInstance();
     cDatum.setTime(datum);
     cDatum.add(Calendar.DATE, 1);
-    
+
     HqlQueryHelper query = (new HqlQueryHelper(securityService)).addSelectAttribute("vo")
       .addFromTables("Vorgang vo")
       .addWhereConditions("vo.datum < '" + sdf.format(cDatum.getTime()) + "'")
