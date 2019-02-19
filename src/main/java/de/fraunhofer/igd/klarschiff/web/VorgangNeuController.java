@@ -142,7 +142,7 @@ public class VorgangNeuController {
     vorgang.setStatus(EnumVorgangStatus.offen);
     vorgang.setStatusDatum(new Date());
     vorgang.setPrioritaet(EnumPrioritaet.mittel);
-    String neueAdresse = geoService.calculateAddress(vorgang.getOvi(), false);
+    String neueAdresse = geoService.calculateAddress(vorgang.getOvi());
     vorgang.setAdresse(neueAdresse);
 
     if (StringUtils.isNotBlank(cmd.zustaendigkeit)) {

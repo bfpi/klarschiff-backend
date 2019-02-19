@@ -129,7 +129,7 @@ public class VorgangController {
       String alterOviWkt = vorgang.getOviWkt();
       vorgang.setOviWkt(oviWkt);
       String alteAdresse = vorgang.getAdresse();
-      String neueAdresse = geoService.calculateAddress(vorgang.getOvi(), false);
+      String neueAdresse = geoService.calculateAddress(vorgang.getOvi());
       vorgang.setAdresse(neueAdresse);
       vorgangDao.merge(vorgang);
       String neuerOviWkt = vorgang.getOviWkt();

@@ -252,20 +252,19 @@ public class GeoService {
    * @param point Punktkoordinate, für die die Adresse ermittelt werden soll
    * @return Adresse
    */
-  public String calculateAddress(Point point, Boolean d3) {
+  public String calculateAddress(Point point) {
+    String adresse = null;
     try {
       String x = String.valueOf((int) point.getX());
       String y = String.valueOf((int) point.getY());
-      String adresse = null;
       String url = PropertyPlaceholderConfigurer.getPropertyValue("geo.adressensuche.url");
       url += "key=" + PropertyPlaceholderConfigurer.getPropertyValue("geo.adressensuche.key");
       url += "&query=" + x + "," + y;
       url += "&type=reverse";
       url += "&class=address";
-      if (!d3)
-        url += "&radius=100";
+      url += "&radius=100";
       url += "&in_epsg=25833";
-      
+
       URL httpUrl = new URL(url);
       HttpURLConnection connection = (HttpURLConnection) httpUrl.openConnection();
       connection.setRequestMethod("GET");
@@ -280,51 +279,31 @@ public class GeoService {
 
       JSONObject jsonObject = new JSONObject(stringBuilder.toString());
       JSONArray features = jsonObject.getJSONArray("features");
-      if (d3) {
-        for (int i = 0; i < features.length(); i++) {
-          JSONObject feature = features.getJSONObject(i);
-          JSONObject properties = feature.getJSONObject("properties");
-          String objektgruppe = properties.getString("objektgruppe");
-          if (StringUtils.equals(objektgruppe, "Straße")) {
-            adresse = properties.getString("strasse_name");
+      for (int i = 0; i < features.length(); i++) {
+        JSONObject feature = features.getJSONObject(i);
+        JSONObject properties = feature.getJSONObject("properties");
+        String objektgruppe = properties.getString("objektgruppe");
+        if (StringUtils.equals(objektgruppe, "Adresse")) {
+          adresse = properties.getString("strasse_name");
+          adresse += " ";
+          adresse += properties.getString("hausnummer");
+          if (!properties.get("hausnummer_zusatz").equals(null))
+            adresse += properties.getString("hausnummer_zusatz");
+          if (!properties.isNull("abkuerzung")) {
             adresse += " (";
-            adresse += properties.getString("gemeindeteil_name");
-            adresse += "-";
-            adresse += properties.getString("strasse_schluessel");
+            adresse += properties.getString("abkuerzung");
             adresse += ")";
-            break;
           }
-        }
-      } else {
-        for (int i = 0; i < features.length(); i++) {
-          JSONObject feature = features.getJSONObject(i);
-          JSONObject properties = feature.getJSONObject("properties");
-          String objektgruppe = properties.getString("objektgruppe");
-          if (StringUtils.equals(objektgruppe, "Adresse")) {
-            adresse = properties.getString("strasse_name");
-            adresse += " ";
-            adresse += properties.getString("hausnummer");
-            if (!properties.get("hausnummer_zusatz").equals(null))
-              adresse += properties.getString("hausnummer_zusatz");
-            if (!properties.isNull("abkuerzung")) {
-              adresse += " (";
-              adresse += properties.getString("abkuerzung");
-              adresse += ")";
-            }
-            Double entfernung = properties.getDouble("entfernung");
-            if (entfernung > 50)
-              adresse = "bei " + adresse;
-            break;
-          } else if (StringUtils.equals(objektgruppe, "Straße") && StringUtils.isEmpty(adresse)) {
-            adresse = properties.getString("strasse_name");
-            Double entfernung = properties.getDouble("entfernung");
-            if (entfernung > 50)
-              adresse = "bei " + adresse;
-          }
+          if (properties.getDouble("entfernung") > 50)
+            adresse = "bei " + adresse;
+          break;
+        } else if (StringUtils.equals(objektgruppe, "Straße") && StringUtils.isEmpty(adresse)) {
+          adresse = properties.getString("strasse_name");
+          if (properties.getDouble("entfernung") > 50)
+            adresse = "bei " + adresse;
         }
       }
-
-      if (!d3 && StringUtils.isEmpty(adresse))
+      if (StringUtils.isEmpty(adresse))
         adresse = "nicht zuordenbar";
 
       return adresse;
@@ -332,6 +311,76 @@ public class GeoService {
     catch (Exception e) {
       logger.error("Die Ermittlung der Adresse funktioniert nicht richtig. Alle Adressen werden auf nicht zuordenbar gesetzt.", e);
       return "nicht zuordenbar";
+    }
+  }
+
+  /**
+   * Ermittlung der Adresse für d.3
+   *
+   * @param point Punktkoordinate, für die die Adresse ermittelt werden soll
+   * @return Adresse
+   */
+  public String[] calculateAddressD3(Point point) {
+    String strasse = null;
+    String hausnummer = null;
+    String hausnummer_zusatz = null;
+    try {
+      String x = String.valueOf((int) point.getX());
+      String y = String.valueOf((int) point.getY());
+      String url = PropertyPlaceholderConfigurer.getPropertyValue("geo.adressensuche.url");
+      url += "key=" + PropertyPlaceholderConfigurer.getPropertyValue("geo.adressensuche.key");
+      url += "&query=" + x + "," + y;
+      url += "&type=reverse";
+      url += "&class=address";
+      url += "&radius=100";
+      url += "&in_epsg=25833";
+
+      URL httpUrl = new URL(url);
+      HttpURLConnection connection = (HttpURLConnection) httpUrl.openConnection();
+      connection.setRequestMethod("GET");
+
+      BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+      StringBuilder stringBuilder = new StringBuilder();
+      String line;
+      while ((line = bufferedReader.readLine()) != null) {
+        stringBuilder.append(line + "\n");
+      }
+      bufferedReader.close();
+
+      JSONObject jsonObject = new JSONObject(stringBuilder.toString());
+      JSONArray features = jsonObject.getJSONArray("features");
+      for (int i = 0; i < features.length(); i++) {
+        JSONObject feature = features.getJSONObject(i);
+        JSONObject properties = feature.getJSONObject("properties");
+        String objektgruppe = properties.getString("objektgruppe");
+        if (StringUtils.equals(objektgruppe, "Adresse")) {
+          strasse = properties.getString("strasse_name");
+          strasse += " (";
+          strasse += properties.getString("strasse_schluessel");
+          strasse += " – ";
+          strasse += properties.getString("gemeindeteil_name");
+          strasse += ")";
+          hausnummer = properties.getString("hausnummer");
+          if (!properties.get("hausnummer_zusatz").equals(null))
+            hausnummer_zusatz = properties.getString("hausnummer_zusatz");
+          break;
+        } else if (StringUtils.equals(objektgruppe, "Straße") && StringUtils.isEmpty(strasse)) {
+          strasse = properties.getString("strasse_name");
+          strasse += " (";
+          strasse += properties.getString("strasse_schluessel");
+          strasse += " – ";
+          strasse += properties.getString("gemeindeteil_name");
+          strasse += ")";
+        }
+      }
+      if (StringUtils.isEmpty(strasse))
+        strasse = "nicht zuordenbar";
+
+      return new String[]{strasse, hausnummer, hausnummer_zusatz};
+    }
+    catch (Exception e) {
+      logger.error("Die Ermittlung der Adresse funktioniert nicht richtig. Alle Adressen werden auf nicht zuordenbar gesetzt.", e);
+      return new String[]{"nicht zuordenbar", hausnummer, hausnummer_zusatz};
     }
   }
 

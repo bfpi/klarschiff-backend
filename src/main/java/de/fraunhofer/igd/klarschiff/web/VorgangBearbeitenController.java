@@ -311,7 +311,10 @@ public class VorgangBearbeitenController {
     model.put("d3createLink", d3tools.getCreateLinkWithoutParameters(cmd.getVorgang()));
     model.put("d3getKsId", d3tools.getParameterKsId(cmd.getVorgang()));
     model.put("d3getKsUser", d3tools.getParameterKsUser(cmd.getVorgang()));
-    model.put("d3getKsAddress", d3tools.getParameterKsAddress(cmd.getVorgang()));
+    String[] adresse = d3tools.getParameterKsAddress(cmd.getVorgang());
+    model.put("d3getKsStr", adresse[0]);
+    model.put("d3getKsHnr", adresse[1]);
+    model.put("d3getKsHnrZ", adresse[2]);
 
     return (cmd.getVorgang().getStatus() == EnumVorgangStatus.gemeldet) ? "vorgang/bearbeitenDisabled" : "vorgang/bearbeiten";
   }

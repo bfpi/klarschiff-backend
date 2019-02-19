@@ -234,11 +234,11 @@ public class BackendController {
         String neueAdresse = "nicht zuordenbar";
         if (oviWkt != null) {
           Point point = pointWktToPoint(oviWkt);
-          neueAdresse = geoService.calculateAddress(point, false);
+          neueAdresse = geoService.calculateAddress(point);
         } else if (positionWGS84 != null) {
           try {
             Point point = transformPosition(pointWktToPoint(positionWGS84), wgs84Projection, internalProjection);
-            neueAdresse = geoService.calculateAddress(point, false);
+            neueAdresse = geoService.calculateAddress(point);
           } catch (FactoryException | MismatchedDimensionException | TransformException e) {
             logger.error(e);
           }
@@ -252,11 +252,11 @@ public class BackendController {
         String neueAdresse = "nicht zuordenbar";
         if (oviWkt != null) {
           Point point = pointWktToPoint(oviWkt);
-          neueAdresse = geoService.calculateAddress(point, false);
+          neueAdresse = geoService.calculateAddress(point);
         } else if (positionWGS84 != null) {
           try {
             Point point = transformPosition(pointWktToPoint(positionWGS84), wgs84Projection, internalProjection);
-            neueAdresse = geoService.calculateAddress(point, false);
+            neueAdresse = geoService.calculateAddress(point);
           } catch (FactoryException | MismatchedDimensionException | TransformException e) {
             logger.error(e);
           }
@@ -516,11 +516,11 @@ public class BackendController {
       String neueAdresse = "nicht zuordenbar";
       if (oviWkt != null) {
         Point point = pointWktToPoint(oviWkt);
-        neueAdresse = geoService.calculateAddress(point, false);
+        neueAdresse = geoService.calculateAddress(point);
       } else if (positionWGS84 != null) {
         try {
           Point point = transformPosition(pointWktToPoint(positionWGS84), wgs84Projection, internalProjection);
-          neueAdresse = geoService.calculateAddress(point, false);
+          neueAdresse = geoService.calculateAddress(point);
         } catch (FactoryException | MismatchedDimensionException | TransformException e) {
           logger.error(e);
         }
@@ -620,7 +620,7 @@ public class BackendController {
       vorgang.setZustaendigkeitFrontend(securityService.getZustaendigkeit(vorgang.getZustaendigkeit()).getL());
       vorgang.setZustaendigkeitStatus(EnumZustaendigkeitStatus.zugewiesen);
 
-      String neueAdresse = geoService.calculateAddress(vorgang.getOvi(), false);
+      String neueAdresse = geoService.calculateAddress(vorgang.getOvi());
       vorgang.setAdresse(neueAdresse);
 
       model.put("message", "Die Meldung wurde erfolgreich aufgenommen.");

@@ -57,7 +57,10 @@ public class D3Tools {
       String ret = vorgang.getKategorie().getD3().getUrl();
       ret = ret.replace("{ks_id}", vorgang.getId().toString());
       ret = ret.replace("{ks_user}", securityService.getCurrentUser().getId().toLowerCase());
-      ret = ret.replace("{ks_address}", vorgang.getAdresse());
+      String[] adresse = geoService.calculateAddressD3(vorgang.getOvi());
+      ret = ret.replace("{ks_str}", adresse[0]);
+      ret = ret.replace("{ks_hnr}", adresse[1]);
+      ret = ret.replace("{ks_hnr_z}", adresse[2]);
       return ret;
     }
     return null;
@@ -86,9 +89,9 @@ public class D3Tools {
     return null;
   }
 
-  public String getParameterKsAddress(Vorgang vorgang) {
+  public String[] getParameterKsAddress(Vorgang vorgang) {
     if (vorgang.getKategorie().getD3() != null) {
-      return vorgang.getAdresse();
+      return geoService.calculateAddressD3(vorgang.getOvi());
     }
     return null;
   }
