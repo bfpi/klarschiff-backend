@@ -53,6 +53,7 @@ public class AussendienstKoordinatorDao {
    * @param teams Liste der zuständigen Außendiens-Teams
    * @return <code>true</code> - Teams gespeichern
    */
+  @Transactional
   public boolean setTeamsForLogin(String login, String[] teams) {
     if (teams != null) {
       for (String team : teams) {
