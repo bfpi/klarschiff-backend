@@ -150,6 +150,7 @@ public class VorgangNeuController {
       vorgang.setZustaendigkeitFrontend(securityService.getZustaendigkeit(cmd.getZustaendigkeit()).getL());
       vorgang.setZustaendigkeitStatus(EnumZustaendigkeitStatus.zugewiesen);
     }
+    vorgang.setFotowunsch(false);
 
     vorgangDao.persist(vorgang);
 
