@@ -181,6 +181,7 @@ public class VorgangSuchenController {
     cmd.setErweitertArchiviert(false);
     cmd.setErweitertZustaendigkeit("#mir zugewiesen#");
     cmd.setErweitertVorgangStatus((EnumVorgangStatus[]) ArrayUtils.removeElement(ArrayUtils.removeElement(EnumVorgangStatus.values(), EnumVorgangStatus.gemeldet), EnumVorgangStatus.geloescht));
+    cmd.setShowTips(true);
     return cmd;
   }
 

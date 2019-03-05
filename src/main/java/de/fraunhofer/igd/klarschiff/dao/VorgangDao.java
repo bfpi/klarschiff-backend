@@ -636,7 +636,7 @@ public class VorgangDao {
     }
     // Nur Vorgänge zurückgeben, deren Kategorie nicht gelöscht ist
     List<Long> kategorieIds = new ArrayList<>();
-    for (Kategorie kategorie : kategorieDao.getAllKategorien()) {
+    for (Kategorie kategorie : kategorieDao.getKategorien(true)) {
       kategorieIds.add(kategorie.getId());
     }
     conds.add("vo.kategorie IN (" + StringUtils.join(kategorieIds, ',') + ")");
