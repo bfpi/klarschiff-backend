@@ -323,6 +323,7 @@ public class VorgangBearbeitenController {
     model.put("d3getKsStr", strasse);
     model.put("d3getKsHnr", hausnummer);
     model.put("d3getKsHnrZ", hausnummer_zusatz);
+    model.put("d3getKsEigentuemer", d3tools.getParameterKsEigentuemer(cmd.getVorgang()));
 
     return (cmd.getVorgang().getStatus() == EnumVorgangStatus.gemeldet) ? "vorgang/bearbeitenDisabled" : "vorgang/bearbeiten";
   }

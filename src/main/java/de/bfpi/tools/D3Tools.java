@@ -61,6 +61,7 @@ public class D3Tools {
       ret = ret.replace("{ks_str}", adresse[0]);
       ret = ret.replace("{ks_hnr}", adresse[1]);
       ret = ret.replace("{ks_hnr_z}", adresse[2]);
+      ret = ret.replace("{ks_eigentuemer}", vorgang.getFlurstueckseigentum());
       return ret;
     }
     return null;
@@ -92,6 +93,13 @@ public class D3Tools {
   public String[] getParameterKsAddress(Vorgang vorgang) {
     if (vorgang.getKategorie().getD3() != null) {
       return geoService.calculateAddressD3(vorgang.getOvi());
+    }
+    return null;
+  }
+
+  public String getParameterKsEigentuemer(Vorgang vorgang) {
+    if (vorgang.getKategorie().getD3() != null) {
+      return vorgang.getFlurstueckseigentum();
     }
     return null;
   }

@@ -656,7 +656,7 @@
               if (d3exists == true)
                 window.open("${pageContext.request.contextPath}/vorgang/${cmd.vorgang.id}/d3open");
               else
-                window.open("${d3createLink}?ks_id=${d3getKsId}&amp;ks_user=${d3getKsUser}&amp;ks_str=${d3getKsStr}&amp;ks_hnr=${d3getKsHnr}&amp;ks_hnr_z=${d3getKsHnrZ}");
+                window.open("${d3createLink}?ks_id=${d3getKsId}&amp;ks_user=${d3getKsUser}&amp;ks_str=${d3getKsStr}&amp;ks_hnr=${d3getKsHnr}&amp;ks_hnr_z=${d3getKsHnrZ}&amp;ks_eigentuemer=${d3getKsEigentuemer}");
             });
           </script>
           <util:ddpanel name="d3"/>
