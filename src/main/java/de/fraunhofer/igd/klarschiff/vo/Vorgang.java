@@ -109,7 +109,6 @@ public class Vorgang implements Serializable {
    * Information über das Eigentum des Flürstücks, in dem der Vorgang liegt
    */
   @Size(max = 300)
-  @JsonIgnore
   private String flurstueckseigentum;
 
   /**
