@@ -83,6 +83,7 @@ public class MailService {
   SimpleMailMessage kriteriumOffenNichtAkzeptiertTemplate;
   SimpleMailMessage kriteriumOffenInbearbeitungOhneStatusKommentarTemplate;
   SimpleMailMessage kriteriumIdeeOffenOhneUnterstuetzungTemplate;
+  SimpleMailMessage kriteriumInBearbeitungTemplate;
   SimpleMailMessage kriteriumNichtLoesbarOhneStatuskommentarTemplate;
   SimpleMailMessage kriteriumNichtMehrOffenNichtAkzeptiertTemplate;
   SimpleMailMessage kriteriumOhneRedaktionelleFreigabenTemplate;
@@ -525,35 +526,40 @@ public class MailService {
    *
    * @param tageOffenNichtAkzeptiert Anzahl der Tage zum Redaktionskriterium 1.
    * @param tageInbearbeitungOhneStatusKommentar Anzahl der Tage zum Redaktionskriterium 2.
-   * @param tageIdeeOffenOhneUnterstuetzung Anzahl der Tage zum Redaktionskriterium 2.
+   * @param tageIdeeOffenOhneUnterstuetzung Anzahl der Tage zum Redaktionskriterium 3.
+   * @param tageInBearbeitung Anzahl der Tage zum Redaktionskriterium 4.
    * @param vorgaengeOffenNichtAkzeptiert Liste der Vorgänge zu Redaktionskriterium 1, die in der
    * E-Mail dargestellt werden sollen.
    * @param vorgaengeInbearbeitungOhneStatusKommentar Liste der Vorgänge zu Redaktionskriterium 2,
    * die in der E-Mail dargestellt werden sollen.
    * @param vorgaengeIdeeOffenOhneUnterstuetzung Liste der Vorgänge zu Redaktionskriterium 3, die in
    * der E-Mail dargestellt werden sollen.
-   * @param vorgaengeNichtLoesbarOhneStatuskommentar Liste der Vorgänge zu Redaktionskriterium 4,
-   * die in der E-Mail dargestellt werden sollen.
-   * @param vorgaengeNichtMehrOffenNichtAkzeptiert Liste der Vorgänge zu Redaktionskriterium 5, die
-   * in der E-Mail dargestellt werden sollen.
-   * @param vorgaengeOhneRedaktionelleFreigaben Liste der Vorgänge zu Redaktionskriterium 6, die in
+   * @param vorgaengeInBearbeitung Liste der Vorgänge zu Redaktionskriterium 4, die in
    * der E-Mail dargestellt werden sollen.
-   * @param vorgaengeOhneZustaendigkeit Liste der Vorgänge zu Redaktionskriterium 7, die in der
+   * @param vorgaengeNichtLoesbarOhneStatuskommentar Liste der Vorgänge zu Redaktionskriterium 5,
+   * die in der E-Mail dargestellt werden sollen.
+   * @param vorgaengeNichtMehrOffenNichtAkzeptiert Liste der Vorgänge zu Redaktionskriterium 6, die
+   * in der E-Mail dargestellt werden sollen.
+   * @param vorgaengeOhneRedaktionelleFreigaben Liste der Vorgänge zu Redaktionskriterium 7, die in
+   * der E-Mail dargestellt werden sollen.
+   * @param vorgaengeOhneZustaendigkeit Liste der Vorgänge zu Redaktionskriterium 8, die in der
    * E-Mail dargestellt werden sollen.
    * @param to Empfänger der E-Mail.
    * @param zustaendigkeit
    */
   public void sendInformRedaktionEmpfaengerMail(Short tageOffenNichtAkzeptiert,
-    Short tageInbearbeitungOhneStatusKommentar, Short tageIdeeOffenOhneUnterstuetzung,
+    Short tageInbearbeitungOhneStatusKommentar, Short tageIdeeOffenOhneUnterstuetzung, Short tageInBearbeitung,
     List<Vorgang> vorgaengeOffenNichtAkzeptiert, List<Vorgang> vorgaengeInbearbeitungOhneStatusKommentar,
-    List<Vorgang> vorgaengeIdeeOffenOhneUnterstuetzung, List<Vorgang> vorgaengeNichtLoesbarOhneStatuskommentar,
-    List<Vorgang> vorgaengeNichtMehrOffenNichtAkzeptiert, List<Vorgang> vorgaengeOhneRedaktionelleFreigaben,
-    List<Vorgang> vorgaengeOhneZustaendigkeit, String to, String zustaendigkeit) {
+    List<Vorgang> vorgaengeIdeeOffenOhneUnterstuetzung, List<Vorgang> vorgaengeInBearbeitung,
+    List<Vorgang> vorgaengeNichtLoesbarOhneStatuskommentar, List<Vorgang> vorgaengeNichtMehrOffenNichtAkzeptiert,
+    List<Vorgang> vorgaengeOhneRedaktionelleFreigaben, List<Vorgang> vorgaengeOhneZustaendigkeit,
+    String to, String zustaendigkeit) {
 
     //keine E-Mail versenden, falls alle Listen von Vorgängen leer sind
     if ((CollectionUtils.isEmpty(vorgaengeOffenNichtAkzeptiert))
       && (CollectionUtils.isEmpty(vorgaengeInbearbeitungOhneStatusKommentar))
       && (CollectionUtils.isEmpty(vorgaengeIdeeOffenOhneUnterstuetzung))
+      && (CollectionUtils.isEmpty(vorgaengeInBearbeitung))
       && (CollectionUtils.isEmpty(vorgaengeNichtLoesbarOhneStatuskommentar))
       && (CollectionUtils.isEmpty(vorgaengeNichtMehrOffenNichtAkzeptiert))
       && (CollectionUtils.isEmpty(vorgaengeOhneRedaktionelleFreigaben))
@@ -572,6 +578,8 @@ public class MailService {
       = new SimpleMailMessage(kriteriumOffenInbearbeitungOhneStatusKommentarTemplate);
     SimpleMailMessage textKriteriumIdeeOffenOhneUnterstuetzung
       = new SimpleMailMessage(kriteriumIdeeOffenOhneUnterstuetzungTemplate);
+    SimpleMailMessage textKriteriumInBearbeitung
+      = new SimpleMailMessage(kriteriumInBearbeitungTemplate);
     SimpleMailMessage textKriteriumNichtLoesbarOhneStatuskommentar
       = new SimpleMailMessage(kriteriumNichtLoesbarOhneStatuskommentarTemplate);
     SimpleMailMessage textKriteriumNichtMehrOffenNichtAkzeptiert
@@ -673,6 +681,35 @@ public class MailService {
     }
 
     //falls Liste der Vorgänge zu Redaktionskriterium 4 nicht leer ist...
+    if (!CollectionUtils.isEmpty(vorgaengeInBearbeitung)) {
+
+      //Liste der Vorgänge auslesen und zu String zusammenbauen
+      StringBuilder str = new StringBuilder();
+      for (Vorgang vorgang : vorgaengeInBearbeitung) {
+        str.append(String.format("%1$-9s", vorgang.getId()))
+          .append(String.format("%1$-27s", vorgang.getZustaendigkeit()))
+          .append(String.format("%1$-10s", vorgang.getTyp().getText()))
+          .append(formatter.format(vorgang.getDatum()))
+          .append(" (vor ")
+          .append((jetzt.getTime() - vorgang.getDatum().getTime()) / (24 * 60 * 60 * 1000))
+          .append(" Tagen)\n");
+      }
+
+      //Platzhalter für Teiltexte ersetzen und Teiltexte in Gesamt-E-Mail einfügen
+      textKriteriumInBearbeitung.setText(textKriteriumInBearbeitung.getText()
+        .replaceAll("%tage%", tageInBearbeitung.toString()));
+      textKriteriumInBearbeitung.setText(textKriteriumInBearbeitung.getText()
+        .replaceAll("%unterstuetzungen%", settingsService.getVorgangIdeeUnterstuetzer().toString()));
+      textKriteriumInBearbeitung.setText(textKriteriumInBearbeitung.getText()
+        .replaceAll("%vorgaenge%", str.toString()));
+      msg.setText(msg.getText().replaceAll("%kriteriumInBearbeitung%",
+        textKriteriumInBearbeitung.getText()));
+    } //ansonsten Platzhalter für Teiltexte des Redaktionskriteriums 4 (plus nachfolgende Linebreaks) aus Gesamt-E-Mail entfernen
+    else {
+      msg.setText(msg.getText().replaceAll("%kriteriumInBearbeitung%\n\n", ""));
+    }
+
+    //falls Liste der Vorgänge zu Redaktionskriterium 5 nicht leer ist...
     if (!CollectionUtils.isEmpty(vorgaengeNichtLoesbarOhneStatuskommentar)) {
 
       //Liste der Vorgänge auslesen und zu String zusammenbauen
@@ -692,12 +729,12 @@ public class MailService {
         textKriteriumNichtLoesbarOhneStatuskommentar.getText().replaceAll("%vorgaenge%", str.toString()));
       msg.setText(msg.getText().replaceAll("%kriteriumNichtLoesbarOhneStatuskommentar%",
         textKriteriumNichtLoesbarOhneStatuskommentar.getText()));
-    } //ansonsten Platzhalter für Teiltexte des Redaktionskriteriums 4 (plus nachfolgende Linebreaks) aus Gesamt-E-Mail entfernen
+    } //ansonsten Platzhalter für Teiltexte des Redaktionskriteriums 5 (plus nachfolgende Linebreaks) aus Gesamt-E-Mail entfernen
     else {
       msg.setText(msg.getText().replaceAll("%kriteriumNichtLoesbarOhneStatuskommentar%\n\n", ""));
     }
 
-    //falls Liste der Vorgänge zu Redaktionskriterium 5 nicht leer ist...
+    //falls Liste der Vorgänge zu Redaktionskriterium 6 nicht leer ist...
     if (!CollectionUtils.isEmpty(vorgaengeNichtMehrOffenNichtAkzeptiert)) {
 
       //Liste der Vorgänge auslesen und zu String zusammenbauen
@@ -718,12 +755,12 @@ public class MailService {
         .replaceAll("%vorgaenge%", str.toString()));
       msg.setText(msg.getText().replaceAll("%kriteriumNichtMehrOffenNichtAkzeptiert%",
         textKriteriumNichtMehrOffenNichtAkzeptiert.getText()));
-    } //ansonsten Platzhalter für Teiltexte des Redaktionskriteriums 5 (plus nachfolgende Linebreaks) aus Gesamt-E-Mail entfernen
+    } //ansonsten Platzhalter für Teiltexte des Redaktionskriteriums 6 (plus nachfolgende Linebreaks) aus Gesamt-E-Mail entfernen
     else {
       msg.setText(msg.getText().replaceAll("%kriteriumNichtMehrOffenNichtAkzeptiert%\n\n", ""));
     }
 
-    //falls Liste der Vorgänge zu Redaktionskriterium 6 nicht leer ist...
+    //falls Liste der Vorgänge zu Redaktionskriterium 7 nicht leer ist...
     if (!CollectionUtils.isEmpty(vorgaengeOhneRedaktionelleFreigaben)) {
 
       //Liste der Vorgänge auslesen und zu String zusammenbauen
@@ -742,12 +779,12 @@ public class MailService {
         .replaceAll("%vorgaenge%", str.toString()));
       msg.setText(msg.getText().replaceAll("%kriteriumOhneRedaktionelleFreigaben%",
         textKriteriumOhneRedaktionelleFreigaben.getText()));
-    } //ansonsten Platzhalter für Teiltexte des Redaktionskriteriums 6 (plus nachfolgende Linebreaks) aus Gesamt-E-Mail entfernen
+    } //ansonsten Platzhalter für Teiltexte des Redaktionskriteriums 7 (plus nachfolgende Linebreaks) aus Gesamt-E-Mail entfernen
     else {
       msg.setText(msg.getText().replaceAll("%kriteriumOhneRedaktionelleFreigaben%\n\n", ""));
     }
 
-    //falls Liste der Vorgänge zu Redaktionskriterium 7 nicht leer ist...
+    //falls Liste der Vorgänge zu Redaktionskriterium 8 nicht leer ist...
     if (!CollectionUtils.isEmpty(vorgaengeOhneZustaendigkeit)) {
 
       //Liste der Vorgänge auslesen und zu String zusammenbauen
@@ -764,7 +801,7 @@ public class MailService {
         .replaceAll("%vorgaenge%", str.toString()));
       msg.setText(msg.getText().replaceAll("%kriteriumOhneZustaendigkeit%",
         textKriteriumOhneZustaendigkeit.getText()));
-    } //ansonsten Platzhalter für Teiltexte des Redaktionskriteriums 7 (plus nachfolgende Linebreaks) aus Gesamt-E-Mail entfernen
+    } //ansonsten Platzhalter für Teiltexte des Redaktionskriteriums 8 (plus nachfolgende Linebreaks) aus Gesamt-E-Mail entfernen
     else {
       msg.setText(msg.getText().replaceAll("%kriteriumOhneZustaendigkeit%\n\n", ""));
     }
@@ -930,6 +967,15 @@ public class MailService {
   public void setKriteriumIdeeOffenOhneUnterstuetzungTemplate(
     SimpleMailMessage kriteriumIdeeOffenOhneUnterstuetzungTemplate) {
     this.kriteriumIdeeOffenOhneUnterstuetzungTemplate = kriteriumIdeeOffenOhneUnterstuetzungTemplate;
+  }
+
+  public SimpleMailMessage getKriteriumInBearbeitungTemplate() {
+    return kriteriumInBearbeitungTemplate;
+  }
+
+  public void setKriteriumInBearbeitungTemplate(
+    SimpleMailMessage kriteriumInBearbeitungTemplate) {
+    this.kriteriumInBearbeitungTemplate = kriteriumInBearbeitungTemplate;
   }
 
   public SimpleMailMessage getKriteriumNichtLoesbarOhneStatuskommentarTemplate() {

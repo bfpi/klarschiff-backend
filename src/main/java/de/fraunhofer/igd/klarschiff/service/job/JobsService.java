@@ -183,6 +183,7 @@ public class JobsService {
       Short tageOffenNichtAkzeptiert = 0;
       Short tageInbearbeitungOhneStatusKommentar = 0;
       Short tageIdeeOffenOhneUnterstuetzung = 0;
+      Short tageInBearbeitung = 0;
       Boolean sollVorgaengeNichtLoesbarOhneStatuskommentar = false;
       Boolean sollVorgaengeNichtMehrOffenNichtAkzeptiert = false;
       Boolean sollVorgaengeOhneRedaktionelleFreigaben = false;
@@ -191,6 +192,7 @@ public class JobsService {
       List<Vorgang> vorgaengeOffenNichtAkzeptiert = new ArrayList<Vorgang>();
       List<Vorgang> vorgaengeInbearbeitungOhneStatusKommentar = new ArrayList<Vorgang>();
       List<Vorgang> vorgaengeIdeeOffenOhneUnterstuetzung = new ArrayList<Vorgang>();
+      List<Vorgang> vorgaengeInBearbeitung = new ArrayList<Vorgang>();
       List<Vorgang> vorgaengeNichtLoesbarOhneStatuskommentar = new ArrayList<Vorgang>();
       List<Vorgang> vorgaengeNichtMehrOffenNichtAkzeptiert = new ArrayList<Vorgang>();
       List<Vorgang> vorgaengeOhneRedaktionelleFreigaben = new ArrayList<Vorgang>();
@@ -224,6 +226,7 @@ public class JobsService {
               tageOffenNichtAkzeptiert = kriterium.getTageOffenNichtAkzeptiert();
               tageInbearbeitungOhneStatusKommentar = kriterium.getTageInbearbeitungOhneStatusKommentar();
               tageIdeeOffenOhneUnterstuetzung = kriterium.getTageIdeeOffenOhneUnterstuetzung();
+              tageInBearbeitung = kriterium.getTageInBearbeitung();
               sollVorgaengeNichtLoesbarOhneStatuskommentar = kriterium.getNichtLoesbarOhneStatuskommentar();
               sollVorgaengeNichtMehrOffenNichtAkzeptiert = kriterium.getNichtMehrOffenNichtAkzeptiert();
               sollVorgaengeOhneRedaktionelleFreigaben = kriterium.getOhneRedaktionelleFreigaben();
@@ -250,6 +253,11 @@ public class JobsService {
           //finde alle Vorgänge des Typs 'idee' mit dem Status 'offen', die ihre Erstsichtung seit mindestens 'datum' hinter sich haben, bisher aber noch nicht die Zahl der notwendigen Unterstützungen aufweisen
           vorgaengeIdeeOffenOhneUnterstuetzung = vorgangDao.findVorgaengeIdeeOffenOhneUnterstuetzung(administrator, empfaenger.getZustaendigkeit(), datum);
 
+          //'datum' berechnen durch Subtrahieren von 'tageInBearbeitung' vom aktuellen Datum
+          datum = DateUtils.addDays(jetzt, -(tageInBearbeitung));
+          //finde alle Vorgänge die seit mindestens 'datum' im System sind und noch im Status 'inBearbeitung'
+          vorgaengeInBearbeitung = vorgangDao.findVorgaengeInBearbeitung(administrator, empfaenger.getZustaendigkeit(), datum);
+
           //falls dies gemacht werden soll...
           if (sollVorgaengeNichtLoesbarOhneStatuskommentar == true) {
             //finde alle Vorgänge mit dem Status 'nicht lösbar', die bisher keine öffentliche Statusinformation aufweisen
@@ -275,13 +283,13 @@ public class JobsService {
           }
 
           //falls Vorgänge existieren...
-          if ((!vorgaengeOffenNichtAkzeptiert.isEmpty()) || (!vorgaengeInbearbeitungOhneStatusKommentar.isEmpty()) || (!vorgaengeIdeeOffenOhneUnterstuetzung.isEmpty()) || (!vorgaengeNichtLoesbarOhneStatuskommentar.isEmpty()) || (!vorgaengeNichtMehrOffenNichtAkzeptiert.isEmpty()) || (!vorgaengeOhneRedaktionelleFreigaben.isEmpty()) || (!vorgaengeOhneZustaendigkeit.isEmpty())) {
+          if ((!vorgaengeOffenNichtAkzeptiert.isEmpty()) || (!vorgaengeInbearbeitungOhneStatusKommentar.isEmpty()) || (!vorgaengeIdeeOffenOhneUnterstuetzung.isEmpty()) || (!vorgaengeInBearbeitung.isEmpty()) || (!vorgaengeNichtLoesbarOhneStatuskommentar.isEmpty()) || (!vorgaengeNichtMehrOffenNichtAkzeptiert.isEmpty()) || (!vorgaengeOhneRedaktionelleFreigaben.isEmpty()) || (!vorgaengeOhneZustaendigkeit.isEmpty())) {
 
             //setzte Zeitstempel des letzten E-Mail-Versands an aktuellen Empfänger auf aktuellen Zeitstempel
             empfaenger.setLetzteMail(jetzt);
 
             //sende E-Mail an aktuellen Empfänger
-            mailService.sendInformRedaktionEmpfaengerMail(tageOffenNichtAkzeptiert, tageInbearbeitungOhneStatusKommentar, tageIdeeOffenOhneUnterstuetzung, vorgaengeOffenNichtAkzeptiert, vorgaengeInbearbeitungOhneStatusKommentar, vorgaengeIdeeOffenOhneUnterstuetzung, vorgaengeNichtLoesbarOhneStatuskommentar, vorgaengeNichtMehrOffenNichtAkzeptiert, vorgaengeOhneRedaktionelleFreigaben, vorgaengeOhneZustaendigkeit, empfaenger.getEmail(), empfaenger.getZustaendigkeit());
+            mailService.sendInformRedaktionEmpfaengerMail(tageOffenNichtAkzeptiert, tageInbearbeitungOhneStatusKommentar, tageIdeeOffenOhneUnterstuetzung, tageInBearbeitung, vorgaengeOffenNichtAkzeptiert, vorgaengeInbearbeitungOhneStatusKommentar, vorgaengeIdeeOffenOhneUnterstuetzung, vorgaengeInBearbeitung, vorgaengeNichtLoesbarOhneStatuskommentar, vorgaengeNichtMehrOffenNichtAkzeptiert, vorgaengeOhneRedaktionelleFreigaben, vorgaengeOhneZustaendigkeit, empfaenger.getEmail(), empfaenger.getZustaendigkeit());
 
             redaktionEmpfaengerDao.merge(empfaenger);
           }

@@ -1419,6 +1419,28 @@ public class VorgangDao {
   }
 
   /**
+   * Ermittelt alle Vorgänge die seit einem bestimmten Datum vorhanden sind und noch im Status 'in Bearbeitung'
+   *
+   * @param administrator Zuständigkeit ignorieren?
+   * @param zustaendigkeit Zuständigkeit, der die Vorgänge zugewiesen sind
+   * @param datum Datum, seit dem die Erstsichtung abgeschlossen ist
+   * @return Liste mit Vorgängen
+   */
+  @SuppressWarnings("unchecked")
+  public List<Vorgang> findVorgaengeInBearbeitung(Boolean administrator, String zustaendigkeit, Date datum) {
+    HqlQueryHelper query = addGroupByVorgang(new HqlQueryHelper(securityService))
+      .addFromTables("Vorgang vo")
+      .addWhereConditions("(vo.archiviert IS NULL OR vo.archiviert = FALSE)")
+      .addWhereConditions("vo.status = 'inBearbeitung'")
+      .addWhereConditions("vo.datum <= :datum").addParameter("datum", datum);
+    if (administrator == false) {
+      query.addWhereConditions("vo.zustaendigkeit = :zustaendigkeit").addParameter("zustaendigkeit", zustaendigkeit);
+    }
+    query.orderBy("vo.zustaendigkeit, vo.id");
+    return query.getResultList(em);
+  }
+
+  /**
    * Ermittelt alle Vorgänge mit dem Status 'nicht lösbar', die bisher keine öffentliche
    * Statusinformation aufweisen.
    *

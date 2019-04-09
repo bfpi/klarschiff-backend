@@ -41,6 +41,7 @@
         p:kriteriumOffenNichtAkzeptiertTemplate-ref="kriteriumOffenNichtAkzeptiertTemplate"
         p:kriteriumOffenInbearbeitungOhneStatusKommentarTemplate-ref="kriteriumOffenInbearbeitungOhneStatusKommentarTemplate"
         p:kriteriumIdeeOffenOhneUnterstuetzungTemplate-ref="kriteriumIdeeOffenOhneUnterstuetzungTemplate"
+        p:kriteriumInBearbeitungTemplate-ref="kriteriumInBearbeitungTemplate"
         p:kriteriumNichtLoesbarOhneStatuskommentarTemplate-ref="kriteriumNichtLoesbarOhneStatuskommentarTemplate"
         p:kriteriumNichtMehrOffenNichtAkzeptiertTemplate-ref="kriteriumNichtMehrOffenNichtAkzeptiertTemplate"
         p:kriteriumOhneRedaktionelleFreigabenTemplate-ref="kriteriumOhneRedaktionelleFreigabenTemplate"
@@ -243,7 +244,17 @@ Nummer   aktuelle Zuständigkeit     Unterstützungen   Erstsichtungszeitpunkt
 %vorgaenge%]]></value>
     </property>
   </bean>
-	
+
+  <bean class="org.springframework.mail.SimpleMailMessage" id="kriteriumInBearbeitungTemplate">
+    <property name="text">
+      <value><![CDATA[Folgende Vorgänge sind älter als %tage% Tagen und noch im Status „in Bearbeitung“:
+
+Nummer   aktuelle Zuständigkeit     Typ       Erstellungszeitpunkt
+******   **********************     ***       ****************
+%vorgaenge%]]></value>
+    </property>
+  </bean>
+
   <bean class="org.springframework.mail.SimpleMailMessage" id="kriteriumNichtLoesbarOhneStatuskommentarTemplate">
     <property name="text">
       <value><![CDATA[Folgende Vorgänge mit dem Status „nicht lösbar“ weisen bisher keine öffentliche Statusinformation auf. Bitte geben Sie den Bürgerinnen und Bürgern jeweils eine kurze Info zum Bearbeitungsstand mittels der öffentlichen Statusinformation:
@@ -253,7 +264,7 @@ Nummer   aktuelle Zuständigkeit     Typ       Status „nicht lösbar“ seit
 %vorgaenge%]]></value>
     </property>
   </bean>
-	
+
   <bean class="org.springframework.mail.SimpleMailMessage" id="kriteriumNichtMehrOffenNichtAkzeptiertTemplate">
     <property name="text">
       <value><![CDATA[Folgende Vorgänge weisen zwar nicht mehr den Status „offen“ auf, wurden bisher aber dennoch nicht akzeptiert. Bitte prüfen Sie jeweils die Zuständigkeit; anschließend akzeptieren Sie diese bitte oder leiten den Vorgang weiter:
@@ -296,6 +307,8 @@ es gibt folgende wichtige Hinweise zum Bearbeitungsstand in Ihrer %title%-Rolle 
 %kriteriumOffenInbearbeitungOhneStatusKommentar%
 
 %kriteriumIdeeOffenOhneUnterstuetzung%
+
+%kriteriumInBearbeitung%
 
 %kriteriumNichtLoesbarOhneStatuskommentar%
 

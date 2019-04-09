@@ -51,6 +51,12 @@ public class RedaktionKriterien implements Serializable {
   private Short tageIdeeOffenOhneUnterstuetzung;
 
   /**
+   * Tage, die Vorgänge mit dem Status 'in Bearbeitung' sind und nicht abgeschlossen wurden
+   */
+  @NotNull
+  private Short tageInBearbeitung;
+
+  /**
    * Vorgänge ausweisen mit dem Status 'nicht lösbar', die bisher keine öffentliche
    * Statusinformation aufweisen?
    */
@@ -115,6 +121,14 @@ public class RedaktionKriterien implements Serializable {
 
   public void setTageIdeeOffenOhneUnterstuetzung(short tageIdeeOffenOhneUnterstuetzung) {
     this.tageIdeeOffenOhneUnterstuetzung = tageIdeeOffenOhneUnterstuetzung;
+  }
+
+  public Short getTageInBearbeitung() {
+    return tageInBearbeitung;
+  }
+
+  public void setTageInBearbeitung(Short tageInBearbeitung) {
+    this.tageInBearbeitung = tageInBearbeitung;
   }
 
   public Boolean getNichtLoesbarOhneStatuskommentar() {
