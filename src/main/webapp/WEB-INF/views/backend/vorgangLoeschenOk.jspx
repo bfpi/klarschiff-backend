@@ -1,8 +1,16 @@
 <jsp:root 
-	xmlns:jsp="http://java.sun.com/JSP/Page" 
-	version="2.0"
-	>
-	<jsp:directive.page contentType="text/html;charset=UTF-8"/>
+  xmlns:c="http://java.sun.com/jsp/jstl/core"
+  xmlns:jsp="http://java.sun.com/JSP/Page"
+  version="2.0"
+  >
+  <jsp:directive.page contentType="text/html;charset=UTF-8"/>
 
-	Ihre Meldung wurde gelöscht.
+  <c:choose>
+    <c:when test="${alreadyDeleted != null}">
+      Ihre Meldung wurde bereits gelöscht.
+    </c:when>
+    <c:otherwise>
+      Ihre Meldung wurde gelöscht.
+    </c:otherwise>
+  </c:choose>
 </jsp:root>

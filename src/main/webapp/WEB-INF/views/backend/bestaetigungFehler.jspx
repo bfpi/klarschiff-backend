@@ -4,5 +4,5 @@
 	>
 	<jsp:directive.page contentType="text/html;charset=UTF-8"/>
 
-	<span class="error">Ihre Bestätigung konnte leider nicht akzeptiert werden.</span>
+	<span class="error">Ihre Bestätigung konnte leider nicht akzeptiert werden. Ursache ist vermutlich ein Fehler.</span>
 </jsp:root>

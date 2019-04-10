@@ -607,21 +607,23 @@ public class BackendController {
       }
 
       if (vorgang.getStatus() != EnumVorgangStatus.gemeldet) {
-        throw new BackendControllerException(103, "Vorgang wurde bereits bestätigt");
+        model.put("alreadyAccepted", true);
+      } else {
+        vorgang.setStatus(EnumVorgangStatus.offen);
+        vorgang.setStatusDatum(new Date());
+
+        verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.vorgangBestaetigung, null, null);
+        vorgangDao.merge(vorgang);
+
+        vorgang.setZustaendigkeit(classificationService.calculateZustaendigkeitforVorgang(vorgang).getId());
+        vorgang.setZustaendigkeitFrontend(securityService.getZustaendigkeit(vorgang.getZustaendigkeit()).getL());
+        vorgang.setZustaendigkeitStatus(EnumZustaendigkeitStatus.zugewiesen);
+
+        String neueAdresse = geoService.calculateAddress(vorgang.getOvi());
+        vorgang.setAdresse(neueAdresse);
+
+        vorgangDao.merge(vorgang, false);
       }
-
-      vorgang.setStatus(EnumVorgangStatus.offen);
-      vorgang.setStatusDatum(new Date());
-
-      verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.vorgangBestaetigung, null, null);
-      vorgangDao.merge(vorgang);
-
-      vorgang.setZustaendigkeit(classificationService.calculateZustaendigkeitforVorgang(vorgang).getId());
-      vorgang.setZustaendigkeitFrontend(securityService.getZustaendigkeit(vorgang.getZustaendigkeit()).getL());
-      vorgang.setZustaendigkeitStatus(EnumZustaendigkeitStatus.zugewiesen);
-
-      String neueAdresse = geoService.calculateAddress(vorgang.getOvi());
-      vorgang.setAdresse(neueAdresse);
 
       model.put("message", "Die Meldung wurde erfolgreich aufgenommen.");
       model.put("vorgangId", String.valueOf(vorgang.getId()));
@@ -744,22 +746,23 @@ public class BackendController {
         throw new BackendControllerException(302, "[hash] nicht korrekt");
       }
 
+      Vorgang vorgang = unterstuetzer.getVorgang();
       if (unterstuetzer.getDatumBestaetigung() != null) {
-        throw new BackendControllerException(303, "Unterstützer wurde bereits bestätigt");
+        model.put("alreadyAccepted", true);
+      } else {
+        unterstuetzer.setDatumBestaetigung(new Date());
+
+        verlaufDao.addVerlaufToVorgang(unterstuetzer.getVorgang(), EnumVerlaufTyp.unterstuetzerBestaetigung, null, null);
+        vorgangDao.merge(unterstuetzer);
+
+        unterstuetzer.getVorgang().setAdresse(unterstuetzer.getVorgang().getAdresse());
+
+        vorgangDao.merge(unterstuetzer, false);
+
+        vorgang.setVersion(new Date());
+        vorgangDao.merge(vorgang);
       }
 
-      unterstuetzer.setDatumBestaetigung(new Date());
-
-      verlaufDao.addVerlaufToVorgang(unterstuetzer.getVorgang(), EnumVerlaufTyp.unterstuetzerBestaetigung, null, null);
-      vorgangDao.merge(unterstuetzer);
-
-      unterstuetzer.getVorgang().setAdresse(unterstuetzer.getVorgang().getAdresse());
-
-      vorgangDao.merge(unterstuetzer, false);
-
-      Vorgang vorgang = unterstuetzer.getVorgang();
-      vorgang.setVersion(new Date());
-      vorgangDao.merge(vorgang);
       model.put("message", "Die Unterstützung wurde erfolgreich aufgenommen.");
       model.put("vorgangId", String.valueOf(vorgang.getId()));
 
@@ -1161,20 +1164,21 @@ public class BackendController {
       }
 
       if (missbrauchsmeldung.getDatumBestaetigung() != null) {
-        throw new BackendControllerException(503, "Missbrauchsmeldung wurde bereits bestätigt");
+        model.put("alreadyAccepted", true);
+      } else {
+
+        missbrauchsmeldung.setDatumBestaetigung(new Date());
+
+        verlaufDao.addVerlaufToVorgang(missbrauchsmeldung.getVorgang(), EnumVerlaufTyp.missbrauchsmeldungBestaetigung, null, null);
+        vorgangDao.merge(missbrauchsmeldung);
+
+        missbrauchsmeldung.getVorgang().setAdresse(missbrauchsmeldung.getVorgang().getAdresse());
+
+        vorgangDao.merge(missbrauchsmeldung, false);
+        Vorgang vorgang = missbrauchsmeldung.getVorgang();
+        vorgang.setVersion(new Date());
+        vorgangDao.merge(vorgang);
       }
-
-      missbrauchsmeldung.setDatumBestaetigung(new Date());
-
-      verlaufDao.addVerlaufToVorgang(missbrauchsmeldung.getVorgang(), EnumVerlaufTyp.missbrauchsmeldungBestaetigung, null, null);
-      vorgangDao.merge(missbrauchsmeldung);
-
-      missbrauchsmeldung.getVorgang().setAdresse(missbrauchsmeldung.getVorgang().getAdresse());
-
-      vorgangDao.merge(missbrauchsmeldung, false);
-      Vorgang vorgang = missbrauchsmeldung.getVorgang();
-      vorgang.setVersion(new Date());
-      vorgangDao.merge(vorgang);
 
       model.put("message", "Die Missbrauchsmeldung wurde erfolgreich aufgenommen und die entsprechende Meldung damit deaktiviert.");
       return "backend/bestaetigungOk";
@@ -1193,7 +1197,7 @@ public class BackendController {
    * @return View die angezeigt werden soll
    */
   @RequestMapping(value = "/vorgangLoeschen")
-  public String vorgangloeschen(@RequestParam(value = "hash", required = false) String hash) {
+  public String vorgangloeschen(@RequestParam(value = "hash", required = false) String hash, ModelMap model) {
 
     try {
       if (StringUtils.isBlank(hash)) {
@@ -1211,7 +1215,7 @@ public class BackendController {
         vorgangDao.merge(vorgang);
 
       } else {
-        throw new BackendControllerException(103, "Vorgang kann nicht mehr gelöscht werden");
+        model.put("alreadyDeleted", true);
       }
 
       return "backend/vorgangLoeschenOk";
@@ -1916,26 +1920,26 @@ public class BackendController {
         throw new BackendControllerException(502, "[hash] nicht korrekt");
       }
 
-      if (foto.getDatumBestaetigung() != null) {
-        throw new BackendControllerException(503, "Missbrauchsmeldung wurde bereits bestätigt");
-      }
-
-      foto.setDatumBestaetigung(new Date());
-
-      verlaufDao.addVerlaufToVorgang(foto.getVorgang(), EnumVerlaufTyp.fotoBestaetigung, null, null);
-      vorgangDao.merge(foto);
-
       Vorgang vorgang = foto.getVorgang();
-      vorgang.setFotoGross(foto.getFotoGross());
-      vorgang.setFotoNormal(foto.getFotoNormal());
-      vorgang.setFotoThumb(foto.getFotoThumb());
-      vorgang.setFotoFreigabeStatus(EnumFreigabeStatus.intern);
-      vorgang.setFotowunsch(false);
-      vorgangDao.merge(vorgang);
+      if (foto.getDatumBestaetigung() != null) {
+        model.put("alreadyAccepted", true);
+      } else {
+        foto.setDatumBestaetigung(new Date());
 
-      foto.getVorgang().setAdresse(foto.getVorgang().getAdresse());
+        verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.fotoBestaetigung, null, null);
+        vorgangDao.merge(foto);
 
-      vorgangDao.merge(foto, false);
+        vorgang.setFotoGross(foto.getFotoGross());
+        vorgang.setFotoNormal(foto.getFotoNormal());
+        vorgang.setFotoThumb(foto.getFotoThumb());
+        vorgang.setFotoFreigabeStatus(EnumFreigabeStatus.intern);
+        vorgang.setFotowunsch(false);
+        vorgangDao.merge(vorgang);
+
+        foto.getVorgang().setAdresse(foto.getVorgang().getAdresse());
+
+        vorgangDao.merge(foto, false);
+      }
 
       model.put("message", "Das Foto wurde erfolgreich aufgenommen.");
       model.put("vorgangId", String.valueOf(vorgang.getId()));

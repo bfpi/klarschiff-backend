@@ -5,7 +5,19 @@
   >
   <jsp:directive.page contentType="text/html;charset=UTF-8"/>
 
-  Ihre Bestätigung wurde akzeptiert. ${message}
+
+  <c:choose>
+    <c:when test="${alreadyAccepted != null}">
+      Ihre Bestätigung wurde bereits akzeptiert.
+    </c:when>
+    <c:otherwise>
+      Ihre Bestätigung wurde akzeptiert.
+    </c:otherwise>
+  </c:choose>
+
+  <c:if test="${message != null}">
+    ${message}
+  </c:if>
 
   <c:if test="${link != null}">
     <br /><br />
