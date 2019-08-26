@@ -376,7 +376,7 @@ public class BackendController {
       }
 
       if (statusKommentar != null) {
-        if (!vorgang.getStatusKommentar().equals(statusKommentar)) {
+        if (vorgang.getStatusKommentar() == null || !vorgang.getStatusKommentar().equals(statusKommentar)) {
           verlaufDao.persist(verlaufDao.addVerlaufToVorgang(vorgang, EnumVerlaufTyp.statusKommentar, vorgang.getStatusKommentar(), statusKommentar, autorEmail));
         }
         vorgang.setStatusKommentar(statusKommentar);
