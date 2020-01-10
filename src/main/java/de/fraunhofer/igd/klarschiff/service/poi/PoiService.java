@@ -3,6 +3,7 @@ package de.fraunhofer.igd.klarschiff.service.poi;
 import de.fraunhofer.igd.klarschiff.dao.GrenzenDao;
 import de.fraunhofer.igd.klarschiff.vo.EnumVerlaufTyp;
 import de.fraunhofer.igd.klarschiff.vo.EnumVorgangStatus;
+import de.fraunhofer.igd.klarschiff.vo.StadtteilGrenze;
 import de.fraunhofer.igd.klarschiff.vo.Verlauf;
 import java.io.IOException;
 import java.util.Date;
@@ -92,7 +93,12 @@ public class PoiService {
           row.createCell(5).setCellValue(vorgang.getKategorie().getName());
           row.createCell(6).setCellValue(vorgang.getStatus().getText());
           row.createCell(7).setCellValue(vorgang.getAdresse());
-          row.createCell(8).setCellValue(grenzenDao.findStadtteilGrenzeByVorgang(vorgang).getName());
+          StadtteilGrenze stg = grenzenDao.findStadtteilGrenzeByVorgang(vorgang);
+          if (stg == null) {
+            row.createCell(8).setCellValue("- nicht eindeutig -");
+          } else {
+            row.createCell(8).setCellValue(stg.getName());
+          }
           row.createCell(9).setCellValue(unterstuetzer);
           row.createCell(10).setCellValue(vorgang.getZustaendigkeit());
           if (vorgang.getZustaendigkeitStatus() != null) {

@@ -80,7 +80,9 @@ public class GrenzenDao {
     List<Integer> l = entityManager.createNativeQuery("select ssg.id from klarschiff_stadtteil_grenze ssg "
       + " inner join klarschiff_vorgang kv on ST_Within(kv.ovi, ssg.grenze) where kv.id = " + vorgang.getId())
       .getResultList();
-
+    if(l.isEmpty()) {
+      return null;
+    }
     return findStadtteilGrenze(l.get(0));
   }
 

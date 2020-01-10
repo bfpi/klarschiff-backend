@@ -31,7 +31,7 @@ public class StatistikDao {
     cBis.setTime(bis);
     cBis.add(Calendar.DATE, 1);
 
-    return entityManager.createNativeQuery("select count(kvorg.id), kvorg.zustaendigkeit, kk.id, kk.parent, kk.name, ksg.id stadtteil, ksg.name from klarschiff_verlauf kverl "
+    return entityManager.createNativeQuery("select count(kvorg.id), kvorg.zustaendigkeit, kk.id, kk.parent, kk.name as kk_name, ksg.id stadtteil, ksg.name as ksg_name from klarschiff_verlauf kverl "
       + "  left join klarschiff_vorgang kvorg on kverl.vorgang = kvorg.id "
       + "  left join klarschiff_stadtteil_grenze ksg on ST_Within(kvorg.ovi, ksg.grenze) "
       + "  inner join klarschiff_kategorie kk on kk.id = kvorg.kategorie "
@@ -58,7 +58,7 @@ public class StatistikDao {
     cBis.setTime(bis);
     cBis.add(Calendar.DATE, 1);
 
-    return entityManager.createNativeQuery("select count(kvorg.id), kvorg.zustaendigkeit, kk.id, kk.parent, kk.name, ksg.id stadtteil, ksg.name from klarschiff_verlauf kverl "
+    return entityManager.createNativeQuery("select count(kvorg.id), kvorg.zustaendigkeit, kk.id, kk.parent, kk.name as kk_name, ksg.id stadtteil, ksg.name as ksg_name from klarschiff_verlauf kverl "
       + "  inner join ( "
       + "	select vorgang from klarschiff_verlauf where typ in ('erzeugt') and datum between '" + sdf.format(cVon.getTime()) + "' and '" + sdf.format(cBis.getTime()) + "' "
       + "  ) kverl_erzeug on kverl.vorgang = kverl_erzeug.vorgang "
@@ -88,7 +88,7 @@ public class StatistikDao {
     cBis.setTime(bis);
     cBis.add(Calendar.DATE, 1);
 
-    return entityManager.createNativeQuery("select count(kvorg.id), kvorg.zustaendigkeit, kk.id, kk.parent, kk.name, ksg.id stadtteil, ksg.name from klarschiff_verlauf kverl "
+    return entityManager.createNativeQuery("select count(kvorg.id), kvorg.zustaendigkeit, kk.id, kk.parent, kk.name as kk_name, ksg.id stadtteil, ksg.name as ksg_name from klarschiff_verlauf kverl "
       + "  inner join ( "
       + "	select vorgang from klarschiff_verlauf where typ in ('erzeugt') and datum between '" + sdf.format(cVon.getTime()) + "' and '" + sdf.format(cBis.getTime()) + "' "
       + "  ) kverl_erzeug on kverl.vorgang = kverl_erzeug.vorgang "
@@ -116,7 +116,7 @@ public class StatistikDao {
     // +1 Tag
     c.add(Calendar.DATE, 1);
 
-    Query q = entityManager.createNativeQuery("select count(kvorg.id), kvorg.zustaendigkeit, kk.id, kk.parent, kk.name, ksg.id stadtteil, ksg.name from klarschiff_verlauf kverl "
+    Query q = entityManager.createNativeQuery("select count(kvorg.id), kvorg.zustaendigkeit, kk.id, kk.parent, kk.name as kk_name, ksg.id stadtteil, ksg.name as ksg_name from klarschiff_verlauf kverl "
       + "  left join klarschiff_vorgang kvorg on kverl.vorgang = kvorg.id "
       + "  left join klarschiff_stadtteil_grenze ksg on ST_Within(kvorg.ovi, ksg.grenze) "
       + "  inner join klarschiff_kategorie kk on kk.id = kvorg.kategorie "
