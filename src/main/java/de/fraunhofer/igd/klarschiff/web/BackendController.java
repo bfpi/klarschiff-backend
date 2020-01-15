@@ -414,19 +414,6 @@ public class BackendController {
         }
       }
 
-      if (status != null) {
-        EnumVorgangStatus evs = EnumVorgangStatus.valueOf(status);
-        for (EnumVorgangStatus closedVorgangStatus : EnumVorgangStatus.closedVorgangStatus()) {
-          if (evs == closedVorgangStatus) {
-            Auftrag auftrag = vorgang.getAuftrag();
-            if (auftrag != null && auftrag.getStatus() == EnumAuftragStatus.nicht_abgehakt) {
-              auftrag.setStatus(EnumAuftragStatus.abgehakt);
-              vorgang.setAuftrag(auftrag);
-            }
-          }
-        }
-      }
-
       vorgangDao.persist(vorgang);
       sendOk(response, mapper.writeValueAsString(vorgang));
     } catch (Exception e) {
