@@ -59,122 +59,144 @@
       <input type="submit" value="Anzeigen"/>
     </form:form>
 
-		<c:choose>
-			<c:when test="${not empty auftraege}">
+    <c:url value="/aussendienst/${team}/update" var="url"/>
+    <form:form action="${url}" method="POST" modelAttribute="cmdaussendienst">
+      <c:choose>
+        <c:when test="${not empty auftraege}">
 
-        <c:url value="/aussendienst/${team}/update_sorting" var="url"/>
-		    <table class="resulttable sortable" data-updateUrl="${url}">
-		      <thead>
-		        <tr>
-              <th>#</th>
-              <th>Typ</th>
-              <th>Erstellung</th>
-              <th colspan="2">Haupt- und Unterkategorie</th>
-              <th>Vorgangsstatus</th>
-              <th>Auftragsstatus</th>
-              <th colspan="2">Aktionen</th>
-		        </tr>
-		      </thead>
-			    <tbody>
-				  	<c:forEach items="${auftraege}" var="auftrag" varStatus="rowCounter">
-				  		<c:set value="${auftrag.vorgang}" var="vorgang"/>
-              <c:url value="/vorgang/${vorgang.getId()}/uebersicht" var="url"/>
-                        <fmt:formatDate value="${vorgang.datum}" pattern="dd.MM.yyyy" var="erstellung_datum"/>
-                        <fmt:formatDate value="${vorgang.datum}" pattern="dd.MM.yyyy HH:mm:ss" var="erstellung_datum_uhrzeit"/>
-                        <fmt:formatDate value="${vorgang.datum}" pattern="HH:mm:ss" var="erstellung_uhrzeit"/>
-                        <jsp:useBean id="heute" class="java.util.Date" />
-                        <fmt:formatDate value="${heute}" pattern="dd.MM.yyyy" var="heute_datum"/>
-				      <tr class="row ${(rowCounter.count%2==0)? 'odd' : 'even'}">
-				        <td class="id" style="text-align: center;">
-									<a href="${url}"><span class="show-tooltip" title="Vorgangsnummer: ${vorgang.id}" data-id="${vorgang.id}">${vorgang.id}</span></a>
-								</td>
-				        <td style="text-align: center;">
-									<c:url value="/images/${vorgang.typ}_15.png" var="imageUrl"/>
-									<a href="${url}"><img alt="${vorgang.typ.text}" src="${imageUrl}" height="15" width="15"  title="Typ: ${vorgang.typ.text}"/></a>
-								</td>
-				        <c:choose>
-                                    <c:when test="${erstellung_datum eq heute_datum}">
-                                        <td style="text-align: center;" title="${erstellung_datum_uhrzeit}"><a href="${url}">${erstellung_uhrzeit}</a></td>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <td style="text-align: center;" title="${erstellung_datum_uhrzeit}"><a href="${url}">${erstellung_datum}</a></td>
-                                    </c:otherwise>
-                                </c:choose>
-				        <td>
-									<a href="${url}">${vorgang.kategorie.parent.name}</a>
-								</td>
-				        <td>
-									<a href="${url}">${vorgang.kategorie.name}</a>
-								</td>
-				        <td style="text-align: center;">
-									<c:url value="/images/${vorgang.typ}_${vorgang.status}_15.png" var="imageUrl"/>
-									<a href="${url}"><img alt="${vorgang.status}" src="${imageUrl}"  title="Status: ${vorgang.status.text}"/></a>
-								</td>
-				        <td style="font-size: 17px; text-align: center;">
-                  <c:if test="${not empty auftrag.status}">
-                    <c:choose>
-                      <c:when test="${auftrag.status == 'abgehakt'}">
-                        <c:url value="/images/abgehakt.png" var="image_url"/>
-                        <span title="Auftragsstatus: abgehakt"><img src="${image_url}" alt="Auftragsstatus: abgehakt"/></span>
-                      </c:when>
-                      <c:when test="${auftrag.status == 'nicht_abgehakt'}">
-                        <c:url value="/images/nicht_abgehakt.png" var="image_url"/>
-                        <span title="Auftragsstatus: (noch) nicht abgehakt"><img src="${image_url}" alt="Auftragsstatus: (noch) nicht abgehakt"/></span>
-                      </c:when>
-                      <c:when test="${auftrag.status == 'nicht_abarbeitbar'}">
-                        <c:url value="/images/nicht_abarbeitbar.png" var="image_url"/>
-                        <span title="Auftragsstatus: nicht abarbeitbar"><img src="${image_url}" alt="Auftragsstatus: nicht abarbeitbar"/></span>
-                      </c:when>
-                    </c:choose>
-                  </c:if>
-								</td>
-                <td style="text-align: center;">
-                  <c:url value="/images/sort.png" var="image_url"/>
-                  <span class="sorting-arrows" title="Auftrag umsortien"><img src="${image_url}" alt="Auftrag umsortien"/></span>
+          <c:url value="/aussendienst/${team}/update_sorting" var="url"/>
+          <table class="resulttable sortable" data-updateUrl="${url}">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>
+                  <form:checkbox path="alleVorgaengeAuswaehlen" id="alleVorgaengeAuswaehlen" />
+                </th>
+                <th>Typ</th>
+                <th>Erstellung</th>
+                <th colspan="2">Haupt- und Unterkategorie</th>
+                <th>Vorgangsstatus</th>
+                <th>Auftragsstatus</th>
+                <th colspan="2">Aktionen</th>
+              </tr>
+            </thead>
+            <tbody>
+              <c:forEach items="${auftraege}" var="auftrag" varStatus="rowCounter">
+                <c:set value="${auftrag.vorgang}" var="vorgang"/>
+                <c:url value="/vorgang/${vorgang.getId()}/uebersicht" var="url"/>
+                          <fmt:formatDate value="${vorgang.datum}" pattern="dd.MM.yyyy" var="erstellung_datum"/>
+                          <fmt:formatDate value="${vorgang.datum}" pattern="dd.MM.yyyy HH:mm:ss" var="erstellung_datum_uhrzeit"/>
+                          <fmt:formatDate value="${vorgang.datum}" pattern="HH:mm:ss" var="erstellung_uhrzeit"/>
+                          <jsp:useBean id="heute" class="java.util.Date" />
+                          <fmt:formatDate value="${heute}" pattern="dd.MM.yyyy" var="heute_datum"/>
+                <tr class="row ${(rowCounter.count%2==0)? 'odd' : 'even'}">
+                  <td class="id" style="text-align: center;">
+                    <a href="${url}"><span class="show-tooltip" title="Vorgangsnummer: ${vorgang.id}" data-id="${vorgang.id}">${vorgang.id}</span></a>
+                  </td>
+                  <td class="skip-tr-click" style="text-align: center;">
+                    <form:checkbox path="vorgangAuswaehlen" value="${vorgang.id}" id="vorgang_${vorgang.id}" />
+                  </td>
+                  <td style="text-align: center;">
+                    <c:url value="/images/${vorgang.typ}_15.png" var="imageUrl"/>
+                    <a href="${url}"><img alt="${vorgang.typ.text}" src="${imageUrl}" height="15" width="15"  title="Typ: ${vorgang.typ.text}"/></a>
+                  </td>
+                  <c:choose>
+                                      <c:when test="${erstellung_datum eq heute_datum}">
+                                          <td style="text-align: center;" title="${erstellung_datum_uhrzeit}"><a href="${url}">${erstellung_uhrzeit}</a></td>
+                                      </c:when>
+                                      <c:otherwise>
+                                          <td style="text-align: center;" title="${erstellung_datum_uhrzeit}"><a href="${url}">${erstellung_datum}</a></td>
+                                      </c:otherwise>
+                                  </c:choose>
+                  <td>
+                    <a href="${url}">${vorgang.kategorie.parent.name}</a>
+                  </td>
+                  <td>
+                    <a href="${url}">${vorgang.kategorie.name}</a>
+                  </td>
+                  <td style="text-align: center;">
+                    <c:url value="/images/${vorgang.typ}_${vorgang.status}_15.png" var="imageUrl"/>
+                    <a href="${url}"><img alt="${vorgang.status}" src="${imageUrl}"  title="Status: ${vorgang.status.text}"/></a>
+                  </td>
+                  <td style="font-size: 17px; text-align: center;">
+                    <c:if test="${not empty auftrag.status}">
+                      <c:choose>
+                        <c:when test="${auftrag.status == 'abgehakt'}">
+                          <c:url value="/images/abgehakt.png" var="image_url"/>
+                          <span title="Auftragsstatus: abgehakt"><img src="${image_url}" alt="Auftragsstatus: abgehakt"/></span>
+                        </c:when>
+                        <c:when test="${auftrag.status == 'nicht_abgehakt'}">
+                          <c:url value="/images/nicht_abgehakt.png" var="image_url"/>
+                          <span title="Auftragsstatus: (noch) nicht abgehakt"><img src="${image_url}" alt="Auftragsstatus: (noch) nicht abgehakt"/></span>
+                        </c:when>
+                        <c:when test="${auftrag.status == 'nicht_abarbeitbar'}">
+                          <c:url value="/images/nicht_abarbeitbar.png" var="image_url"/>
+                          <span title="Auftragsstatus: nicht abarbeitbar"><img src="${image_url}" alt="Auftragsstatus: nicht abarbeitbar"/></span>
+                        </c:when>
+                      </c:choose>
+                    </c:if>
+                  </td>
+                  <td style="text-align: center;">
+                    <c:url value="/images/sort.png" var="image_url"/>
+                    <span class="sorting-arrows" title="Auftrag umsortien"><img src="${image_url}" alt="Auftrag umsortien"/></span>
+                  </td>
+                  <td style="text-align: center;">
+                    <c:url value="/aussendienst/${team}/entfernen/${auftrag.id}" var="url"/>
+                    <c:url value="/images/delete.png" var="image_url"/>
+                    <a href="${url}" title="Auftrag aus Liste entfernen"><img src="${image_url}" alt="Auftrag aus Liste entfernen"/></a>
+                  </td>
+                </tr>
+              </c:forEach>
+            </tbody>
+            <tfoot>
+              <tr class="footer">
+                <td colspan="5">
+                  <button type="submit" name="action" value="abgehakt" title="Auftragsstatus: abgehakt">
+                    <c:url value="/images/abgehakt.png" var="url"/>
+                    <img src="${url}" alt=""/>
+                  </button>
+                  <button type="submit" name="action" value="nicht_abgehakt" title="Auftragsstatus: (noch) nicht abgehakt">
+                    <c:url value="/images/nicht_abgehakt.png" var="url"/>
+                    <img src="${url}" alt=""/>
+                  </button>
+                  <button type="submit" name="action" value="nicht_abarbeitbar" title="Auftragsstatus: nicht abarbeitbar">
+                    <c:url value="/images/nicht_abarbeitbar.png" var="url"/>
+                    <img src="${url}" alt=""/>
+                  </button>
                 </td>
-                <td style="text-align: center;">
-                  <c:url value="/aussendienst/${team}/entfernen/${auftrag.id}" var="url"/>
-                  <c:url value="/images/delete.png" var="image_url"/>
-                  <a href="${url}" title="Auftrag aus Liste entfernen"><img src="${image_url}" alt="Auftrag aus Liste entfernen"/></a>
-                </td>
-				      </tr>
-						</c:forEach>
-			    </tbody>
-          <tfoot>
-            <tr class="footer">
-              <td colspan="9" style="text-align: right;">
-                <c:url value="/aussendienst/${team}/reset_sorting" var="url"/>
-                <form:form action="${url}" method="POST" modelAttribute="cmdaussendienst">
+                <td colspan="4" style="text-align: right;">
                   <form:hidden path="datum" />
-                  <input type="submit" value="Aufträge nach Erstellung aufsteigend sortieren"/>
-                </form:form>
-              </td>
-            </tr>
-          </tfoot>
-		    </table>
-<br/>
-<br/>
-        <map:multiview
-          projection="${geoService.mapProjection}"
-          maxExtent="${geoService.mapMaxExtent}"
-          restrictedExtent="${geoService.mapRestrictedExtent}"
-          resolutions="${geoService.mapResolutions}"
-          units="${geoService.mapUnits}"
-          layersOneType="${geoService.mapLayersOneType}"
-          layersOneParams="${geoService.mapLayersOneParams}"
-          layersTwoType="${geoService.mapLayersTwoType}"
-          layersTwoParams="${geoService.mapLayersTwoParams}"
-          layersPoiType="${geoService.mapLayersPoiType}"
-          layersPoiParams="${geoService.mapLayersPoiParams}"
-          oviMargin="${geoService.mapOviMargin}"
-          vorgaenge="${vorgaenge}"
-          cssStyle="height: 500px; width: 100%;"
-       		/>
-			</c:when>
-			<c:otherwise>
-				<div style="margin:20px 0px 0px 10px;">Das Außendiensteinheiten-Team <span style="font-style:italic">${team}</span> hat am gewählten Tag keine Aufträge.</div>
-			</c:otherwise>
-		</c:choose>
+                  <button type="submit" name="action" value="reset_sorting" title="Aufträge nach Erstellung aufsteigend sortieren">
+                    Aufträge nach Erstellung aufsteigend sortieren
+                  </button>
+                </td>
+              </tr>
+            </tfoot>
+          </table>
+          <br/>
+          <br/>
+          <map:multiview
+            projection="${geoService.mapProjection}"
+            maxExtent="${geoService.mapMaxExtent}"
+            restrictedExtent="${geoService.mapRestrictedExtent}"
+            resolutions="${geoService.mapResolutions}"
+            units="${geoService.mapUnits}"
+            layersOneType="${geoService.mapLayersOneType}"
+            layersOneParams="${geoService.mapLayersOneParams}"
+            layersTwoType="${geoService.mapLayersTwoType}"
+            layersTwoParams="${geoService.mapLayersTwoParams}"
+            layersPoiType="${geoService.mapLayersPoiType}"
+            layersPoiParams="${geoService.mapLayersPoiParams}"
+            oviMargin="${geoService.mapOviMargin}"
+            vorgaenge="${vorgaenge}"
+            cssStyle="height: 500px; width: 100%;"
+            />
+			  </c:when>
+			  <c:otherwise>
+				  <div style="margin:20px 0px 0px 10px;">Das Außendiensteinheiten-Team <span style="font-style:italic">${team}</span> hat am gewählten Tag keine Aufträge.</div>
+			  </c:otherwise>
+		  </c:choose>
+    </form:form>
 	</div>
         
   <!-- HELP -->
