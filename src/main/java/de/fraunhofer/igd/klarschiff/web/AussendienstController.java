@@ -5,6 +5,7 @@ import de.fraunhofer.igd.klarschiff.dao.VorgangDao;
 import de.fraunhofer.igd.klarschiff.service.geo.GeoService;
 import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
 import de.fraunhofer.igd.klarschiff.vo.Auftrag;
+import de.fraunhofer.igd.klarschiff.vo.EnumAuftragStatus;
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
@@ -134,18 +136,29 @@ public class AussendienstController {
    *
    * @param cmd Command
    * @param team Außendienst-Team
+   * @param action
    * @param model Model in dem ggf. Daten für die View abgelegt werden
    * @param request Request
    * @return View, die zum Rendern des Request verwendet wird
    */
-  @RequestMapping(value = "/aussendienst/{team}/reset_sorting", method = RequestMethod.POST)
+  @RequestMapping(value = "/aussendienst/{team}/update", method = RequestMethod.POST)
   public String reset_sorting(@ModelAttribute(value = "cmdaussendienst") AussendienstCommand cmd,
-    @PathVariable("team") String team, ModelMap model, HttpServletRequest request) {
+    @PathVariable("team") String team,
+    @RequestParam(value = "action", required = true) String action,
+    ModelMap model, HttpServletRequest request) {
 
-    List<Auftrag> auftraege = auftragDao.findAuftraegeByTeamAndDate(team, cmd.getDatum());
-    for (Auftrag auftrag : auftraege) {
-      auftrag.setPrioritaet(null);
-      vorgangDao.merge(auftrag);
+    if (action.equals("reset_sorting")) {
+      List<Auftrag> auftraege = auftragDao.findAuftraegeByTeamAndDate(team, cmd.getDatum());
+      for (Auftrag auftrag : auftraege) {
+        auftrag.setPrioritaet(null);
+        vorgangDao.merge(auftrag);
+      }
+    } else {
+      List<Auftrag> auftraege = auftragDao.findAuftraegeByTeamAndDateAndAuswahl(team, cmd.getDatum(), cmd.getVorgangAuswaehlen());
+      for (Auftrag auftrag : auftraege) {
+        auftrag.setStatus(EnumAuftragStatus.valueOf(action));
+        vorgangDao.merge(auftrag);
+      }
     }
     return team(cmd, team, model, request);
   }

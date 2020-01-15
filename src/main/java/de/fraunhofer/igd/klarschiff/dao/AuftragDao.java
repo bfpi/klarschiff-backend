@@ -2,10 +2,12 @@ package de.fraunhofer.igd.klarschiff.dao;
 
 import de.fraunhofer.igd.klarschiff.vo.Auftrag;
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
+import de.fraunhofer.igd.klarschiff.web.AussendienstCommand;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,9 +59,28 @@ public class AuftragDao {
    */
   @Transactional
   public List<Auftrag> findAuftraegeByTeamAndDate(String team, Date datum) {
-    return em.createQuery("SELECT a FROM Auftrag a, Vorgang v WHERE "
-      + "a.team = :team AND a.datum = :datum and a.vorgang = v.id "
-      + "order by a.prioritaet, v.datum", Auftrag.class)
+    return findAuftraegeByTeamAndDateAndAuswahl(team, datum, null);
+  }
+
+  /**
+   * Gibt eine Liste aller Aufträge des übergebenen Teams für einen Tag zurück.
+   *
+   * @param team Name des Aussendiens-Teams
+   * @param datum Datum des benötigten Tages
+   * @param auswahl Auswahl der Vorgänge als ID-Liste
+   * @return Liste der Aufträge
+   */
+  @Transactional
+  public List<Auftrag> findAuftraegeByTeamAndDateAndAuswahl(String team, Date datum, Long[] auswahl) {
+
+    String sql = "SELECT a FROM Auftrag a, Vorgang v WHERE "
+      + "a.team = :team AND a.datum = :datum and a.vorgang = v.id ";
+    if (auswahl != null && auswahl.length > 0) {
+        sql += "and v.id in (" + StringUtils.join(auswahl, ",") + ") ";
+    }
+    sql += "order by a.prioritaet, v.datum";
+
+    return em.createQuery(sql, Auftrag.class)
       .setParameter("team", team)
       .setParameter("datum", datum)
       .getResultList();

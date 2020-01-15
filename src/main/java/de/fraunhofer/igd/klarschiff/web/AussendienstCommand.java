@@ -11,6 +11,8 @@ import java.util.Date;
 public class AussendienstCommand extends Command {
 
   Date datum;
+  boolean alleVorgaengeAuswaehlen;
+  Long[] vorgangAuswaehlen;
 
   /* --------------- GET + SET ----------------------------*/
   public Date getDatum() {
@@ -19,5 +21,21 @@ public class AussendienstCommand extends Command {
 
   public void setDatum(Date datum) {
     this.datum = datum;
+  }
+
+  public boolean isAlleVorgaengeAuswaehlen() {
+    return alleVorgaengeAuswaehlen;
+  }
+
+  public void setAlleVorgaengeAuswaehlen(boolean alleVorgaengeAuswaehlen) {
+    this.alleVorgaengeAuswaehlen = alleVorgaengeAuswaehlen;
+  }
+
+  public Long[] getVorgangAuswaehlen() {
+    return vorgangAuswaehlen;
+  }
+
+  public void setVorgangAuswaehlen(Long[] vorgangAuswaehlen) {
+    this.vorgangAuswaehlen = vorgangAuswaehlen;
   }
 }
