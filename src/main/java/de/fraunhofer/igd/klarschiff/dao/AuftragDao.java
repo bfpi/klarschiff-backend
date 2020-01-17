@@ -1,6 +1,7 @@
 package de.fraunhofer.igd.klarschiff.dao;
 
 import de.fraunhofer.igd.klarschiff.vo.Auftrag;
+import de.fraunhofer.igd.klarschiff.vo.EnumAuftragStatus;
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
 import de.fraunhofer.igd.klarschiff.web.AussendienstCommand;
 import java.util.Date;
@@ -32,6 +33,39 @@ public class AuftragDao {
     return em.createQuery("SELECT a FROM Auftrag a, Vorgang v WHERE "
       + "a.vorgang = v.id "
       + "order by a.prioritaet, v.datum", Auftrag.class)
+      .getResultList();
+  }
+
+  /**
+   * Gibt eine Liste aller Aufträge des übergebenen Teams für einen Tag zurück.
+   *
+   * @param datum Datum des benötigten Tages
+   * @return Liste der Aufträge
+   */
+  @Transactional
+  public List<Auftrag> findAuftraegeByDate(Date datum) {
+    return findAuftraegeByDateAndStatus(datum, null);
+  }
+
+  /**
+   * Gibt eine Liste aller Aufträge des übergebenen Teams für einen Tag zurück.
+   *
+   * @param datum Datum des benötigten Tages
+   * @param status
+   * @return Liste der Aufträge
+   */
+  @Transactional
+  public List<Auftrag> findAuftraegeByDateAndStatus(Date datum, EnumAuftragStatus status) {
+
+    String sql = "SELECT a FROM Auftrag a, Vorgang v WHERE "
+      + "a.datum >= :datum and a.vorgang = v.id ";
+    if (status != null) {
+      sql += "and a.status = '" + status + "' ";
+    }
+    sql += "order by a.prioritaet, v.datum";
+
+    return em.createQuery(sql, Auftrag.class)
+      .setParameter("datum", datum)
       .getResultList();
   }
 
@@ -76,7 +110,7 @@ public class AuftragDao {
     String sql = "SELECT a FROM Auftrag a, Vorgang v WHERE "
       + "a.team = :team AND a.datum = :datum and a.vorgang = v.id ";
     if (auswahl != null && auswahl.length > 0) {
-        sql += "and v.id in (" + StringUtils.join(auswahl, ",") + ") ";
+      sql += "and v.id in (" + StringUtils.join(auswahl, ",") + ") ";
     }
     sql += "order by a.prioritaet, v.datum";
 

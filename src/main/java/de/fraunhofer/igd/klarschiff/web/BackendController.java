@@ -1420,6 +1420,149 @@ public class BackendController {
   }
 
   /**
+   * Die Methode verarbeitet den GET-Request auf der URL <code>/auftrag</code><br>
+   *
+   * @param authCode
+   * @param status
+   * @param date
+   * @param response Response in das das Ergebnis direkt geschrieben wird
+   * @throws java.io.IOException
+   */
+  @RequestMapping(value = "/auftraege", method = RequestMethod.GET)
+  @ResponseBody
+  public void auftraege(
+    @RequestParam(value = "authCode", required = false) String authCode,
+    @RequestParam(value = "date") String date,
+    @RequestParam(value = "status", required = false) String status,
+    HttpServletResponse response) throws IOException {
+
+    try {
+      if (authCode != null && authCode.equals(settingsService.getPropertyValue("auth.kod_code"))) {
+        if (StringUtils.isBlank(date)) {
+          throw new BackendControllerException(604, "[date] fehlt", "Es wurde kein Datum übergeben.");
+        }
+
+        List<Auftrag> liste;
+        if (StringUtils.isBlank(status)) {
+          liste = auftragDao.findAuftraegeByDate(getDateFromParam(date));
+        } else {
+          liste = auftragDao.findAuftraegeByDateAndStatus(getDateFromParam(date), EnumAuftragStatus.valueOf(status));
+        }
+
+        sendOk(response, mapper.writeValueAsString(liste));
+      } else {
+        sendOk(response);
+      }
+    } catch (Exception ex) {
+      java.util.logging.Logger.getLogger(BackendController.class.getName()).log(Level.SEVERE, null, ex);
+      sendError(response, ex);
+    }
+  }
+
+  /**
+   * Die Methode verarbeitet den GET-Request auf der URL <code>/auftrag</code><br>
+   *
+   * @param authCode
+   * @param vorgang_id
+   * @param agency_responsible
+   * @param date
+   * @param response Response in das das Ergebnis direkt geschrieben wird
+   * @throws java.io.IOException
+   */
+  @RequestMapping(value = "/auftragAnlegen", method = RequestMethod.POST)
+  @ResponseBody
+  public void auftragAnlegen(
+    @RequestParam(value = "authCode", required = false) String authCode,
+    @RequestParam(value = "vorgang_id") Integer vorgang_id,
+    @RequestParam(value = "agency_responsible") String agency_responsible,
+    @RequestParam(value = "date") String date,
+    HttpServletResponse response) throws IOException {
+
+    try {
+      if (authCode != null && authCode.equals(settingsService.getPropertyValue("auth.kod_code"))) {
+        Vorgang vorgang = vorgangDao.findVorgang(Long.valueOf(vorgang_id));
+
+        if (vorgang.getAuftrag() != null) {
+          throw new BackendControllerException(601, "[auftrag] existiert", "Für den übergebenen Vorgang existiert bereits ein Auftrag");
+        }
+
+        if (StringUtils.isBlank(agency_responsible)) {
+          throw new BackendControllerException(603, "[agency_responsible] fehlt", "Es wurde kein Außendienst-Team übergeben.");
+        }
+
+        if (StringUtils.isBlank(date)) {
+          throw new BackendControllerException(604, "[date] fehlt", "Es wurde kein Datum übergeben.");
+        }
+
+        Auftrag auftrag = new Auftrag();
+        auftrag.setTeam(agency_responsible);
+        auftrag.setDatum(getDateFromParam(date));
+        auftrag.setVorgang(vorgang);
+        vorgang.setAuftrag(auftrag);
+        vorgangDao.persist(vorgang);
+
+        sendOk(response, mapper.writeValueAsString(auftrag));
+      } else {
+        sendOk(response);
+      }
+    } catch (Exception ex) {
+      java.util.logging.Logger.getLogger(BackendController.class.getName()).log(Level.SEVERE, null, ex);
+      sendError(response, ex);
+    }
+  }
+
+  /**
+   * Die Methode verarbeitet den GET-Request auf der URL <code>/auftrag</code><br>
+   *
+   * @param authCode
+   * @param vorgang_id
+   * @param status
+   * @param date
+   * @param response Response in das das Ergebnis direkt geschrieben wird
+   * @throws java.io.IOException
+   */
+  @RequestMapping(value = "/auftragAktualisieren", method = RequestMethod.POST)
+  @ResponseBody
+  public void auftragAktualisieren(
+    @RequestParam(value = "authCode", required = false) String authCode,
+    @RequestParam(value = "vorgang_id") Integer vorgang_id,
+    @RequestParam(value = "status") String status,
+    @RequestParam(value = "date") String date,
+    HttpServletResponse response) throws IOException {
+
+    try {
+      if (authCode != null && authCode.equals(settingsService.getPropertyValue("auth.kod_code"))) {
+        Vorgang vorgang = vorgangDao.findVorgang(Long.valueOf(vorgang_id));
+        Auftrag auftrag = vorgang.getAuftrag();
+
+        if (auftrag == null) {
+          throw new BackendControllerException(602, "[auftrag] existiert nicht", "Für den übergebenen Vorgang existiert kein Auftrag");
+        }
+
+        if (StringUtils.isBlank(status)) {
+          throw new BackendControllerException(605, "[status] fehlt", "Es wurde kein status übergeben.");
+        }
+
+        if (StringUtils.isBlank(date)) {
+          throw new BackendControllerException(606, "[date] fehlt", "Es wurde kein Datum übergeben.");
+        }
+
+        auftrag.setDatum(getDateFromParam(date));
+        auftrag.setStatus(EnumAuftragStatus.valueOf(status));
+        vorgang.setAuftrag(auftrag);
+        vorgangDao.persist(vorgang);
+
+        sendOk(response, mapper.writeValueAsString(auftrag));
+      } else {
+        sendOk(response);
+      }
+    } catch (Exception ex) {
+      java.util.logging.Logger.getLogger(BackendController.class.getName()).log(Level.SEVERE, null, ex);
+      sendError(response, ex);
+    }
+  }
+
+  /**
    * Die Methode verarbeitet den GET-Request auf der URL <code>/setzeStatus</code><br>
    *
    * @param id ID des Auftrags
