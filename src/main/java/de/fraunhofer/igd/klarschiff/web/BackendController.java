@@ -1834,12 +1834,6 @@ public class BackendController {
         cmd.setAktualisiertBis(getDateFromParam(updated_to));
       }
 
-      if (agency_responsible != null) {
-        cmd.setAuftragTeam(agency_responsible);
-        cmd.setAuftragDatum(new Date());
-        cmd.setOrder(8);
-      }
-
       if (geoRssHash != null) {
         GeoRss geoRss = geoRssDao.findGeoRss(geoRssHash);
         String hauptKategorien = "";
@@ -1876,6 +1870,13 @@ public class BackendController {
 
       if (with_foto) {
         cmd.setFotoFreigabeStatus(EnumFreigabeStatus.extern);
+      }
+
+      if (agency_responsible != null) {
+        cmd.setAuftragTeam(agency_responsible);
+        cmd.setAuftragDatum(new Date());
+        cmd.setOrder(8);
+        cmd.setOrderDirection(0);
       }
 
       if (just_count) {
