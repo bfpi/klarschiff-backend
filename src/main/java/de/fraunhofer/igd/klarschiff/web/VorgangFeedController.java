@@ -106,7 +106,7 @@ public class VorgangFeedController {
     elem = new Element("link", atomNamespace);
     elem.setAttribute("href", settingsService.getPropertyValue("mail.server.baseurl.backend") + "xmlfeeds/feed/" + loginCrypt);
     elem.setAttribute("rel", "self");
-    elem.setAttribute("type", "application/rss+xml");
+    elem.setAttribute("type", "application/xml");
     channel.addContent(elem);
 
     //Link
@@ -247,7 +247,7 @@ public class VorgangFeedController {
     Document doc = new Document();
     doc.setRootElement(rss);
 
-    response.setHeader("Content-Type", "application/rss+xml");
+    response.setHeader("Content-Type", "application/xml");
     XMLOutputter outputter = new XMLOutputter(Format.getPrettyFormat());
     outputter.output(doc, response.getWriter());
     response.setStatus(HttpServletResponse.SC_OK);
@@ -302,7 +302,7 @@ public class VorgangFeedController {
     elem = new Element("link", atomNamespace);
     elem.setAttribute("href", settingsService.getPropertyValue("mail.server.baseurl.backend") + "xmlfeeds/feed/" + loginCrypt);
     elem.setAttribute("rel", "self");
-    elem.setAttribute("type", "application/rss+xml");
+    elem.setAttribute("type", "application/xml");
     channel.addContent(elem);
 
     //Link
@@ -432,7 +432,7 @@ public class VorgangFeedController {
     Document doc = new Document();
     doc.setRootElement(rss);
 
-    response.setHeader("Content-Type", "application/rss+xml");
+    response.setHeader("Content-Type", "application/xml");
     XMLOutputter outputter = new XMLOutputter(Format.getPrettyFormat());
     outputter.output(doc, response.getWriter());
     response.setStatus(HttpServletResponse.SC_OK);
