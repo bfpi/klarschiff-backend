@@ -1432,7 +1432,7 @@ public class BackendController {
   @ResponseBody
   public void auftraege(
     @RequestParam(value = "authCode", required = false) String authCode,
-    @RequestParam(value = "date", required = false) String date,
+    @RequestParam(value = "date") String date,
     @RequestParam(value = "status", required = false) String status,
     HttpServletResponse response) throws IOException {
 
