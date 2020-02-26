@@ -132,7 +132,7 @@ public class AussendienstController {
 
   /**
    * Die Methode verarbeitet den Request auf der URL
-   * <code>/aussendienst/{team}/update_sorting</code><br>
+   * <code>/aussendienst/{team}/update</code><br>
    *
    * @param cmd Command
    * @param team Außendienst-Team
@@ -154,10 +154,13 @@ public class AussendienstController {
         vorgangDao.merge(auftrag);
       }
     } else {
-      List<Auftrag> auftraege = auftragDao.findAuftraegeByTeamAndDateAndAuswahl(team, cmd.getDatum(), cmd.getVorgangAuswaehlen());
-      for (Auftrag auftrag : auftraege) {
-        auftrag.setStatus(EnumAuftragStatus.valueOf(action));
-        vorgangDao.merge(auftrag);
+      if (cmd.isAlleVorgaengeAuswaehlen() || cmd.getVorgangAuswaehlen().length > 0) {
+        List<Auftrag> auftraege = auftragDao.findAuftraegeByTeamAndDateAndAuswahl(team, cmd.getDatum(), cmd.getVorgangAuswaehlen());
+        for (Auftrag auftrag : auftraege) {
+          auftrag.setStatus(EnumAuftragStatus.valueOf(action));
+          auftrag.getVorgang().setVersion(new Date());
+          vorgangDao.merge(auftrag);
+        }
       }
     }
     return team(cmd, team, model, request);
