@@ -25,12 +25,12 @@ import javax.validation.constraints.Size;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.Type;
 import org.springframework.format.annotation.DateTimeFormat;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.Point;
-import com.vividsolutions.jts.geom.PrecisionModel;
-import com.vividsolutions.jts.io.ParseException;
-import com.vividsolutions.jts.io.WKTReader;
-import com.vividsolutions.jts.io.WKTWriter;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.geom.PrecisionModel;
+import org.locationtech.jts.io.ParseException;
+import org.locationtech.jts.io.WKTReader;
+import org.locationtech.jts.io.WKTWriter;
 import static de.bfpi.tools.GeoTools.transformPosition;
 import static de.bfpi.tools.GeoTools.wgs84Projection;
 import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
@@ -378,7 +378,7 @@ public class Vorgang implements Serializable {
    * Schreiben der WGS84Position als LatLong
    *
    * @param position
-   * @throws com.vividsolutions.jts.io.ParseException
+   * @throws org.locationtech.jts.io.ParseException
    * @throws org.opengis.referencing.FactoryException
    * @throws org.opengis.referencing.operation.TransformException
    */

@@ -9,12 +9,10 @@ import de.fraunhofer.igd.klarschiff.service.security.SecurityService;
 import de.fraunhofer.igd.klarschiff.service.settings.SettingsService;
 import de.fraunhofer.igd.klarschiff.vo.Kategorie;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -129,18 +127,18 @@ public class StatistikCommon {
           newCell.setCellStyle(oldCell.getCellStyle());
           newCell.setCellType(oldCell.getCellType());
           switch (oldCell.getCellType()) {
-            case Cell.CELL_TYPE_BLANK:
+            case BLANK:
               break;
-            case Cell.CELL_TYPE_BOOLEAN:
+            case BOOLEAN:
               newCell.setCellValue(oldCell.getBooleanCellValue());
               break;
-            case Cell.CELL_TYPE_FORMULA:
+            case FORMULA:
               newCell.setCellFormula(oldCell.getCellFormula());
               break;
-            case Cell.CELL_TYPE_NUMERIC:
+            case NUMERIC:
               newCell.setCellValue(oldCell.getNumericCellValue());
               break;
-            case Cell.CELL_TYPE_STRING:
+            case STRING:
               newCell.setCellValue(oldCell.getRichStringCellValue());
               break;
           }
@@ -207,7 +205,7 @@ public class StatistikCommon {
     Cell cell = row.getCell(col);
     cell.setCellValue(Double.parseDouble(String.valueOf(tmp)));
   }
-  
+
   protected Row setSummenRow(Row row, List<Integer> add_rows, Map<Integer, String> mapping) {
     Cell cell;
     String form = "";

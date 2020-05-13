@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import com.googlecode.ehcache.annotations.Cacheable;
 import com.googlecode.ehcache.annotations.KeyGenerator;
 import com.googlecode.ehcache.annotations.Property;
-import com.vividsolutions.jts.geom.Point;
+import org.locationtech.jts.geom.Point;
 
 /**
  * Hilfsklasse zum Cachen von Anfragen an den WFS. Das Ergebnis beim Aufruf von Funktionen aus der

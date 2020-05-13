@@ -78,14 +78,6 @@
         <url-pattern>/*</url-pattern>
     </filter-mapping>
     
-    <!-- Creates the Spring Container shared by all Servlets and Filters -->
-    <listener>
-    	<listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
-    </listener>
-    <listener>
-        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-    </listener>
-    
     <!-- Handles Spring requests -->
     <servlet>
         <servlet-name>backend</servlet-name>

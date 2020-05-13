@@ -132,7 +132,9 @@ public class D3Tools {
       return builder.build(response_in);
     } catch (MalformedURLException ex) {
       Logger.getLogger(D3Tools.class.getName()).log(Level.SEVERE, null, ex);
-    } catch (ProtocolException | JDOMException ex) {
+    } catch (ProtocolException ex) {
+      Logger.getLogger(D3Tools.class.getName()).log(Level.SEVERE, null, ex);
+    } catch (JDOMException ex) {
       Logger.getLogger(D3Tools.class.getName()).log(Level.SEVERE, null, ex);
     } catch (IOException ex) {
       Logger.getLogger(D3Tools.class.getName()).log(Level.SEVERE, null, ex);

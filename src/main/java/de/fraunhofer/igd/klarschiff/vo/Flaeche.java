@@ -1,6 +1,6 @@
 package de.fraunhofer.igd.klarschiff.vo;
 
-import com.vividsolutions.jts.geom.MultiPolygon;
+import org.locationtech.jts.geom.MultiPolygon;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;

@@ -635,7 +635,7 @@ public class VorgangDao {
       conds.add("vo.typ <> 'tipp'");
     }
     // Nur Vorgänge zurückgeben, deren Kategorie nicht gelöscht ist
-    List<Long> kategorieIds = new ArrayList<>();
+    List<Long> kategorieIds = new ArrayList<Long>();
     for (Kategorie kategorie : kategorieDao.getKategorien(true)) {
       kategorieIds.add(kategorie.getId());
     }

@@ -1,11 +1,11 @@
 package de.bfpi.tools;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.Point;
-import com.vividsolutions.jts.geom.PrecisionModel;
-import com.vividsolutions.jts.io.ParseException;
-import com.vividsolutions.jts.io.WKTReader;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.geom.PrecisionModel;
+import org.locationtech.jts.io.ParseException;
+import org.locationtech.jts.io.WKTReader;
 import javax.persistence.Transient;
 import org.apache.commons.lang.StringUtils;
 import org.geotools.geometry.jts.JTS;
@@ -30,7 +30,7 @@ public class GeoTools {
    *
    * @param pointWkt WKT-Punkt
    * @return Punkt im Koordinatenformat [LAT, LONG]
-   * @throws com.vividsolutions.jts.io.ParseException
+   * @throws org.locationtech.jts.io.ParseException
    */
   public static Point pointWktToPoint(String pointWkt) {
     try {

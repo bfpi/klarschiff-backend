@@ -60,7 +60,7 @@ import java.util.HashMap;
 import java.util.Objects;
 import java.util.logging.Level;
 import org.codehaus.jackson.map.ObjectMapper;
-import com.vividsolutions.jts.geom.Point;
+import org.locationtech.jts.geom.Point;
 import static de.bfpi.tools.GeoTools.pointWktToPoint;
 import static de.bfpi.tools.GeoTools.transformPosition;
 import static de.bfpi.tools.GeoTools.wgs84Projection;
@@ -239,7 +239,11 @@ public class BackendController {
           try {
             Point point = transformPosition(pointWktToPoint(positionWGS84), wgs84Projection, internalProjection);
             neueAdresse = geoService.calculateAddress(point);
-          } catch (FactoryException | MismatchedDimensionException | TransformException e) {
+          } catch (FactoryException e) {
+            logger.error(e);
+          } catch (MismatchedDimensionException e) {
+            logger.error(e);
+          } catch (TransformException e) {
             logger.error(e);
           }
         }
@@ -257,7 +261,11 @@ public class BackendController {
           try {
             Point point = transformPosition(pointWktToPoint(positionWGS84), wgs84Projection, internalProjection);
             neueAdresse = geoService.calculateAddress(point);
-          } catch (FactoryException | MismatchedDimensionException | TransformException e) {
+          } catch (FactoryException e) {
+            logger.error(e);
+          } catch (MismatchedDimensionException e) {
+            logger.error(e);
+          } catch (TransformException e) {
             logger.error(e);
           }
         }
@@ -534,7 +542,11 @@ public class BackendController {
         try {
           Point point = transformPosition(pointWktToPoint(positionWGS84), wgs84Projection, internalProjection);
           neueAdresse = geoService.calculateAddress(point);
-        } catch (FactoryException | MismatchedDimensionException | TransformException e) {
+        } catch (FactoryException e) {
+          logger.error(e);
+        } catch (MismatchedDimensionException e) {
+          logger.error(e);
+        } catch (TransformException e) {
           logger.error(e);
         }
       }

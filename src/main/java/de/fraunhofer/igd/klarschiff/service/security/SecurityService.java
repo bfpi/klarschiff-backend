@@ -576,7 +576,7 @@ public class SecurityService {
    * @param sortByDescription Soll nach der Beschreibung sortiert werden statt (standardmäßig) nach der ID?
    * @return Liste mit allen Rollen zum Delegieren
    */
-  public List<Role> getAllDelegiertAn(Boolean sortByDescription) {
+  public List<Role> getAllDelegiertAn(final Boolean sortByDescription) {
     List<Role> allDelegiertAn = securityServiceLdap.getObjectListFromLdap(groupSearchBase, "(&(objectclass=" + groupObjectClass + ")(" + groupRoleAttribute + "=" + groupExtern + "))", roleContextMapper);
 
     Collections.sort(allDelegiertAn, new Comparator<Role>() {

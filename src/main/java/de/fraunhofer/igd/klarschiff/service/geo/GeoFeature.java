@@ -1,6 +1,6 @@
 package de.fraunhofer.igd.klarschiff.service.geo;
 
-import com.vividsolutions.jts.geom.Geometry;
+import org.locationtech.jts.geom.Geometry;
 
 /**
  * Die Klasse ist eine Hilfsklasse zum Übergeben der ermittelten Features vom WFS.
