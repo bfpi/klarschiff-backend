@@ -15,19 +15,17 @@
 	version="2.0"
 	>
 	<jsp:directive.page contentType="text/html;charset=UTF-8"/>
-	
 
 	<!-- Datepicker-->
-	<c:url value="/script/jquery-ui/jquery.ui.core.js" var="url"/>
-	<script src="${url}" type="text/javascript"><!-- //jquery.ui.datepicker --></script>
-	<c:url value="/script/jquery-ui/jquery.ui.datepicker.js" var="url"/>
-	<script src="${url}" type="text/javascript"><!-- //jquery.ui.datepicker --></script>
- 	<c:url value="/script/jquery-ui/jquery.ui.datepicker-de.js" var="url"/>
-	<script src="${url}" type="text/javascript"><!-- //jquery.ui.datepicker-de --></script>
- 	<c:url value="/script/resulttable.js" var="url"/>
+	<c:url value="/script/jquery-ui-1.12.1/jquery-ui.min.js" var="url"/>
+	<script src="${url}" type="text/javascript"><!-- //jquery-ui.min --></script>
+	<c:url value="/script/datepicker-i18n.js" var="url"/>
+	<script src="${url}" type="text/javascript"><!-- //datepicker-i18n --></script>
+
+  <c:url value="/script/resulttable.js" var="url"/>
  	<script src="${url}" type="text/javascript"><!-- //resulttable --></script>
- 
-	<c:url value="/script/jquery-ui/css/jquery.ui.all.css" var="url"/>
+
+	<c:url value="/script/jquery-ui-1.12.1/jquery-ui.min.css" var="url"/>
 	<link rel="stylesheet" type="text/css" href="${url}"> <!-- styles.css --> </link>
  	
 	<!-- CONTENTTITLE -->
@@ -42,7 +40,6 @@
 	<!-- CONTENT -->
 	<div id="root_style_content">
 		
-
 		<!-- einfache Suche -->
 		<c:if test="${cmdvorgangsuchen.suchtyp == 'einfach'}">
 			<div style="text-align: right;">
