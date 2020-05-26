@@ -23,9 +23,10 @@
   <script defer="defer" type="text/javascript" src="${scriptUrl}/fotoBearbeitung.js">
 <!-- crazy fix - confusing -->
   </script>
-  <script type="text/javascript" language="JavaScript" src="${scriptUrl}/jquery/modalDialog/js/jquery.md.js">
-<!-- crazy fix - confusing -->
-  </script>
+  <c:url value="/script/jquery-ui-1.12.1/jquery-ui.min.js" var="url"/>
+  <script src="${url}" type="text/javascript"><!-- //jquery-ui.min --></script>
+  <c:url value="/script/jquery-ui-1.12.1/jquery-ui.min.css" var="url"/>
+  <link rel="stylesheet" type="text/css" href="${url}"> <!-- styles.css --> </link>
 
   <button id="rotateAnchor" type="button" name="action" value="fotoRotate" title="Foto um 90° im Uhrzeigersinn rotieren">
     <c:url value="/images/foto_edit_rotate.png" var="url"/>
@@ -52,4 +53,8 @@
     <c:url value="/images/foto_edit_save.png" var="url"/>
     <img src="${url}" alt=""/>
   </button>
+
+  <div id="dialog-confirm" style="display: none;" title="Foto speichern">
+    Sollen die Änderungen im Foto gespeichert werden? <div style="font-size: 0.8em; margin-top:3px"> Hinweis: Die Speicherung kann nicht wieder rückgängig gemacht werden.</div>
+  </div>
 </jsp:root>

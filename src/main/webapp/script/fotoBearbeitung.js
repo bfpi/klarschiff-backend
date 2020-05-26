@@ -185,22 +185,25 @@ $(function () {
 	$("#submitAnchor").click(function(e) {
 		
 		if (currStackItem == null || currStackItem.length == 0) return;
-		$.md('Sollen die Änderungen im Foto gespeichert werden? <div style="font-size: 0.8em; margin-top:3px"> Hinweis: Die Speicherung kann nicht wieder rückgängig gemacht werden.</div>',{
-			fullscreen: false,
-			cssDir: webAppUrl + "script/jquery/modalDialog/css",
-			showClose: false,
-			showMinimize: false,
-			showFullscreen: false,
-			type: 'prompt',
-			modalBG: '#000000',
-			width: 300,
-			buttons:{
-				'Ja':function(){ submit(); },
-				'Nein':function(){$.md.hide(); return false; }
-			}
-		});
-		$('#md-close').hide();
-		$('#md-title').html("Foto speichern");
+
+    $("#dialog-confirm").dialog({
+      resizable: false,
+      height: "auto",
+      width: 300,
+      modal: true,
+      classes: {
+        "ui-dialog": "red"
+      },
+      buttons: {
+        "Ja": function () {
+          submit();
+        },
+        Nein: function () {
+          $(this).dialog("close");
+          return false;
+        }
+      }
+    });
 	});
 	
 	function submit() {
@@ -229,6 +232,6 @@ $(function () {
 		else {
 			$("form").submit();
 		}
-		$.md.hide();
+		$("#dialog-confirm").dialog("close");
 	}	
 });
