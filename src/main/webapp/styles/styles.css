@@ -845,96 +845,7 @@ button#uploadButton, form#uploadForm {
   margin-left: 10px;
 }
 
-/* ######################### Fotobearbeitung - Confirm-Dialog ######################### */
-div#md {
-  border: 2px solid #D81922;
-  /* abgerundete Ecken */
-  -moz-border-radius: 10px; /* Mozilla */
-  -webkit-border-radius: 10px; /* Webkit */
-  -khtml-border-radius: 10px; /* KHTML */
-  border-radius: 10px; /* Opera */
-  position: fixed;
-  width: 525px;
-  padding: 0px;
-  z-index: 200;
-  background: #fff;
-  font-family: Verdana, sans-serif;
-  font-size: 14px;
-  margin: 0;
-}
-
-div#md div#md-title {
-  float: left;
-  color: #fff;
-  padding-left: 2px
-}
-
-div#md .md-icon {
-  float: right;
-  cursor: pointer;
-  margin: 3px 3px 0 0;
-  height: 15px;
-  width: 15px;
-  background: url(../script/jquery/modalDialog/img/icons.png) no-repeat;
-}
-
-div#md div#md-content {
-  -moz-border-radius-bottomright: 8px; /* Mozilla */
-  -moz-border-radius-bottomleft: 10px; /* Mozilla */
-  -webkit-border-bottom-right-radius: 8px; /* Webkit */
-  -webkit-border-bottom-left-radius: 10px; /* Webkit */
-  -khtml-border-radius-bottomright: 8px; /* KHTML */
-  -khtml-border-radius-bottomleft: 10px; /* KHTML */
-  border-bottom-right-radius: 8px; /* Opera */
-  border-bottom-left-radius: 10px; /* Opera */
-  display: block;
-  padding: 6px;
-  min-height: 100px;
-  color: #666666;
-  font-size: 13px;
-  margin: 0;
-}
-
-div#md div#md-content-inner {
-  min-height: 65px;
-}
-div#md .err {
-  background: #fff url(../script/jquery/modalDialog/img/e_bg.jpg) bottom
-    right no-repeat;
-  border: 0px;
-  border-top: none
-}
-
-div#md .errheader {
-  background: url(../script/jquery/modalDialog/img/e_hd.gif) repeat-x;
-  color: #6f2c2c;
-  border: 0px solid #924949;
-  border-bottom: none
-}
-div#md .prompt {
-  background: #E1E1E1 url(../images/p_bg.png) bottom right no-repeat
-}
-
-div#md .promptheader { /* abgerundete Ecken */
-  -moz-border-radius-topright: 6px; /* Mozilla */
-  -moz-border-radius-topleft: 6px; /* Mozilla */
-  -webkit-border-top-right-radius: 6px; /* Webkit */
-  -webkit-border-top-left-radius: 6px; /* Webkit */
-  -khtml-border-radius-topright: 6px; /* KHTML */
-  -khtml-border-radius-topleft: 6px; /* KHTML */
-  border-top-right-radius: 6px; /* Opera */
-  border-top-left-radius: 6px; /* Opera */
-  border: 0px;
-  background: #D81922;
-}
-div#md { font-family:Verdana, sans-serif; }
-div#md .md-button { font-family:Verdana, sans-serif; }
-
 /* ######################### Hilfedialog ######################### */
-
-
-
-
 #md-frame #md-mask {position:absolute; top:0; left:0; float:left; height:100%; width:100%; background-color: rgb(0, 0, 0); opacity: 0.8; filter: alpha(opacity=80); z-index:760; }
 #md-frame #md {position:fixed; width:525px; padding:0px; z-index:760; background:#fff; font-family:Verdana, sans-serif; font-size:14px; margin:0;}
 #md-frame #md #md-header {display:block; position:relative; padding:3px 6px 7px; height:14px; font-size:14px; font-weight:bold}
@@ -948,7 +859,6 @@ div#md .md-button { font-family:Verdana, sans-serif; }
 #md-frame #md #md-content-inner { min-height:128px; }
 #md-frame #md #md-button-container { text-align:center; margin:2px 6px 6px 2px; }
 #md-frame #md .md-button { font-weight:bold; font-size:1.1em; font-family:Verdana, sans-serif; padding:2px 5px 2px 5px; }
-#md-frame div#md .prompt { background:none; }
 #md-frame iframe { border-bottom: 1px solid #AAAAAA; }
 .helplink {
   color: #006CB7;
@@ -985,6 +895,50 @@ div#md .md-button { font-family:Verdana, sans-serif; }
 /* ######################### jQuery Calendar ######################### */
 .ui-datepicker.ui-widget { font-family: Verdana,sans-serif; }
 .ui-datepicker.ui-widget input, .ui-datepicker.ui-widget select, .ui-datepicker.ui-widget textarea, .ui-datepicker.ui-widget button { font-family: Verdana,sans-serif; }
+
+
+/* ######################### jQuery UI Dialog ######################### */
+
+.ui-dialog.red {
+  background: #E1E1E1 url(../images/p_bg.png) bottom right no-repeat;
+}
+
+.ui-dialog.red + .ui-widget-overlay {
+  opacity: .6 !important;
+}
+
+.ui-dialog.red {
+  border: 3px solid #D81922 !important;
+  border-radius: 10px;
+  padding: 0;
+}
+
+.ui-dialog.red .ui-dialog-titlebar {
+  background-color: #D81922 !important;
+  border: 0;
+  color: #ffffff;
+}
+
+.ui-dialog.red .ui-dialog-titlebar button {
+  display: none;
+}
+
+.ui-dialog.red .ui-dialog-buttonpane {
+  background-color: transparent;
+  border-bottom-right-radius: 8px;
+  border-bottom-left-radius: 10px;
+  border-top: 0;
+}
+
+.ui-dialog.red .ui-dialog-buttonpane .ui-dialog-buttonset {
+  float: initial;
+  text-align: center;
+}
+
+.ui-dialog.red .ui-dialog-buttonpane .ui-dialog-buttonset button:active {
+  border: 1px solid #D81922;
+  background: #D81922;
+}
 
 /* ######################### Freigabestatusbutton ######################### */
 .freigabestatusbutton button {
