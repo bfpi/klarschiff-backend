@@ -209,8 +209,8 @@ $(function () {
 	function submit() {
 		
 		var picture = $("img#picture");
-		var t = picture.position().top;
-		var l = picture.position().left;
+		var t = picture[0].y;
+		var l = picture[0].x;
 		var w = picture.width();
 		var h = picture.height();
 	//	console.log("new imageTop: " + t + " imageLeft:" + l);
