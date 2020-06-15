@@ -28,7 +28,7 @@
         $.ajax({
           url: "${url}",
           type: "GET",
-          data: { browser: (!navigator.userAgent.match(/Trident\/7\./) &amp;&amp; $.browser.mozilla) ? "firefox" : "other" },
+          data: { browser: (navigator.userAgent.match(/Trident\/7\./)) ? "ie11" : "other" },
           success: function (data) {
             location.href = data;
           }
