@@ -289,9 +289,9 @@ public class GeoService {
           adresse += properties.getString("hausnummer");
           if (!properties.get("hausnummer_zusatz").equals(null))
             adresse += properties.getString("hausnummer_zusatz");
-          if (!properties.isNull("abkuerzung")) {
+          if (!properties.isNull("gemeindeteil_abkuerzung")) {
             adresse += " (";
-            adresse += properties.getString("abkuerzung");
+            adresse += properties.getString("gemeindeteil_abkuerzung");
             adresse += ")";
           }
           if (properties.getDouble("entfernung") > 50)

@@ -245,12 +245,13 @@ public class VorgangEmailController {
 
     // Subject und Body jeweils URL-encoden sowie vollständigen Link zusammensetzen...
     String link = new String();
-    // ...falls Firefox als Browser genutzt wird, ist das URL-Encoding ohne weitere Parameter durchzuführen
-    if (browser.equals("firefox")) {
-      link = "mailto:?subject=" + URLEncoder.encode(subject) + "&body=" + URLEncoder.encode(body);
-    } // ...ansonsten muss dem URL-Encoding das gewünschte Text-Encoding als Parameter übergeben werden
-    else {
+    
+    // ...falls IE 11 als Browser genutzt wird, muss dem URL-Encoding das gewünschte Text-Encoding als Parameter übergeben werden
+    if (browser.equals("ie11")) {
       link = "mailto:?subject=" + URLEncoder.encode(subject, encoding) + "&body=" + URLEncoder.encode(body, encoding);
+    } // ...ansonsten ist das URL-Encoding ohne weitere Parameter durchzuführen
+    else {
+      link = "mailto:?subject=" + URLEncoder.encode(subject) + "&body=" + URLEncoder.encode(body);
     }
 
     response.setCharacterEncoding(encoding);
