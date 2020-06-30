@@ -45,150 +45,152 @@
 		<vorgang:vorgangPrintEmail vorgang="${vorgang}"/>
 
 				<!-- Zuständigkeit -->
-				<div class="fieldset" id="zustaendigkeitpanel">
-					<div class="fieldsettitle closepanel" id="zustaendigkeittab"><div style="width:100%; height:15px;">Zuständigkeit</div></div>
-					<div id="zustaendigkeitcontent">
-						<div>
-							aktuelle Zuständigkeit: <vorgang:zustaendigkeit vorgang="${vorgang}"/>
-						</div>
-			
-						<ul class="formlist">
-							<c:set value="${fx:role(vorgang.zustaendigkeit)}" var="zustaendigkeit"/>
-							<c:set value="${fx:rminuso(fx:rminusc(allZustaendigkeiten, currentZustaendigkeiten), zustaendigkeit)}" var="moeglicheZustaendigkeiten"/>
-							<c:set value="${fx:rcontains(currentZustaendigkeiten, fx:role(cmd.vorgang.zustaendigkeit))}" var="isZustaendig"/>
-							<c:set value="${vorgang.zustaendigkeitStatus == 'akzeptiert'}" var="isAkzeptiert"/>
-							<c:set value="${fx:rsize(currentZustaendigkeiten)==1}" var="isZustaendigkeitenSingle"/>
-							
-							<!-- annehmen und akzeptieren -->
-							<c:choose>
-								<c:when test="${isZustaendig and not isAkzeptiert and isZustaendigkeitenSingle}">
-					 				<li class="akzeptieren">
-										<form:form method="POST" modelAttribute="cmd.vorgang">
-											Zuständigkeit für den Vorgang<![CDATA[&nbsp;]]>
-											<input type="submit" value="akzeptieren" name="action"/>
-										</form:form>
-									</li>
-								</c:when>
-								<c:when test="${isZustaendig and not isAkzeptiert and not isZustaendigkeitenSingle}">
-					 				<li class="akzeptieren">
-										<form:form method="POST" modelAttribute="cmd.vorgang">
-											Zuständigkeit für den Vorgang<![CDATA[&nbsp;]]>
-											<input type="submit" value="akzeptieren" name="action"/>
-										</form:form>
-									</li>
-					 				<li class="akzeptieren">
-										<form:form method="POST" modelAttribute="cmd.vorgang">
-											Als Zuständigkeit für den Vorgang<![CDATA[&nbsp;]]>
-											<form:select path="zustaendigkeit" cssErrorClass="error">
-								            	<form:option value="" label="Zuständigkeit wählen" cssClass="info"/>
-								            	<role:options roles="${fx:rminuso(currentZustaendigkeiten, zustaendigkeit)}"/>
-											</form:select> 
-											<![CDATA[&nbsp;]]>
-											<input type="submit" value="&#252;bernehmen und akzeptieren" name="action"/>
-										</form:form>
-									</li>
-								</c:when>
-								<c:when test="${isZustaendig and isAkzeptiert and not isZustaendigkeitenSingle}">
-					 				<li class="akzeptieren">
-										<form:form method="POST" modelAttribute="cmd.vorgang">
-											Als Zuständigkeit für den Vorgang<![CDATA[&nbsp;]]>
-											<form:select path="zustaendigkeit" cssErrorClass="error">
-								            	<form:option value="" label="Zuständigkeit wählen" cssClass="info"/>
-								            	<role:options roles="${fx:rminuso(currentZustaendigkeiten, zustaendigkeit)}"/>
-											</form:select> 
-											<![CDATA[&nbsp;]]>
-											<input type="submit" value="&#252;bernehmen und akzeptieren" name="action"/>
-										</form:form>
-									</li>
-								</c:when>
-								<c:when test="${not isZustaendig and isAkzeptiert and not isZustaendigkeitenSingle}">
-					 				<li class="akzeptieren">
-										<form:form method="POST" modelAttribute="cmd.vorgang">
-											Als Zuständigkeit für den Vorgang<![CDATA[&nbsp;]]>
-											<form:select path="zustaendigkeit" cssErrorClass="error">
-								            	<form:option value="" label="Zuständigkeit wählen" cssClass="info"/>
-								            	<role:options roles="${fx:rminuso(currentZustaendigkeiten, zustaendigkeit)}"/>
-											</form:select> 
-											<![CDATA[&nbsp;]]>
-											<input type="submit" value="&#252;bernehmen und akzeptieren" name="action"/>
-										</form:form>
-									</li>
-								</c:when>
-								<c:when test="${not isZustaendig and not isAkzeptiert and isZustaendigkeitenSingle}">
-					 				<li class="akzeptieren">
-										<form:form method="POST" modelAttribute="cmd.vorgang">
-											<input name="vorgang.zustaendigkeit" type="hidden" value="${currentZustaendigkeiten[0].id}"/>
-											Zuständigkeit für den Vorgang<![CDATA[&nbsp;]]>
-											<input type="submit" value="&#252;bernehmen und akzeptieren" name="action"/>
-										</form:form>
-									</li>
-								</c:when>
-								<c:when test="${not isZustaendig and not isAkzeptiert and not isZustaendigkeitenSingle and fx:rsize(currentZustaendigkeiten)>2}">
-					 				<li class="akzeptieren">
-										<form:form method="POST" modelAttribute="cmd.vorgang">
-											Als Zuständigkeit für den Vorgang<![CDATA[&nbsp;]]>
-											<form:select path="zustaendigkeit" cssErrorClass="error">
-								            	<form:option value="" label="Zuständigkeit wählen" cssClass="info"/>
-								            	<role:options roles="${currentZustaendigkeiten}"/>
-											</form:select> 
-											<![CDATA[&nbsp;]]>
-											<input type="submit" value="&#252;bernehmen und akzeptieren" name="action"/>
-										</form:form>
-									</li>
-								</c:when>
-							</c:choose>
-							
-							<!-- automatisch neu zuweisen -->
-							<c:if test="${not isDispatcherInVorgangHistoryClasses}">
-								<c:choose>
-									<c:when test="${isZustaendig and not isAkzeptiert}">
-										<li class="automatisch">
-											<form:form method="POST" modelAttribute="cmd.vorgang">
-												Zuständigkeit ablehnen und Vorgang<![CDATA[&nbsp;]]>
-												<input type="submit" value="automatisch neu zuweisen" name="action"/>
-											</form:form>
-										</li>
-									</c:when>
-									<c:otherwise>
-										<li class="automatisch">
-											<form:form method="POST" modelAttribute="cmd.vorgang">
-												Zuständigkeit für den Vorgang<![CDATA[&nbsp;]]>
-												<input type="submit" value="automatisch neu zuweisen" name="action"/>
-											</form:form>
-										</li>
-									</c:otherwise>
-								</c:choose>
-							</c:if>
-							<sec:authorize access="hasRole('ROLE_DISPATCHER') or hasRole('ROLE_ADMIN')">		
-								<c:if test="${isDispatcherInVorgangHistoryClasses}">
-									<li class="automatisch reset">
-										<form:form method="POST" modelAttribute="cmd.vorgang">
-											Zuständigkeitsfinder <![CDATA[&nbsp;]]>
-											<input type="submit" value="zur&#252;cksetzen" name="action"/>
-										</form:form>
-									</li>
-								</c:if>
-							</sec:authorize>
-							
-							<!-- manuel zuweisen -->
-							<c:if test="${not empty moeglicheZustaendigkeiten}">
-								<li class="manuell">
-									<form:form method="POST" modelAttribute="cmd.vorgang">
-										Vorgang
-										<![CDATA[&nbsp;]]>
-										<form:select path="zustaendigkeit" cssErrorClass="error">
-							            	<form:option value="" label="Zuständigkeit wählen" cssClass="info"/>
-							            	<role:options roles="${moeglicheZustaendigkeiten}"/>
-										</form:select> 
-										<![CDATA[&nbsp;]]>
-										<input type="submit" value="zuweisen" name="action"/>
-									</form:form>
-								</li>
-							</c:if>
-						</ul>
-					</div>
-				</div>
-				<util:ddpanel name="zustaendigkeit"/>
+        <c:if test="${not cmd.vorgang.archiviert}">
+          <div class="fieldset" id="zustaendigkeitpanel">
+            <div class="fieldsettitle closepanel" id="zustaendigkeittab"><div style="width:100%; height:15px;">Zuständigkeit</div></div>
+            <div id="zustaendigkeitcontent">
+              <div>
+                aktuelle Zuständigkeit: <vorgang:zustaendigkeit vorgang="${vorgang}"/>
+              </div>
+        
+              <ul class="formlist">
+                <c:set value="${fx:role(vorgang.zustaendigkeit)}" var="zustaendigkeit"/>
+                <c:set value="${fx:rminuso(fx:rminusc(allZustaendigkeiten, currentZustaendigkeiten), zustaendigkeit)}" var="moeglicheZustaendigkeiten"/>
+                <c:set value="${fx:rcontains(currentZustaendigkeiten, fx:role(cmd.vorgang.zustaendigkeit))}" var="isZustaendig"/>
+                <c:set value="${vorgang.zustaendigkeitStatus == 'akzeptiert'}" var="isAkzeptiert"/>
+                <c:set value="${fx:rsize(currentZustaendigkeiten)==1}" var="isZustaendigkeitenSingle"/>
+                
+                <!-- annehmen und akzeptieren -->
+                <c:choose>
+                  <c:when test="${isZustaendig and not isAkzeptiert and isZustaendigkeitenSingle}">
+                    <li class="akzeptieren">
+                      <form:form method="POST" modelAttribute="cmd.vorgang">
+                        Zuständigkeit für den Vorgang<![CDATA[&nbsp;]]>
+                        <input type="submit" value="akzeptieren" name="action"/>
+                      </form:form>
+                    </li>
+                  </c:when>
+                  <c:when test="${isZustaendig and not isAkzeptiert and not isZustaendigkeitenSingle}">
+                    <li class="akzeptieren">
+                      <form:form method="POST" modelAttribute="cmd.vorgang">
+                        Zuständigkeit für den Vorgang<![CDATA[&nbsp;]]>
+                        <input type="submit" value="akzeptieren" name="action"/>
+                      </form:form>
+                    </li>
+                    <li class="akzeptieren">
+                      <form:form method="POST" modelAttribute="cmd.vorgang">
+                        Als Zuständigkeit für den Vorgang<![CDATA[&nbsp;]]>
+                        <form:select path="zustaendigkeit" cssErrorClass="error">
+                                <form:option value="" label="Zuständigkeit wählen" cssClass="info"/>
+                                <role:options roles="${fx:rminuso(currentZustaendigkeiten, zustaendigkeit)}"/>
+                        </form:select> 
+                        <![CDATA[&nbsp;]]>
+                        <input type="submit" value="&#252;bernehmen und akzeptieren" name="action"/>
+                      </form:form>
+                    </li>
+                  </c:when>
+                  <c:when test="${isZustaendig and isAkzeptiert and not isZustaendigkeitenSingle}">
+                    <li class="akzeptieren">
+                      <form:form method="POST" modelAttribute="cmd.vorgang">
+                        Als Zuständigkeit für den Vorgang<![CDATA[&nbsp;]]>
+                        <form:select path="zustaendigkeit" cssErrorClass="error">
+                                <form:option value="" label="Zuständigkeit wählen" cssClass="info"/>
+                                <role:options roles="${fx:rminuso(currentZustaendigkeiten, zustaendigkeit)}"/>
+                        </form:select> 
+                        <![CDATA[&nbsp;]]>
+                        <input type="submit" value="&#252;bernehmen und akzeptieren" name="action"/>
+                      </form:form>
+                    </li>
+                  </c:when>
+                  <c:when test="${not isZustaendig and isAkzeptiert and not isZustaendigkeitenSingle}">
+                    <li class="akzeptieren">
+                      <form:form method="POST" modelAttribute="cmd.vorgang">
+                        Als Zuständigkeit für den Vorgang<![CDATA[&nbsp;]]>
+                        <form:select path="zustaendigkeit" cssErrorClass="error">
+                                <form:option value="" label="Zuständigkeit wählen" cssClass="info"/>
+                                <role:options roles="${fx:rminuso(currentZustaendigkeiten, zustaendigkeit)}"/>
+                        </form:select> 
+                        <![CDATA[&nbsp;]]>
+                        <input type="submit" value="&#252;bernehmen und akzeptieren" name="action"/>
+                      </form:form>
+                    </li>
+                  </c:when>
+                  <c:when test="${not isZustaendig and not isAkzeptiert and isZustaendigkeitenSingle}">
+                    <li class="akzeptieren">
+                      <form:form method="POST" modelAttribute="cmd.vorgang">
+                        <input name="vorgang.zustaendigkeit" type="hidden" value="${currentZustaendigkeiten[0].id}"/>
+                        Zuständigkeit für den Vorgang<![CDATA[&nbsp;]]>
+                        <input type="submit" value="&#252;bernehmen und akzeptieren" name="action"/>
+                      </form:form>
+                    </li>
+                  </c:when>
+                  <c:when test="${not isZustaendig and not isAkzeptiert and not isZustaendigkeitenSingle and fx:rsize(currentZustaendigkeiten)>2}">
+                    <li class="akzeptieren">
+                      <form:form method="POST" modelAttribute="cmd.vorgang">
+                        Als Zuständigkeit für den Vorgang<![CDATA[&nbsp;]]>
+                        <form:select path="zustaendigkeit" cssErrorClass="error">
+                                <form:option value="" label="Zuständigkeit wählen" cssClass="info"/>
+                                <role:options roles="${currentZustaendigkeiten}"/>
+                        </form:select> 
+                        <![CDATA[&nbsp;]]>
+                        <input type="submit" value="&#252;bernehmen und akzeptieren" name="action"/>
+                      </form:form>
+                    </li>
+                  </c:when>
+                </c:choose>
+                
+                <!-- automatisch neu zuweisen -->
+                <c:if test="${not isDispatcherInVorgangHistoryClasses}">
+                  <c:choose>
+                    <c:when test="${isZustaendig and not isAkzeptiert}">
+                      <li class="automatisch">
+                        <form:form method="POST" modelAttribute="cmd.vorgang">
+                          Zuständigkeit ablehnen und Vorgang<![CDATA[&nbsp;]]>
+                          <input type="submit" value="automatisch neu zuweisen" name="action"/>
+                        </form:form>
+                      </li>
+                    </c:when>
+                    <c:otherwise>
+                      <li class="automatisch">
+                        <form:form method="POST" modelAttribute="cmd.vorgang">
+                          Zuständigkeit für den Vorgang<![CDATA[&nbsp;]]>
+                          <input type="submit" value="automatisch neu zuweisen" name="action"/>
+                        </form:form>
+                      </li>
+                    </c:otherwise>
+                  </c:choose>
+                </c:if>
+                <sec:authorize access="hasRole('ROLE_DISPATCHER') or hasRole('ROLE_ADMIN')">		
+                  <c:if test="${isDispatcherInVorgangHistoryClasses}">
+                    <li class="automatisch reset">
+                      <form:form method="POST" modelAttribute="cmd.vorgang">
+                        Zuständigkeitsfinder <![CDATA[&nbsp;]]>
+                        <input type="submit" value="zur&#252;cksetzen" name="action"/>
+                      </form:form>
+                    </li>
+                  </c:if>
+                </sec:authorize>
+                
+                <!-- manuel zuweisen -->
+                <c:if test="${not empty moeglicheZustaendigkeiten}">
+                  <li class="manuell">
+                    <form:form method="POST" modelAttribute="cmd.vorgang">
+                      Vorgang
+                      <![CDATA[&nbsp;]]>
+                      <form:select path="zustaendigkeit" cssErrorClass="error">
+                              <form:option value="" label="Zuständigkeit wählen" cssClass="info"/>
+                              <role:options roles="${moeglicheZustaendigkeiten}"/>
+                      </form:select> 
+                      <![CDATA[&nbsp;]]>
+                      <input type="submit" value="zuweisen" name="action"/>
+                    </form:form>
+                  </li>
+                </c:if>
+              </ul>
+            </div>
+          </div>
+          <util:ddpanel name="zustaendigkeit"/>
+        </c:if>
 
 				
 				<!-- interne Kommentare -->
@@ -283,15 +285,29 @@
 								<div>
 									<form:label path="status" cssErrorClass="error">Status</form:label>
 									<form:select path="status" cssErrorClass="error">
-						            	<form:option value="" label="Status wählen" cssClass="info"/>
-                                        <c:if test="${cmd.vorgang.typ == 'idee'}">
-                                            <c:if test="${!(cmd.vorgang.unterstuetzer.size() >= vorgangIdeenUnterstuetzer)}">
-                                                <form:options items="${allVorgangStatusMitOffenen}" itemLabel="text" htmlEscape="false"/>
-                                            </c:if>
-                                        </c:if>
-                                        <c:if test="${cmd.vorgang.typ != 'idee' or cmd.vorgang.unterstuetzer.size() >= vorgangIdeenUnterstuetzer}">
-                                            <form:options items="${allVorgangStatus}" itemLabel="text" htmlEscape="false"/>
-                                        </c:if>
+                    <form:option value="" label="Status wählen" cssClass="info"/>                                        
+                      <c:if test="${cmd.vorgang.typ == 'idee'}">
+                          <c:if test="${!(cmd.vorgang.unterstuetzer.size() >= vorgangIdeenUnterstuetzer)}">
+                            <c:choose>
+                              <c:when test="${not cmd.vorgang.archiviert}">
+                                <form:options items="${allVorgangStatusMitOffenen}" itemLabel="text" htmlEscape="false"/>
+                              </c:when>
+                              <c:otherwise>
+                                <form:options items="${allVorgangStatusWennArchiviert}" itemLabel="text" htmlEscape="false"/>
+                              </c:otherwise>
+                            </c:choose>
+                          </c:if>
+                      </c:if>
+                      <c:if test="${cmd.vorgang.typ != 'idee' or cmd.vorgang.unterstuetzer.size() >= vorgangIdeenUnterstuetzer}">
+                          <c:choose>
+                            <c:when test="${not cmd.vorgang.archiviert}">
+                              <form:options items="${allVorgangStatus}" itemLabel="text" htmlEscape="false"/>
+                            </c:when>
+                            <c:otherwise>
+                              <form:options items="${allVorgangStatusWennArchiviert}" itemLabel="text" htmlEscape="false"/>
+                            </c:otherwise>
+                          </c:choose>
+                      </c:if>
 									</form:select>
 								</div>
                                 <div>
@@ -521,88 +537,92 @@
                 </c:if>
 
                 <!-- Delegieren -->
-                <c:choose>
-                    <c:when test="${cmd.vorgang.delegiertAn == null or cmd.vorgang.delegiertAn == ''}">
-                        <div class="fieldset" id="delegierenpanel">
-                            <div class="fieldsettitle closepanel" id="delegierentab"><div style="width:100%; height:15px;">Delegieren</div></div>
-                            <div id="delegierencontent">
-                                <c:choose>
-                                    <c:when test="${cmd.vorgang.zustaendigkeitStatus == 'akzeptiert' and cmd.vorgang.status != 'gemeldet' and cmd.vorgang.status != 'offen' and cmd.vorgang.status != 'geloescht'}">
-                                        <form:form method="POST" modelAttribute="cmd.vorgang" >
-                                            <div>
-                                                an<![CDATA[&nbsp;]]>
-                                                <form:select path="delegiertAn" cssErrorClass="error">
-                                                    <form:option value="" label="" cssClass="info"/>
-                                                    <c:forEach items="${allDelegiertAn}" var="role">
-                                                      <form:option value="${role.id}" label="${role.description}"/>
-                                                    </c:forEach>
-                                                </form:select>
-                                                <![CDATA[&nbsp;]]> 
-                                                <input type="submit" value="delegieren" name="action"/>
-                                            </div>
-                                        </form:form>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <c:url value="/images/" var="urlStaticIcon"/>
-                                        Das Delegieren ist nur dann möglich, wenn der Vorgang <span class="statistic_accepted" title="akzeptiert">✔</span> ist und er gleichzeitig nicht <img alt="gemeldet" src="${urlStaticIcon}status_gemeldet_15.png" height="15" width="15" title="gemeldet" class="statistic_icon"/>, <img alt="offen" src="${urlStaticIcon}status_offen_15.png" height="15" width="15" title="offen" class="statistic_icon"/> oder <img alt="geloescht" src="${urlStaticIcon}status_geloescht_15.png" height="15" width="15" title="gelöscht" class="statistic_icon"/> ist.
-                                    </c:otherwise>
-                                </c:choose>
-                            </div>
-                        </div>
-                        <util:ddpanel name="delegieren"/>
-                    </c:when>
-                    <c:otherwise>
-                        <c:set value="${fx:role(cmd.vorgang.delegiertAn)}" var="delegiertAn"/>
-                        <div class="fieldset" id="delegierenpanel">
-                            <div class="fieldsettitle closepanel" id="delegierentab"><div style="width:100%; height:15px;">Vorgang zurückholen (Delegieren rückgängig machen)</div></div>
-                            <div id="delegierencontent">
-                                <form:form method="POST" modelAttribute="cmd.vorgang" >
-                                    <div>
-                                        von ${delegiertAn.description}<![CDATA[&nbsp;]]>
-                                        <input type="submit" value="zur&#252;ckholen" name="action"/>
-                                    </div>
-                                </form:form>
-                            </div>
-                        </div>
-                    </c:otherwise>
-                </c:choose>
+                <c:if test="${not cmd.vorgang.archiviert}">
+                  <c:choose>
+                      <c:when test="${cmd.vorgang.delegiertAn == null or cmd.vorgang.delegiertAn == ''}">
+                          <div class="fieldset" id="delegierenpanel">
+                              <div class="fieldsettitle closepanel" id="delegierentab"><div style="width:100%; height:15px;">Delegieren</div></div>
+                              <div id="delegierencontent">
+                                  <c:choose>
+                                      <c:when test="${cmd.vorgang.zustaendigkeitStatus == 'akzeptiert' and cmd.vorgang.status != 'gemeldet' and cmd.vorgang.status != 'offen' and cmd.vorgang.status != 'geloescht'}">
+                                          <form:form method="POST" modelAttribute="cmd.vorgang" >
+                                              <div>
+                                                  an<![CDATA[&nbsp;]]>
+                                                  <form:select path="delegiertAn" cssErrorClass="error">
+                                                      <form:option value="" label="" cssClass="info"/>
+                                                      <c:forEach items="${allDelegiertAn}" var="role">
+                                                        <form:option value="${role.id}" label="${role.description}"/>
+                                                      </c:forEach>
+                                                  </form:select>
+                                                  <![CDATA[&nbsp;]]> 
+                                                  <input type="submit" value="delegieren" name="action"/>
+                                              </div>
+                                          </form:form>
+                                      </c:when>
+                                      <c:otherwise>
+                                          <c:url value="/images/" var="urlStaticIcon"/>
+                                          Das Delegieren ist nur dann möglich, wenn der Vorgang <span class="statistic_accepted" title="akzeptiert">✔</span> ist und er gleichzeitig nicht <img alt="gemeldet" src="${urlStaticIcon}status_gemeldet_15.png" height="15" width="15" title="gemeldet" class="statistic_icon"/>, <img alt="offen" src="${urlStaticIcon}status_offen_15.png" height="15" width="15" title="offen" class="statistic_icon"/> oder <img alt="geloescht" src="${urlStaticIcon}status_geloescht_15.png" height="15" width="15" title="gelöscht" class="statistic_icon"/> ist.
+                                      </c:otherwise>
+                                  </c:choose>
+                              </div>
+                          </div>
+                          <util:ddpanel name="delegieren"/>
+                      </c:when>
+                      <c:otherwise>
+                          <c:set value="${fx:role(cmd.vorgang.delegiertAn)}" var="delegiertAn"/>
+                          <div class="fieldset" id="delegierenpanel">
+                              <div class="fieldsettitle closepanel" id="delegierentab"><div style="width:100%; height:15px;">Vorgang zurückholen (Delegieren rückgängig machen)</div></div>
+                              <div id="delegierencontent">
+                                  <form:form method="POST" modelAttribute="cmd.vorgang" >
+                                      <div>
+                                          von ${delegiertAn.description}<![CDATA[&nbsp;]]>
+                                          <input type="submit" value="zur&#252;ckholen" name="action"/>
+                                      </div>
+                                  </form:form>
+                              </div>
+                          </div>
+                      </c:otherwise>
+                  </c:choose>
+              </c:if>
 
 				<!-- Außendiensteinheiten -->
         <sec:authorize access="hasRole('ROLE_KOORDINATOR')">
-          <div class="fieldset" id="aussendienstpanel">
-            <div class="fieldsettitle closepanel" id="aussendiensttab"><div style="width:100%; height:15px;">Außendiensteinheiten-Team zuweisen</div></div>
-            <div id="aussendienstcontent">
-              <c:choose>
-                <c:when test="${cmd.vorgang.zustaendigkeitStatus == 'akzeptiert' and cmd.vorgang.status != 'gemeldet' and cmd.vorgang.status != 'geloescht'}">
-                  <form:form method="POST" modelAttribute="cmd.vorgang.auftrag" >
-                    <div>
-                      <form:label path="team" cssErrorClass="error">Team</form:label>
-                      <form:select path="team" id="team" cssErrorClass="error">
-                        <form:option value="" label="Team wählen" cssClass="info" />
-                        <form:options items="${koordinatorAussendienstTeams}" />
-                      </form:select>
-                      <form:errors path="team">
-                        <form:errors cssClass="error" cssStyle="font-size: 0.8em; padding-left: 100px" element="div" path="team"/>
+          <c:if test="${not cmd.vorgang.archiviert}">
+            <div class="fieldset" id="aussendienstpanel">
+              <div class="fieldsettitle closepanel" id="aussendiensttab"><div style="width:100%; height:15px;">Außendiensteinheiten-Team zuweisen</div></div>
+              <div id="aussendienstcontent">
+                <c:choose>
+                  <c:when test="${cmd.vorgang.zustaendigkeitStatus == 'akzeptiert' and cmd.vorgang.status != 'gemeldet' and cmd.vorgang.status != 'geloescht'}">
+                    <form:form method="POST" modelAttribute="cmd.vorgang.auftrag" >
+                      <div>
+                        <form:label path="team" cssErrorClass="error">Team</form:label>
+                        <form:select path="team" id="team" cssErrorClass="error">
+                          <form:option value="" label="Team wählen" cssClass="info" />
+                          <form:options items="${koordinatorAussendienstTeams}" />
+                        </form:select>
+                        <form:errors path="team">
+                          <form:errors cssClass="error" cssStyle="font-size: 0.8em; padding-left: 100px" element="div" path="team"/>
+                        </form:errors>
+                      </div>
+                      <div>
+                        <form:label path="datum" cssErrorClass="error">Datum</form:label>
+                        <form:input path="datum" id="aussendienst_datum" cssErrorClass="error" cssClass="inputtext datepicker" />
+                      </div>
+                      <form:errors path="datum">
+                        <form:errors cssClass="error" cssStyle="font-size: 0.8em; padding-left: 100px" element="div" path="datum"/>
                       </form:errors>
-                    </div>
-                    <div>
-                      <form:label path="datum" cssErrorClass="error">Datum</form:label>
-                      <form:input path="datum" id="aussendienst_datum" cssErrorClass="error" cssClass="inputtext datepicker" />
-                    </div>
-                    <form:errors path="datum">
-                      <form:errors cssClass="error" cssStyle="font-size: 0.8em; padding-left: 100px" element="div" path="datum"/>
-                    </form:errors>
-                    <input type="submit" value="Auftrag zuweisen" name="action" />
-                  </form:form>
-                </c:when>
-                <c:otherwise>
-                  <c:url value="/images/" var="urlStaticIcon"/>
-                  Das Zuweisen einer Außendiensteinheit ist nur dann möglich, wenn der Vorgang <span class="statistic_accepted" title="akzeptiert">✔</span> ist und er gleichzeitig nicht <img alt="gemeldet" src="${urlStaticIcon}status_gemeldet_15.png" height="15" width="15" title="gemeldet" class="statistic_icon"/> oder <img alt="geloescht" src="${urlStaticIcon}status_geloescht_15.png" height="15" width="15" title="gelöscht" class="statistic_icon"/> ist.
-                </c:otherwise>
-              </c:choose>
+                      <input type="submit" value="Auftrag zuweisen" name="action" />
+                    </form:form>
+                  </c:when>
+                  <c:otherwise>
+                    <c:url value="/images/" var="urlStaticIcon"/>
+                    Das Zuweisen einer Außendiensteinheit ist nur dann möglich, wenn der Vorgang <span class="statistic_accepted" title="akzeptiert">✔</span> ist und er gleichzeitig nicht <img alt="gemeldet" src="${urlStaticIcon}status_gemeldet_15.png" height="15" width="15" title="gemeldet" class="statistic_icon"/> oder <img alt="geloescht" src="${urlStaticIcon}status_geloescht_15.png" height="15" width="15" title="gelöscht" class="statistic_icon"/> ist.
+                  </c:otherwise>
+                </c:choose>
+              </div>
             </div>
-          </div>
-          <util:ddpanel name="aussendienst"/>
+            <util:ddpanel name="aussendienst"/>
+          </c:if>
         </sec:authorize>
         
 				<!-- Priorität -->
@@ -624,7 +644,7 @@
 				</div>
 				<util:ddpanel name="prioritaet"/>
 
-        <c:if test="${cmd.vorgang.kategorie.d3 != null}">
+        <c:if test="${cmd.vorgang.kategorie.d3 != null and not cmd.vorgang.archiviert}">
           <!-- d.3-Akte -->
           <div class="fieldset" id="d3panel">
             <div class="fieldsettitle closepanel" id="d3tab"><div style="width:100%; height:15px;">d.3</div></div>

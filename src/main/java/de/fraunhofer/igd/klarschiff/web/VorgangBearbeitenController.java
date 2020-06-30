@@ -158,6 +158,19 @@ public class VorgangBearbeitenController {
   }
 
   /**
+   * Liefert alle möglichen Ausprägungen für Vorgangs-Status-Typen (wenn archiviert!)
+   *
+   * @return mögliche Status-Ausprägungen
+   */
+  @ModelAttribute("allVorgangStatusWennArchiviert")
+  public EnumVorgangStatus[] allVorgangStatusWennArchiviert() {
+    EnumVorgangStatus[] allVorgangStatusWennArchiviert = EnumVorgangStatus.values();
+    allVorgangStatusWennArchiviert = (EnumVorgangStatus[]) ArrayUtils.removeElement(ArrayUtils.removeElement(ArrayUtils.removeElement(
+      allVorgangStatusWennArchiviert, EnumVorgangStatus.gemeldet), EnumVorgangStatus.offen), EnumVorgangStatus.inBearbeitung);
+    return allVorgangStatusWennArchiviert;
+  }
+
+  /**
    * Liefert alle möglichen Ausprägungen für Vorgangs-Status-Typen
    *
    * @return mögliche Status-Ausprägungen
