@@ -64,10 +64,10 @@
 	<!-- HELP -->
 	<div id="root_style_help">
 		<p>
-            In der <util:help anchor="Karte">Karte</util:help> können Sie sich die genaue Position des aktuell ausgewählten Vorgangs und dessen Umgebung ansehen. Mit Hilfe der Steuerungssymbole in der rechten oberen Ecke des Kartenfensters haben Sie einerseits die Möglichkeit zwischen dem Stadtplan und dem Luftbild als Kartenhintergrund zu wechseln; andererseits können Sie hier zwischen verschiedenen Funktionen zum Navigieren in der Karte wählen.
+            In der Karte können Sie sich die genaue Position des aktuell ausgewählten Vorgangs und dessen Umgebung ansehen. Mit Hilfe der Steuerungssymbole in der rechten oberen Ecke des Kartenfensters haben Sie einerseits die Möglichkeit zwischen dem Stadtplan und dem Luftbild als Kartenhintergrund zu wechseln; andererseits können Sie hier zwischen verschiedenen Funktionen zum Navigieren in der Karte wählen.
 		</p>
 		<p>
-			Der Link unterhalb des Kartenfensters öffnet die Anwendung Geoport.HRO und stellt dort die Position des Vorgangs in Form eines roten Punktes gut sichtbar in der Karte dar. In Geoport.HRO können Sie dann wie gewohnt den üblichen, vollen Funktionsumfang nutzen. 
+			Der Link oberhalb des Kartenfensters öffnet die Anwendung <i>Geoport.HRO</i> und stellt dort die Position des Vorgangs in Form eines roten Punktes gut sichtbar in der Karte dar. In <i>Geoport.HRO</i> können Sie dann wie gewohnt den üblichen, vollen Funktionsumfang nutzen. 
 		</p>
 	</div>
 
