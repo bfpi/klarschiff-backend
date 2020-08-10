@@ -75,7 +75,8 @@ body {
   margin-top:50px;
   margin-bottom:15px;
   text-align: center;
-  font-family: 'PT Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif
+  font-family: 'PT Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 24px;
 }
 
 header {
@@ -106,7 +107,6 @@ header {
 }
 
 .link {
-  font-size: 48px;
   font-weight: bold;
   margin-top: 15px;
 }
