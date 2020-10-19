@@ -507,6 +507,14 @@ public class VorgangDao {
         } else if (cmd.getErweitertVorgangTyp() != null) {
           conds.add("vo.typ = '" + cmd.getErweitertVorgangTyp().name() + "'");
         }
+        if (cmd.getErweitertVorgangTypen() != null && cmd.getErweitertVorgangTypen().length > 0) {
+          ArrayList<String> subConds = new ArrayList<String>();
+          List<EnumVorgangTyp> typen = Arrays.asList(cmd.getErweitertVorgangTypen());
+          for (EnumVorgangTyp enumVorgangTyp : typen) {
+            subConds.add("vo.typ = '" + enumVorgangTyp.name() + "'");
+          }
+          conds.add("(" + StringUtils.join(subConds, ") OR (") + ")");
+        }
         //Status
         if (cmd.getErweitertVorgangStatus() != null) {
           List<EnumVorgangStatus> inStatus = Arrays.asList(cmd.getErweitertVorgangStatus());
@@ -948,6 +956,7 @@ public class VorgangDao {
     if (cmd.getPage() != null && cmd.getSize() != null) {
       sql.append(" OFFSET ").append((cmd.getPage() - 1) * cmd.getSize());
     }
+
     return ((Session) em.getDelegate())
       .createSQLQuery(sql.toString())
       .addEntity("vo", Vorgang.class)
@@ -1419,7 +1428,8 @@ public class VorgangDao {
   }
 
   /**
-   * Ermittelt alle Vorgänge die seit einem bestimmten Datum vorhanden sind und noch im Status 'in Bearbeitung'
+   * Ermittelt alle Vorgänge die seit einem bestimmten Datum vorhanden sind und noch im Status 'in
+   * Bearbeitung'
    *
    * @param administrator Zuständigkeit ignorieren?
    * @param zustaendigkeit Zuständigkeit, der die Vorgänge zugewiesen sind
