@@ -20,7 +20,7 @@ public class StatistikDao {
   SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
   /*
-   * Holt die Anzahl der 'abgeschlossenen' Vorgänge eingeschränkt auf die übergebenen Kategorie-IDS
+   * Holt die Anzahl der 'gelösten' Vorgänge eingeschränkt auf die übergebenen Kategorie-IDS
    * im Zeitraum gruppiert nach Zuständigkeit, Kategorie und Stadtteil
    */
   public List<Object[]> getAnzahlAbgeschlosseneVorgaengeInZeitraum(EnumVorgangTyp typ, Date von, Date bis) {
@@ -40,8 +40,8 @@ public class StatistikDao {
       + "    select distinct on (vorgang) id from klarschiff_verlauf kverl_last where typ in ('status', 'erzeugt') and "
       + "      kverl_last.datum between '" + sdf.format(cVon.getTime()) + "' and '" + sdf.format(cBis.getTime()) + "' order by vorgang, datum desc "
       + "  ) and "
-      + "  (kverl.typ = 'status' and kverl.wert_neu IN ('abgeschlossen')) "
-      + "  and kvorg.typ = '" + typ + "' and kvorg.status NOT IN ('duplikat', 'geloescht', 'wirdNichtBearbeitet') "
+      + "  (kverl.typ = 'status' and kverl.wert_neu IN ('gelöst')) "
+      + "  and kvorg.typ = '" + typ + "' and kvorg.status NOT IN ('duplikat', 'geloescht', 'nichtLoesbar') "
       + "group by kvorg.zustaendigkeit, kk.id, kk.parent, kk.name, ksg.id, ksg.name order by kvorg.zustaendigkeit, kk.name")
       .getResultList();
   }
@@ -71,7 +71,7 @@ public class StatistikDao {
       + "      kverl_last.datum between '" + sdf.format(cVon.getTime()) + "' and '" + sdf.format(cBis.getTime()) + "' order by vorgang, datum desc "
       + "  ) and "
       + "  (kverl.typ = 'erzeugt' or (kverl.typ = 'status' and kverl.wert_neu NOT IN ('gelöscht'))) "
-      + "  and kvorg.typ = '" + typ + "' and kvorg.status NOT IN ('duplikat', 'geloescht', 'wirdNichtBearbeitet') "
+      + "  and kvorg.typ = '" + typ + "' and kvorg.status NOT IN ('duplikat', 'geloescht', 'nichtLoesbar') "
       + "group by kvorg.zustaendigkeit, kk.id, kk.parent, kk.name, ksg.id, ksg.name order by kvorg.zustaendigkeit, kk.name")
       .getResultList();
   }
@@ -101,7 +101,7 @@ public class StatistikDao {
       + "      kverl_last.datum between '" + sdf.format(cVon.getTime()) + "' and '" + sdf.format(cBis.getTime()) + "' order by vorgang, datum desc "
       + "  ) and "
       + "  (kverl.typ = 'erzeugt' or (kverl.typ = 'status' and kverl.wert_neu NOT IN ('Duplikat', 'wird nicht bearbeitet', 'gelöscht'))) "
-      + "  and kvorg.typ = '" + typ + "' and kvorg.status NOT IN ('duplikat', 'geloescht', 'wirdNichtBearbeitet') "
+      + "  and kvorg.typ = '" + typ + "' and kvorg.status NOT IN ('duplikat', 'geloescht', 'nichtLoesbar') "
       + "group by kvorg.zustaendigkeit, kk.id, kk.parent, kk.name, ksg.id, ksg.name order by kvorg.zustaendigkeit, kk.name")
       .getResultList();
   }
@@ -125,8 +125,8 @@ public class StatistikDao {
       + "    select distinct on (vorgang) id from klarschiff_verlauf kverl_last where typ in ('status', 'erzeugt') and "
       + "      kverl_last.datum < '" + sdf.format(c.getTime()) + "' order by vorgang, datum desc "
       + "  ) and "
-      + "  (kverl.typ = 'erzeugt' or (kverl.typ = 'status' and kverl.wert_neu NOT IN ('abgeschlossen', 'Duplikat', 'wird nicht bearbeitet', 'gelöscht'))) "
-      + "  and kvorg.typ = '" + typ + "' and kvorg.status NOT IN ('duplikat', 'geloescht', 'wirdNichtBearbeitet') "
+      + "  (kverl.typ = 'erzeugt' or (kverl.typ = 'status' and kverl.wert_neu NOT IN ('gelöst', 'Duplikat', 'wird nicht bearbeitet', 'gelöscht'))) "
+      + "  and kvorg.typ = '" + typ + "' and kvorg.status NOT IN ('duplikat', 'geloescht', 'nichtLoesbar') "
       + "group by kvorg.zustaendigkeit, kk.id, kk.parent, kk.name, ksg.id, ksg.name order by kvorg.zustaendigkeit, kk.name");
     return q.getResultList();
   }
