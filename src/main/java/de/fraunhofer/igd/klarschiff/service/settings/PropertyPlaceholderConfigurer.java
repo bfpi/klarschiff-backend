@@ -77,4 +77,19 @@ public class PropertyPlaceholderConfigurer extends org.springframework.beans.fac
     String result = prop.getProperty(profile + "." + name);
     return (result != null) ? result : prop.getProperty(name);
   }
+
+  /**
+   * Ermittelt den Wert einer Property wobei das Profile berücksichtigt wird.
+   *
+   * @param name Name der Property
+   * @param fallback_value
+   * @return Wert des Platzhalters
+   */
+  public static String getPropertyValue(String name, String fallback_value) {
+    String ret = getPropertyValue(name);
+    if(ret == null) {
+      return fallback_value;
+    }
+    return ret;
+  }
 }

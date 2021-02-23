@@ -159,4 +159,19 @@
     <function-class>de.fraunhofer.igd.klarschiff.tld.CustomFunctions</function-class>
     <function-signature>java.lang.String plsqlCommentHtmlFormater(java.lang.String)</function-signature>
   </function>
+  <function>
+    <name>fieldServiceEnabled</name>
+    <function-class>de.fraunhofer.igd.klarschiff.tld.CustomFunctions</function-class>
+    <function-signature>java.lang.Boolean fieldServiceEnabled()</function-signature>
+  </function>
+  <function>
+    <name>customCssPresent</name>
+    <function-class>de.fraunhofer.igd.klarschiff.tld.CustomFunctions</function-class>
+    <function-signature>java.lang.Boolean customCssPresent()</function-signature>
+  </function>
+  <function>
+    <name>customCssPath</name>
+    <function-class>de.fraunhofer.igd.klarschiff.tld.CustomFunctions</function-class>
+    <function-signature>java.lang.String customCssPath()</function-signature>
+  </function>
 </taglib>

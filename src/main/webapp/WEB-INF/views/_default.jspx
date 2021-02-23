@@ -38,6 +38,11 @@
 		<c:url value="/styles/styles.css" var="url"/>
 		<link rel="stylesheet" type="text/css" href="${url}"> <!-- styles.css --> </link>
 
+    <c:if test="${fx:customCssPresent()}">
+      <c:url value="${fx:customCssPath()}" var="url"/>
+		  <link rel="stylesheet" type="text/css" href="${url}"> <!-- custom.css --> </link>
+    </c:if>
+
 		<c:url value="/script/jquery/jquery-3.5.1.min.js" var="url"/>
 		<script src="${url}" type="text/javascript"><!-- //jQuery --></script>
 
