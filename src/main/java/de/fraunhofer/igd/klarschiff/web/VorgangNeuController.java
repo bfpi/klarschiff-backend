@@ -70,7 +70,7 @@ public class VorgangNeuController {
    */
   @ModelAttribute("vorgangtypen")
   public Collection<EnumVorgangTyp> populateEnumVorgangTypen() {
-    return Arrays.asList(EnumVorgangTyp.values());
+    return EnumVorgangTyp.getEnumVorgangTypen();
   }
 
   @ModelAttribute("geoService")
