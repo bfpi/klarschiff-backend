@@ -79,6 +79,7 @@ public class MailService {
   SimpleMailMessage informDispatcherMailTemplate;
   SimpleMailMessage informExternMailTemplate;
   SimpleMailMessage informErstellerMailInBearbeitungTemplate;
+  SimpleMailMessage informErstellerMailLangeInBearbeitungTemplate;
   SimpleMailMessage informErstellerMailAbschlussTemplate;
   SimpleMailMessage kriteriumOffenNichtAkzeptiertTemplate;
   SimpleMailMessage kriteriumOffenInbearbeitungOhneStatusKommentarTemplate;
@@ -453,6 +454,44 @@ public class MailService {
    */
   public void sendInformErstellerMailInBearbeitung(Vorgang vorgang) {
     SimpleMailMessage msg = new SimpleMailMessage(informErstellerMailInBearbeitungTemplate);
+    msg.setTo(vorgang.getAutorEmail());
+    msg.setSubject(msg.getSubject().replaceAll("%id%", vorgang.getId().toString())
+      .replaceAll("%title%", settingsService.getContextAppTitle()));
+
+    String mailtext = msg.getText();
+    mailtext = mailtext.replaceAll("%id%", vorgang.getId().toString());
+    mailtext = mailtext.replaceAll("%title%", settingsService.getContextAppTitle());
+    StringBuilder str = new StringBuilder();
+    //Vorgang
+    str.append("Nummer        : ").append(vorgang.getId()).append("\n");
+    str.append("Typ           : ").append(vorgang.getTyp().getText()).append("\n");
+    str.append("Hauptkategorie: ").append(vorgang.getKategorie().getParent().getName()).append("\n");
+    str.append("Unterkategorie: ").append(vorgang.getKategorie().getName()).append("\n\n\n");
+    str.append(geoService.getMapExternExternUrl(vorgang)).append("\n");
+    mailtext = mailtext.replaceAll("%vorgang%", str.toString());
+    //Datum
+    mailtext = mailtext.replaceAll("%datum%", formatter.format(vorgang.getDatum()));
+    //Status
+    str = new StringBuilder();
+    str.append(vorgang.getStatus().getText());
+    if (!StringUtils.isBlank(vorgang.getStatusKommentar())) {
+      str.append(" (Statusinformation: ").append(vorgang.getStatusKommentar()).append(")\n");
+    }
+    mailtext = mailtext.replaceAll("%status%", str.toString());
+
+    msg.setText(mailtext);
+
+    jobExecutorService.runJob(new MailSenderJob(this, msg));
+  }
+
+  /**
+   * Sendet eine E-Mail an den Ersteller eines Vorganges mit den Daten über den aktuellen Status des
+   * Vorganges.
+   *
+   * @param vorgang Vorgang zu dem der Ersteller informiert werden sollen.
+   */
+  public void sendInformErstellerMailLangeInBearbeitung(Vorgang vorgang) {
+    SimpleMailMessage msg = new SimpleMailMessage(informErstellerMailLangeInBearbeitungTemplate);
     msg.setTo(vorgang.getAutorEmail());
     msg.setSubject(msg.getSubject().replaceAll("%id%", vorgang.getId().toString())
       .replaceAll("%title%", settingsService.getContextAppTitle()));

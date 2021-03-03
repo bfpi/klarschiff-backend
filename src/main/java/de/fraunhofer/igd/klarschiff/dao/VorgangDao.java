@@ -1312,6 +1312,28 @@ public class VorgangDao {
   }
 
   /**
+   * Ermittelt alle Vorgänge, die ab einer bestimmten Zeit den Status "in Bearbeitung" erhalten
+   * haben.
+   *
+   * @param dateFrom Zeitpunkt, ab dem die Vorgänge den Status "in Bearbeitung" erhalten haben.
+   * @param dateTo Zeitpunkt, bis zu dem die Vorgänge den Status "in Bearbeitung" erhalten haben.
+   * @return Liste mit Vorgängen
+   */
+  @SuppressWarnings("unchecked")
+  public List<Vorgang> findLongTimeInProgressVorgaenge(Date dateFrom, Date dateTo) {
+    HqlQueryHelper query = addGroupByVorgang(new HqlQueryHelper(securityService))
+      .addFromTables("Vorgang vo JOIN vo.verlauf ve")
+      .addWhereConditions("ve.typ = :verlaufTyp").addParameter("verlaufTyp", EnumVerlaufTyp.status)
+      .addWhereConditions("ve.datum >= :datum_von").addParameter("datum_von", dateFrom)
+      .addWhereConditions("ve.datum <= :datum_bis").addParameter("datum_von", dateTo)
+      .addWhereConditions("vo.status = :status").addParameter("status", EnumVorgangStatus.inBearbeitung)
+      .addWhereConditions("ve.wertNeu = 'in Bearbeitung'")
+      .addWhereConditions("vo.autorEmail IS NOT NULL")
+      .addWhereConditions("vo.autorEmail != :autorEmail").addParameter("autorEmail", "");
+    return query.getResultList(em);
+  }
+
+  /**
    * Ermittelt alle Vorgänge, die ab einer bestimmten Zeit abgeschlossen wurden.
    *
    * @param lastChange Zeitpunkt, ab dem die Vorgänge abgeschlossen wurden.

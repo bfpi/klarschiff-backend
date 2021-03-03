@@ -179,6 +179,8 @@ public class AdminController {
       jobsService.informErstellerInBearbeitung();
     } else if (action.equalsIgnoreCase("informErstellerAbschluss")) {
       jobsService.informErstellerAbschluss();
+    } else if (action.equalsIgnoreCase("informErstellerLangeInBearbeitung")) {
+      jobsService.informErstellerLangeInBearbeitung();
     } else if (action.equalsIgnoreCase("informRedaktionEmpfaenger")) {
       jobsService.informRedaktionEmpfaenger();
     } else if (action.equalsIgnoreCase("createRequestOverview")) {
