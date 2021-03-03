@@ -181,6 +181,10 @@ public class AdminController {
       jobsService.informErstellerAbschluss();
     } else if (action.equalsIgnoreCase("informErstellerLangeInBearbeitung")) {
       jobsService.informErstellerLangeInBearbeitung();
+    } else if (action.equalsIgnoreCase("informUnterstuetzerInBearbeitung")) {
+      jobsService.informUnterstuetzerInBearbeitung();
+    } else if (action.equalsIgnoreCase("informUnterstuetzerAbschluss")) {
+      jobsService.informUnterstuetzerAbschluss();
     } else if (action.equalsIgnoreCase("informRedaktionEmpfaenger")) {
       jobsService.informRedaktionEmpfaenger();
     } else if (action.equalsIgnoreCase("createRequestOverview")) {

@@ -662,6 +662,7 @@ public class BackendController {
    * @param vorgang Vorgang
    * @param email E-Mail-Adresse des Erstellers
    * @param datenschutz Datenschutzerklärung wurde akzeptiert
+   * @param statusaenderung_an_unterstuetzer
    * @param resultObjectOnSubmit <code>true</code> - gibt den neuen Vorgangs als Ergebnis zurück
    * @param resultHashOnSubmit <code>true</code> - gibt den Hash zum Bestätigen als Ergebnis zurück
    * @param response Response in das das Ergebnis direkt geschrieben wird
@@ -672,6 +673,7 @@ public class BackendController {
     @RequestParam(value = "vorgang", required = false) Long vorgang,
     @RequestParam(value = "email", required = false) String email,
     @RequestParam(value = "datenschutz", required = false) Boolean datenschutz,
+    @RequestParam(value = "statusaenderung_an_unterstuetzer", required = false) Boolean statusaenderung_an_unterstuetzer,
     @RequestParam(value = "resultHashOnSubmit", required = false) Boolean resultHashOnSubmit,
     @RequestParam(value = "resultObjectOnSubmit", required = false) Boolean resultObjectOnSubmit,
     HttpServletResponse response) {
@@ -720,6 +722,9 @@ public class BackendController {
       }
 
       unterstuetzer.setDatum(new Date());
+      if(statusaenderung_an_unterstuetzer) {
+        unterstuetzer.setEmail(email);
+      }
 
       vorgangDao.persist(unterstuetzer);
 

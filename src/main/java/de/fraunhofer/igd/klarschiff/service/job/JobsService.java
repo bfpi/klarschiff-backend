@@ -166,6 +166,12 @@ public class JobsService {
     for (Vorgang vorgang : vorgangDao.findNotArchivVorgang(typ, dateP)) {
       vorgang.setArchiviert(true);
       vorgangDao.merge(vorgang);
+      for(Unterstuetzer unterstuetzer : vorgang.getUnterstuetzer()) {
+        if(unterstuetzer.getEmail().length() > 0) {
+          unterstuetzer.setEmail(removeAuthorEmailFromArchivReplacement);
+          vorgangDao.merge(vorgang);
+        }
+      }
     }
   }
 
@@ -397,6 +403,40 @@ public class JobsService {
     // sende E-Mail
     for (Vorgang vorgang : vorgaenge) {
       mailService.sendInformErstellerMailLangeInBearbeitung(vorgang);
+    }
+  }
+
+  /**
+   * Dieser Job informiert die Unterstuetzer von Vorgängen darüber, dass ihre Vorgänge innerhalb der
+   * letzten 24 Stunden in Bearbeitung genommen wurden.
+   */
+  @ScheduledSyncInCluster(cron = "0 15 10 * * *", name = "Unterstuetzer ueber Statusaenderungen nach in Bearbeitung informieren")
+  public void informUnterstuetzerInBearbeitung() {
+    Date date = DateUtils.addDays(new Date(), -1);
+
+    // finde alle Vorgänge, deren Status sich innerhalb der letzten 24 Stunden auf inBearbeitung geändert hat und die eine autorEmail aufweisen
+    List<Unterstuetzer> unterstuetzer = vorgangDao.findInProgressVorgaengeUnterstuetzerToInform(date);
+
+    // sende E-Mail
+    for (Unterstuetzer u : unterstuetzer) {
+      mailService.sendInformUnterstuetzerMailInBearbeitung(u);
+    }
+  }
+
+  /**
+   * Dieser Job informiert die Unterstuetzer von Vorgängen darüber, dass ihre Vorgänge innerhalb der
+   * letzten 24 Stunden abgeschlossen wurden.
+   */
+  @ScheduledSyncInCluster(cron = "0 20 10 * * *", name = "Unterstuetzer ueber Vorgangsabschluesse informieren")
+  public void informUnterstuetzerAbschluss() {
+    Date date = DateUtils.addDays(new Date(), -1);
+
+    // finde alle Vorgänge, die innerhalb der letzten 24 Stunden abgeschlossen wurden und die eine autorEmail aufweisen
+    List<Unterstuetzer> unterstuetzer = vorgangDao.findClosedVorgaengeToInform(date);
+
+    // sende E-Mail
+    for (Unterstuetzer u : unterstuetzer) {
+      mailService.sendInformUnterstuetzerMailAbschluss(u);
     }
   }
 

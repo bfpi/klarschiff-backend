@@ -57,6 +57,12 @@ public class Unterstuetzer implements Serializable {
   @DateTimeFormat(style = "S-")
   private Date datumBestaetigung;
 
+  /**
+   * Hash zum Bestatigen der Unterstützung
+   */
+  @Size(max = 300)
+  private String email;
+
   /* --------------- GET + SET ----------------------------*/
   public Vorgang getVorgang() {
     return vorgang;
@@ -88,6 +94,14 @@ public class Unterstuetzer implements Serializable {
 
   public void setDatumBestaetigung(Date datumBestaetigung) {
     this.datumBestaetigung = datumBestaetigung;
+  }
+
+  public String getEmail() {
+    return email;
+  }
+
+  public void setEmail(String email) {
+    this.email = email;
   }
 
   public Long getId() {

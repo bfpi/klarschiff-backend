@@ -169,7 +169,7 @@
 					<input type="hidden" name="action" value="informErstellerInBearbeitung"/>
 					<input type="submit" value="Ausführen"/>
 				</form>
-	
+
 				<div class="subtitle">informErstellerAbschluss</div>
 				<p class="help">
                     Die Ersteller von Vorgängen werden darüber informiert, dass ihre Vorgänge innerhalb der letzten 24 Stunden abgeschlossen wurden.
@@ -183,7 +183,33 @@
 					<input type="submit" value="Ausführen"/>
 				</form>
 
-				<div class="subtitle">informErstellerLangeInBearbeitung</div>
+				<div class="subtitle">informUnterstuetzerInBearbeitung</div>
+				<p class="help">
+					Die Ersteller von Vorgängen werden darüber informiert, dass ihre Vorgänge innerhalb der letzten 24 Stunden in Bearbeitung genommen wurden.
+				</p>
+				<ul class="help">
+					<li>Ausführungszeitpunkt: täglich um 10:15 Uhr</li>
+					<li>Anmerkung: Es werden immer alle Vorgänge berücksichtigt, die innerhalb der letzten 24 Stunden in Bearbeitung genommen wurden.</li>
+				</ul>
+				<form method="post">
+					<input type="hidden" name="action" value="informUnterstuetzerInBearbeitung"/>
+					<input type="submit" value="Ausführen"/>
+				</form>
+
+				<div class="subtitle">informUnterstuetzerAbschluss</div>
+				<p class="help">
+                    Die Ersteller von Vorgängen werden darüber informiert, dass ihre Vorgänge innerhalb der letzten 24 Stunden abgeschlossen wurden.
+				</p>
+				<ul class="help">
+					<li>Ausführungszeitpunkt: täglich um 10:20 Uhr</li>
+                    <li>Anmerkung: Es werden immer alle Vorgänge berücksichtigt, die innerhalb der letzten 24 Stunden abgeschlossen wurden.</li>
+				</ul>
+				<form method="post">
+					<input type="hidden" name="action" value="informUnterstuetzerAbschluss"/>
+					<input type="submit" value="Ausführen"/>
+				</form>
+
+        <div class="subtitle">informErstellerLangeInBearbeitung</div>
 				<p class="help">
                     Die Ersteller von Vorgängen werden darüber informiert, dass ihre Vorgänge innerhalb der letzten 24 Stunden abgeschlossen wurden.
 				</p>

@@ -312,6 +312,45 @@ public class VorgangDao {
   }
 
   /**
+   * Ermittelt alle Unterstützer von Vorgängen, die ab einer bestimmten Zeit den Status "in Bearbeitung" erhalten
+   * haben.
+   *
+   * @param lastChange Zeitpunkt, ab dem die Vorgänge den Status "in Bearbeitung" erhalten haben.
+   * @return Liste mit Vorgängen
+   */
+  @SuppressWarnings("unchecked")
+  public List<Unterstuetzer> findInProgressVorgaengeUnterstuetzerToInform(Date lastChange) {
+    List<Unterstuetzer> list = new ArrayList<>();
+    for(Vorgang v : findInProgressVorgaenge(lastChange)) {
+      for(Unterstuetzer u : v.getUnterstuetzer()) {
+        if(u.getDatumBestaetigung() != null && u.getEmail() != null && u.getEmail().length() > 0) {
+          list.add(u);
+        }
+      }
+    }
+    return list;
+  }
+
+  /**
+   * Ermittelt alle Unterstützer von Vorgängen, die ab einer bestimmten Zeit abgeschlossen wurden.
+   *
+   * @param lastChange Zeitpunkt, ab dem die Vorgänge abgeschlossen wurden.
+   * @return Liste mit Vorgängen
+   */
+  @SuppressWarnings("unchecked")
+  public List<Unterstuetzer> findClosedVorgaengeToInform(Date lastChange) {
+    List<Unterstuetzer> list = new ArrayList<>();
+    for(Vorgang v : findClosedVorgaenge(lastChange)) {
+      for(Unterstuetzer u : v.getUnterstuetzer()) {
+        if(u.getDatumBestaetigung() != null && u.getEmail() != null && u.getEmail().length() > 0) {
+          list.add(u);
+        }
+      }
+    }
+    return list;
+  }
+
+  /**
    * Holt die Missbrauchsmeldung anhand der ID
    *
    * @param id ID der Missbrauchsmeldung

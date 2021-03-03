@@ -39,6 +39,8 @@
         p:informErstellerMailInBearbeitungTemplate-ref="informErstellerMailInBearbeitungTemplate"
         p:informErstellerMailLangeInBearbeitungTemplate-ref="informErstellerMailLangeInBearbeitungTemplate"
         p:informErstellerMailAbschlussTemplate-ref="informErstellerMailAbschlussTemplate"
+        p:informUnterstuetzerMailInBearbeitungTemplate-ref="informUnterstuetzerMailInBearbeitungTemplate"
+        p:informUnterstuetzerMailAbschlussTemplate-ref="informUnterstuetzerMailAbschlussTemplate"
         p:kriteriumOffenNichtAkzeptiertTemplate-ref="kriteriumOffenNichtAkzeptiertTemplate"
         p:kriteriumOffenInbearbeitungOhneStatusKommentarTemplate-ref="kriteriumOffenInbearbeitungOhneStatusKommentarTemplate"
         p:kriteriumIdeeOffenOhneUnterstuetzungTemplate-ref="kriteriumIdeeOffenOhneUnterstuetzungTemplate"
@@ -224,6 +226,44 @@ hiermit teilen wir Ihnen mit, dass die Bearbeitung Ihrer Meldung vom %datum% abg
 %status%
 
 Nachfolgend können Sie nochmals die wichtigsten Daten Ihrer Meldung in kompakter Form einsehen:
+
+%vorgang%
+
+Vielen Dank und mit freundlichen Grüßen
+
+
+Ihr %title%-Team]]></value>
+    </property>
+  </bean>
+
+  <bean class="org.springframework.mail.SimpleMailMessage" id="informUnterstuetzerMailInBearbeitungTemplate"
+        p:from="${mail.from}" p:subject="%title% #%id%: in Bearbeitung">
+    <property name="text">
+      <value><![CDATA[Sehr geehrte(r) Nutzer/-in von %title%,
+
+hiermit teilen wir Ihnen mit, dass eine Meldung, die Sie unterstützen vom %datum% nun in Bearbeitung ist.
+
+Nachfolgend können Sie nochmals die wichtigsten Daten der Meldung in kompakter Form einsehen:
+
+%vorgang%
+
+Vielen Dank und mit freundlichen Grüßen
+
+
+Ihr %title%-Team]]></value>
+    </property>
+  </bean>
+
+  <bean class="org.springframework.mail.SimpleMailMessage" id="informUnterstuetzerMailAbschlussTemplate"
+        p:from="${mail.from}" p:subject="%title% #%id%: abgeschlossen">
+    <property name="text">
+      <value><![CDATA[Sehr geehrte(r) Nutzer/-in von %title%,
+
+hiermit teilen wir Ihnen mit, dass die Bearbeitung einer Meldung, die Sie unterstützen vom %datum% abgeschlossen ist, und zwar mit folgendem Status:
+
+%status%
+
+Nachfolgend können Sie nochmals die wichtigsten Daten der Meldung in kompakter Form einsehen:
 
 %vorgang%
 
