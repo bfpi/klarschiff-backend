@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
 <web-app xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.4" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
 
-    <display-name>backend</display-name>
+    <display-name>backend_neu</display-name>
     
     <description>Bürgerbeteiligungsportal zum Melden und Bearbeiten von Problemen und Ideen, die sich auf den öffentlichen Raum beziehen</description>
     
@@ -23,8 +23,8 @@
     </context-param>
 
     <context-param>
-      <param-name>log4jExposeWebAppRoot</param-name>
-      <param-value>false</param-value>
+        <param-name>webAppRootKey</param-name>
+        <param-value>backend_neu</param-value>
     </context-param>
     
     <filter>
@@ -88,7 +88,7 @@
     
     <!-- Handles Spring requests -->
     <servlet>
-        <servlet-name>backend</servlet-name>
+        <servlet-name>backend_neu</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
         <init-param>
             <param-name>contextConfigLocation</param-name>
@@ -98,7 +98,7 @@
     </servlet>
     
     <servlet-mapping>
-        <servlet-name>backend</servlet-name>
+        <servlet-name>backend_neu</servlet-name>
         <url-pattern>/</url-pattern>
     </servlet-mapping>
 

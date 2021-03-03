@@ -37,6 +37,7 @@
         p:informDispatcherMailTemplate-ref="informDispatcherMailTemplate"
         p:informExternMailTemplate-ref="informExternMailTemplate"
         p:informErstellerMailInBearbeitungTemplate-ref="informErstellerMailInBearbeitungTemplate"
+        p:informErstellerMailLangeInBearbeitungTemplate-ref="informErstellerMailLangeInBearbeitungTemplate"
         p:informErstellerMailAbschlussTemplate-ref="informErstellerMailAbschlussTemplate"
         p:kriteriumOffenNichtAkzeptiertTemplate-ref="kriteriumOffenNichtAkzeptiertTemplate"
         p:kriteriumOffenInbearbeitungOhneStatusKommentarTemplate-ref="kriteriumOffenInbearbeitungOhneStatusKommentarTemplate"
@@ -183,6 +184,24 @@ Ihr %title%-Team]]></value>
       <value><![CDATA[Sehr geehrte(r) Nutzer/-in von %title%,
 		
 hiermit teilen wir Ihnen mit, dass Ihre Meldung vom %datum% nun in Bearbeitung ist.
+
+Nachfolgend können Sie nochmals die wichtigsten Daten Ihrer Meldung in kompakter Form einsehen:
+
+%vorgang%
+
+Vielen Dank und mit freundlichen Grüßen
+
+
+Ihr %title%-Team]]></value>
+    </property>
+  </bean>
+
+  <bean class="org.springframework.mail.SimpleMailMessage" id="informErstellerMailLangeInBearbeitungTemplate"
+        p:from="${mail.from}" p:subject="%title% #%id%: in Bearbeitung">
+    <property name="text">
+      <value><![CDATA[Sehr geehrte(r) Nutzer/-in von %title%,
+		
+Ihre Meldung befindet sich in der Bearbeitung und konnte noch nicht abschließend geprüft werden. Sie erhalten nach erfolgter Prüfung eine abschließende Benachrichtigung.
 
 Nachfolgend können Sie nochmals die wichtigsten Daten Ihrer Meldung in kompakter Form einsehen:
 

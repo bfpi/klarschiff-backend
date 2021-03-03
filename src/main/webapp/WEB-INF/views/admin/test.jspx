@@ -182,6 +182,20 @@
 					<input type="hidden" name="action" value="informErstellerAbschluss"/>
 					<input type="submit" value="Ausführen"/>
 				</form>
+
+				<div class="subtitle">informErstellerLangeInBearbeitung</div>
+				<p class="help">
+                    Die Ersteller von Vorgängen werden darüber informiert, dass ihre Vorgänge innerhalb der letzten 24 Stunden abgeschlossen wurden.
+				</p>
+				<ul class="help">
+					<li>Ausführungszeitpunkt: täglich um 10:25 Uhr</li>
+                    <li>Anmerkung: Es werden immer alle Vorgänge berücksichtigt, die innerhalb der letzten 24 Stunden abgeschlossen wurden.</li>
+				</ul>
+				<form method="post">
+					<input type="hidden" name="action" value="informErstellerLangeInBearbeitung"/>
+					<input type="submit" value="Ausführen"/>
+				</form>
+>>>>>>> Stashed changes
 			</div>
 		</div>
 		<util:ddpanel name="jobServiceTest"/>
