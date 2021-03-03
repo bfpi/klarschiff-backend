@@ -80,6 +80,8 @@ public class MailService {
   SimpleMailMessage informExternMailTemplate;
   SimpleMailMessage informErstellerMailInBearbeitungTemplate;
   SimpleMailMessage informErstellerMailAbschlussTemplate;
+  SimpleMailMessage informUnterstuetzerMailInBearbeitungTemplate;
+  SimpleMailMessage informUnterstuetzerMailAbschlussTemplate;
   SimpleMailMessage kriteriumOffenNichtAkzeptiertTemplate;
   SimpleMailMessage kriteriumOffenInbearbeitungOhneStatusKommentarTemplate;
   SimpleMailMessage kriteriumIdeeOffenOhneUnterstuetzungTemplate;
@@ -491,6 +493,84 @@ public class MailService {
    */
   public void sendInformErstellerMailAbschluss(Vorgang vorgang) {
     SimpleMailMessage msg = new SimpleMailMessage(informErstellerMailAbschlussTemplate);
+    msg.setTo(vorgang.getAutorEmail());
+    msg.setSubject(msg.getSubject().replaceAll("%id%", vorgang.getId().toString())
+      .replaceAll("%title%", settingsService.getContextAppTitle()));
+
+    String mailtext = msg.getText();
+    mailtext = mailtext.replaceAll("%id%", vorgang.getId().toString());
+    mailtext = mailtext.replaceAll("%title%", settingsService.getContextAppTitle());
+    StringBuilder str = new StringBuilder();
+    //Vorgang
+    str.append("Nummer        : ").append(vorgang.getId()).append("\n");
+    str.append("Typ           : ").append(vorgang.getTyp().getText()).append("\n");
+    str.append("Hauptkategorie: ").append(vorgang.getKategorie().getParent().getName()).append("\n");
+    str.append("Unterkategorie: ").append(vorgang.getKategorie().getName()).append("\n\n\n");
+    str.append(geoService.getMapExternExternUrl(vorgang)).append("\n");
+    mailtext = mailtext.replaceAll("%vorgang%", str.toString());
+    //Datum
+    mailtext = mailtext.replaceAll("%datum%", formatter.format(vorgang.getDatum()));
+    //Status
+    str = new StringBuilder();
+    str.append(vorgang.getStatus().getText());
+    if (!StringUtils.isBlank(vorgang.getStatusKommentar())) {
+      str.append(" (Statusinformation: ").append(vorgang.getStatusKommentar()).append(")\n");
+    }
+    mailtext = mailtext.replaceAll("%status%", str.toString());
+
+    msg.setText(mailtext);
+
+    jobExecutorService.runJob(new MailSenderJob(this, msg));
+  }
+
+  /**
+   * Sendet eine E-Mail an den Unterstuetzer eines Vorganges mit den Daten über den aktuellen Status des
+   * Vorganges.
+   *
+   * @param unterstuetzer Unterstützung des Vorgang zu dem informiert werden sollen.
+   */
+  public void sendInformUnterstuetzerMailInBearbeitung(Unterstuetzer unterstuetzer) {
+    Vorgang vorgang = unterstuetzer.getVorgang();
+    SimpleMailMessage msg = new SimpleMailMessage(informUnterstuetzerMailInBearbeitungTemplate);
+    msg.setTo(vorgang.getAutorEmail());
+    msg.setSubject(msg.getSubject().replaceAll("%id%", vorgang.getId().toString())
+      .replaceAll("%title%", settingsService.getContextAppTitle()));
+
+    String mailtext = msg.getText();
+    mailtext = mailtext.replaceAll("%id%", vorgang.getId().toString());
+    mailtext = mailtext.replaceAll("%title%", settingsService.getContextAppTitle());
+    StringBuilder str = new StringBuilder();
+    //Vorgang
+    str.append("Nummer        : ").append(vorgang.getId()).append("\n");
+    str.append("Typ           : ").append(vorgang.getTyp().getText()).append("\n");
+    str.append("Hauptkategorie: ").append(vorgang.getKategorie().getParent().getName()).append("\n");
+    str.append("Unterkategorie: ").append(vorgang.getKategorie().getName()).append("\n\n\n");
+    str.append(geoService.getMapExternExternUrl(vorgang)).append("\n");
+    mailtext = mailtext.replaceAll("%vorgang%", str.toString());
+    //Datum
+    mailtext = mailtext.replaceAll("%datum%", formatter.format(vorgang.getDatum()));
+    //Status
+    str = new StringBuilder();
+    str.append(vorgang.getStatus().getText());
+    if (!StringUtils.isBlank(vorgang.getStatusKommentar())) {
+      str.append(" (Statusinformation: ").append(vorgang.getStatusKommentar()).append(")\n");
+    }
+    mailtext = mailtext.replaceAll("%status%", str.toString());
+
+    msg.setText(mailtext);
+
+    jobExecutorService.runJob(new MailSenderJob(this, msg));
+  }
+
+  /**
+   * Sendet eine E-Mail an den Unterstuetzer eines Vorganges mit den Daten über den aktuellen Status des
+   * Vorganges.
+   *
+   * @param unterstuetzer Unterstützung des Vorgang zu dem informiert werden sollen.
+   */
+  public void sendInformUnterstuetzerMailAbschluss(Unterstuetzer unterstuetzer) {
+    Vorgang vorgang = unterstuetzer.getVorgang();
+    SimpleMailMessage msg = new SimpleMailMessage(informUnterstuetzerMailAbschlussTemplate);
     msg.setTo(vorgang.getAutorEmail());
     msg.setSubject(msg.getSubject().replaceAll("%id%", vorgang.getId().toString())
       .replaceAll("%title%", settingsService.getContextAppTitle()));
@@ -940,6 +1020,22 @@ public class MailService {
   public void setInformErstellerMailAbschlussTemplate(
     SimpleMailMessage informErstellerMailAbschlussTemplate) {
     this.informErstellerMailAbschlussTemplate = informErstellerMailAbschlussTemplate;
+  }
+
+  public SimpleMailMessage getInformUnterstuetzerMailInBearbeitungTemplate() {
+    return informUnterstuetzerMailInBearbeitungTemplate;
+  }
+
+  public void setInformUnterstuetzerMailInBearbeitungTemplate(SimpleMailMessage informUnterstuetzerMailInBearbeitungTemplate) {
+    this.informUnterstuetzerMailInBearbeitungTemplate = informUnterstuetzerMailInBearbeitungTemplate;
+  }
+
+  public SimpleMailMessage getInformUnterstuetzerMailAbschlussTemplate() {
+    return informUnterstuetzerMailAbschlussTemplate;
+  }
+
+  public void setInformUnterstuetzerMailAbschlussTemplate(SimpleMailMessage informUnterstuetzerMailAbschlussTemplate) {
+    this.informUnterstuetzerMailAbschlussTemplate = informUnterstuetzerMailAbschlussTemplate;
   }
 
   public SimpleMailMessage getKriteriumOffenNichtAkzeptiertTemplate() {
