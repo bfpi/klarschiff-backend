@@ -38,6 +38,10 @@ public class SettingsService {
     return Boolean.parseBoolean(PropertyPlaceholderConfigurer.getPropertyValue(name));
   }
 
+  public boolean getPropertyValueBoolean(String name, Boolean fallback_value) {
+    return Boolean.parseBoolean(PropertyPlaceholderConfigurer.getPropertyValue(name, fallback_value.toString()));
+  }
+
   /* --------------- GET + SET ----------------------------*/
   public String getVersion() {
     return version;

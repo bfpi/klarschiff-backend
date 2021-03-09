@@ -21,6 +21,7 @@ import de.fraunhofer.igd.klarschiff.vo.EnumVorgangStatus;
 import de.fraunhofer.igd.klarschiff.vo.Kommentar;
 import de.fraunhofer.igd.klarschiff.vo.Vorgang;
 import de.fraunhofer.igd.klarschiff.web.FehlerController;
+import java.io.File;
 
 /**
  * Die Klasse stellt Funktionen für spezielle EL-funktionen für Klarschiff bereit.
@@ -302,5 +303,23 @@ public class CustomFunctions {
       }
     });
     return sqlScript;
+  }
+
+  public static Boolean fieldServiceEnabled() {
+    SettingsService settings = AppContext.getApplicationContext().getBean(SettingsService.class);
+    return settings.getPropertyValueBoolean("field_service.enabled", true);
+  }
+
+  public static Boolean customCssPresent() {
+    SettingsService settings = AppContext.getApplicationContext().getBean(SettingsService.class);
+    String path = settings.getPropertyValue("resources.backend.path") + "custom.css";
+    File tempFile = new File(path);
+    return tempFile.exists();
+  }
+
+  public static String customCssPath() {
+    SettingsService settings = AppContext.getApplicationContext().getBean(SettingsService.class);
+    String url = settings.getPropertyValue("resources.backend.url") + "custom.css";
+    return url;
   }
 }

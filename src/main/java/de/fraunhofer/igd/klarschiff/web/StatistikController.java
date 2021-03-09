@@ -69,7 +69,7 @@ public class StatistikController {
       cmd.setZeitraumBis(new Date());
     }
     model.addAttribute("cmd", cmd);
-    model.addAttribute("vorgangtypen", Arrays.asList(EnumVorgangTyp.values()));
+    model.addAttribute("vorgangtypen", EnumVorgangTyp.getEnumVorgangTypen());
 
     return "statistik/kumulativ";
   }
@@ -126,7 +126,7 @@ public class StatistikController {
     cmd.setZeitraumBis(cal.getTime());
 
     model.addAttribute("cmd", cmd);
-    model.addAttribute("vorgangtypen", Arrays.asList(EnumVorgangTyp.values()));
+    model.addAttribute("vorgangtypen", EnumVorgangTyp.getEnumVorgangTypen());
     
     return "statistik/zeitraum";
   }
