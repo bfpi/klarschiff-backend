@@ -52,7 +52,7 @@
               <c:choose>
                 <c:when test="${verlaufItem.typ=='status'}">
                   <c:choose>
-                    <c:when test="${verlaufItem.wertAlt=='nicht lösbar'}">
+                    <c:when test="${verlaufItem.wertAlt=='nicht lösbar' || verlaufItem.wertAlt=='wird nicht bearbeitet'}">
                       <c:set value="status_nichtLoesbar_15.png" var="altAlt"/>
                     </c:when>
                     <c:when test="${verlaufItem.wertAlt=='Duplikat'}">
@@ -63,7 +63,7 @@
                     </c:otherwise>
                   </c:choose>
                   <c:choose>
-                    <c:when test="${verlaufItem.wertNeu=='nicht lösbar'}">
+                    <c:when test="${verlaufItem.wertNeu=='nicht lösbar' || verlaufItem.wertNeu=='wird nicht bearbeitet'}">
                       <c:set value="status_nichtLoesbar_15.png" var="altNeu"/>
                     </c:when>
                     <c:when test="${verlaufItem.wertNeu=='Duplikat'}">

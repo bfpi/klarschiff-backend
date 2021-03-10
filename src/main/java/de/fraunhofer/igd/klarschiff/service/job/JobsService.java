@@ -260,7 +260,7 @@ public class JobsService {
 
           //falls dies gemacht werden soll...
           if (sollVorgaengeNichtLoesbarOhneStatuskommentar == true) {
-            //finde alle Vorgänge mit dem Status 'nicht lösbar', die bisher keine öffentliche Statusinformation aufweisen
+            //finde alle Vorgänge mit dem Status 'nicht lösbar'/'wird nicht bearbeitet', die bisher keine öffentliche Statusinformation aufweisen
             vorgaengeNichtLoesbarOhneStatuskommentar = vorgangDao.findVorgaengeNichtLoesbarOhneStatuskommentar(administrator, empfaenger.getZustaendigkeit());
           }
 

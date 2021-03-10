@@ -1324,7 +1324,7 @@ public class VorgangDao {
       .addWhereConditions("ve.typ = :verlaufTyp").addParameter("verlaufTyp", EnumVerlaufTyp.status)
       .addWhereConditions("ve.datum >= :datum").addParameter("datum", lastChange)
       .addWhereConditions("vo.status IN (:status)").addParameter("status", Arrays.asList(EnumVorgangStatus.closedVorgangStatus()))
-      .addWhereConditions("ve.wertNeu IN ('gelöst', 'nicht lösbar')")
+      .addWhereConditions("ve.wertNeu IN ('abgeschlossen', 'gelöst', 'wird nicht bearbeitet', 'nicht lösbar')")
       .addWhereConditions("vo.autorEmail IS NOT NULL")
       .addWhereConditions("vo.autorEmail != :autorEmail").addParameter("autorEmail", "");
     return query.getResultList(em);
@@ -1451,7 +1451,7 @@ public class VorgangDao {
   }
 
   /**
-   * Ermittelt alle Vorgänge mit dem Status 'nicht lösbar', die bisher keine öffentliche
+   * Ermittelt alle Vorgänge mit dem Status 'nicht lösbar'/'wird nicht bearbeitet', die bisher keine öffentliche
    * Statusinformation aufweisen.
    *
    * @param administrator Zuständigkeit ignorieren?

@@ -1,5 +1,7 @@
 package de.fraunhofer.igd.klarschiff.vo;
 
+import de.fraunhofer.igd.klarschiff.context.AppContext;
+import de.fraunhofer.igd.klarschiff.service.settings.SettingsService;
 import org.apache.commons.lang.StringEscapeUtils;
 
 /**
@@ -69,7 +71,12 @@ public enum EnumVorgangStatus implements EnumText {
     this.text = text;
   }
 
+  @Override
   public String getText() {
+    String tmp = AppContext.getApplicationContext().getBean(SettingsService.class).getPropertyValue("enum.status." + name());
+    if (tmp != null) {
+      return tmp;
+    }
     return StringEscapeUtils.unescapeHtml(text);
   }
 

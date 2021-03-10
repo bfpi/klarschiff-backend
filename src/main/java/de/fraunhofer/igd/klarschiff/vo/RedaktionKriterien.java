@@ -57,7 +57,7 @@ public class RedaktionKriterien implements Serializable {
   private Short tageInBearbeitung;
 
   /**
-   * Vorgänge ausweisen mit dem Status 'nicht lösbar', die bisher keine öffentliche
+   * Vorgänge ausweisen mit dem Status 'nicht lösbar'/'wird nicht bearbeitet', die bisher keine öffentliche
    * Statusinformation aufweisen?
    */
   @NotNull
