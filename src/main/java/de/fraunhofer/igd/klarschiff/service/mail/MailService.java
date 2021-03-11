@@ -1052,6 +1052,15 @@ public class MailService {
     this.informErstellerMailInBearbeitungTemplate = informErstellerMailInBearbeitungTemplate;
   }
 
+  public SimpleMailMessage getInformErstellerMailLangeInBearbeitungTemplate() {
+    return informErstellerMailLangeInBearbeitungTemplate;
+  }
+
+  public void setInformErstellerMailLangeInBearbeitungTemplate(
+    SimpleMailMessage informErstellerMailLangeInBearbeitungTemplate) {
+    this.informErstellerMailLangeInBearbeitungTemplate = informErstellerMailLangeInBearbeitungTemplate;
+  }
+
   public SimpleMailMessage getInformErstellerMailAbschlussTemplate() {
     return informErstellerMailAbschlussTemplate;
   }

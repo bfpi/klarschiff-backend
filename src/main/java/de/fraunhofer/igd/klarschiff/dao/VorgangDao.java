@@ -1364,7 +1364,7 @@ public class VorgangDao {
       .addFromTables("Vorgang vo JOIN vo.verlauf ve")
       .addWhereConditions("ve.typ = :verlaufTyp").addParameter("verlaufTyp", EnumVerlaufTyp.status)
       .addWhereConditions("ve.datum >= :datum_von").addParameter("datum_von", dateFrom)
-      .addWhereConditions("ve.datum <= :datum_bis").addParameter("datum_von", dateTo)
+      .addWhereConditions("ve.datum <= :datum_bis").addParameter("datum_bis", dateTo)
       .addWhereConditions("vo.status = :status").addParameter("status", EnumVorgangStatus.inBearbeitung)
       .addWhereConditions("ve.wertNeu = 'in Bearbeitung'")
       .addWhereConditions("vo.autorEmail IS NOT NULL")

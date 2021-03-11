@@ -167,7 +167,7 @@ public class JobsService {
       vorgang.setArchiviert(true);
       vorgangDao.merge(vorgang);
       for(Unterstuetzer unterstuetzer : vorgang.getUnterstuetzer()) {
-        if(unterstuetzer.getEmail().length() > 0) {
+        if(null != unterstuetzer.getEmail() && unterstuetzer.getEmail().length() > 0) {
           unterstuetzer.setEmail(removeAuthorEmailFromArchivReplacement);
           vorgangDao.merge(vorgang);
         }
