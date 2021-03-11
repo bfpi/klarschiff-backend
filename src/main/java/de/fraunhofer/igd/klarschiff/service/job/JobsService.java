@@ -383,6 +383,24 @@ public class JobsService {
   }
 
   /**
+   * Dieser Job informiert die Ersteller von Vorgängen darüber, dass ihre Vorgänge innerhalb der
+   * letzten 24 Stunden in Bearbeitung genommen wurden.
+   */
+  @ScheduledSyncInCluster(cron = "0 25 10 * * *", name = "Ersteller ueber Statusaenderungen nach in Bearbeitung informieren")
+  public void informErstellerLangeInBearbeitung() {
+    Date date_to = DateUtils.addDays(new Date(), -14);
+    Date date_from = DateUtils.addDays(date_to, -14);
+
+    // finde alle Vorgänge, deren Status sich innerhalb der letzten 24 Stunden auf inBearbeitung geändert hat und die eine autorEmail aufweisen
+    List<Vorgang> vorgaenge = vorgangDao.findLongTimeInProgressVorgaenge(date_from, date_to);
+
+    // sende E-Mail
+    for (Vorgang vorgang : vorgaenge) {
+      mailService.sendInformErstellerMailLangeInBearbeitung(vorgang);
+    }
+  }
+
+  /**
    * Dieser Job registriert die aktulle ServerInstanze in der DB
    */
   @Scheduled(fixedRate = 20000)

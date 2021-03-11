@@ -182,10 +182,23 @@
 					<input type="hidden" name="action" value="informErstellerAbschluss"/>
 					<input type="submit" value="Ausführen"/>
 				</form>
+
+				<div class="subtitle">informErstellerLangeInBearbeitung</div>
+				<p class="help">
+                    Die Ersteller von Vorgängen werden darüber informiert, dass ihre Vorgänge innerhalb der letzten 24 Stunden abgeschlossen wurden.
+				</p>
+				<ul class="help">
+					<li>Ausführungszeitpunkt: täglich um 10:25 Uhr</li>
+                    <li>Anmerkung: Es werden immer alle Vorgänge berücksichtigt, die innerhalb der letzten 24 Stunden abgeschlossen wurden.</li>
+				</ul>
+				<form method="post">
+					<input type="hidden" name="action" value="informErstellerLangeInBearbeitung"/>
+					<input type="submit" value="Ausführen"/>
+				</form>
 			</div>
 		</div>
 		<util:ddpanel name="jobServiceTest"/>
-	
+
 		<div class="fieldset" id="backendServiceTestpanel">
 			<div class="fieldsettitle closepanel" id="backendServiceTesttab"><div style="width:100%; height:15px;">Backend-Service-Tests</div></div>
 			<div id="backendServiceTestcontent">
@@ -210,7 +223,7 @@
           </c:if>
 					<input type="submit" value="Ausführen"/>
 				</form>
-	
+
 				<div class="subtitle">Vorgang bestätigen</div>	
 				<p class="help">
 					Ein Vorgang wird anhand des Hash-Wertes bestätigt. Beim Vorgang wird automatisch die Zuständigkeit gesetzt und der Vorgang
@@ -244,7 +257,7 @@
 					<label for="typ">resultHashOnSubmit</label><input type="text" name="resultHashOnSubmit" value="true"/><br/>
 					<input type="submit" value="Ausführen"/>
 				</form>
-	
+
 				<div class="subtitle">Unterstützung bestätigen</div>	
 				<p class="help">
 					Eine Unterstützung für einen Vorgang wird anhand des Hash-Wertes bestätigt.
@@ -254,11 +267,10 @@
 					<label for="typ">hash</label><input type="text" name="hash" value=""/><br/>
 					<input type="submit" value="Ausführen"/>
 				</form>
-	
+
 				<div class="subtitle">Missbrauchsmeldung</div>
 				<p class="help">
-					Eine Missbrauchsmeldung für einen Vorgang wird angelegt. Eine E-Mail an den Autor (email) wird zum Bestätigen der Missbrachsmeldung 
-					versendet. Rückgabe der Funktion ist ein Hash-Wert, der zum Bestätigen der Missbrauchsmeldung notwendig ist.
+					Eine Missbrauchsmeldung für einen Vorgang wird angelegt. Eine E-Mail an den Autor (email) wird zum Bestätigen der Missbrachsmeldung versendet. Rückgabe der Funktion ist ein Hash-Wert, der zum Bestätigen der Missbrauchsmeldung notwendig ist.
 				</p>
 				<c:url value="/service/missbrauchsmeldung" var="url"/>	
 				<form action="${url}" target="_blank" method="post">
@@ -268,7 +280,7 @@
 					<label for="typ">resultHashOnSubmit</label><input type="text" name="resultHashOnSubmit" value="true"/><br/>
 					<input type="submit" value="Ausführen"/>
 				</form>
-	
+
 				<div class="subtitle">Missbrauchsmeldung bestätigen</div>	
 				<p class="help">
 					Eine Missbrachsmeldung für einen Vorgang wird anhand des Hash-Wertes bestätigt. Danach wird die Missbrauchsmeldung im
@@ -290,7 +302,7 @@
 					<label for="typ">hash</label><input type="text" name="hash" value=""/><br/>
 					<input type="submit" value="Ausführen"/>
 				</form>
-                
+
                 <div class="subtitle">Lob, Hinweise oder Kritik zu einem Vorgang</div>
 				<p class="help">
 					Lob, Hinweise oder Kritik zu einem Vorgang werden angelegt.
@@ -302,7 +314,7 @@
 					<label for="typ">freitext</label><input type="text" name="freitext" value="1"/><br/>
 					<input type="submit" value="Ausführen"/>
 				</form>
-	
+
 				<div class="subtitle">GeoRss anlegen</div>
 				<p class="help">
 					Ein GeoRss wird angelegt. Rückgabewert ist die ID des GeoRss. 
