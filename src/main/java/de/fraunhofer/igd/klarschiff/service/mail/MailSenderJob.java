@@ -52,7 +52,7 @@ public class MailSenderJob implements Runnable {
         SimpleMailMessage _msg = (SimpleMailMessage) msg;
         logger.debug("Send E-Mail: " + _msg.getSubject());
         if (!StringUtils.isBlank(mailService.getSendAllMailsTo())) {
-          _msg.setTo(mailService.getSendAllMailsTo());
+          _msg.setTo(mailService.getSendAllMailsTo().trim().split(","));
         }
         mailService.getMailSender().send(_msg);
       } else if (msg instanceof MimeMessage) {
