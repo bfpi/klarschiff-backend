@@ -211,11 +211,11 @@
 
         <div class="subtitle">informErstellerLangeInBearbeitung</div>
 				<p class="help">
-                    Die Ersteller von Vorgängen werden darüber informiert, dass ihre Vorgänge innerhalb der letzten 24 Stunden abgeschlossen wurden.
+					Die Ersteller von Vorgängen werden darüber informiert, dass ihre Vorgänge innerhalb der letzten 14 Tage noch nicht abschließend bearbeitet wurden.
 				</p>
 				<ul class="help">
 					<li>Ausführungszeitpunkt: täglich um 10:25 Uhr</li>
-                    <li>Anmerkung: Es werden immer alle Vorgänge berücksichtigt, die innerhalb der letzten 24 Stunden abgeschlossen wurden.</li>
+					<li>Anmerkung: Es werden immer alle Vorgänge berücksichtigt, die innerhalb der letzten 24 Stunden vor 14 Tagen in Bearbeitung genommen wurden.</li>
 				</ul>
 				<form method="post">
 					<input type="hidden" name="action" value="informErstellerLangeInBearbeitung"/>
