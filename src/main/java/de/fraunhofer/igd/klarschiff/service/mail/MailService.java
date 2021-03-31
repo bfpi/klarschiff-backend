@@ -571,7 +571,7 @@ public class MailService {
   public void sendInformUnterstuetzerMailInBearbeitung(Unterstuetzer unterstuetzer) {
     Vorgang vorgang = unterstuetzer.getVorgang();
     SimpleMailMessage msg = new SimpleMailMessage(informUnterstuetzerMailInBearbeitungTemplate);
-    msg.setTo(vorgang.getAutorEmail());
+    msg.setTo(unterstuetzer.getEmail());
     msg.setSubject(msg.getSubject().replaceAll("%id%", vorgang.getId().toString())
       .replaceAll("%title%", settingsService.getContextAppTitle()));
 
@@ -610,7 +610,7 @@ public class MailService {
   public void sendInformUnterstuetzerMailAbschluss(Unterstuetzer unterstuetzer) {
     Vorgang vorgang = unterstuetzer.getVorgang();
     SimpleMailMessage msg = new SimpleMailMessage(informUnterstuetzerMailAbschlussTemplate);
-    msg.setTo(vorgang.getAutorEmail());
+    msg.setTo(unterstuetzer.getEmail());
     msg.setSubject(msg.getSubject().replaceAll("%id%", vorgang.getId().toString())
       .replaceAll("%title%", settingsService.getContextAppTitle()));
 

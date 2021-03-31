@@ -320,15 +320,19 @@ public class VorgangDao {
    */
   @SuppressWarnings("unchecked")
   public List<Unterstuetzer> findInProgressVorgaengeUnterstuetzerToInform(Date lastChange) {
-    List<Unterstuetzer> list = new ArrayList<>();
-    for(Vorgang v : findInProgressVorgaenge(lastChange)) {
-      for(Unterstuetzer u : v.getUnterstuetzer()) {
-        if(u.getDatumBestaetigung() != null && u.getEmail() != null && u.getEmail().length() > 0) {
-          list.add(u);
-        }
-      }
-    }
-    return list;
+    HqlQueryHelper query = new HqlQueryHelper(securityService)
+      .addSelectAttribute("u")
+      .addFromTables("Unterstuetzer u JOIN u.vorgang vo JOIN vo.verlauf ve")
+      .addWhereConditions("ve.typ = :verlaufTyp").addParameter("verlaufTyp", EnumVerlaufTyp.status)
+      .addWhereConditions("ve.datum >= :datum").addParameter("datum", lastChange)
+      .addWhereConditions("vo.status = :status").addParameter("status", EnumVorgangStatus.inBearbeitung)
+      .addWhereConditions("ve.wertNeu = 'in Bearbeitung'")
+      .addWhereConditions("vo.autorEmail IS NOT NULL")
+      .addWhereConditions("vo.autorEmail != :autorEmail").addParameter("autorEmail", "")
+      .addWhereConditions("u.datumBestaetigung IS NOT NULL")
+      .addWhereConditions("u.email IS NOT NULL")
+      .addWhereConditions("u.email != :autorEmail").addParameter("autorEmail", "");
+    return query.getResultList(em);
   }
 
   /**
@@ -339,15 +343,19 @@ public class VorgangDao {
    */
   @SuppressWarnings("unchecked")
   public List<Unterstuetzer> findClosedVorgaengeToInform(Date lastChange) {
-    List<Unterstuetzer> list = new ArrayList<>();
-    for(Vorgang v : findClosedVorgaenge(lastChange)) {
-      for(Unterstuetzer u : v.getUnterstuetzer()) {
-        if(u.getDatumBestaetigung() != null && u.getEmail() != null && u.getEmail().length() > 0) {
-          list.add(u);
-        }
-      }
-    }
-    return list;
+    HqlQueryHelper query = new HqlQueryHelper(securityService)
+      .addSelectAttribute("u")
+      .addFromTables("Unterstuetzer u JOIN u.vorgang vo JOIN vo.verlauf ve")
+      .addWhereConditions("ve.typ = :verlaufTyp").addParameter("verlaufTyp", EnumVerlaufTyp.status)
+      .addWhereConditions("ve.datum >= :datum").addParameter("datum", lastChange)
+      .addWhereConditions("vo.status IN (:status)").addParameter("status", Arrays.asList(EnumVorgangStatus.closedVorgangStatus()))
+      .addWhereConditions("ve.wertNeu IN ('abgeschlossen', 'gelöst', 'wird nicht bearbeitet', 'nicht lösbar')")
+      .addWhereConditions("vo.autorEmail IS NOT NULL")
+      .addWhereConditions("vo.autorEmail != :autorEmail").addParameter("autorEmail", "")
+      .addWhereConditions("u.datumBestaetigung IS NOT NULL")
+      .addWhereConditions("u.email IS NOT NULL")
+      .addWhereConditions("u.email != :autorEmail").addParameter("autorEmail", "");
+    return query.getResultList(em);
   }
 
   /**
