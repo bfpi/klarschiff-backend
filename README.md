@@ -6,6 +6,7 @@ The back-end of **Klarschiff** is a web application which can be used by municip
 
 The project was initiated by the municipality of Rostock (Germany), more precisely its land registry office.
 
+**This project got superseeded by the new [Klarschiff-Backoffice](https://github.com/bfpi/klarschiff-backoffice). All required features and functions got reimplemented within the new application. The maintenance and support for this repository was stopped. Please migrate to the new Klarschiff-Backoffice.**
 
 ## Installation
 ### Voraussetzungen an den Arbeitsplatz
